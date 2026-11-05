@@ -60,3 +60,7 @@ O card da fazenda (lista de equipamentos + **Criar equipamento**) funciona norma
 - `fazenda-edit`: rádio da central editável; corrigido o painel que abria com o nome em branco.
 - `pluviometria/core.data.js`: sem o pluviômetro de teste injetado.
 - Semente do `farms.json` não sobrescreve mais o que foi criado (só vale na 1ª visita).
+
+
+---
+Deploy atualizado em 2026-11-05 16:38.
