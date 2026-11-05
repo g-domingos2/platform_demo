@@ -1,0 +1,90 @@
+/* ===== DEMO — Fazenda Demo ===== */
+.nav__item[data-demo-locked],
+.sidebar__footer-btn[data-demo-locked] {
+  opacity: .45;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* modal de reset */
+.demo-reset {
+  position: fixed; inset: 0; z-index: 99999;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(15, 23, 42, .45);
+}
+.demo-reset.is-open { display: flex; }
+.demo-reset__box {
+  width: min(380px, calc(100vw - 32px));
+  background: #fff; color: #0f172a;
+  border-radius: 14px; padding: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  font-family: inherit;
+}
+.demo-reset__box h4 { margin: 0 0 8px; font-size: 16px; }
+.demo-reset__box p { margin: 0 0 18px; font-size: 13px; line-height: 1.45; color: #475569; }
+.demo-reset__actions { display: flex; justify-content: flex-end; gap: 8px; }
+.demo-reset__actions button {
+  border: 0; border-radius: 8px; padding: 8px 14px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: #e2e8f0; color: #0f172a;
+}
+.demo-reset__actions .is-danger { background: #ef4444; color: #fff; }
+[data-theme="dark"] .demo-reset__box { background: #1e293b; color: #f1f5f9; }
+[data-theme="dark"] .demo-reset__box p { color: #cbd5e1; }
+
+/* ===== Barra de simulação — carretéis (demo) ===== */
+.sim-bar__status-card--carretel { position: relative; border-color: rgba(217, 140, 0, .55); }
+.sim-bar__status-card--carretel .sim-bar__status-name { padding-right: 24px; }
+.sim-bar__status-card--carretel .sim-bar__status-name i { color: #f59e0b; margin-right: 3px; }
+.sim-bar__carretel-reset {
+  position: absolute; top: 7px; right: 7px;
+  width: 22px; height: 22px; border-radius: 6px;
+  border: 1px solid #1e3a5f; background: #0f1f38; color: #cbd5e1;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; cursor: pointer;
+}
+.sim-bar__carretel-reset:hover:not(:disabled) { background: #1e3a5f; color: #fff; }
+.sim-bar__carretel-reset:disabled { opacity: .4; cursor: default; }
+
+/* ===== Criar rápido (barra de simulação) ===== */
+.sim-bar__quick { display: flex; flex-direction: column; gap: 6px; }
+.sim-bar__quick-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #64748b;
+}
+.sim-bar__quick-btns { display: flex; gap: 6px; }
+.sim-bar__quick-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid #1e3a5f; background: #0f1f38; color: #e2e8f0;
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.sim-bar__quick-btn i { color: #f59e0b; }
+.sim-bar__quick-btn:hover { background: #1e3a5f; }
+.sim-bar__quick-btn.is-active { background: #f59e0b; border-color: #f59e0b; color: #0f172a; }
+.sim-bar__quick-btn.is-active i { color: #0f172a; }
+
+/* enquanto desenha, a barra desce pra liberar o mapa */
+body.is-quick-drawing #simBar { transform: translateY(calc(100% - 6px)); transition: transform .2s ease; }
+.leaflet-container.qc-drawing { cursor: crosshair !important; }
+/* durante o desenho os equipamentos não recebem clique/hover: o clique vai
+   direto pro mapa (senão abria a tela do pivô que estava embaixo) */
+.leaflet-container.qc-drawing .leaflet-interactive { pointer-events: none !important; }
+
+.qc-hint {
+  position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 20px);
+  z-index: 10000; opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: 12px;
+  background: #0f172a; color: #f8fafc; font-size: 13px;
+  padding: 9px 14px; border-radius: 999px; box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  transition: opacity .15s ease, transform .15s ease;
+}
+.qc-hint.is-on { opacity: 1; transform: translate(-50%, 0); }
+.qc-hint b { color: #fbbf24; }
+.qc-hint__esc {
+  font-size: 11px; color: #94a3b8; border-left: 1px solid #334155; padding-left: 12px;
+}
+.leaflet-tooltip.qc-label {
+  background: #0f172a; color: #fff; border: 0; border-radius: 6px;
+  font-size: 12px; font-weight: 600; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+.leaflet-tooltip.qc-label::before { display: none; }

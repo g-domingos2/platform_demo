@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da Fatura — Irricontrol</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --green: #4caf50;
+      --green-dark: #2f9e44;
+      --ink: #1a1f36;
+      --muted: #6b7280;
+      --border: #e6e6e6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #54b948;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    .inv {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .inv__topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .inv__brand {
+      display: block;
+      height: 28px;
+    }
+
+    .inv__actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .inv__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid var(--green-dark);
+      background: var(--green-dark);
+      color: #fff;
+      transition: background .15s ease;
+    }
+
+    .inv__btn:hover { background: #278a3a; }
+
+    .inv__btn--ghost {
+      background: #fff;
+      color: var(--green-dark);
+    }
+
+    .inv__btn--ghost:hover { background: #f4fbf4; }
+
+    .inv__card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, .1), 0 5px 15px rgba(0, 0, 0, .05);
+      padding: 36px 40px;
+    }
+
+    .inv__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .inv__head-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .inv__head-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .inv__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .inv__pill--paid { background: #e8f8ec; color: #1e7d32; }
+    .inv__pill--pending { background: #fff4e0; color: #b3720b; }
+    .inv__pill--overdue { background: #fde8e8; color: #c62828; }
+
+    .inv__meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    .inv__meta-block h4 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+    }
+
+    .inv__meta-row {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .inv__meta-row b { color: var(--ink); }
+
+    .inv__section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    table.inv__table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+    }
+
+    .inv__table th {
+      text-align: left;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 6px;
+      font-weight: 600;
+    }
+
+    .inv__table td {
+      font-size: 14px;
+      padding: 12px 6px;
+      border-bottom: 1px solid #f1f2f4;
+      vertical-align: top;
+    }
+
+    .inv__table td.num, .inv__table th.num { text-align: right; white-space: nowrap; }
+
+    .inv__item-name { font-weight: 600; }
+    .inv__item-desc { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+
+    .inv__totals {
+      margin-top: 14px;
+      margin-left: auto;
+      width: 280px;
+    }
+
+    .inv__totals-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 6px 0;
+      color: var(--muted);
+    }
+
+    .inv__totals-row--total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .inv__footer {
+      text-align: center;
+      margin-top: 26px;
+      color: rgba(16, 50, 26, .6);
+      font-size: 12px;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .inv__brand { display: none; }
+      .inv__actions { display: none; }
+      .inv__card { box-shadow: none; padding: 0; }
+    }
+
+    @media (max-width: 620px) {
+      .inv__meta { grid-template-columns: 1fr; }
+      .inv__card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="inv">
+    <div class="inv__topbar">
+      <img class="inv__brand" src="../assets/img/brand/irricontrol-logo.svg" alt="Irricontrol">
+      <div class="inv__actions">
+        <a class="inv__btn inv__btn--ghost" href="#" onclick="history.length > 1 ? history.back() : window.close(); return false;">Voltar</a>
+        <button type="button" class="inv__btn" onclick="window.print()"><i class="fa-solid fa-file-arrow-down"></i> Baixar PDF</button>
+      </div>
+    </div>
+
+    <div class="inv__card">
+      <div class="inv__head">
+        <div>
+          <p class="inv__head-title" id="invTitle">Detalhes da fatura 00000000-0004</p>
+          <p class="inv__head-sub" id="invSub"></p>
+        </div>
+        <span class="inv__pill inv__pill--pending" id="invPill">Aguardando pagamento</span>
+      </div>
+
+      <div class="inv__meta">
+        <div class="inv__meta-block">
+          <h4>Cobrado de</h4>
+          <div class="inv__meta-row"><b id="invClientName"></b></div>
+          <div class="inv__meta-row" id="invClientDoc"></div>
+          <div class="inv__meta-row" id="invClientAddress"></div>
+          <div class="inv__meta-row">E-mail de cobrança: <span id="invClientEmail"></span></div>
+        </div>
+        <div class="inv__meta-block">
+          <h4>Emitido por</h4>
+          <div class="inv__meta-row"><b id="invIssuerName"></b></div>
+          <div class="inv__meta-row" id="invIssuerDoc"></div>
+          <div class="inv__meta-row">Fatura nº <span id="invNumber2"></span></div>
+          <div class="inv__meta-row">Pagamento processado via <b>Stripe</b></div>
+        </div>
+      </div>
+
+      <p class="inv__section-title">Itens cobrados nesta fatura</p>
+      <table class="inv__table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th class="num">Qtd.</th>
+            <th class="num">Valor unit.</th>
+            <th class="num">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="invItemsBody"></tbody>
+      </table>
+
+      <div class="inv__totals">
+        <div class="inv__totals-row"><span>Subtotal</span><span id="invSubtotal"></span></div>
+        <div class="inv__totals-row"><span id="invDiscountLabel">Descontos</span><span id="invDiscount"></span></div>
+        <div class="inv__totals-row inv__totals-row--total"><span>Total</span><span id="invTotal"></span></div>
+      </div>
+    </div>
+
+    <div class="inv__footer">
+      Documento gerado automaticamente pela plataforma Irricontrol para conferência dos valores cobrados.
+    </div>
+  </div>
+
+  <script src="../assets/js/i18n/core.js"></script>
+  <script src="../assets/js/i18n/dict.js"></script>
+  <script src="../assets/js/i18n/dict.es.js"></script>
+  <script src="../assets/js/pages/faturamento/data.js"></script>
+  <script>
+    // Fatura detalhada por equipamento. Os dados vêm do mesmo módulo do overlay de Faturamento
+    // (IcBillingData); a fatura é escolhida por ?number=. Com ?download=1 abre direto o diálogo
+    // de impressão/PDF. Em produção esta tela seria o PDF da fatura gerado pelo Stripe.
+    (function () {
+      var D = window.IcBillingData;
+      var q = new URLSearchParams(location.search);
+      var inv = D.getInvoice(q.get('number')) || D.getInvoices()[0];
+      var client = D.getBilling();
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      function set(id, v) { document.getElementById(id).textContent = v; }
+
+      set('invTitle', D.tr('Detalhes da fatura {n}', { n: inv.number }));
+      set('invNumber2', inv.number);
+      document.title = D.tr('Fatura {n} — Irricontrol', { n: inv.number });
+
+      var dateText = inv.status === 'paid' && inv.paidAt
+        ? D.tr('Pago em {d}', { d: D.fmtLong(inv.paidAt) })
+        : D.tr('Vencimento em {d}', { d: D.fmtLong(inv.dueDate) });
+      set('invSub', dateText + ' · ' + D.tr(inv.method));
+
+      var MAP = {
+        paid: { label: 'Fatura paga', cls: 'inv__pill--paid' },
+        pending: { label: 'Aguardando pagamento', cls: 'inv__pill--pending' },
+        overdue: { label: 'Fatura vencida', cls: 'inv__pill--overdue' }
+      };
+      var s = MAP[inv.status] || MAP.paid;
+      var pill = document.getElementById('invPill');
+      pill.textContent = s.label;
+      pill.className = 'inv__pill ' + s.cls;
+
+      set('invClientName', client.name);
+      set('invClientDoc', (client.docType || '').toUpperCase() + ': ' + client.docNumber);
+      set('invClientAddress', [client.address, [client.city, client.region].filter(Boolean).join('/')].filter(Boolean).join(' — '));
+      set('invClientEmail', client.email);
+      set('invIssuerName', D.ISSUER.name);
+      set('invIssuerDoc', D.ISSUER.doc);
+
+      function money(v) { return v < 0 ? '− ' + D.money(-v) : D.money(v); }
+      function lineAmount(it) {
+        return it.discount > 0 ? '<s style="color:#94a3b8;margin-right:6px">' + money(it.subtotal) + '</s>' + money(it.subtotal - it.discount) : money(it.subtotal);
+      }
+
+      document.getElementById('invItemsBody').innerHTML = inv.items.map(function (it) {
+        return '<tr><td><div class="inv__item-name">' + esc(it.name) + '</div>' +
+          '<div class="inv__item-desc">' + esc(it.desc) + '</div></td>' +
+          '<td class="num">' + (it.adj && it.qty > 0 ? '+' : '') + it.qty + '</td>' +
+          '<td class="num">' + (it.unit > 0 ? D.money(it.unit) : '—') + '</td>' +
+          '<td class="num">' + lineAmount(it) + '</td></tr>';
+      }).join('');
+
+      set('invSubtotal', D.money(inv.subtotal));
+      if (inv.coupons.length) {
+        var codes = inv.coupons.map(function (c) { return c.code; }).join(', ');
+        set('invDiscountLabel', inv.coupons.length === 1 ? D.tr('Descontos (cupom {c})', { c: codes }) : D.tr('Descontos (cupons {c})', { c: codes }));
+        set('invDiscount', '− ' + D.money(inv.discount));
+      } else {
+        set('invDiscount', D.money(0));
+      }
+      set('invTotal', D.money(inv.total));
+
+      if (q.get('download') === '1') {
+        window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 400); });
+      }
+    })();
+  </script>
+</body>
+
+</html>

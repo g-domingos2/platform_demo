@@ -1,0 +1,762 @@
+/* config.css */
+
+/* ==========================================================================
+   Overlay — a config desliza da direita por cima da página atual,
+   sem destruir o conteúdo que está embaixo (#pageSlot intacto)
+   ========================================================================== */
+.config-overlay {
+    /* fixed: imune ao scroll da página de baixo (ex.: detalhes do pivô);
+       o "left" é definido via JS para não cobrir a sidebar */
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+    overflow: hidden;
+    transform: translateX(100%);
+    transition: transform .3s cubic-bezier(.32, .72, .24, 1);
+    will-change: transform;
+}
+
+.config-overlay.is-open {
+    transform: translateX(0);
+}
+
+.config-overlay .config-page {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+}
+
+/* Faturamento: rolagem na página inteira (overlay), sem scrollbar interna no conteúdo.
+   A barra só aparece quando o conteúdo realmente passa da altura da tela. */
+#faturamentoOverlay,
+#pivoEditOverlay,
+#bmbEditOverlay,
+#ghEditOverlay,
+#mdnEditOverlay,
+#linestarEditOverlay,
+#crtEditOverlay,
+#estdEditOverlay,
+#cfEditOverlay {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#faturamentoOverlay .config-page,
+#pivoEditOverlay .config-page,
+#bmbEditOverlay .config-page,
+#ghEditOverlay .config-page,
+#mdnEditOverlay .config-page,
+#linestarEditOverlay .config-page,
+#crtEditOverlay .config-page,
+#estdEditOverlay .config-page,
+#cfEditOverlay .config-page {
+    height: auto;
+    /* anula o min-height: 100vh do .edit-panel, que forçava a barra a aparecer sempre */
+    min-height: 0;
+}
+
+#faturamentoOverlay .edit-panel__tab-body.is-active,
+#pivoEditOverlay .edit-panel__tab-body.is-active,
+#bmbEditOverlay .edit-panel__tab-body.is-active,
+#ghEditOverlay .edit-panel__tab-body.is-active,
+#mdnEditOverlay .edit-panel__tab-body.is-active,
+#linestarEditOverlay .edit-panel__tab-body.is-active,
+#crtEditOverlay .edit-panel__tab-body.is-active,
+#estdEditOverlay .edit-panel__tab-body.is-active,
+#cfEditOverlay .edit-panel__tab-body.is-active {
+    display: block;
+    min-height: 0;
+    height: auto;
+}
+
+#faturamentoOverlay .edit-panel__body,
+#pivoEditOverlay .edit-panel__body,
+#bmbEditOverlay .edit-panel__body,
+#ghEditOverlay .edit-panel__body,
+#mdnEditOverlay .edit-panel__body,
+#linestarEditOverlay .edit-panel__body,
+#crtEditOverlay .edit-panel__body,
+#estdEditOverlay .edit-panel__body,
+#cfEditOverlay .edit-panel__body {
+    overflow: visible;
+    height: auto;
+}
+
+#faturamentoOverlay .edit-panel__content,
+#pivoEditOverlay .edit-panel__content,
+#bmbEditOverlay .edit-panel__content,
+#ghEditOverlay .edit-panel__content,
+#mdnEditOverlay .edit-panel__content,
+#linestarEditOverlay .edit-panel__content,
+#crtEditOverlay .edit-panel__content,
+#estdEditOverlay .edit-panel__content,
+#cfEditOverlay .edit-panel__content {
+    overflow-y: visible;
+    height: auto;
+}
+
+/* Único ponto de pintura do gradiente dark: .config-overlay é sempre
+   viewport inteiro (fixed, inset:0), então o painel (.config-page) e a
+   titlebar ficam transparentes e só revelam este fundo — sem costura,
+   não importa a altura do conteúdo do painel. */
+[data-theme="dark"] .config-overlay {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 20%), linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+}
+
+.config-page .edit-panel__nav-item.is-active::after {
+    background: var(--primary);
+}
+
+.config-page .edit-panel__back i {
+    color: var(--primary);
+}
+
+.config-page .edit-panel__save {
+    background: var(--primary);
+}
+
+/* ==========================================================================
+   Refinamentos de Layout e Correção de Quebra de Linha
+   ========================================================================== */
+.config-page .edit-panel__body {
+    grid-template-columns: 180px 1fr;
+    gap: 0;
+    border-radius: 10px;
+}
+
+.config-page .edit-panel__nav {
+    border-right: 1px solid #f1f5f9;
+    border-top-left-radius: 28px;
+    border-bottom-left-radius: 28px;
+}
+
+.config-page .edit-panel__content {
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+}
+
+.config-page .edit-panel__nav-item {
+    white-space: nowrap;
+    /* Garante que o texto fique em uma linha só */
+}
+
+.config-page .edit-panel__nav-item.is-active::after {
+    right: -11px;
+}
+
+.config-page .edit-panel__content {
+    border-left: 0;
+    padding: 24px 32px 60px;
+}
+
+.config-page .config-section-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.config-page .config-field {
+    margin-bottom: 16px;
+}
+
+.config-page .config-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.config-page .config-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.config-page .config-input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Version List styles */
+.version-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 8px 16px;
+}
+
+.version-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+.version-item:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.version-item__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #334155;
+    font-size: 14px;
+}
+
+.version-item__left i {
+    font-size: 18px;
+}
+
+.version-item__left .fa-globe {
+    color: #3b82f6;
+}
+
+.version-item__left .fa-android {
+    color: #22c55e;
+}
+
+.version-item__left .fa-apple {
+    color: #000;
+}
+
+.version-item__value {
+    color: #475569;
+    font-size: 14px;
+}
+
+.config-footer-text {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.config-footer-text a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.config-footer-text a:hover {
+    text-decoration: underline;
+}
+
+
+.config-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    width: 100%;
+}
+
+.config-header-row .close-btn {
+    margin-left: auto;
+    /* Empurra o X para o fim da linha de 900px */
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.pref-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Traz os botões para perto do texto */
+    margin-bottom: 24px;
+    gap: 20px;
+    /* Espaço fixo entre label e botões */
+}
+
+.pref-row .pref-label {
+    min-width: 120px;
+    /* Garante alinhamento vertical dos botões */
+}
+
+.pref-label {
+    font-size: 14px;
+    color: #334155;
+    font-weight: 500;
+    min-width: 120px;
+    /* Alinha os controles verticalmente */
+    display: inline-block;
+}
+
+.pref-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 32px 0 24px;
+}
+
+.toggle-group {
+    display: flex;
+    background: #f8fafc;
+    padding: 4px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.toggle-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 60px;
+}
+
+.toggle-btn.is-active {
+    background: #fff;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.lang-select {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #334155;
+    transition: border-color 0.15s;
+}
+
+.lang-select:hover {
+    border-color: #22c55e;
+}
+
+.lang-select__info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lang-flag {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+}
+
+
+.save-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+}
+
+.btn-save-pref {
+    background: #00b96b;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save-pref:hover {
+    background: #26d08a;
+}
+
+/* Profile styles */
+.config-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.config-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.label--required::before {
+    content: "*";
+    color: #ef4444;
+    margin-right: 4px;
+    font-weight: bold;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-container .edit-panel__input {
+    padding-right: 32px;
+    width: 100%;
+}
+
+.input-container .input-clear {
+    position: absolute;
+    right: 10px;
+    color: #cbd5e1;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.input-container .input-chevron {
+    position: absolute;
+    right: 12px;
+    color: #94a3b8;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.nationality-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #334155;
+    cursor: pointer;
+    position: relative;
+}
+
+.nationality-select img {
+    width: 18px;
+    height: auto;
+    border-radius: 2px;
+}
+
+.nationality-select .input-chevron {
+    margin-left: auto;
+}
+
+/* Custom Select Dropdowns */
+.custom-select-wrapper {
+    position: relative;
+}
+
+.advanced-dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    margin-top: 4px;
+    padding: 8px 0;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.advanced-dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #334155;
+    transition: background 0.15s;
+}
+
+.advanced-dropdown-item:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.advanced-dropdown-item.is-active {
+    background: #e2ffec;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.is-hidden {
+    display: none !important;
+}
+
+/* Security / Password Styles */
+.password-requirements {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 24px 0;
+}
+
+.password-requirements li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #ef4444;
+    /* Vermelho por padrão/não atendido */
+    margin-bottom: 8px;
+}
+
+.password-requirements li.is-valid {
+    color: #22c55e;
+}
+
+.password-requirements li i {
+    font-size: 14px;
+}
+
+.input-container .fa-eye-slash,
+.input-container .fa-eye {
+    position: absolute;
+    right: 12px;
+    color: #94a3b8;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ── Dark mode – config page ──────────────────────────────────── */
+[data-theme="dark"] .edit-panel {
+    background: #000000;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .edit-panel__body {
+    background: #141414;
+    border-color: rgba(255, 255, 255, .08);
+}
+
+[data-theme="dark"] .edit-panel__nav {
+    background: #141414;
+    border-right-color: rgba(255, 255, 255, .07) !important;
+}
+
+[data-theme="dark"] .edit-panel__content {
+    background: #141414;
+}
+
+[data-theme="dark"] .edit-panel__section-head h2 {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .edit-panel__section-head p {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .edit-panel__titlebar {
+    border-bottom-color: rgba(255, 255, 255, .07);
+}
+
+[data-theme="dark"] .edit-panel__back {
+    color: #f1f5f9;
+}
+
+/* .config-page é reaproveitado em dois contextos: dentro de .config-overlay
+   (config/faturamento, overlay fixed viewport inteiro) e direto dentro de
+   #pageSlot (notificações, página normal). Fallback autocontido pro segundo
+   caso — no primeiro caso a regra abaixo (mais específica) sobrescreve com
+   transparent pra herdar o gradiente único do overlay. */
+[data-theme="dark"] .config-page.edit-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 20%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
+}
+
+/* Dentro de qualquer overlay (config, faturamento e os edits de equipamento
+   — pivô, bomba, gh, medidor, linestar — todos montados como .config-overlay
+   por seus respectivos JS), o painel não pinta o próprio gradiente: fica
+   transparente pra revelar o gradiente único do overlay (fixed, viewport
+   inteiro) por trás — evita o corte que aparecia quando o conteúdo do
+   painel era mais curto que a tela. Seletor com o id do overlay (em vez de
+   só .config-overlay) pra especificidade bater a regra genérica por-painel
+   de cada página (#bmbEditPanel.edit-panel etc). */
+[data-theme="dark"] #configOverlay .edit-panel,
+[data-theme="dark"] #faturamentoOverlay .edit-panel,
+[data-theme="dark"] #pivoEditOverlay .edit-panel,
+[data-theme="dark"] #bmbEditOverlay .edit-panel,
+[data-theme="dark"] #ghEditOverlay .edit-panel,
+[data-theme="dark"] #mdnEditOverlay .edit-panel,
+[data-theme="dark"] #linestarEditOverlay .edit-panel,
+[data-theme="dark"] #crtEditOverlay .edit-panel,
+[data-theme="dark"] #estdEditOverlay .edit-panel,
+[data-theme="dark"] #cfEditOverlay .edit-panel {
+    background: transparent;
+}
+
+/* A titlebar é sticky (fica parada enquanto o conteúdo rola por baixo dela),
+   então não pode ficar transparent — senão o que rola por baixo aparece por
+   cima. Repinta o MESMO gradiente do overlay, mas com attachment:fixed:
+   assim o ponto de cor fica travado no viewport, igual ao do overlay, e bate
+   pixel a pixel sem costura — e continua opaca, tapando o conteúdo. */
+[data-theme="dark"] #configOverlay .edit-panel__titlebar,
+[data-theme="dark"] #faturamentoOverlay .edit-panel__titlebar,
+[data-theme="dark"] #pivoEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #bmbEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #ghEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #mdnEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #linestarEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #crtEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #estdEditOverlay .edit-panel__titlebar,
+[data-theme="dark"] #cfEditOverlay .edit-panel__titlebar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 20%), linear-gradient(180deg, #0a0a0a 0%, #101010 100%);
+    background-attachment: fixed;
+}
+
+[data-theme="dark"] .config-page .edit-panel__body,
+[data-theme="dark"] .config-page .edit-panel__content {
+    background: #141414;
+}
+
+[data-theme="dark"] .config-page .edit-panel__nav {
+    background: #141414;
+    border-right-color: rgba(255, 255, 255, .07);
+}
+
+[data-theme="dark"] .edit-panel__nav-item {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .edit-panel__nav-item.is-active {
+    color: var(--primary);
+}
+
+[data-theme="dark"] .edit-panel__nav-item:hover {
+    color: var(--primary);
+}
+
+/* Inputs */
+[data-theme="dark"] .edit-panel__input {
+    background: #141414;
+    border-color: rgba(255, 255, 255, .12);
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .edit-panel__input::placeholder {
+    color: #475569;
+}
+
+[data-theme="dark"] .edit-panel__input:focus {
+    border-color: var(--primary);
+    background: #141414;
+}
+
+[data-theme="dark"] .edit-panel__field label,
+[data-theme="dark"] .config-page .config-field label {
+    color: #cbd5e1;
+}
+
+/* Section titles & labels */
+[data-theme="dark"] .pref-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .pref-section-title {
+    color: #f1f5f9;
+}
+
+/* Toggle group */
+[data-theme="dark"] .toggle-group {
+    background: #141414;
+}
+
+[data-theme="dark"] .toggle-btn {
+    color: #64748b;
+}
+
+[data-theme="dark"] .toggle-btn.is-active {
+    background: #1e2a3a;
+    color: #f1f5f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+}
+
+/* Lang / nationality select */
+[data-theme="dark"] .lang-select,
+[data-theme="dark"] .nationality-select {
+    background: #141414;
+    border-color: rgba(255, 255, 255, .12);
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .lang-select:hover {
+    border-color: var(--primary);
+}
+
+/* Dropdown */
+[data-theme="dark"] .advanced-dropdown-panel {
+    background: #141414;
+    border-color: rgba(255, 255, 255, .10);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
+}
+
+[data-theme="dark"] .advanced-dropdown-item {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .advanced-dropdown-item:hover {
+    background: rgba(255, 255, 255, .06);
+}
+
+[data-theme="dark"] .advanced-dropdown-item.is-active {
+    color: #f1f5f9;
+}
+
+/* Version card */
+[data-theme="dark"] .version-card {
+    background: #141414;
+}
+
+[data-theme="dark"] .version-item {
+    border-bottom-color: rgba(255, 255, 255, .06);
+}
+
+[data-theme="dark"] .version-item__left {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .version-item__left .fa-apple {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .version-item__value {
+    color: #94a3b8;
+}
+
+/* Footer text */
+[data-theme="dark"] .config-footer-text {
+    border-top-color: rgba(255, 255, 255, .07);
+    color: #64748b;
+}
+
+/* Section card */
+[data-theme="dark"] .config-section-card {
+    background: #141414;
+    border-color: rgba(255, 255, 255, .08);
+}
+
+/* Close btn */
+[data-theme="dark"] .config-header-row .close-btn {
+    color: #64748b;
+}
+
+[data-theme="dark"] .config-header-row .close-btn:hover {
+    color: #e2e8f0;
+}

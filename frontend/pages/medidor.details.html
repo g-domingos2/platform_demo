@@ -1,0 +1,170 @@
+<section class="mdnd-view" id="mdndPanel" aria-label="Detalhes do Medidor de Nível">
+  <div class="pivo-card-container">
+    <div class="pivo-right-column">
+      <article class="pincard">
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-details-back">
+            <i class="fa-solid fa-chevron-left"></i> Voltar
+          </button>
+          <div class="pincard__map" id="mdndMinimap"></div>
+        </div>
+
+        <div class="pincard__body">
+          <div class="pincard__info">
+            <div class="pincard__status-bar is-running" id="mdndStatusBar">
+              <span class="pincard__status-dot--white" aria-hidden="true"></span>
+              <span class="pincard__status-text" id="mdndStatusText">MONITORANDO</span>
+            </div>
+
+            <div class="pincard__title-group" style="position: relative;">
+              <button type="button" class="pincard__title-btn" id="mdndSelectBtn" aria-label="Selecionar outro medidor">
+                <h2 class="pincard__title" id="mdndTitleLabel">MDN-001</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="pivo-selector" id="mdndSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <div class="pincard__kpis mdnd-kpis" style="position: relative; top: -10px;">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.116 4.104A1 1 0 0 1 6.11 3h11.78a1 1 0 0 1 .994 1.105L17.19 20.21A2 2 0 0 1 15.2 22H8.8a2 2 0 0 1-2-1.79z"/><path d="M6 12a5 5 0 0 1 6 0 5 5 0 0 0 6 0"/></svg>
+                </div>
+                <div class="pincard__kpi-val" id="mdndKpiMin">Min.: 20%</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.116 4.104A1 1 0 0 1 6.11 3h11.78a1 1 0 0 1 .994 1.105L17.19 20.21A2 2 0 0 1 15.2 22H8.8a2 2 0 0 1-2-1.79z"/><path d="M6 12a5 5 0 0 1 6 0 5 5 0 0 0 6 0"/></svg>
+                </div>
+                <div class="pincard__kpi-val" id="mdndKpiMax">Max.: 100%</div>
+              </div>
+            </div>
+
+            <footer class="pincard__footer" style="margin-top: 45px;">
+              Última comunicação: <span id="mdndLastUpdate">—</span>
+            </footer>
+          </div>
+
+          <div class="pincard__side">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__btn-text" id="mdndEditBtn" aria-label="Editar medidor">
+                <i class="fa-solid fa-pen"></i>
+                Editar
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="pivo-agenda">
+        <header class="pivo-agenda__header">
+          <span class="pivo-agenda__title">Período</span>
+          <button type="button" class="pivo-agenda__period-btn js-period-trigger">
+            <span class="pivo-agenda__period-label">Últimas 24h</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+      </article>
+
+
+
+      <div class="pivo-bottom-row mdnd-bottom-row">
+        <div>
+          <article class="pivo-data-card pivo-history pivo-history--compact mdnd-history">
+          <header class="pivo-data-card__header is-flex">
+            <h3 class="pivo-data-card__title">Histórico</h3>
+          </header>
+
+          <div class="pivo-history__table-wrapper">
+            <table class="pivo-history__table">
+              <thead>
+                <tr>
+                  <th style="width: 180px;">Data</th>
+                  <th>Medição</th>
+                  <th>Offset</th>
+                  <th>Nível de Reservatório</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="pivo-history__row"><td>27 mar 2026 15:18</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 15:03</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 14:48</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 14:33</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 14:18</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 14:03</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 13:48</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 13:33</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 13:18</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+                <tr class="pivo-history__row"><td>27 mar 2026 13:03</td><td>5.25 m</td><td>0.5 m</td><td>5.75 m</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pivo-history__pagination" aria-label="Paginação de histórico do medidor">
+            <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="btn-page is-active" aria-current="page">1</button>
+            <button type="button" class="btn-page">2</button>
+            <button type="button" class="btn-page">3</button>
+            <button type="button" class="btn-page">4</button>
+            <button type="button" class="btn-page">5</button>
+            <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+            <button type="button" class="btn-page">294</button>
+            <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </article>
+        </div>
+
+        <div>
+        <article class="pivo-data-card mdnd-chart-card mdnd-level-card">
+          <header class="pivo-data-card__header mdnd-chart-header">
+            <h3 class="pivo-data-card__title">Histórico de Nível</h3>
+            <div class="mdnd-level-kpi">
+              <span class="mdnd-level-kpi__val">63%</span>
+              <span class="mdnd-level-kpi__trend">-5% vs período anterior</span>
+            </div>
+          </header>
+
+          <div class="mdnd-level-chart">
+            <div class="mdnd-level-y" aria-hidden="true">
+              <span>8m</span>
+              <span>6m</span>
+              <span>4m</span>
+              <span>2m</span>
+              <span>0m</span>
+            </div>
+            <div class="mdnd-level-plot-wrap">
+              <svg class="mdnd-level-svg" viewBox="0 0 1000 280" preserveAspectRatio="none" aria-hidden="true">
+                <path class="mdnd-level-fill" d="M0,83 L91,85 L182,88 L273,96 L364,106 L455,117 L546,70 L637,83 L727,96 L818,101 L909,104 L1000,106 L1000,270 L0,270 Z"/>
+                <path class="mdnd-level-line" d="M0,83 L91,85 L182,88 L273,96 L364,106 L455,117 L546,70 L637,83 L727,96 L818,101 L909,104 L1000,106"/>
+                <line class="mdnd-level-ref mdnd-level-ref--max" x1="0" y1="36" x2="1000" y2="36"/>
+                <line class="mdnd-level-ref mdnd-level-ref--min" x1="0" y1="218" x2="1000" y2="218"/>
+              </svg>
+              <div class="mdnd-level-x" aria-hidden="true">
+                <span>00:00</span>
+                <span>02:00</span>
+                <span>04:00</span>
+                <span>06:00</span>
+                <span>08:00</span>
+                <span>10:00</span>
+                <span>12:00</span>
+                <span>14:00</span>
+                <span>16:00</span>
+                <span>18:00</span>
+                <span>20:00</span>
+                <span>22:00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mdnd-level-legend" aria-label="Legenda">
+            <span class="mdnd-level-legend__item mdnd-level-legend__item--min">Nível mínimo (20%)</span>
+            <span class="mdnd-level-legend__item mdnd-level-legend__item--max">Nível máximo (90%)</span>
+          </div>
+        </article>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+

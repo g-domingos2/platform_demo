@@ -1,0 +1,13 @@
+{
+    "name": "platform-design-server",
+    "version": "0.1.0",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "compression": "^1.8.1",
+        "express": "^4.19.2"
+    }
+}

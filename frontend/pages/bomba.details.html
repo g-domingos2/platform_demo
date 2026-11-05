@@ -1,0 +1,681 @@
+<section class="mdnd-view" id="bmbdPanel" aria-label="Detalhes da Motobombas">
+  <div class="bmbd-card-container">
+    <div class="bmbd-right-column">
+      <article class="pincard">
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-details-back">
+            <i class="fa-solid fa-chevron-left"></i> Voltar
+          </button>
+          <div class="pincard__map" id="bmbdMinimap"></div>
+        </div>
+
+        <div class="pincard__body">
+          <div class="pincard__info">
+            <div class="pincard__status-row">
+              <div class="pincard__status-bar is-running" id="bmbdStatusBar">
+                <span class="pincard__status-dot--white" aria-hidden="true"></span>
+                <span class="pincard__status-text" id="bmbdStatusText">LIGADO VIA INTERNET</span>
+              </div>
+              <span class="pincard__status-power" id="bmbdStatusPower" data-tooltip="Central Online">
+                <img src="./assets/img/svg/power.svg" alt="Central Online">
+              </span>
+            </div>
+
+            <div class="pincard__title-group" style="position: relative;">
+              <button type="button" class="pincard__title-btn" id="bmbdSelectBtn" aria-label="Selecionar outra bomba">
+                <h2 class="pincard__title" id="bmbdTitleLabel">Motobombas 01</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="bmbd-selector" id="bmbdSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <div class="pincard__kpis mdnd-kpis" style="position: relative; top: -10px; display: none;">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/gauge.svg" alt="Pressão Centro" style="width: 15px; height: 15px; filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="bmbdKpiPressure">-- bar</div>
+                <div class="pincard__kpi-lbl">Pressão Saída</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <i class="fa-solid fa-faucet-drip" style="color: #475569; font-size: 15px;"></i>
+                </div>
+                <div class="pincard__kpi-val" id="bmbdKpiFlow">-- m³/h</div>
+                <div class="pincard__kpi-lbl">Vazão Atual</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/clock.svg" alt="Horímetro" style="width: 15px; height: 15px; filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="bmbdKpiHorimeter">109h</div>
+                <div class="pincard__kpi-lbl">Horímetro</div>
+              </div>
+            </div>
+
+            <footer class="pincard__footer" style="margin-top: auto;">
+              Última comunicação: <span id="bmbdLastUpdate">—</span>
+            </footer>
+          </div>
+
+          <div class="pincard__side">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__btn-text" id="bmbdEditBtn" aria-label="Editar bomba">
+                <i class="fa-solid fa-pen"></i>
+                Editar
+              </button>
+            </div>
+            <div class="pincard__controls">
+              <button type="button" class="pincard__control-btn is-start">
+                <i class="fa-regular fa-circle-play"></i> Ligar Bomba
+              </button>
+              <button type="button" class="pincard__control-btn is-stop">
+                <i class="fa-regular fa-square"></i> Desligar Bomba
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="bmbd-agenda">
+        <header class="bmbd-agenda__header">
+          <span class="bmbd-agenda__title">Período</span>
+          <!-- Mesmo popover de calendário + presets usado no pivô (compartilhado com a Pluviometria) -->
+          <button type="button" class="bmbd-agenda__period-btn js-period-trigger">
+            <span class="bmbd-agenda__period-label">Últimas 24h</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+      </article>
+
+
+
+      <!-- Linha do Tempo Operacional Card — HIDDEN, descomente para reativar
+      <article class="bmbd-data-card bmbd-timeline">
+        <header class="bmbd-data-card__header is-flex bmbd-timeline__header">
+          <h3 class="bmbd-data-card__title">Linha do Tempo Operacional</h3>
+          <span class="bmbd-timeline__status-text green">58% em operação</span>
+        </header>
+
+        <div class="bmbd-timeline__content">
+          <div class="bmbd-timeline__labels">
+            <span>00:00</span>
+            <span>06:00</span>
+            <span>12:00</span>
+            <span>18:00</span>
+            <span>24:00</span>
+          </div>
+
+          <div class="bmbd-timeline__bar">
+            <div class="bmbd-timeline__segment green" style="flex: 25%"></div>
+            <div class="bmbd-timeline__segment gray" style="flex: 10%"></div>
+            <div class="bmbd-timeline__segment green" style="flex: 15%"></div>
+            <div class="bmbd-timeline__segment yellow" style="flex: 8%"></div>
+            <div class="bmbd-timeline__segment green" style="flex: 12%"></div>
+            <div class="bmbd-timeline__segment red" style="flex: 6%" data-tooltip="11:24 – 12:50&#10;Queda de energia"></div>
+            <div class="bmbd-timeline__segment gray" style="flex: 8%"></div>
+            <div class="bmbd-timeline__segment green" style="flex: 10%"></div>
+            <div class="bmbd-timeline__segment yellow" style="flex: 7%"></div>
+            <div class="bmbd-timeline__segment green" style="flex: 12%"></div>
+            <div class="bmbd-timeline__segment red" style="flex: 4%" data-tooltip="19:10 – 20:06&#10;Falha de pressão"></div>
+            <div class="bmbd-timeline__segment gray" style="flex: 7%"></div>
+            <div class="bmbd-timeline__segment green" style="flex: 16%"></div>
+          </div>
+
+          <div class="bmbd-timeline__legend">
+            <div class="bmbd-timeline__legend-item">
+              <span class="dot green"></span>
+              <span>Operando: <strong>14h 00m</strong></span>
+            </div>
+            <div class="bmbd-timeline__legend-item">
+              <span class="dot yellow"></span>
+              <span>Manutenção: <strong>2h 00m</strong></span>
+            </div>
+            <div class="bmbd-timeline__legend-item">
+              <span class="dot red"></span>
+              <span>Paradas Inesperadas: <strong>1h 30m</strong></span>
+            </div>
+            <div class="bmbd-timeline__legend-item">
+              <span class="dot gray"></span>
+              <span>Parado: <strong>2h 30m</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+      -->
+
+      <div class="bmbd-bottom-row mdnd-bottom-row">
+        <div>
+          <article class="bmbd-data-card bmbd-history bmbd-history--compact mdnd-history">
+          <div class="bmbd-history__header" style="padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="font-size: 24px; font-weight: 600; color: rgba(0,0,0,0.88); margin: 0;">Histórico</h2>
+            <div class="bmbd-history__actions" style="display: flex; gap: 4px; align-items: center;">
+              <button type="button" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path></svg></button>
+              <button type="button" aria-label="Atualizar" style="margin-right: 0; padding: 6px 8px;"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+          </div>
+          <div class="bmbd-history__tabs">
+            <button type="button" class="is-active js-bmbd-history-tab" data-tab="eventos">Eventos</button>
+            <button type="button" class="js-bmbd-history-tab" data-tab="operacoes">Operações</button>
+          </div>
+
+          <!-- Painel: Eventos -->
+          <div class="bmbd-history__tab-panel" data-panel="eventos">
+            <div class="bmbd-history__table-wrapper">
+              <table class="bmbd-history__table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px;"></th>
+                    <th style="width: 160px;">Ocorrência</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="bmbdHistoryTableBody">
+                  <!-- Row 1: Atualização de Bomba - Ligada via internet -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:33</td>
+                    <td>Atualização de Bomba</td>
+                    <td>LIGADA VIA INTERNET</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">841h 55min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2: Comando - Ligar -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:33</td>
+                    <td>Comando <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>LIGAR</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Nome:</span> <strong class="bmbd-history__detail-value">Bauer Irricontrol</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 3: Atualização de Bomba - Desligada pela internet -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:32</td>
+                    <td>Atualização de Bomba</td>
+                    <td>DESLIGADA PELA INTERNET</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">841h 7min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 4: Comando - Desligar -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:32</td>
+                    <td>Comando <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>DESLIGAR</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Nome:</span> <strong class="bmbd-history__detail-value">Bauer Irricontrol</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 5: Atualização de Bomba - Aguardando após f... -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:27</td>
+                    <td>Atualização de Bomba</td>
+                    <td>AGUARDANDO APÓS FALHA</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">840h 51min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 6: Atualização de Bomba - Energizada -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 11:27</td>
+                    <td>Atualização de Bomba</td>
+                    <td>LIGADA MANUALMENTE</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">840h 51min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 7: Atualização de Bomba - Bomba DESLIGADA ... -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mai 2026 10:29</td>
+                    <td>Atualização de Bomba</td>
+                    <td>DESLIGADA MANUALMENTE</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">839h 53min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 8: Atualização de Bomba - Ligada via internet -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mai 2026 23:46</td>
+                    <td>Atualização de Bomba</td>
+                    <td>LIGADA VIA INTERNET</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">826h 18min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 9: Comando - Ligar -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mai 2026 23:46</td>
+                    <td>Comando <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>LIGAR</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Nome:</span> <strong class="bmbd-history__detail-value">Bauer Irricontrol</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 10: Atualização de Bomba - Desligada pela inter... -->
+                  <tr class="bmbd-history__row">
+                    <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mai 2026 18:33</td>
+                    <td>Atualização de Bomba</td>
+                    <td>DESLIGADA PELA INTERNET</td>
+                  </tr>
+                  <tr class="bmbd-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="bmbd-history__details">
+                        <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">
+                          <div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">Horímetro:</span> <strong class="bmbd-history__detail-value">820h 42min</strong></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bmbd-history__pagination" aria-label="Paginação de eventos da bomba">
+              <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+              <button type="button" class="btn-page is-active" aria-current="page">1</button>
+              <button type="button" class="btn-page">2</button>
+              <button type="button" class="btn-page">3</button>
+              <button type="button" class="btn-page">4</button>
+              <button type="button" class="btn-page">5</button>
+              <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+              <button type="button" class="btn-page">15</button>
+              <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Painel: Operações -->
+          <div class="bmbd-history__tab-panel" data-panel="operacoes" style="display: none;">
+            <div class="bmbd-history__table-wrapper">
+              <table class="bmbd-history__table">
+                <thead>
+                  <tr>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Volume total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bmbd-history__row">
+                    <td>10 ago 2026 09:01</td>
+                    <td>10 ago 2026 10:01</td>
+                    <td>300.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>10 ago 2026 08:03</td>
+                    <td>10 ago 2026 08:24</td>
+                    <td>105.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>09 ago 2026 14:01</td>
+                    <td>10 ago 2026 05:20</td>
+                    <td>4590.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>07 ago 2026 21:15</td>
+                    <td>08 ago 2026 21:48</td>
+                    <td>7360.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>07 ago 2026 09:06</td>
+                    <td>07 ago 2026 17:23</td>
+                    <td>2485.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>06 ago 2026 14:58</td>
+                    <td>06 ago 2026 15:45</td>
+                    <td>235.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>06 ago 2026 06:04</td>
+                    <td>06 ago 2026 06:10</td>
+                    <td>30.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>06 ago 2026 05:47</td>
+                    <td>06 ago 2026 05:59</td>
+                    <td>60.00 m³</td>
+                  </tr>
+                  <tr class="bmbd-history__row">
+                    <td>05 ago 2026 21:12</td>
+                    <td>05 ago 2026 21:56</td>
+                    <td>220.00 m³</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bmbd-history__pagination" aria-label="Paginação de operações da bomba">
+              <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+              <button type="button" class="btn-page is-active" aria-current="page">1</button>
+              <button type="button" class="btn-page">2</button>
+              <button type="button" class="btn-page">3</button>
+              <button type="button" class="btn-page">4</button>
+              <button type="button" class="btn-page">5</button>
+              <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+              <button type="button" class="btn-page">24</button>
+              <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </article>
+        </div>
+
+        <div>
+          <article class="bmbd-data-card bmbd-consumo-card">
+          <header class="bmbd-data-card__header bmbd-consumo-card__header">
+            <h3 class="bmbd-data-card__title">Gráfico de Consumo</h3>
+          </header>
+          <div class="bmbd-consumo-card__body">
+            <div class="bmbd-consumo-chart">
+              <div class="bmbd-consumo-chart__y" id="bmbdConsumoY"></div>
+              <div class="bmbd-consumo-chart__plot-wrap">
+                <div class="bmbd-consumo-chart__plot">
+                  <div class="bmbd-consumo-chart__grid"></div>
+                  <div class="bmbd-consumo-chart__overlay"></div>
+                  <div class="bmbd-consumo-chart__bars" id="bmbdConsumoBars"></div>
+                  <div class="bmbd-consumo-chart__tooltip" id="bmbdConsumoTooltip">
+                    <div class="bmbd-consumo-chart__tooltip-date"></div>
+                    <div class="bmbd-consumo-chart__tooltip-row"><i class="is-offpeak"></i><span>Volume Total:</span><strong></strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bmbd-consumo-chart__legend" id="bmbdConsumoLegend" aria-label="Legenda">
+              <span class="bmbd-consumo-chart__legend-item bmbd-consumo-chart__legend-item--limit">Limite de consumo (5.500,00 m³)</span>
+            </div>
+          </div>
+        </article>
+        </div>
+      </div>
+
+      <div class="bmbd-charts-grid">
+        <article class="bmbd-data-card bmbd-mini-chart">
+          <header class="bmbd-data-card__header bmbd-mini-chart-header">
+            <h3 class="bmbd-data-card__title">Consumo da Motobombas</h3>
+            <div class="bmbd-mini-chart-summary">
+              <div class="bmbd-mini-chart-value">51.5 <span class="bmbd-mini-chart-unit">kWh</span></div>
+              <div class="bmbd-mini-chart-label">média/hora</div>
+            </div>
+          </header>
+          <div class="bmbd-mini-chart-body">
+            <svg viewBox="0 0 400 150" class="bmbd-svg">
+              <path d="M0,100 L50,95 L100,98 L150,90 L200,75 L250,70 L300,85 L350,95 L400,100 L400,150 L0,150 Z" fill="rgba(14, 165, 233, 0.1)" />
+              <path d="M0,100 L50,95 L100,98 L150,90 L200,75 L250,70 L300,85 L350,95 L400,100" fill="none" stroke="#0ea5e9" stroke-width="2" />
+              <line x1="0" y1="80" x2="400" y2="80" stroke="#10b981" stroke-dasharray="4" />
+            </svg>
+            <div class="bmbd-mini-chart-footer">
+              <div class="bmbd-footer-item">Média <strong>51.5 kWh</strong></div>
+              <div class="bmbd-footer-item">Pico <strong style="color: #f59e0b;">65 kWh</strong></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="bmbd-data-card bmbd-mini-chart">
+          <header class="bmbd-data-card__header bmbd-mini-chart-header">
+            <h3 class="bmbd-data-card__title">Temperatura do Motor</h3>
+            <div class="bmbd-mini-chart-summary">
+              <div class="bmbd-mini-chart-value">52<span class="bmbd-mini-chart-unit">°C</span></div>
+              <div class="bmbd-mini-chart-label">média</div>
+            </div>
+          </header>
+          <div class="bmbd-mini-chart-body">
+            <svg viewBox="0 0 400 150" class="bmbd-svg">
+              <path d="M0,100 L50,98 L100,95 L150,85 L200,75 L250,80 L300,90 L350,98 L400,105 L400,150 L0,150 Z" fill="rgba(249, 115, 22, 0.1)" />
+              <path d="M0,100 L50,98 L100,95 L150,85 L200,75 L250,80 L300,90 L350,98 L400,105" fill="none" stroke="#f97316" stroke-width="2" />
+              <line x1="0" y1="60" x2="400" y2="60" stroke="#ef4444" stroke-dasharray="4" />
+              <line x1="0" y1="120" x2="400" y2="120" stroke="#3b82f6" stroke-dasharray="4" />
+            </svg>
+            <div class="bmbd-mini-chart-footer">
+              <div class="bmbd-footer-item" style="color: #3b82f6;">Mínima <strong>44°C</strong></div>
+              <div class="bmbd-footer-item">Média <strong>52°C</strong></div>
+              <div class="bmbd-footer-item" style="color: #ef4444;">Máxima <strong>64°C</strong></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="bmbd-data-card bmbd-mini-chart">
+          <header class="bmbd-data-card__header bmbd-mini-chart-header">
+            <h3 class="bmbd-data-card__title">Vibração</h3>
+            <div class="bmbd-mini-chart-summary">
+              <div class="bmbd-mini-chart-value">2.4 <span class="bmbd-mini-chart-unit">mm/s</span></div>
+              <div class="bmbd-mini-chart-label">RMS médio</div>
+            </div>
+          </header>
+          <div class="bmbd-mini-chart-body">
+            <svg viewBox="0 0 400 150" class="bmbd-svg">
+              <path d="M0,100 L50,102 L100,98 L150,95 L200,85 L250,90 L300,98 L350,105 L400,110" fill="none" stroke="#8b5cf6" stroke-width="2" />
+              <line x1="0" y1="60" x2="400" y2="60" stroke="#ef4444" stroke-dasharray="4" />
+            </svg>
+            <div class="bmbd-mini-chart-footer">
+              <div class="bmbd-footer-item"><span style="display:inline-block; width:12px; height:2px; background:#8b5cf6; margin-right:4px;"></span>Vibração RMS</div>
+              <div class="bmbd-footer-item"><span style="display:inline-block; width:12px; height:2px; border-bottom:1px dashed #ef4444; margin-right:4px;"></span>Limite (4.5 mm/s)</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agendamento Bomba -->
+  <div class="op-modal is-hidden" id="bmbdStartModal" role="dialog" aria-modal="true" aria-labelledby="bmbdStartModalTitle">
+    <div class="op-modal__backdrop" id="bmbdStartModalBackdrop"></div>
+    <div class="op-modal__dialog" style="max-width:400px;">
+      <header class="op-modal__header">
+        <h3 class="op-modal__title" id="bmbdStartModalTitle">Agendamento</h3>
+        <button class="op-modal__close" type="button" id="bmbdStartModalClose" aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="op-modal__content" style="gap:16px;">
+
+        <!-- Tabs de modo -->
+        <div class="bmbd-modal-tabs" id="bmbdModeTabs">
+          <button type="button" class="bmbd-modal-tab is-active" data-mode="agora">Começar agora</button>
+          <button type="button" class="bmbd-modal-tab" data-mode="sem_parar">Sem parar</button>
+          <button type="button" class="bmbd-modal-tab" data-mode="intervalo">Intervalo</button>
+        </div>
+
+        <!-- Campos de data -->
+        <div id="bmbdIntervalFields" style="display:flex; flex-direction:column; gap:12px;">
+
+          <div class="op-form__group">
+            <label class="op-form__label" for="bmbdStartDateInput">Começar em</label>
+            <div style="position:relative;">
+              <input class="op-form__input bmbd-date-input" type="datetime-local" id="bmbdStartDateInput"
+                style="padding-right:36px; cursor:pointer;" />
+              <button type="button" class="bmbd-cal-btn" data-for="bmbdStartDateInput" tabindex="-1">
+                <i class="fa-regular fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="op-form__group">
+            <label class="op-form__label" for="bmbdEndDateInput">Parar em</label>
+            <div style="position:relative;">
+              <input class="op-form__input bmbd-date-input" type="datetime-local" id="bmbdEndDateInput"
+                style="padding-right:36px; cursor:pointer;" />
+              <button type="button" class="bmbd-cal-btn" data-for="bmbdEndDateInput" tabindex="-1">
+                <i class="fa-regular fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <footer class="op-modal__footer" style="padding:12px 20px;display:flex;justify-content:flex-end;gap:8px;">
+        <button type="button" class="bmbd-modal-cancel" id="bmbdStartModalCancel">Cancelar</button>
+        <button type="button" class="bmbd-modal-confirm" id="bmbdStartModalConfirm">OK</button>
+      </footer>
+    </div>
+  </div>
+
+  <style>
+    .bmbd-modal-tabs {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .bmbd-modal-tab {
+      flex: 1;
+      padding: 7px 10px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .bmbd-modal-tab.is-active {
+      background: #fff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .bmbd-modal-tab:hover:not(.is-active) { color: #0f172a; }
+
+    /* esconde o ícone nativo do browser */
+    .bmbd-date-input::-webkit-calendar-picker-indicator { display: none; }
+
+    .bmbd-cal-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+    .bmbd-cal-btn:hover { color: #10b981; }
+
+    /* estado desabilitado dos campos */
+    .bmbd-date-input:disabled {
+      background: #f8fafc;
+      color: #cbd5e1;
+      cursor: not-allowed;
+      border-color: #e2e8f0;
+    }
+    .bmbd-date-input:disabled + .bmbd-cal-btn,
+    .op-form__group:has(.bmbd-date-input:disabled) .bmbd-cal-btn {
+      color: #cbd5e1;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* botões do footer */
+    .bmbd-modal-cancel {
+      background: transparent;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .bmbd-modal-confirm {
+      background: #10b981;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .bmbd-modal-confirm:hover { background: #059669; }
+
+    /* dark mode */
+    [data-theme="dark"] .bmbd-modal-tabs { background: #1a2030; }
+    [data-theme="dark"] .bmbd-modal-tab { color: #64748b; }
+    [data-theme="dark"] .bmbd-modal-tab.is-active { background: #0f172a; color: #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    [data-theme="dark"] .bmbd-modal-tab:hover:not(.is-active) { color: #e2e8f0; }
+    [data-theme="dark"] .bmbd-cal-btn { color: #475569; }
+    [data-theme="dark"] .bmbd-cal-btn:hover { color: #10b981; }
+    [data-theme="dark"] .bmbd-date-input:disabled { background: #0f172a; color: #334155; border-color: rgba(255,255,255,.06); }
+    [data-theme="dark"] .bmbd-date-input:disabled + .bmbd-cal-btn,
+    [data-theme="dark"] .op-form__group:has(.bmbd-date-input:disabled) .bmbd-cal-btn { color: #334155; }
+    [data-theme="dark"] .bmbd-modal-cancel { color: #94a3b8; border-color: rgba(255,255,255,.12); }
+    [data-theme="dark"] .bmbd-modal-cancel:hover { border-color: #10b981; color: #10b981; }
+  </style>
+
+</section>

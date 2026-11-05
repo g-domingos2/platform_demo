@@ -1,0 +1,1457 @@
+/* assets/css/pages/telemetria.css */
+
+body.is-telemetria .main--map {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  --telem-sidebar-left-width: 340px;
+  --telem-sidebar-right-width: 320px;
+  --telem-bottom-h: 118px;
+}
+
+/* Row que contém: sidebar esquerdo | mapa | sidebar direito */
+body.is-telemetria .telem-map-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.is-telemetria .map {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+/* Sidebars saem do absoluto e viram colunas flex */
+body.is-telemetria .telem-sidebar {
+  position: relative;
+  top: auto;
+  left: auto;
+  bottom: auto;
+  height: auto;
+  flex-shrink: 0;
+}
+
+body.is-telemetria .telem-timeline-sidebar {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Bottom bar abaixo do row */
+body.is-telemetria .telem-bottom-bar {
+  flex-shrink: 0;
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+}
+
+body.is-telemetria #heatmapLegend {
+  right: calc(var(--telem-sidebar-right-width, 320px) + 16px);
+  bottom: calc(var(--telem-bottom-h, 118px) + 16px);
+}
+
+body.is-telemetria #mapCard,
+body.is-telemetria #mapEquip {
+  display: none !important;
+}
+
+/* ── Topbar ── */
+.telem-topbar {
+  width: 100%;
+  background: #fff;
+  color: #0f172a;
+  flex-shrink: 0;
+  z-index: 500;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Linha 1: nome da fazenda */
+.telem-topbar__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+  background: #fff;
+}
+
+.telem-topbar__sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.telem-topbar__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+/* ── Live indicator ── */
+.telem-live {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.telem-live__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34,197,94,0.6);
+  animation: telem-pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes telem-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+.telem-live__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.telem-live__datetime {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.telem-live__date {
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.telem-live__time {
+  font-family: 'Outfit', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+/* Small clock icons (reloginhos) — make them yellow */
+.pluv-card__clock,
+.telem-level-card__foot-label i.fa-clock,
+.telem-tl__icon-wrap i.fa-clock {
+  color: #f59e0b;
+}
+/* ── Theme toggle button ── */
+.telem-theme-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 3px 4px;
+  cursor: pointer;
+}
+
+.telem-theme-toggle__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 22px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.telem-theme-toggle__btn.is-active {
+  background: #fff;
+  color: #f59e0b;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.12);
+}
+
+.telem-theme-toggle__btn--dark.is-active {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+/* dark mode: header escuro */
+body.is-telemetria.telem-dark .telem-topbar__header {
+  background: #0f172a;
+  border-bottom-color: rgba(255,255,255,0.07);
+}
+body.is-telemetria.telem-dark .telem-topbar__sub  { color: rgba(255,255,255,0.4); }
+body.is-telemetria.telem-dark .telem-topbar__name { color: #fff; }
+body.is-telemetria.telem-dark .telem-live__label  { color: #22c55e; }
+body.is-telemetria.telem-dark .telem-live__date   { color: rgba(255,255,255,0.45); }
+body.is-telemetria.telem-dark .telem-live__time   { color: rgba(255,255,255,0.7); }
+body.is-telemetria.telem-dark .telem-theme-toggle {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+}
+body.is-telemetria.telem-dark .telem-theme-toggle__btn { color: rgba(255,255,255,0.3); }
+body.is-telemetria.telem-dark .telem-theme-toggle__btn.is-active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+/* Linha 2: KPIs */
+.telem-topbar__kpis {
+  display: flex;
+  align-items: stretch;
+  background: #f1f5f9;
+  padding: 8px 12px;
+  gap: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.telem-topbar__kpis::-webkit-scrollbar { display: none; }
+
+.telem-kpi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 10px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+}
+
+.telem-kpi__icon {
+  font-size: 16px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+/* Specific KPI icon color overrides */
+.telem-kpi__icon > .fa-plug-circle-xmark { color: #ef4444; } /* red for bombas desligadas */
+.telem-kpi__icon > .fa-droplet            { color: #60a5fa; } /* light blue for área irrigada */
+.telem-kpi__icon > .fa-bolt               { color: #f59e0b; } /* yellow for consumo/energia */
+.telem-kpi__icon > .fa-signal             { color: #16a34a; } /* green for status geral */
+
+.telem-kpi--alert .telem-kpi__icon {
+  color: #ef4444; /* red-500 */
+}
+
+.telem-kpi--green .telem-kpi__icon { color: #16a34a; }
+.telem-kpi--muted .telem-kpi__icon { color: #cbd5e1; }
+
+.telem-kpi__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  align-items: center;
+  text-align: center;
+}
+
+.telem-kpi__label {
+  font-size: 10px;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.telem-kpi__value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.telem-kpi__unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.telem-kpi__sub {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.telem-kpi__sub--green {
+  color: #16a34a;
+}
+
+.telem-kpi--alert .telem-kpi__value {
+  color: #dc2626; /* red-600 */
+}
+
+/* ── Sidebar esquerdo de Pivôs ── */
+.telem-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: var(--telem-bottom-h, 118px);
+  z-index: 801;
+  width: var(--telem-sidebar-left-width);
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 2px 0 12px rgba(15,23,42,0.08);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  color: #0f172a;
+}
+
+.telem-sidebar__panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.telem-sidebar__divider {
+  display: none;
+}
+
+.telem-side__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  background: #f8fafc;
+}
+
+/* when filters are placed inside the header (compact layout) */
+.telem-side__header > .telem-side__filters {
+  padding: 0;
+  gap: 6px;
+  align-items: center;
+}
+
+.telem-side__filters {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: none; /* removed bottom line under filter buttons */
+  background: #fff;
+}
+
+.telem-side__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.telem-side__filter:hover {
+  border-color: #86efac;
+  color: #166534;
+}
+
+.telem-side__filter.is-active {
+  border-color: #16a34a;
+  background: transparent;
+  color: #16a34a;
+}
+
+.telem-side__filter--blue.is-active {
+  /* bombas: seguir estilo verde (somente contorno + texto) */
+  border-color: #16a34a;
+  background: transparent;
+  color: #16a34a;
+}
+
+.telem-side__filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 10px;
+}
+
+.telem-side__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.telem-side__count {
+  font-size: 11px;
+  font-weight: 600;
+  background: transparent;
+  color: #64748b;
+  border-radius: 0;
+  padding: 0;
+}
+
+.telem-side__count--blue {
+  background: transparent;
+  color: #64748b;
+}
+
+.telem-side__count--gray {
+  background: transparent;
+  color: #64748b;
+}
+
+.telem-side__icon--pump {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.telem-side__icon--pump img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+.telem-side__list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 7px 7px;
+  gap: 5px;
+  background: #f8fafc;
+}
+.telem-side__list::-webkit-scrollbar {
+  width: 7px;
+}
+.telem-side__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.telem-side__list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+.telem-side__list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ── Card de pivô / bomba ── */
+.telem-side__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: calc(100% - 14px);
+  align-self: center;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 7px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+}
+
+.telem-side__item:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.08);
+}
+
+.telem-side__card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 8px 6px;
+}
+
+.telem-side__card-icon {
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.telem-side__card-info {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.telem-side__card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.telem-side__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  width: 100%;
+}
+
+.telem-side__title-main {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  line-height: 1;
+  min-width: 0;
+}
+
+.telem-side__card-subtitle {
+  font-size: 10.5px;
+  line-height: 1;
+  color: #94a3b8;
+}
+
+.telem-side__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 5px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.telem-side__badge--warning { background: #f59e0b; color: #fff; }
+.telem-side__badge--success { background: #16a34a; color: #fff; }
+.telem-side__badge--danger  { background: #ef4444; color: #fff; }
+.telem-side__badge--info    { background: #3b82f6; color: #fff; }
+.telem-side__badge--brown   { background: #92400e; color: #fff; }
+.telem-side__badge--gray    { background: #64748b; color: #fff; }
+
+.telem-side__details-btn {
+  background: none;
+  border: none;
+  color: #16a34a;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.telem-side__details-btn:hover {
+  text-decoration: underline;
+}
+
+.telem-side__card-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  padding: 6px 7px 7px;
+  border-top: 1px solid #f1f5f9;
+  background: #fafafa;
+}
+
+.telem-side__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 28px;
+  min-width: 0;
+  padding: 0 8px;
+  gap: 6px;
+  justify-self: stretch;
+  border-radius: 6px;
+  border: none;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.telem-side__action-btn i {
+  font-size: 11px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.telem-side__action-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.telem-side__action-icon--play { width: 14px; height: 14px; filter: brightness(0) invert(1); }
+.telem-side__action-icon--pause { width: 14px; height: 14px; filter: brightness(0) invert(1); }
+
+.telem-side__action-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.telem-side__action-btn--start {
+  background: #10b981;
+  color: #fff;
+}
+
+.telem-side__action-btn--start:hover {
+  background: #059669;
+}
+
+.telem-side__action-btn--stop {
+  background: #ef4444;
+  color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.telem-side__action-btn--stop i {
+  color: #ffffff;
+}
+
+.telem-side__action-btn--stop:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: rgba(0,0,0,0.12);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.telem-side__action-btn--stop:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.18);
+  outline-offset: 2px;
+}
+
+.telem-side__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.telem-side__empty {
+  padding: 16px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* ── Sidebar direito: Linha do Tempo ── */
+.telem-timeline-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: var(--telem-bottom-h, 118px);
+  z-index: 801;
+  width: var(--telem-sidebar-right-width);
+  background: #fff;
+  border-left: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: -2px 0 12px rgba(15,23,42,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #0f172a;
+}
+
+.telem-tl__list {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 4px 0;
+}
+
+.telem-tl__list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.telem-tl__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.telem-tl__list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.telem-tl__list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.telem-tl__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+
+.telem-tl__item:hover {
+  background: #f8fafc;
+}
+
+.telem-tl__icon-wrap {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.telem-tl__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.telem-tl__top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.telem-tl__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.telem-tl__sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.telem-tl__sub strong {
+  color: #475569;
+  font-weight: 600;
+}
+
+.telem-tl__date {
+  color: #94a3b8;
+}
+
+/* cores extras timeline */
+.telem-timeline__icon--brown { background-color: #78350f; }
+.telem-timeline__icon--gray  { background-color: #64748b; }
+
+/* ── Barra inferior: Pluviômetros + Medidores ── */
+.telem-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--telem-bottom-h, 118px);
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: row;
+  z-index: 799;
+  overflow: hidden;
+  box-shadow: 0 -2px 8px rgba(15,23,42,0.06);
+  transition: height 0.22s ease;
+}
+
+.telem-bottom-bar__divider {
+  width: 1px;
+  align-self: stretch;
+  background: #e2e8f0;
+  flex-shrink: 0;
+  margin: 0 6px;
+}
+
+.telem-bottom-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  height: 100%;
+}
+
+.telem-bottom-panel .telem-side__header {
+  flex-shrink: 0;
+  padding: 2px 12px 1px;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.telem-bottom-panel__list {
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  padding: 1px 10px 0;
+  align-items: flex-start;
+  background: transparent;
+}
+
+.telem-bottom-panel__list::-webkit-scrollbar { height: 3px; }
+.telem-bottom-panel__list::-webkit-scrollbar-track { background: transparent; }
+.telem-bottom-panel__list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* ── pluv-card overrides para tema claro dentro do bottom bar ── */
+.telem-bottom-panel .pluv-card {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05) !important;
+  min-width: clamp(220px, 20vw, 260px);
+  min-height: 0;
+  height: auto;
+  border-radius: 5px;
+  gap: 4px;
+  padding: 5px 8px;
+  flex: 0 0 clamp(220px, 20vw, 260px);
+  align-self: flex-start;
+  justify-content: flex-start;
+  color: #0f172a;
+}
+
+.telem-bottom-panel .pluv-card__row {
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.telem-bottom-panel .pluv-card__main {
+  gap: 0;
+}
+
+.telem-bottom-panel .pluv-card__title {
+  gap: 6px;
+}
+
+.telem-bottom-panel .pluv-card__pill {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  margin-top: 1px;
+  font-size: 0.62rem;
+  min-height: 18px;
+}
+
+.telem-bottom-panel .pluv-card__pill--ghost {
+  visibility: hidden;
+  background: transparent;
+}
+
+.telem-bottom-panel .pluv-card--rain {
+  border-color: #bfdbfe !important;
+}
+
+.telem-bottom-panel .pluv-card--alert {
+  border-color: #fecaca !important;
+}
+
+.telem-bottom-panel .pluv-card__name {
+  color: #0f172a !important;
+  font-size: 0.72rem;
+  line-height: normal;
+}
+
+.telem-bottom-panel .pluv-card__rain-context {
+  color: #64748b !important;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.telem-bottom-panel .pluv-card__right {
+  gap: 6px;
+}
+
+.telem-bottom-panel .pluv-card__mm-block {
+  grid-template-columns: 18px auto;
+  column-gap: 4px;
+}
+
+.telem-bottom-panel .pluv-card__mm-val {
+  color: #0f172a !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  line-height: normal;
+}
+
+.telem-bottom-panel .pluv-card__mm-unit,
+.telem-bottom-panel .pluv-card__duration {
+  color: #94a3b8 !important;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.telem-bottom-panel .pluv-mm-icon {
+  color: #3b82f6 !important;
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.telem-bottom-panel .pluv-card--rain .pluv-mm-icon  { color: #3b82f6 !important; }
+.telem-bottom-panel .pluv-card--dry  .pluv-mm-icon  { color: #94a3b8 !important; }
+.telem-bottom-panel .pluv-card--alert .pluv-mm-icon { color: #ef4444 !important; }
+
+.telem-bottom-panel .pluv-card__mm-ico {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.telem-bottom-panel .pluv-card__toggle {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+
+.telem-bottom-panel .pluv-card__footline {
+  border-top-color: #f1f5f9 !important;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 2px;
+}
+
+.telem-bottom-panel .pluv-card__updated {
+  gap: 4px;
+  font-size: 10px;
+  line-height: 1.4;
+  padding-top: 0;
+}
+
+.telem-bottom-panel .pluv-card__telemetry {
+  gap: 6px;
+}
+
+.telem-bottom-panel .pluv-card__updated {
+  color: #94a3b8 !important; /* text muted gray */
+}
+.telem-bottom-panel .pluv-card__updated .pluv-card__clock,
+.telem-bottom-panel .pluv-card__clock {
+  color: #f59e0b !important; /* clock icon yellow */
+}
+
+.telem-bottom-panel .pluv-card__battery        { color: #22c55e; }
+.telem-bottom-panel .pluv-card__battery.is-mid { color: #f59e0b; }
+.telem-bottom-panel .pluv-card__battery.is-low { color: #ef4444; }
+.telem-bottom-panel .pluv-card__signal         { color: #22c55e; }
+
+/* ── gestao-level-card compacto no bottom bar ── */
+.telem-bottom-panel .gestao-level-card {
+  min-width: 200px;
+  max-width: 200px;
+  flex: 0 0 200px;
+  min-height: 0;
+  padding: 4px 7px;
+  gap: 2px;
+}
+
+.telem-bottom-panel .gestao-level-card__name {
+  font-size: 0.68rem;
+}
+
+.telem-bottom-panel .gestao-level-card__line {
+  font-size: 0.6rem;
+}
+
+.telem-bottom-panel .gestao-level-card__foot {
+  font-size: 0.6rem;
+  gap: 3px;
+  padding-top: 3px;
+}
+
+/* ── Medidor de Nível card ── */
+.telem-level-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 7px 11px;
+  min-width: 220px;
+  min-height: 0;
+  height: auto;
+  align-self: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+}
+
+.telem-level-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.telem-level-card__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.telem-level-card__signal {
+  font-size: 11px;
+}
+.telem-level-card__signal.is-on  { color: #22c55e; }
+.telem-level-card__signal.is-off { color: #ef4444; }
+
+.telem-level-card__body {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.telem-level-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-size: 10px;
+  color: #94a3b8;
+  flex: 1;
+  min-width: 0;
+}
+
+.telem-level-card__meta strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.telem-level-card__gauge-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.telem-level-card__gauge-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: visible;
+}
+
+.telem-level-card__gauge {
+  width: 10px;
+  height: 58px;
+  background: #f1f5f9;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  border: 1px solid #e2e8f0;
+  margin: -10px 0 0;
+}
+
+.telem-level-card__gauge-fill {
+  display: block;
+  width: 100%;
+  height: var(--level, 50%);
+  background: var(--level-color, #22c55e);
+  border-radius: 5px;
+  transition: height 0.4s ease;
+}
+
+.telem-level-card__pct {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--level-color, #22c55e);
+  min-width: 26px;
+  text-align: right;
+  line-height: 1;
+}
+
+.telem-level-card__foot {
+  font-size: 10px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 4px;
+  margin-top: 2px;
+}
+
+.telem-level-card__foot-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* make the 'Aguardando dados' label muted gray */
+.telem-level-card__foot-label { color: #94a3b8; }
+
+/* ═══════════════════════════════════════════
+   TEMA ESCURO — body.is-telemetria.telem-dark
+   ═══════════════════════════════════════════ */
+
+/* header é sempre escuro — apenas o KPI row e painéis mudam no tema dark */
+
+body.is-telemetria.telem-dark .telem-topbar__kpis {
+  background: #0f172a;
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+body.is-telemetria.telem-dark .telem-kpi {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+
+body.is-telemetria.telem-dark .telem-kpi__icon  { color: #64748b; }
+body.is-telemetria.telem-dark .telem-kpi__label { color: #64748b; }
+body.is-telemetria.telem-dark .telem-kpi__value { color: #f1f5f9; }
+body.is-telemetria.telem-dark .telem-kpi__unit  { color: #64748b; }
+body.is-telemetria.telem-dark .telem-kpi__sub   { color: #64748b; }
+body.is-telemetria.telem-dark .telem-kpi__sub--green { color: #4ade80; }
+body.is-telemetria.telem-dark .telem-kpi--alert .telem-kpi__icon  { color: #f59e0b; }
+body.is-telemetria.telem-dark .telem-kpi--alert .telem-kpi__value { color: #fbbf24; }
+body.is-telemetria.telem-dark .telem-kpi--green .telem-kpi__icon  { color: #4ade80; }
+body.is-telemetria.telem-dark .telem-kpi--muted .telem-kpi__icon  { color: #334155; }
+body.is-telemetria.telem-dark .telem-topbar__kpis::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+/* sidebar esquerdo */
+body.is-telemetria.telem-dark .telem-sidebar {
+  background: #0f172a;
+  border-right-color: rgba(255,255,255,0.06);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+  color: #f1f5f9;
+}
+
+body.is-telemetria.telem-dark .telem-sidebar__divider { background: rgba(255,255,255,0.06); }
+
+body.is-telemetria.telem-dark .telem-side__header {
+  background: rgba(255,255,255,0.03);
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+body.is-telemetria.telem-dark .telem-side__filters {
+  background: #0f172a;
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+body.is-telemetria.telem-dark .telem-side__filter {
+  background: #111827;
+  border-color: rgba(255,255,255,0.1);
+  color: #cbd5e1;
+}
+
+body.is-telemetria.telem-dark .telem-side__filter.is-active {
+  background: transparent;
+  border-color: rgba(34,197,94,0.45);
+  color: #bbf7d0;
+}
+
+body.is-telemetria.telem-dark .telem-side__filter--blue.is-active {
+  /* bombas: usar verde também no tema escuro */
+  background: transparent;
+  border-color: rgba(34,197,94,0.45);
+  color: #bbf7d0;
+}
+
+body.is-telemetria.telem-dark .telem-side__filter-count {
+  background: transparent;
+}
+
+body.is-telemetria.telem-dark .telem-side__title { color: #94a3b8; }
+body.is-telemetria.telem-dark .telem-side__count { background: transparent; color: #94a3b8; border-color: transparent; }
+body.is-telemetria.telem-dark .telem-side__count--blue { background: transparent; color: #94a3b8; border-color: transparent; }
+body.is-telemetria.telem-dark .telem-side__count--gray { background: transparent; color: #94a3b8; border-color: transparent; }
+
+body.is-telemetria.telem-dark .telem-side__list { background: #0f172a; }
+body.is-telemetria.telem-dark .telem-side__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); }
+
+body.is-telemetria.telem-dark .telem-side__item {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+
+body.is-telemetria.telem-dark .telem-side__name { color: #f1f5f9; }
+body.is-telemetria.telem-dark .telem-side__card-subtitle { color: #64748b; }
+
+/* badges mantêm fundo sólido no tema escuro também */
+
+body.is-telemetria.telem-dark .telem-side__details-btn { color: #4ade80; }
+
+body.is-telemetria.telem-dark .telem-side__card-actions {
+  border-top-color: rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.2);
+}
+
+body.is-telemetria.telem-dark .telem-side__empty { color: #475569; }
+
+/* sidebar direito */
+body.is-telemetria.telem-dark .telem-timeline-sidebar {
+  background: #0f172a;
+  border-left-color: rgba(255,255,255,0.06);
+  color: #f1f5f9;
+}
+
+body.is-telemetria.telem-dark .telem-tl__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+body.is-telemetria.telem-dark .telem-tl__item { border-bottom-color: rgba(255,255,255,0.05); }
+body.is-telemetria.telem-dark .telem-tl__item:hover { background: rgba(255,255,255,0.03); }
+body.is-telemetria.telem-dark .telem-tl__name  { color: #f1f5f9; }
+body.is-telemetria.telem-dark .telem-tl__sub   { color: #64748b; }
+body.is-telemetria.telem-dark .telem-tl__sub strong { color: #94a3b8; }
+
+/* barra inferior */
+body.is-telemetria.telem-dark .telem-bottom-bar {
+  background: #0f172a;
+  border-top-color: rgba(255,255,255,0.06);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+}
+
+body.is-telemetria.telem-dark .telem-bottom-bar__divider { background: rgba(255,255,255,0.06); }
+body.is-telemetria.telem-dark .telem-bottom-panel__list  { background: transparent; }
+body.is-telemetria.telem-dark .telem-bottom-panel__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card {
+  background: #1e293b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+  color: #f1f5f9;
+}
+
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card--rain  { border-color: #1e3a5f !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card--alert { border-color: #450a0a !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__name          { color: #f1f5f9 !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__rain-context  { color: #64748b !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__mm-val        { color: #f1f5f9 !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__footline      { border-top-color: rgba(255,255,255,0.06) !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__battery       { color: #22c55e; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__battery.is-mid{ color: #f59e0b; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__battery.is-low{ color: #ef4444; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__signal        { color: #22c55e; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__updated { color: #64748b !important; }
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__updated .pluv-card__clock,
+body.is-telemetria.telem-dark .telem-bottom-panel .pluv-card__clock { color: #f59e0b !important; }
+
+/* medidor de nível */
+body.is-telemetria.telem-dark .telem-level-card {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+
+body.is-telemetria.telem-dark .telem-level-card__name { color: #f1f5f9; }
+body.is-telemetria.telem-dark .telem-level-card__meta { color: #64748b; }
+body.is-telemetria.telem-dark .telem-level-card__meta strong { color: #f1f5f9; }
+body.is-telemetria.telem-dark .telem-level-card__gauge { background: #0f172a; border-color: rgba(255,255,255,0.06); }
+body.is-telemetria.telem-dark .telem-level-card__foot { color: #475569; border-top-color: rgba(255,255,255,0.06); }
+
+/* ── Topbar dark via tema global [data-theme="dark"] ── */
+[data-theme="dark"] .telem-topbar__header {
+  background: #090d12;
+  border-bottom-color: rgba(255,255,255,0.07);
+}
+[data-theme="dark"] .telem-topbar__sub  { color: rgba(255,255,255,0.4); }
+[data-theme="dark"] .telem-topbar__name { color: #fff; }
+[data-theme="dark"] .telem-live__label  { color: #22c55e; }
+[data-theme="dark"] .telem-live__date   { color: rgba(255,255,255,0.45); }
+[data-theme="dark"] .telem-live__time   { color: rgba(255,255,255,0.7); }
+
+[data-theme="dark"] .telem-topbar__kpis {
+  background: #090d12;
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .telem-topbar__kpis::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+[data-theme="dark"] .telem-kpi {
+  background: #141a22;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+[data-theme="dark"] .telem-kpi__icon  { color: #64748b; }
+[data-theme="dark"] .telem-kpi__label { color: #64748b; }
+[data-theme="dark"] .telem-kpi__value { color: #f1f5f9; }
+[data-theme="dark"] .telem-kpi__unit  { color: #64748b; }
+[data-theme="dark"] .telem-kpi__sub   { color: #64748b; }
+[data-theme="dark"] .telem-kpi__sub--green { color: #4ade80; }
+[data-theme="dark"] .telem-kpi--alert .telem-kpi__icon  { color: #f59e0b; }
+[data-theme="dark"] .telem-kpi--alert .telem-kpi__value { color: #fbbf24; }
+[data-theme="dark"] .telem-kpi--green .telem-kpi__icon  { color: #4ade80; }
+[data-theme="dark"] .telem-kpi--muted .telem-kpi__icon  { color: #334155; }
+
+/* sidebar esquerdo */
+[data-theme="dark"] .telem-sidebar {
+  background: #090d12;
+  border-right-color: rgba(255,255,255,0.06);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+  color: #f1f5f9;
+}
+[data-theme="dark"] .telem-sidebar__divider { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .telem-side__header {
+  background: rgba(255,255,255,0.03);
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .telem-side__filters {
+  background: #090d12;
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .telem-side__filter {
+  background: #0d1117;
+  border-color: rgba(255,255,255,0.1);
+  color: #cbd5e1;
+}
+[data-theme="dark"] .telem-side__filter.is-active {
+  background: transparent;
+  border-color: rgba(34,197,94,0.45);
+  color: #bbf7d0;
+}
+[data-theme="dark"] .telem-side__filter--blue.is-active {
+  background: transparent;
+  border-color: rgba(34,197,94,0.45);
+  color: #bbf7d0;
+}
+[data-theme="dark"] .telem-side__filter-count { background: transparent; }
+[data-theme="dark"] .telem-side__title { color: #94a3b8; }
+[data-theme="dark"] .telem-side__count { background: transparent; color: #94a3b8; border-color: transparent; }
+[data-theme="dark"] .telem-side__count--blue { background: transparent; color: #94a3b8; border-color: transparent; }
+[data-theme="dark"] .telem-side__count--gray { background: transparent; color: #94a3b8; border-color: transparent; }
+[data-theme="dark"] .telem-side__list { background: #090d12; }
+[data-theme="dark"] .telem-side__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); }
+[data-theme="dark"] .telem-side__item {
+  background: #141a22;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+[data-theme="dark"] .telem-side__name { color: #f1f5f9; }
+[data-theme="dark"] .telem-side__card-subtitle { color: #64748b; }
+[data-theme="dark"] .telem-side__details-btn { color: #4ade80; }
+[data-theme="dark"] .telem-side__card-actions {
+  border-top-color: rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .telem-side__empty { color: #475569; }
+
+/* botão Iniciar Pivô no dark */
+[data-theme="dark"] .telem-side__action-btn--start { background: #16a34a; }
+[data-theme="dark"] .telem-side__action-btn--start:hover { background: #12813b; }
+
+/* sidebar direito (timeline) */
+[data-theme="dark"] .telem-timeline-sidebar {
+  background: #090d12;
+  border-left-color: rgba(255,255,255,0.06);
+  color: #f1f5f9;
+}
+[data-theme="dark"] .telem-tl__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+[data-theme="dark"] .telem-tl__item { border-bottom-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .telem-tl__item:hover { background: rgba(255,255,255,0.03); }
+[data-theme="dark"] .telem-tl__name  { color: #f1f5f9; }
+[data-theme="dark"] .telem-tl__sub   { color: #64748b; }
+[data-theme="dark"] .telem-tl__sub strong { color: #94a3b8; }
+
+/* barra inferior */
+[data-theme="dark"] .telem-bottom-bar {
+  background: #090d12;
+  border-top-color: rgba(255,255,255,0.06);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .telem-bottom-bar__divider { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .telem-bottom-panel__list  { background: transparent; }
+[data-theme="dark"] .telem-bottom-panel__list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+[data-theme="dark"] .telem-bottom-panel .pluv-card {
+  background: #141a22 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+  color: #f1f5f9;
+}
+[data-theme="dark"] .telem-bottom-panel .pluv-card--rain  { border-color: #1e3a5f !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card--alert { border-color: #450a0a !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__name          { color: #f1f5f9 !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__rain-context  { color: #64748b !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__mm-val        { color: #f1f5f9 !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__footline      { border-top-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__battery       { color: #22c55e; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__battery.is-mid{ color: #f59e0b; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__battery.is-low{ color: #ef4444; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__signal        { color: #22c55e; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__updated { color: #64748b !important; }
+[data-theme="dark"] .telem-bottom-panel .pluv-card__updated .pluv-card__clock,
+[data-theme="dark"] .telem-bottom-panel .pluv-card__clock { color: #f59e0b !important; }
+
+/* gestao-level-card no bottom bar */
+[data-theme="dark"] .telem-bottom-panel .gestao-level-card {
+  background: #141a22;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+[data-theme="dark"] .telem-bottom-panel .gestao-level-card__name { color: #f1f5f9; }
+[data-theme="dark"] .telem-bottom-panel .gestao-level-card__line { color: #64748b; }
+[data-theme="dark"] .telem-bottom-panel .gestao-level-card__line strong { color: #f1f5f9; }
+[data-theme="dark"] .telem-bottom-panel .gestao-level-card__foot {
+  color: rgba(241,245,249,0.4);
+  border-color: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .telem-bottom-panel .gestao-level-gauge__wifi { color: #22c55e; }
+
+/* Botão fullscreen dentro da topbar */
+.telem-topbar .map-fullscreen-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  z-index: 600;
+}

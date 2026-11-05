@@ -1,0 +1,926 @@
+.side-cards {
+  position: absolute;
+  top: 12px;
+  left: 24px;
+  width: min(375px, calc(100% - 48px));
+  max-width: calc(100% - 48px);
+  max-height: calc(100vh - 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+  overflow: visible;
+  transition: left 0.22s ease, width 0.22s ease;
+}
+
+/* Equipment panel base layout — stays always visible */
+.side-cards > .map-card {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  max-width: none;
+  z-index: auto;
+}
+
+.weather-card {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  overflow: hidden;
+  /* Required for position transition when expanding */
+  transition:
+    border-radius 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease;
+}
+
+/* ---- EXPANDED STATE ----
+   Weather card breaks out as a fixed bottom bar spanning the full viewport.
+   All 7 days are displayed side by side — no horizontal scrolling. */
+.weather-card.is-expanded {
+  position: fixed;
+  bottom: 24px;
+  left: 48px;
+  right: 48px;
+  /* Explicit max-width as a safe-guard against any internal overflow */
+  max-width: calc(100vw - 96px);
+  top: auto;
+  height: fit-content;
+  max-height: 55vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Very high z-index since it's fixed and needs to overlay the map */
+  z-index: 1000;
+  border-radius: 12px;
+  box-shadow: 0 -4px 0 rgba(16, 185, 129, 0.25),
+              0 20px 48px rgba(15, 23, 42, 0.22);
+  animation: weather-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes weather-slide-up {
+  from {
+    transform: translateY(calc(100% + 24px));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* side-cards needs no special treatment when weather is fixed/bottom */
+.side-cards.weather-is-expanded {
+  overflow: visible;
+}
+
+.weather-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.weather-card__header:hover {
+  background: #f8fafc;
+}
+
+.weather-card__header.is-open {
+  border-bottom-color: #e2e8f0;
+}
+
+.weather-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.weather-card__title .fa-solid,
+.weather-card__title svg {
+  font-size: 13px;
+  color: #d39b2b;
+  width: 13px;
+  height: 13px;
+}
+
+.weather-card__chevron {
+  font-size: 11px;
+  color: #475569;
+  transition: transform 0.2s ease;
+}
+
+.weather-card__header.is-open .weather-card__chevron {
+  transform: rotate(180deg);
+}
+
+.weather-card__body {
+  display: none;
+  padding: 10px;
+  background: #fff;
+}
+
+.weather-card__body.is-open {
+  display: block;
+}
+
+/* When fully expanded, body flows naturally to fit its content */
+.weather-card.is-expanded .weather-card__body {
+  display: block;
+  height: auto;
+  overflow: visible;
+  padding: 10px;
+}
+
+/* Expand hint: always visible on the weather header (2-state toggle) */
+.weather-card__expand-hint {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Hide hint when already expanded — chevron tells the user how to close */
+.weather-card.is-expanded .weather-card__expand-hint {
+  display: none;
+}
+
+/* ---- Expand-all days button ---- */
+.weather-card__expand-all {
+  /* Hidden by default — only visible when the card is in expanded (fixed bar) mode */
+  display: none;
+  align-items: center;
+  gap: 5px;
+  /* Push it to the center: auto left-margin pushes right, hint/chevron stay right */
+  margin-left: auto;
+  padding: 4px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 99px;
+  background: transparent;
+  color: #475569;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.weather-card__expand-all:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Active = all days are open */
+.weather-card__expand-all.is-active {
+  background: #334155;
+  border-color: #334155;
+  color: #fff;
+}
+
+.weather-card__expand-all.is-active:hover {
+  background: #1e293b;
+}
+
+/* Show only when the card is expanded (bottom fixed bar mode) */
+.weather-card.is-expanded .weather-card__expand-all {
+  display: flex;
+}
+
+/* In expanded mode the expand-hint hides, leaving room for this button */
+.weather-card.is-expanded .weather-card__expand-hint {
+  display: none;
+}
+
+/* Expanded card header gets a green bottom border tint */
+.weather-card.is-expanded .weather-card__header {
+  border-bottom-color: #e2e8f0;
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.map-weather-card__days {
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+  scrollbar-width: thin;
+}
+
+.map-weather-card__days::-webkit-scrollbar {
+  height: 6px;
+}
+
+.map-weather-card__days::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.map-weather-card__days::-webkit-scrollbar-thumb {
+  background: rgba(211, 155, 43, 0.6);
+}
+
+.map-weather-card__days-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+/* ---- When expanded (fixed bottom bar): 7 equal columns, no scroll ---- */
+.weather-card.is-expanded .map-weather-card__days {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+/* 7 equal-width columns — one per day, all visible without scrolling */
+.weather-card.is-expanded .map-weather-card__days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex-wrap: unset;
+  gap: 6px;
+}
+
+/* On narrower viewports wrap to fewer columns */
+@media (max-width: 1100px) {
+  .weather-card.is-expanded .map-weather-card__days-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .weather-card.is-expanded .map-weather-card__days-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Each day card and ALL its children must shrink into the grid column */
+.weather-card.is-expanded .map-weather-day {
+  min-width: 0;
+  flex: unset;
+  overflow: hidden; /* clip any internal content that overflows */
+}
+
+.weather-card.is-expanded .map-weather-day__primary,
+.weather-card.is-expanded .map-weather-kpi,
+.weather-card.is-expanded .map-weather-kpi__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-weather-day {
+  flex: 0 0 auto;
+  min-width: 214px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #dbe5f1;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.map-weather-day__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.map-weather-day__left,
+.map-weather-day__right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.map-weather-day__meta {
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  color: #64748b;
+  text-align: left;
+}
+
+.map-weather-day__toggle {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 2px;
+  background: #fff;
+  color: #334155;
+  font-size: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.map-weather-day__toggle:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.map-weather-day__toggle i {
+  transition: transform 0.2s ease;
+}
+
+.map-weather-day.is-details-open .map-weather-day__toggle i {
+  transform: rotate(45deg);
+}
+
+.map-weather-day.is-today {
+  border-color: #94a3b8;
+}
+
+.map-weather-day__primary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.map-weather-kpi {
+  border: 1px solid #dbe5f1;
+  border-radius: 8px;
+  padding: 5px 5px 4px;
+  background: #f8fafc;
+}
+
+.map-weather-kpi--eto {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.map-weather-kpi--prec {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.map-weather-kpi__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.map-weather-kpi__eto-icon,
+.map-weather-kpi__rain-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.map-weather-kpi__value {
+  display: block;
+  font-size: 14px;
+  line-height: 1.05;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 3px;
+  text-align: center;
+}
+
+.map-weather-kpi__value small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 700;
+}
+
+.map-weather-day__facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.map-weather-day:not(.is-details-open) .map-weather-day__facts {
+  display: none;
+}
+
+.map-weather-fact {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.map-weather-fact__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #475569;
+  font-weight: 700;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.map-weather-fact__label i,
+.map-weather-fact__label .map-weather-fact__svg-icon {
+  color: #16a34a;
+}
+
+.map-weather-fact__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.map-weather-fact--temp .map-weather-fact__row + .map-weather-fact__row,
+.map-weather-fact--wind .map-weather-fact__row + .map-weather-fact__row {
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed #dbe5f1;
+}
+
+.map-weather-fact__sub-label {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.map-weather-fact__value {
+  display: block;
+  font-size: 11px;
+  color: #0f172a;
+  line-height: 1.25;
+  font-weight: 800;
+  text-align: left;
+}
+
+.map-weather-day__unit {
+  font-size: 9px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.map-weather-card__days-grid.is-opening .map-weather-day {
+  animation: weather-card-reveal 0.35s ease both;
+  animation-delay: calc(var(--card-i, 0) * 22ms);
+}
+
+@keyframes weather-card-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .side-cards {
+    top: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .map-weather-day {
+    min-width: 202px;
+  }
+
+  .map-weather-day__facts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Weather redesign */
+.weather-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+}
+
+.weather-card.is-expanded {
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  width: fit-content;
+  max-width: calc(100vw - 40px);
+  margin: 0 auto;
+  height: fit-content;
+  max-height: none;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 28px 62px rgba(15, 23, 42, 0.22);
+  background: #fff;
+  border-color: #e2e8f0;
+}
+
+.weather-card.is-expanded .weather-card__title {
+  color: #0f172a;
+}
+
+.weather-card.is-expanded .weather-card__chevron {
+  color: #0f172a;
+}
+
+
+.weather-card__header {
+  gap: 10px;
+  padding: 12px 16px 10px;
+  background: transparent;
+  border-bottom: 0;
+}
+
+.weather-card__header:hover {
+  background: transparent;
+}
+
+.weather-card__header.is-open,
+.weather-card.is-expanded .weather-card__header {
+  border-bottom: 0;
+  background: transparent;
+}
+
+.weather-card__title {
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.weather-card__title .fa-solid,
+.weather-card__title svg {
+  font-size: 16px;
+  color: #f97316;
+  width: 16px;
+  height: 16px;
+}
+
+.weather-card__body,
+.weather-card.is-expanded .weather-card__body {
+  padding: 4px 14px 16px;
+  background: transparent;
+}
+
+.weather-card__chevron,
+.weather-card__expand-hint {
+  display: none;
+}
+
+.map-weather-card__days {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 10px;
+  scrollbar-width: thin;
+}
+
+.map-weather-card__days::-webkit-scrollbar {
+  height: 8px;
+}
+
+.map-weather-card__days::-webkit-scrollbar-track {
+  background: rgba(203, 213, 225, 0.42);
+  border-radius: 999px;
+}
+
+.map-weather-card__days::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.82);
+  border-radius: 999px;
+}
+
+.map-weather-card__days-grid,
+.weather-card.is-expanded .map-weather-card__days-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: max-content;
+}
+
+.map-weather-day,
+.weather-card.is-expanded .map-weather-day {
+  flex: 0 0 200px;
+  min-width: 200px;
+  padding: 12px 12px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(219, 228, 236, 0.95);
+  background: rgba(255, 255, 255, 0.96);
+  gap: 8px;
+}
+
+.map-weather-day__head {
+  margin-bottom: 0;
+}
+
+.map-weather-day__left {
+  gap: 3px;
+}
+
+.map-weather-day__weekday {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  line-height: 1;
+}
+
+.map-weather-day__meta {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: -0.02em;
+}
+
+.map-weather-day__toggle {
+  width: 26px;
+  height: 26px;
+  border-radius: 2px;
+  border-color: #d5dde8;
+  color: #64748b;
+  font-size: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.map-weather-day__primary {
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.map-weather-kpi {
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, rgba(243, 246, 240, 0.96) 0%, rgba(233, 237, 229, 0.93) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.map-weather-kpi__label {
+  justify-content: flex-start;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  gap: 4px;
+}
+
+.map-weather-kpi__eto-icon,
+.map-weather-kpi__rain-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+.map-weather-kpi__value {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  color: #1f2937;
+}
+
+.map-weather-kpi__value small {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.map-weather-day__facts {
+  gap: 8px;
+  margin-top: 2px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(226, 232, 240, 0.95);
+}
+
+.map-weather-day:not(.is-details-open) .map-weather-day__facts {
+  display: none;
+}
+
+.map-weather-fact {
+  position: relative;
+  padding: 0 0 0 20px;
+  border: 0;
+  background: transparent;
+  min-height: 0;
+}
+
+.map-weather-fact__label {
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.map-weather-fact__label i,
+.map-weather-fact__label .map-weather-fact__svg-icon {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: #16a34a;
+  font-size: 13px;
+  width: 13px;
+  height: 13px;
+}
+
+.map-weather-fact__value {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.map-weather-fact__sub-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.map-weather-fact__wind-dir {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.map-weather-fact__wind-dir svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.map-weather-day__unit {
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+@media (max-width: 720px) {
+  .weather-card.is-expanded {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    max-width: calc(100vw - 24px);
+    border-radius: 20px;
+  }
+
+  .weather-card__header {
+    padding: 16px 16px 12px;
+  }
+
+  .weather-card__body,
+  .weather-card.is-expanded .weather-card__body {
+    padding: 2px 10px 12px;
+  }
+
+  .map-weather-card__days-grid,
+  .weather-card.is-expanded .map-weather-card__days-grid {
+    gap: 12px;
+  }
+
+  .map-weather-day,
+  .weather-card.is-expanded .map-weather-day {
+    flex-basis: 236px;
+    min-width: 236px;
+  }
+}
+
+/* ── Dark mode – weather-card ─────────────────────────────────── */
+[data-theme="dark"] .weather-card,
+[data-theme="dark"] .weather-card.is-expanded {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 20%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
+  border-color: rgba(255, 255, 255, .08);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .50);
+}
+
+[data-theme="dark"] .weather-card__title,
+[data-theme="dark"] .weather-card.is-expanded .weather-card__title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .weather-card__title svg {
+  color: #fb923c;
+}
+
+[data-theme="dark"] .weather-card__chevron {
+  color: #64748b;
+}
+
+[data-theme="dark"] .map-weather-day,
+[data-theme="dark"] .weather-card.is-expanded .map-weather-day {
+  background: #141414;
+  border-color: rgba(255, 255, 255, .07);
+}
+
+[data-theme="dark"] .map-weather-day.is-today {
+  border-color: rgba(255, 255, 255, .13);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .30);
+}
+
+[data-theme="dark"] .map-weather-day__weekday {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-day__meta {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-kpi {
+  background: #141414;
+  border-color: rgba(255, 255, 255, .07);
+}
+
+[data-theme="dark"] .map-weather-kpi__label {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-kpi__value {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-kpi__value small {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .map-weather-day__facts {
+  border-top-color: rgba(255, 255, 255, .07);
+}
+
+[data-theme="dark"] .map-weather-fact__label {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-fact__value {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .map-weather-fact__sub-label {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .map-weather-fact__wind-dir {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .map-weather-day__unit {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .map-weather-card__days::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, .04);
+}
+
+[data-theme="dark"] .map-weather-card__days::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .12);
+}
+
+body.is-bmb-edit .weather-card { display: none !important; }
+
+
+body.is-mdn-edit .weather-card { display: none !important; }
+
+body.is-rep-edit .weather-card { display: none !important; }
+

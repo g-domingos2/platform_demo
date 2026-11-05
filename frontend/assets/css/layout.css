@@ -1,0 +1,98 @@
+/* layout.css */
+.app {
+  height: 100%;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 275px;
+  background: linear-gradient(180deg, var(--sidebar), var(--sidebar2));
+  color: var(--sidebarText);
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  align-self: flex-start;
+  transition: width 0.22s ease, padding 0.22s ease;
+  flex-shrink: 0;
+}
+
+body.is-pivo-details-only .sidebar,
+body.is-pivo-details .sidebar,
+body.is-pluvd .sidebar,
+body.is-bmbd .sidebar,
+body.is-mdnd .sidebar,
+body.is-bmb-edit .sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 20;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+body.is-pivo-details-only .app,
+body.is-pivo-details .app,
+body.is-pluvd .app,
+body.is-bmbd .app,
+body.is-mdnd .app,
+body.is-bmb-edit .app {
+  margin-left: 275px;
+}
+
+body.is-pivo-details-only .app.is-collapsed,
+body.is-pivo-details .app.is-collapsed,
+body.is-pluvd .app.is-collapsed,
+body.is-bmbd .app.is-collapsed,
+body.is-mdnd .app.is-collapsed,
+body.is-bmb-edit .app.is-collapsed {
+  margin-left: 55px;
+}
+
+.sidebar__footer {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Main agora é 100% mapa */
+.main {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.main--map {
+  background: #000;
+  /* só pra evitar "branco piscando" enquanto carrega tiles */
+}
+
+/* Sidebar colapsada */
+.app.is-collapsed .sidebar {
+  width: 64px;
+  padding: 12px 6px;
+}
+
+/* Conteúdo interno compacta sem quebrar */
+.app.is-collapsed .sidebar__search {
+  display: none;
+}
+
+.app.is-collapsed .sidebar__create {
+  display: none;
+}
+
+/* Dark mode — thin right border on sidebar */
+[data-theme="dark"] .sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0) 20%), linear-gradient(180deg, var(--sidebar), var(--sidebar2));
+  border-right: 1px solid rgba(255, 255, 255, .08);
+}

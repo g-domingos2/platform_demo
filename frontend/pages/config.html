@@ -1,0 +1,347 @@
+<section class="edit-panel farm-edit config-page" id="configPanel" aria-label="Configurações">
+<div class="edit-panel__titlebar">
+        <button class="edit-panel__back" type="button" id="configBack" aria-label="Voltar">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Configurações</span>
+        </button>
+
+    </div>
+
+    <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+        <button class="edit-panel__tab is-active" type="button" data-tab="general" aria-selected="true" data-bound="1">Geral</button>
+        <button class="edit-panel__save btn-save-pref" type="button">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Salvar
+        </button>
+    </div>
+
+    <div class="edit-panel__tab-body is-active">
+        <div class="edit-panel__body">
+            <aside class="edit-panel__nav" aria-label="Seções de configurações">
+                <button class="edit-panel__nav-item is-active" type="button" data-target="#configProfile">Perfil</button>
+                <button class="edit-panel__nav-item" type="button" data-target="#configSecurity">Segurança</button>
+                <button class="edit-panel__nav-item" type="button" data-target="#configPrefs">Preferências</button>
+                <button class="edit-panel__nav-item" type="button" data-target="#configInfo">Versão</button>
+            </aside>
+
+            <div class="edit-panel__content">
+                <!-- INFORMAÇÕES -->
+                <section class="edit-panel__section" id="configInfo">
+                    <div class="edit-panel__section-head">
+                        <h2>Versão</h2>
+                    </div>
+
+                    <div class="edit-panel__section-body">
+                        <h3 class="pref-section-title" style="margin-top: 0;">Informações gerais da aplicação</h3>
+                        <div class="version-card">
+                            <div class="version-item">
+                                <div class="version-item__left">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span>Versão</span>
+                                </div>
+                                <div class="version-item__value">v1.0.2 (build 20251211)</div>
+                            </div>
+
+                            <div class="version-item">
+                                <div class="version-item__left">
+                                    <i class="fa-brands fa-android"></i>
+                                    <span>Versão Android</span>
+                                </div>
+                                <div class="version-item__value">1.0.2</div>
+                            </div>
+
+                            <div class="version-item">
+                                <div class="version-item__left">
+                                    <i class="fa-brands fa-apple"></i>
+                                    <span>Versão iOS</span>
+                                </div>
+                                <div class="version-item__value">1.0.2</div>
+                            </div>
+                        </div>
+
+                        <p class="config-footer-text">
+                            Para mais informações sobre os Termos que governam a plataforma da Irricontrol,
+                            visite <a href="#">Termos e condições de uso</a> e <a href="#">Aviso de privacidade</a>.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- PREFERÊNCIAS -->
+                <section class="edit-panel__section" id="configPrefs">
+                    <div class="edit-panel__section-head">
+                        <h2>Preferências</h2>
+                    </div>
+
+                    <div class="edit-panel__section-body">
+                        <h3 class="pref-section-title" style="margin-top: 0;">Gerais</h3>
+
+                        <!-- TEMA -->
+                        <div class="pref-row">
+                            <span class="pref-label">Tema:</span>
+                            <div class="toggle-group" data-pref-key="theme">
+                                <button class="toggle-btn" type="button" data-value="dark">Escuro</button>
+                                <button class="toggle-btn is-active" type="button" data-value="light">Claro</button>
+                            </div>
+                        </div>
+
+                        <!-- IDIOMA -->
+                        <div class="pref-row">
+                            <span class="pref-label">Idioma:</span>
+                            <div class="custom-select-wrapper" style="width: 220px;" data-pref-key="lang">
+                                <div class="lang-select js-advanced-select">
+                                    <div class="lang-select__info">
+                                        <img src="https://flagcdn.com/br.svg" alt="Brasil" class="lang-flag">
+                                        <span id="langLabel" data-pref-label="lang">Português</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: #94a3b8;"></i>
+                                </div>
+                                <div class="advanced-dropdown-panel is-hidden" id="langDropdown">
+                                    <div class="advanced-dropdown-item" data-value="de-AT">
+                                        <img src="https://flagcdn.com/at.svg" alt="Áustria" class="lang-flag">
+                                        <span>German (Austria)</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="en">
+                                        <img src="https://flagcdn.com/us.svg" alt="EUA" class="lang-flag">
+                                        <span>English</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="es">
+                                        <img src="https://flagcdn.com/es.svg" alt="Espanha" class="lang-flag">
+                                        <span>Español</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="fr">
+                                        <img src="https://flagcdn.com/fr.svg" alt="França" class="lang-flag">
+                                        <span>Français</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="hu">
+                                        <img src="https://flagcdn.com/hu.svg" alt="Hungria" class="lang-flag">
+                                        <span>Magyar</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item is-active" data-value="pt-BR">
+                                        <img src="https://flagcdn.com/br.svg" alt="Brasil" class="lang-flag">
+                                        <span>Português</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="ro">
+                                        <img src="https://flagcdn.com/ro.svg" alt="Romênia" class="lang-flag">
+                                        <span>Română</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="ru">
+                                        <img src="https://flagcdn.com/ru.svg" alt="Rússia" class="lang-flag">
+                                        <span>Русский</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="tr">
+                                        <img src="https://flagcdn.com/tr.svg" alt="Turquia" class="lang-flag">
+                                        <span>Türkçe</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DATA/HORA -->
+                        <div class="pref-row">
+                            <span class="pref-label">Formato Data/Hora:</span>
+                            <div class="toggle-group">
+                                <button class="toggle-btn is-active" type="button">04 mar 2026 09:30</button>
+                                <button class="toggle-btn" type="button">04/03/2026 09:30 GMT-03</button>
+                            </div>
+                        </div>
+
+                        <div class="pref-divider"></div>
+
+                        <!-- UNIDADES -->
+                        <h3 class="pref-section-title">Unidades de Medida</h3>
+
+                        <div class="pref-row">
+                            <span class="pref-label">Pressão:</span>
+                            <div class="toggle-group">
+                                <button class="toggle-btn is-active" type="button">bar</button>
+                                <button class="toggle-btn" type="button">psi</button>
+                            </div>
+                        </div>
+
+                        <div class="pref-row">
+                            <span class="pref-label">Lâmina:</span>
+                            <div class="toggle-group">
+                                <button class="toggle-btn is-active" type="button">%</button>
+                                <button class="toggle-btn" type="button">mm</button>
+                            </div>
+                        </div>
+
+                        <div class="pref-row">
+                            <span class="pref-label">Ângulo:</span>
+                            <div class="toggle-group">
+                                <button class="toggle-btn is-active" type="button">°</button>
+                                <button class="toggle-btn" type="button">m</button>
+                            </div>
+                        </div>
+
+                        <div class="pref-divider"></div>
+
+                        <!-- COMPORTAMENTO -->
+                        <h3 class="pref-section-title">Navegação</h3>
+
+                        <div class="pref-row" style="margin-bottom: 24px;">
+                            <span class="pref-label">Ação ao Clicar nos Ícones do Mapa:</span>
+                            <div class="custom-select-wrapper" style="width: 280px;" data-pref-key="pivotClickAction">
+                                <div class="lang-select js-advanced-select">
+                                    <div class="lang-select__info">
+                                        <i class="fa-solid fa-check" style="font-size: 12px; color: #22c55e;"></i>
+                                        <span id="pivotActionLabel" data-pref-label="pivotClickAction">Ir para o atalho de comando</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: #94a3b8;"></i>
+                                </div>
+
+                                <div class="advanced-dropdown-panel is-hidden" id="pivotActionDropdown">
+                                    <div class="advanced-dropdown-item" data-value="details">
+                                        <span>Ir para a tela de dispositivo</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item is-active" data-value="schedule">
+                                        <span>Ir para o atalho de comando</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pref-row" style="margin-bottom: 24px;">
+                            <span class="pref-label">Ação ao clicar no Cosmofield:</span>
+                            <div class="custom-select-wrapper" style="width: 280px;" data-pref-key="cosmofieldClickAction">
+                                <div class="lang-select js-advanced-select">
+                                    <div class="lang-select__info">
+                                        <i class="fa-solid fa-check" style="font-size: 12px; color: #22c55e;"></i>
+                                        <span id="cosmofieldActionLabel" data-pref-label="cosmofieldClickAction">Abrir o modal de informações</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: #94a3b8;"></i>
+                                </div>
+
+                                <div class="advanced-dropdown-panel is-hidden" id="cosmofieldActionDropdown">
+                                    <div class="advanced-dropdown-item is-active" data-value="modal">
+                                        <span>Abrir o modal de informações</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="details">
+                                        <span>Ir para a tela de dispositivo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pref-row" style="margin-bottom: 24px;">
+                            <span class="pref-label">Ação ao Clicar na Estação Meteorológica:</span>
+                            <div class="custom-select-wrapper" style="width: 280px;" data-pref-key="weatherStationClickAction">
+                                <div class="lang-select js-advanced-select">
+                                    <div class="lang-select__info">
+                                        <i class="fa-solid fa-check" style="font-size: 12px; color: #22c55e;"></i>
+                                        <span id="weatherStationActionLabel" data-pref-label="weatherStationClickAction">Abrir o modal de informações</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: #94a3b8;"></i>
+                                </div>
+
+                                <div class="advanced-dropdown-panel is-hidden" id="weatherStationActionDropdown">
+                                    <div class="advanced-dropdown-item is-active" data-value="modal">
+                                        <span>Abrir o modal de informações</span>
+                                    </div>
+                                    <div class="advanced-dropdown-item" data-value="details">
+                                        <span>Ir para a tela de dispositivo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PERFIL -->
+                <section class="edit-panel__section is-active" id="configProfile">
+                    <div class="edit-panel__section-head">
+                        <h2>Perfil</h2>
+                    </div>
+
+                    <div class="edit-panel__section-body">
+                        <h3 class="pref-section-title" style="margin-top: 0;">Dados pessoais</h3>
+
+                        <div class="config-grid-3">
+                            <div class="edit-panel__field">
+                                <label class="label--required" for="configFirstName">Nome</label>
+                                <div class="input-container">
+                                    <input class="edit-panel__input" id="configFirstName" type="text" value="Bauer">
+                                    <i class="fa-solid fa-circle-xmark input-clear"></i>
+                                </div>
+                            </div>
+                            <div class="edit-panel__field">
+                                <label class="label--required" for="configLastName">Sobrenome</label>
+                                <div class="input-container">
+                                    <input class="edit-panel__input" id="configLastName" type="text" value="Irricontrol">
+                                    <i class="fa-solid fa-circle-xmark input-clear"></i>
+                                </div>
+                            </div>
+                            <div class="edit-panel__field">
+                                <label class="label--required" for="configEmail">E-mail</label>
+                                <div class="input-container">
+                                    <input class="edit-panel__input" id="configEmail" type="email" value="bauer@irricontrol.com">
+                                    <i class="fa-solid fa-circle-xmark input-clear"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="config-grid-2">
+                            <div class="edit-panel__field">
+                                <div class="label--required">Nacionalidade</div>
+                                <div class="nationality-select">
+                                    <img src="https://flagcdn.com/br.svg" alt="Brasil">
+                                    <span>Brasileiro</span>
+                                    <i class="fa-solid fa-chevron-down input-chevron"></i>
+                                </div>
+                            </div>
+                            <div class="edit-panel__field">
+                                <label class="label--required" for="configPhone">Celular</label>
+                                <div class="input-container">
+                                    <input class="edit-panel__input" id="configPhone" type="text" placeholder="( ) _____-____">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- SEGURANÇA -->
+                <section class="edit-panel__section" id="configSecurity">
+                    <div class="edit-panel__section-head">
+                        <h2>Segurança</h2>
+                    </div>
+
+                    <div class="edit-panel__section-body">
+                        <h3 class="pref-section-title" style="margin-top: 0;">Altere sua senha de acesso</h3>
+                        <div class="edit-panel__field" style="max-width: 600px;">
+                            <label class="label--required" for="configCurrentPassword">Senha atual</label>
+                            <div class="input-container">
+                                <input class="edit-panel__input" id="configCurrentPassword" type="password" placeholder="Senha atual" autocomplete="current-password">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                        </div>
+
+                        <div class="edit-panel__field" style="max-width: 600px; margin-top: 24px;">
+                            <label for="configNewPassword">Nova senha</label>
+                            <div class="input-container">
+                                <input class="edit-panel__input" id="configNewPassword" type="password" placeholder="Nova senha" autocomplete="new-password">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                        </div>
+
+                        <ul class="password-requirements">
+                            <li><i class="fa-solid fa-circle-xmark"></i> Possuir no mínimo 12 caracteres</li>
+                            <li><i class="fa-solid fa-circle-xmark"></i> Possuir pelo menos uma letra maiúscula</li>
+                            <li><i class="fa-solid fa-circle-xmark"></i> Possuir pelo menos uma letra minúscula</li>
+                            <li><i class="fa-solid fa-circle-xmark"></i> Possuir pelo menos um número</li>
+                            <li><i class="fa-solid fa-circle-xmark"></i> Possuir pelo menos um caractere especial (ex.: !@#$%&*)</li>
+                        </ul>
+
+                        <div class="edit-panel__field" style="max-width: 600px;">
+                            <label for="configConfirmPassword">Confirme a nova senha</label>
+                            <div class="input-container">
+                                <input class="edit-panel__input" id="configConfirmPassword" type="password" placeholder="Confirme a nova senha" autocomplete="new-password">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div> <!-- end content -->
+        </div> <!-- end body -->
+    </div> <!-- end tab-body -->
+</section> <!-- end configPanel -->

@@ -1,0 +1,537 @@
+/* =========================================================
+   Fazenda - Editar Fazenda
+   ========================================================= */
+
+body.is-farm-edit #map,
+body.is-farm-edit .map {
+  display: none;
+}
+
+body.is-farm-edit #pageSlot {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+/* A rolagem fica no painel da direita (.main): a sidebar permanece fixa
+   e a barra só aparece quando o conteúdo passa da altura da tela.
+   Acompanha a cor do #pageSlot em cada tema (em vez do preto fixo do modo
+   mapa), já que aqui não há mapa por trás para justificar o preto. */
+body.is-farm-edit .main--map {
+  height: 100vh;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f8fafc;
+}
+
+[data-theme="dark"] body.is-farm-edit .main--map {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0, rgba(255, 255, 255, 0) 20vh), linear-gradient(
+186deg, #0a0a0a 0, #000000 100vh);
+  background-attachment: fixed;
+}
+
+body.is-farm-edit {
+  overflow: hidden;
+}
+
+.farm-edit.edit-panel {
+  height: auto;
+  min-height: 100vh;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+body.is-farm-edit .map-card {
+  display: none;
+}
+
+.farm-edit__section-sub {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 14px;
+}
+
+.farm-edit .edit-panel__field-box-label {
+  display: block;
+  font-size: 11px;
+  color: #0f172a;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.farm-edit__field-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.farm-edit__field-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.farm-edit__field-box-head label {
+  margin-bottom: 0;
+}
+
+.farm-edit__field-edit {
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+  line-height: 1;
+}
+
+.farm-edit__field-box .edit-panel__input[readonly] {
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.farm-edit__loc-row {
+  align-items: center;
+}
+
+.farm-edit__loc-input {
+  position: relative;
+  flex: 1;
+}
+
+.farm-edit__loc-input i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.farm-edit__loc-input .edit-panel__input {
+  padding-left: 30px;
+}
+
+.farm-edit__loc-btn {
+  min-width: 160px;
+}
+
+.farm-edit .edit-panel__location {
+  grid-template-columns: 1.3fr 1fr;
+}
+
+.farm-edit .edit-panel__input,
+.farm-edit .edit-panel__select-btn {
+  border-color: #d1d5db;
+}
+
+.farm-edit .edit-panel__input:focus,
+.farm-edit .edit-panel__input:focus-visible,
+.farm-edit .edit-panel__select-btn:focus,
+.farm-edit .edit-panel__select-btn:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .12);
+}
+
+/* Dropdown customizado (componente farm-select, reaproveitado de Criar Fazenda)
+   para os selects de Estado — evita o hover azul nativo do <select> do navegador. */
+.farm-edit .farm-select {
+  position: relative;
+  width: 100%;
+}
+
+.farm-edit .farm-select__native {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.farm-edit .farm-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.farm-edit .farm-select__trigger:hover {
+  border-color: #16a34a;
+}
+
+.farm-edit .farm-select__trigger:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .12);
+}
+
+.farm-edit .farm-select__value {
+  flex: 1;
+  text-align: left;
+  font-size: 13px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farm-edit .farm-select__value.is-placeholder {
+  color: #94a3b8;
+}
+
+.farm-edit .farm-select__trigger i {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.farm-edit .farm-select.is-open .farm-select__trigger {
+  border-color: #16a34a;
+}
+
+.farm-edit .farm-select__list {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, .14);
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+  padding: 4px;
+  z-index: 1000;
+  display: none;
+  overflow-y: auto;
+  max-height: 260px;
+}
+
+.farm-edit .farm-select.is-open .farm-select__list {
+  display: block;
+}
+
+.farm-edit .farm-select__option {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.farm-edit .farm-select__option:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.farm-edit .farm-select__option.is-selected {
+  background: #e2ffec;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.farm-edit .farm-select__option[disabled] {
+  color: #94a3b8;
+  cursor: not-allowed;
+  background: #fff;
+}
+
+/* ==========================================================================
+   Refinamentos de Layout (Seguindo o padrão do Relatório)
+   ========================================================================== */
+.farm-edit .edit-panel__body {
+  grid-template-columns: 180px 1fr;
+  gap: 0;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.farm-edit .edit-panel__nav {
+  border-right: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.farm-edit .edit-panel__nav-item.is-active::after {
+  right: -11px;
+}
+
+.farm-edit .edit-panel__content {
+  border-left: 0;
+  padding: 24px 32px 60px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: contain;
+  /* Evita o "rasgado/picado" ao rolar: dica de rolagem composta. Não usar
+     transform aqui (criaria containing block e quebraria dropdowns fixed). */
+  will-change: scroll-position;
+}
+
+.farm-edit .edit-panel__save-feedback {
+  min-height: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.farm-edit .edit-panel__save-feedback.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.farm-edit .edit-panel__save-feedback.is-success {
+  color: #15803d;
+}
+
+.farm-edit .edit-panel__save-feedback.is-error {
+  color: #dc2626;
+}
+
+.farm-edit .edit-panel__section.is-active {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.farm-edit .edit-panel__tab-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* Sem scrollbar interna: o conteúdo cresce e a rolagem fica na página.
+   Importante: overflow nos DOIS eixos — se um eixo fica "hidden", o navegador
+   converte o outro de "visible" para "auto" e a scrollbar interna volta. */
+.farm-edit .edit-panel__tab-body {
+  height: auto;
+}
+
+/* display: block (em vez de flex) é o que permite o card branco crescer com o
+   conteúdo — mesmo padrão usado em body.is-bmb-edit e no overlay de Faturamento */
+.farm-edit .edit-panel__tab-body.is-active {
+  display: block;
+  min-height: 0;
+}
+
+.farm-edit .edit-panel__body {
+  overflow: visible;
+  height: auto;
+  /* Preenche a tela nas seções curtas (100vh menos titlebar + abas),
+     e cresce além disso nas seções longas */
+  min-height: calc(100vh - 130px);
+}
+
+.farm-edit .edit-panel__content {
+  overflow: visible;
+  height: auto;
+  min-height: 0;
+}
+
+@media (max-width: 980px) {
+  body.is-farm-edit {
+    overflow: auto;
+  }
+
+  body.is-farm-edit #pageSlot,
+  body.is-farm-edit .main--map,
+  .farm-edit.edit-panel {
+    height: auto;
+    overflow: visible;
+  }
+
+  .farm-edit .edit-panel__body,
+  .farm-edit .edit-panel__nav {
+    overflow: visible;
+  }
+}
+
+#farmEditEnergyGeneral .edit-panel__divider-label,
+#farmEditEnergyBills .edit-panel__divider-label,
+#farmEditLocation .edit-panel__divider-label,
+#farmEditContact .edit-panel__divider-label {
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+[data-theme="dark"] body.is-farm-edit #pageSlot {
+  background: #0f0f0f;
+}
+[data-theme="dark"] .farm-edit__field-box .edit-panel__input[readonly] {
+  background: #141414;
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, .12);
+}
+[data-theme="dark"] .farm-edit .edit-panel__nav {
+  border-right-color: #1e293b;
+}
+
+/* Neblina branca no topo do painel e card em #141414, igual ao edit de
+   pivô/bomba/medidor/repetidora. Id no seletor vence a regra genérica
+   (preto sólido) de pluviometria-edit.css. */
+[data-theme="dark"] #farmEditPanel.edit-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0, rgba(255, 255, 255, 0) 20vh), linear-gradient(180deg, #0a0a0a 0, #040404 100vh);
+}
+
+[data-theme="dark"] #farmEditPanel .edit-panel__body,
+[data-theme="dark"] #farmEditPanel .edit-panel__content,
+[data-theme="dark"] #farmEditPanel .edit-panel__nav {
+  background: #141414;
+}
+
+/* Campos farm-select (País, Estado, etc.) não tinham nenhum suporte a dark
+   mode — ficavam brancos sobre o fundo escuro do painel. */
+[data-theme="dark"] .farm-edit .farm-select__trigger {
+  background: #141414;
+  border-color: rgba(255, 255, 255, .12);
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__trigger:hover,
+[data-theme="dark"] .farm-edit .farm-select.is-open .farm-select__trigger {
+  border-color: #10b981;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__trigger:focus-visible {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, .18);
+}
+
+[data-theme="dark"] .farm-edit .farm-select__value.is-placeholder {
+  color: #64748b;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__trigger i {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__list {
+  background: #141414;
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .5);
+}
+
+[data-theme="dark"] .farm-edit .farm-select__option {
+  background: #141414;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__option:hover {
+  background: rgba(255, 255, 255, .06);
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__option.is-selected {
+  background: rgba(16, 185, 129, .12);
+  color: #4ade80;
+}
+
+[data-theme="dark"] .farm-edit .farm-select__option[disabled] {
+  color: #475569;
+  background: #141414;
+}
+
+/* Faixas de Energia (#farmEnergiaFaixasList): tabela e cabeçalho de dias são
+   100% inline style (sem classe), então usamos seletor de atributo com
+   !important para virarem escuros no dark, sem tocar no HTML/JS. */
+[data-theme="dark"] #farmEnergiaFaixasList [data-faixa-group] {
+  border-color: rgba(255, 255, 255, .12) !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList > div > div[style*="background:#f8fafc"] {
+  background: #1a1a1a !important;
+  border-bottom-color: rgba(255, 255, 255, .1) !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList span[style*="background:#fff"] {
+  background: #1f1f1f !important;
+  border-color: rgba(255, 255, 255, .14) !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList thead tr[style*="background:#f1f5f9"] {
+  background: #1a1a1a !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList th[style*="border-bottom:1px solid #e2e8f0"] {
+  border-bottom-color: rgba(255, 255, 255, .1) !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList tr[style*="border-bottom:1px solid #f1f5f9"] {
+  border-bottom-color: rgba(255, 255, 255, .06) !important;
+}
+
+[data-theme="dark"] #farmEnergiaFaixasList td[style*="color:#64748b"] {
+  color: #64748b !important;
+}
+
+/* Feriados: botão "Adicionar feriado" e toggle Mês/Ano são inline style sem
+   classe própria, então também usamos seletor de atributo com !important. */
+[data-theme="dark"] #farmHolidayAddManual {
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, .12) !important;
+  color: #64748b !important;
+}
+
+[data-theme="dark"] #farmHolidayAddManual i {
+  color: #475569 !important;
+}
+
+[data-theme="dark"] button[data-feriado-view="mes"],
+[data-theme="dark"] button[data-feriado-view="ano"] {
+  background: #141414 !important;
+  border-color: rgba(255, 255, 255, .14) !important;
+}
+
+[data-theme="dark"] button[data-feriado-view="mes"][style*="color:#374151"] {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] button[data-feriado-view="ano"][style*="color:#16a34a"] {
+  border-color: #16a34a !important;
+  color: #4ade80 !important;
+}
+
+/* Calendário anual: bordas claras viram sutis no dark. */
+[data-theme="dark"] #farmHolidayCalAno,
+[data-theme="dark"] #farmHolidayCalAno div[style*="border-bottom:1px solid #e5e7eb"] {
+  border-color: rgba(255, 255, 255, .1) !important;
+}
+
+[data-theme="dark"] #farmHolidayCalAno div[style*="border-right:1px solid #f1f5f9"] {
+  border-right-color: rgba(255, 255, 255, .08) !important;
+}
+
+[data-theme="dark"] #farmHolidayCalAno span[style*="color:#64748b"] {
+  color: #94a3b8 !important;
+}

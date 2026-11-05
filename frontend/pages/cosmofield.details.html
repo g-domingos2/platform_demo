@@ -1,0 +1,428 @@
+<section class="pivos-view cosmofield-details-view" id="cosmofieldDetailsPanel" aria-label="Detalhes do Cosmofield">
+  <div class="cosmofield-details-card-container">
+    <div class="cosmofield-details-column">
+
+      <!-- 1. Cockpit: minimapa, status, seletor, leitura atual, Editar -->
+      <article class="pincard">
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-cosmofield-details-back" aria-label="Voltar">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Voltar</span>
+          </button>
+          <div class="pincard__map" id="cfdMinimap"></div>
+        </div>
+
+        <div class="pincard__body">
+          <div class="pincard__info">
+            <div class="pincard__status-row">
+              <div class="pincard__status-bar is-info" id="cfdStatusBar">
+                <span class="pincard__status-dot--white" aria-hidden="true"></span>
+                <span class="pincard__status-text" id="cfdStatusText">MONITORANDO</span>
+              </div>
+            </div>
+
+            <div class="pincard__title-group cosmofield-details-title-group">
+              <button type="button" class="pincard__title-btn" id="cfdSelectBtn" aria-label="Selecionar outro Cosmofield">
+                <h2 class="pincard__title" id="cfdTitleLabel">Cosmofield</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="cosmofield-details-selector" id="cfdSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <!-- Os 4 KPIs do card da sonda na lista de equipamentos (mesma ordem e
+                 mesmos ícones). Valores copiados da linha de indicadores abaixo
+                 (cfKpi*), preenchida por IcCosmofield.general.renderDeviceData. -->
+            <div class="pincard__kpis cosmofield-details-kpis" id="cfdMetrics">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><img src="./assets/img/svg/droplet.svg" alt=""></div>
+                <div class="pincard__kpi-val" id="cfdKpiMoisture">—</div>
+                <div class="pincard__kpi-lbl">Umidade atual</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><img src="./assets/img/svg/waves-arrow-down.svg" alt=""></div>
+                <div class="pincard__kpi-val" id="cfdKpiBlade">—</div>
+                <div class="pincard__kpi-lbl">Lâmina recomendada</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><img src="./assets/img/svg/zap.svg" alt=""></div>
+                <div class="pincard__kpi-val" id="cfdKpiBattery">—</div>
+                <div class="pincard__kpi-lbl">Tensão da bateria</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><img src="./assets/img/svg/calendar-1.svg" alt=""></div>
+                <div class="pincard__kpi-val" id="cfdKpiNext">—</div>
+                <div class="pincard__kpi-lbl">Próxima irrigação</div>
+              </div>
+            </div>
+            <footer class="pincard__footer cosmofield-details-footer" id="cfdLastUpdate"><span class="comm-label">Última comunicação:</span> —</footer>
+          </div>
+
+          <div class="pincard__side">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__btn-text" id="cfdEditBtn"><i class="fa-solid fa-pen"></i> Editar</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Período: mesmo popover global (js-period-trigger), único
+           controle de janela da tela — recorta o gráfico e os dados brutos.
+           data-period-all-start/-end (preenchidos pelo JS com o início e o
+           fim da série) habilitam o preset "Todo o período"; data-period-presets
+           deixa só os "últimos N dias" e "Todo o período". -->
+      <article class="cosmofield-details-agenda">
+        <header class="cosmofield-details-agenda__header">
+          <span class="cosmofield-details-agenda__title">Período</span>
+          <button type="button" class="cosmofield-details-agenda__period-btn js-period-trigger" id="cfdPeriodBtn" data-period-presets="7d,14d,30d,90d,all">
+            <span class="cosmofield-details-agenda__period-label" id="cfdPeriodLabel">—</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+      </article>
+
+      <!-- 3. Indicadores: os 6 do dashboard da aba Geral, mesmo markup e
+           mesmos IDs (.cf-stats / cfKpi*), preenchidos por renderDeviceData. -->
+      <article class="cf-stats">
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Umidade atual</span>
+          <strong class="cf-stats__value" id="cfKpiMoisture">—</strong>
+        </div>
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Água disponível</span>
+          <strong class="cf-stats__value" id="cfKpiAvailable">—</strong>
+        </div>
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Lâmina recomendada</span>
+          <strong class="cf-stats__value" id="cfKpiBlade">—</strong>
+        </div>
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Próxima irrigação</span>
+          <strong class="cf-stats__value" id="cfKpiNext">—</strong>
+        </div>
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Tensão da bateria</span>
+          <strong class="cf-stats__value" id="cfKpiBattery">—</strong>
+        </div>
+        <div class="cf-stats__item">
+          <span class="cf-stats__label">Última transmissão</span>
+          <strong class="cf-stats__value" id="cfKpiComm">—</strong>
+        </div>
+      </article>
+
+      <!-- 4. Dashboard: gráfico de umidade do solo (mesmo motor da aba Geral,
+           IcCosmofieldChart — IDs iguais, montado sobre este root). Sem botões
+           de zoom: a janela vem do filtro de período. O navegador, abaixo do
+           eixo do tempo, ajusta só o gráfico dentro do período do filtro. -->
+      <div class="cf-chart-card cosmofield-details-chart" id="cfSoilChart">
+        <div class="cf-chart-card__header">
+          <div class="cf-chart-card__title">
+            Umidade do solo
+            <button type="button" class="cf-chart-card__info cf-info--btn" id="cfAdviceInfoBtn" aria-label="Sobre o gráfico de umidade do solo" aria-haspopup="dialog">
+              <i class="fa-regular fa-circle-question"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="cf-chart-card__plot">
+          <svg class="cf-chart-card__svg" id="cfChartMainSvg" viewBox="0 0 1000 400" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="cf-chart-card__navigator" id="cfChartNavigator">
+          <svg class="cf-chart-card__nav-svg" id="cfChartNavSvg" viewBox="0 0 1000 100" preserveAspectRatio="none"></svg>
+          <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--l" id="cfNavMaskLeft"></div>
+          <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--r" id="cfNavMaskRight"></div>
+          <div class="cf-chart-card__nav-range" id="cfNavRange">
+            <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--l" data-handle="l"></div>
+            <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--r" data-handle="r"></div>
+          </div>
+          <div class="cf-chart-card__nav-scrollbar"></div>
+        </div>
+
+        <div class="cf-chart-card__legend" id="cfChartLegend">
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="moisture"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#8bc34a"></i>Umidade do solo</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="fc"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#2f7ed8"></i>Capacidade de campo</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="wp"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#e74c3c"></i>Ponto de murcha permanente</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="rain"><i class="cf-legend-swatch cf-legend-swatch--dot" style="--c:#2e9e5b"></i>Chuva</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="irrigation"><i class="cf-legend-swatch cf-legend-swatch--dot" style="--c:#4aa3e0"></i>Irrigação</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="band"><i class="cf-legend-swatch cf-legend-swatch--band" style="--c:#bfe6f5"></i>Faixa de irrigação</button>
+          <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="battery"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#a855f7"></i>Bateria</button>
+        </div>
+      </div>
+
+      <!-- 5. Dados brutos (esquerda) + Calendário (direita) -->
+      <div class="cosmofield-details-bottom-row">
+        <article class="cosmofield-details-data-card cosmofield-details-raw">
+          <header class="cosmofield-details-data-card__header is-flex">
+            <h3 class="cosmofield-details-data-card__title">Dados brutos</h3>
+            <button type="button" class="cosmofield-details-raw__export-btn" id="cfExportBtn"><i class="fa-solid fa-download"></i> Exportar</button>
+          </header>
+          <div class="cosmofield-details-raw__body">
+            <div class="cf-raw-table__wrap">
+              <table class="cf-raw-table" id="cfRawTable">
+                <thead>
+                  <tr>
+                    <th><button type="button" class="cf-raw-sort" id="cfRawSort" data-dir="desc">Data e hora<i class="fa-solid fa-arrow-down-long"></i></button></th>
+                    <th>Umidade do solo
+(% vol.)</th>
+                    <th>Capacidade de campo
+(% vol.)</th>
+                    <th>Ponto de murcha permanente
+(% vol.)</th>
+                    <th>Água disponível
+(%)</th>
+                    <th>Chuva
+(mm)</th>
+                    <th>Irrigação
+(mm)</th>
+                    <th>Bateria
+(V)</th>
+                  </tr>
+                </thead>
+                <tbody id="cfRawTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="cosmofield-details-raw__foot">
+            <span class="cosmofield-details-raw__count" id="cfRawCount"></span>
+            <div class="cosmofield-details-raw__pagination" id="cfRawPagination" aria-label="Paginação de dados brutos"></div>
+          </div>
+        </article>
+
+        <article class="cosmofield-details-data-card cosmofield-details-calendar">
+          <header class="cosmofield-details-data-card__header is-flex">
+            <h3 class="cosmofield-details-data-card__title">Calendário</h3>
+            <button type="button" class="fbill-btn fbill-btn--outline-primary" data-cf-add-event>
+              <i class="fa-solid fa-plus"></i> Adicionar evento
+            </button>
+          </header>
+          <div class="cosmofield-details-calendar__body">
+            <div class="cf-cal">
+              <div class="cf-cal__toolbar">
+                <button type="button" class="cf-cal__nav" id="cfCalPrev" aria-label="Mês anterior">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div class="cf-cal__month-wrap">
+                  <button type="button" class="cf-cal__month" id="cfCalMonth" aria-haspopup="true" aria-expanded="false">
+                    <span id="cfCalMonthLabel"></span>
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  </button>
+                  <div class="cf-cal__month-picker" id="cfCalMonthPicker" hidden>
+                    <div class="cf-cal__month-picker-head">
+                      <button type="button" class="cf-cal__nav" id="cfCalPickerYearPrev" aria-label="Ano anterior">
+                        <i class="fa-solid fa-angles-left"></i>
+                      </button>
+                      <span class="cf-cal__month-picker-year" id="cfCalPickerYear"></span>
+                      <button type="button" class="cf-cal__nav" id="cfCalPickerYearNext" aria-label="Próximo ano">
+                        <i class="fa-solid fa-angles-right"></i>
+                      </button>
+                    </div>
+                    <div class="cf-cal__month-picker-grid" id="cfCalPickerGrid"></div>
+                  </div>
+                </div>
+                <button type="button" class="cf-cal__nav" id="cfCalNext" aria-label="Próximo mês">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button type="button" class="cf-cal__today" id="cfCalToday">Hoje</button>
+              </div>
+
+              <div class="cf-cal__weekdays" id="cfCalWeekdays"></div>
+              <div class="cf-cal__grid" id="cfCalGrid"></div>
+
+              <div class="cf-cal__legend">
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--done"></i>Irrigação realizada</span>
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--planned"></i>Próxima irrigação</span>
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--rain"></i>Chuva</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Sobre o gráfico de umidade do solo -->
+  <div class="cf-modal" id="cfInfoModal" aria-hidden="true">
+    <div class="cf-modal__backdrop" data-cf-modal-close></div>
+    <section class="cf-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cfInfoModalTitle">
+      <div class="cf-modal__top">
+        <span class="cf-modal__icon"><i class="fa-regular fa-circle-question"></i></span>
+        <button type="button" class="cf-modal__close" aria-label="Fechar" data-cf-modal-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <h2 class="cf-modal__title" id="cfInfoModalTitle">Umidade do solo</h2>
+      <p class="cf-modal__desc">Este gráfico mostra a tendência de umidade do solo medida pela instalação. Ele ajuda a entender quanta água está disponível no solo ao longo do tempo e como a área reage após chuva ou irrigação.</p>
+
+      <div class="cf-modal__box">
+        <span class="cf-modal__box-label">Como ler o gráfico</span>
+
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--line" style="--c:#8bc34a"></span>
+          <span>Linha verde: umidade volumétrica do solo medida pela sonda no perfil monitorado.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#2f7ed8"></span>
+          <span>Linha tracejada azul: capacidade de campo, o limite superior de água que o solo retém.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#e74c3c"></span>
+          <span>Linha tracejada vermelha: ponto de murcha, o limite inferior a partir do qual a água fica indisponível.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#4aa3e0"></span>
+          <span>Barras azuis: lâminas de irrigação aplicadas ao longo do tempo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#2e9e5b"></span>
+          <span>Barras verdes: volumes de chuva registrados ao longo do tempo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#bfe6f5"></span>
+          <span>Faixa azul clara: intervalo de operação da irrigação entre o trigger e o target, referência visual para o manejo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#a855f7"></span>
+          <span>Linha tracejada roxa: tensão da bateria da sonda.</span>
+        </div>
+      </div>
+
+      <div class="cf-modal__footer">
+        <button type="button" class="cf-modal__close-btn" data-cf-modal-close>Fechar</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL DE EVENTO DO CALENDÁRIO -->
+  <div class="report-modal" id="cfEventModal" aria-hidden="true">
+    <div class="report-modal__backdrop" data-cf-event-close></div>
+    <div class="report-modal__container">
+      <header class="report-modal__header">
+        <h2 class="report-modal__title" id="cfEventTitle">Adicionar evento</h2>
+        <button class="report-modal__close" type="button" data-cf-event-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="report-modal__body">
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Tipo</h3>
+          <div class="report-modal__formats">
+            <button class="report-modal__format is-active" type="button" data-cf-event-type="irrigation">
+              <i class="fa-solid fa-droplet" style="color: #4aa3e0;"></i>
+              <div class="report-modal__format-info">
+                <strong>Irrigação</strong>
+                <span>Lâmina aplicada</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-event-type="rain">
+              <i class="fa-solid fa-cloud-rain" style="color: #2e9e5b;"></i>
+              <div class="report-modal__format-info">
+                <strong>Chuva</strong>
+                <span>Volume registrado</span>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        <section class="report-modal__section">
+          <div class="cf-event-form">
+            <div class="edit-panel__field">
+              <label class="label--required" for="cfEventDate">Data e hora</label>
+              <input class="edit-panel__input" id="cfEventDate" type="datetime-local" step="3600">
+            </div>
+            <div class="edit-panel__field">
+              <label class="label--required" for="cfEventMm">Lâmina</label>
+              <div class="sc-input-group">
+                <input class="equip-input sc-input" id="cfEventMm" type="text" inputmode="decimal" placeholder="Ex: 10">
+                <span class="sc-input-suffix">mm</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="report-modal__footer">
+        <button class="report-modal__btn-cancel" type="button" id="cfEventRemove" hidden>
+          <i class="fa-solid fa-trash"></i>
+          Remover
+        </button>
+        <button class="report-modal__btn-download" type="button" id="cfEventConfirm">
+          <i class="fa-solid fa-check"></i>
+          Adicionar
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- MODAL DE EXPORTAÇÃO — mesmo padrão do modal dos relatórios -->
+  <div class="report-modal" id="cfExportModal" aria-hidden="true">
+    <div class="report-modal__backdrop" data-cf-export-close></div>
+    <div class="report-modal__container">
+      <header class="report-modal__header">
+        <h2 class="report-modal__title">Exportar dados</h2>
+        <button class="report-modal__close" type="button" data-cf-export-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="report-modal__body">
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Conteúdo</h3>
+          <div class="report-modal__options">
+            <label class="report-modal__option is-active" data-cf-export-option="readings">
+              <input type="checkbox" name="cfExportContent" value="readings" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Leituras da sonda</span>
+            </label>
+            <label class="report-modal__option is-active" data-cf-export-option="chart">
+              <input type="checkbox" name="cfExportContent" value="chart" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Gráfico de umidade do solo</span>
+            </label>
+            <label class="report-modal__option" data-cf-export-option="calendar">
+              <input type="checkbox" name="cfExportContent" value="calendar">
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Calendário de irrigação</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Formato do arquivo</h3>
+          <div class="report-modal__formats">
+            <button class="report-modal__format is-active" type="button" data-cf-format="Excel">
+              <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i>
+              <div class="report-modal__format-info">
+                <strong>Excel</strong>
+                <span>.xls</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-format="PDF">
+              <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+              <div class="report-modal__format-info">
+                <strong>PDF</strong>
+                <span>.pdf</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-format="CSV">
+              <i class="fa-solid fa-file-csv" style="color: #0ea5e9;"></i>
+              <div class="report-modal__format-info">
+                <strong>CSV</strong>
+                <span>.csv</span>
+              </div>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <footer class="report-modal__footer">
+        <button class="report-modal__btn-cancel" type="button" data-cf-export-close>Cancelar</button>
+        <button class="report-modal__btn-download" type="button" id="cfExportConfirm">
+          <i class="fa-solid fa-download"></i>
+          Download
+        </button>
+      </footer>
+    </div>
+  </div>
+</section>

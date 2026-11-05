@@ -1,0 +1,1139 @@
+<section class="edit-panel farm-edit config-page cosmofield-page" id="cosmofieldPanel" aria-label="Cosmofield">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="cosmofieldBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Cosmofield</span>
+    </button>
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <!-- Aba Geral omitida: Dashboard / Calendário / Dados brutos agora ficam
+           na tela de Detalhes (cosmofield.details.html). Mantida comentada,
+           não apagada — o bloco do conteúdo está mais abaixo.
+      <button class="edit-panel__tab is-active" type="button" data-tab="general" aria-selected="true">Geral</button>
+      -->
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div class="cf-tabs-actions" id="cfTabsActions">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-cf-device-select>
+          <button class="edit-panel__select-btn" type="button" id="cfDeviceSelectBtn" data-select-trigger aria-expanded="false" aria-label="Selecionar equipamento"></button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="cfDeviceSelectMenu"></div>
+        </div>
+      </div>
+      <!-- Exportar era ação só da aba Geral (omitida); na tela de Detalhes
+           fica no card de Dados brutos.
+      <button class="edit-panel__save btn-save-pref" type="button" id="cfExportBtn">
+        <i class="fa-solid fa-download"></i>
+        Exportar
+      </button>
+      -->
+      <button class="edit-panel__save btn-save-pref" type="button" id="cfCfgSaveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+<!-- Aba Geral omitida (Dashboard / Calendário / Dados brutos) — o conteúdo vive
+       agora na tela de Detalhes (cosmofield.details.html). Mantida comentada, não
+       apagada. Os comentários internos viraram [TEXTO] para não fechar este bloco.
+  <div class="edit-panel__tab-body is-active" data-tab-body="general">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Seções do Cosmofield">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#cosmofieldGrafico">Dashboard</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldAgenda">Calendário</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldRawData">Dados brutos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        [GRÁFICO]
+        <section class="edit-panel__section is-active" id="cosmofieldGrafico">
+          <div class="edit-panel__section-body">
+          <article class="cf-stats">
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Umidade atual</span>
+              <strong class="cf-stats__value" id="cfKpiMoisture">—</strong>
+            </div>
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Água disponível</span>
+              <strong class="cf-stats__value" id="cfKpiAvailable">—</strong>
+            </div>
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Lâmina recomendada</span>
+              <strong class="cf-stats__value" id="cfKpiBlade">—</strong>
+            </div>
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Próxima irrigação</span>
+              <strong class="cf-stats__value" id="cfKpiNext">—</strong>
+            </div>
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Tensão da bateria</span>
+              <strong class="cf-stats__value" id="cfKpiBattery">—</strong>
+            </div>
+            <div class="cf-stats__item">
+              <span class="cf-stats__label">Última transmissão</span>
+              <strong class="cf-stats__value" id="cfKpiComm">—</strong>
+            </div>
+          </article>
+
+          <div class="cf-chart-card" id="cfSoilChart">
+            <div class="cf-chart-card__header">
+              <div class="cf-chart-card__title">
+                Umidade do solo
+                <button type="button" class="cf-chart-card__info cf-info--btn" id="cfAdviceInfoBtn" aria-label="Sobre o gráfico de umidade do solo" aria-haspopup="dialog">
+                  <i class="fa-regular fa-circle-question"></i>
+                </button>
+              </div>
+              <button type="button" class="fbill-btn fbill-btn--outline-primary" data-cf-add-event>
+                <i class="fa-solid fa-plus"></i> Adicionar evento
+              </button>
+            </div>
+
+            <div class="cf-chart-card__toolbar">
+              <div class="cf-chart-card__zoom">
+                <span class="cf-chart-card__zoom-label">Zoom</span>
+                <button type="button" class="cf-zoom-btn" data-zoom="14d">14d</button>
+                <button type="button" class="cf-zoom-btn" data-zoom="1m">1m</button>
+                <button type="button" class="cf-zoom-btn" data-zoom="3m">3m</button>
+                <button type="button" class="cf-zoom-btn" data-zoom="1y">1y</button>
+                <button type="button" class="cf-zoom-btn is-active" data-zoom="all">Tudo</button>
+                <button type="button" class="cf-zoom-btn cf-zoom-btn--crop" data-zoom="crop" id="cfZoomCrop" hidden>Safra</button>
+              </div>
+              <button type="button" class="cf-chart-card__menu" aria-label="Opções">
+                <i class="fa-solid fa-bars"></i>
+              </button>
+            </div>
+
+            <div class="cf-chart-card__plot">
+              <svg class="cf-chart-card__svg" id="cfChartMainSvg" viewBox="0 0 1000 400" preserveAspectRatio="none"></svg>
+            </div>
+
+            <div class="cf-chart-card__navigator" id="cfChartNavigator">
+              <svg class="cf-chart-card__nav-svg" id="cfChartNavSvg" viewBox="0 0 1000 100" preserveAspectRatio="none"></svg>
+              <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--l" id="cfNavMaskLeft"></div>
+              <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--r" id="cfNavMaskRight"></div>
+              <div class="cf-chart-card__nav-range" id="cfNavRange">
+                <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--l" data-handle="l"></div>
+                <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--r" data-handle="r"></div>
+              </div>
+              <div class="cf-chart-card__nav-scrollbar"></div>
+            </div>
+
+            <div class="cf-chart-card__legend" id="cfChartLegend">
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="moisture"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#8bc34a"></i>Umidade do solo</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="fc"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#2f7ed8"></i>Capacidade de campo</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="wp"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#e74c3c"></i>Ponto de murcha permanente</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="rain"><i class="cf-legend-swatch cf-legend-swatch--dot" style="--c:#2e9e5b"></i>Chuva</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="irrigation"><i class="cf-legend-swatch cf-legend-swatch--dot" style="--c:#4aa3e0"></i>Irrigação</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="band"><i class="cf-legend-swatch cf-legend-swatch--band" style="--c:#bfe6f5"></i>Faixa de irrigação</button>
+              <button type="button" class="cf-legend-item cf-legend-item--toggle" data-cf-series="battery"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#a855f7"></i>Bateria</button>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        [DADOS BRUTOS]
+        [AGENDA]
+        <section class="edit-panel__section" id="cosmofieldAgenda">
+          <div class="edit-panel__section-body">
+
+          <div class="fbill-card">
+            <div class="fbill-card__head">
+              <div class="cf-cal__actions">
+                <button type="button" class="fbill-btn fbill-btn--outline-primary" data-cf-add-event>
+                  <i class="fa-solid fa-plus"></i> Adicionar evento
+                </button>
+              </div>
+            </div>
+
+            <div class="cf-cal">
+              <div class="cf-cal__toolbar">
+                <button type="button" class="cf-cal__nav" id="cfCalPrev" aria-label="Mês anterior">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div class="cf-cal__month-wrap">
+                  <button type="button" class="cf-cal__month" id="cfCalMonth" aria-haspopup="true" aria-expanded="false">
+                    <span id="cfCalMonthLabel"></span>
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  </button>
+                  <div class="cf-cal__month-picker" id="cfCalMonthPicker" hidden>
+                    <div class="cf-cal__month-picker-head">
+                      <button type="button" class="cf-cal__nav" id="cfCalPickerYearPrev" aria-label="Ano anterior">
+                        <i class="fa-solid fa-angles-left"></i>
+                      </button>
+                      <span class="cf-cal__month-picker-year" id="cfCalPickerYear"></span>
+                      <button type="button" class="cf-cal__nav" id="cfCalPickerYearNext" aria-label="Próximo ano">
+                        <i class="fa-solid fa-angles-right"></i>
+                      </button>
+                    </div>
+                    <div class="cf-cal__month-picker-grid" id="cfCalPickerGrid"></div>
+                  </div>
+                </div>
+                <button type="button" class="cf-cal__nav" id="cfCalNext" aria-label="Próximo mês">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button type="button" class="cf-cal__today" id="cfCalToday">Hoje</button>
+              </div>
+
+              <div class="cf-cal__weekdays" id="cfCalWeekdays"></div>
+              <div class="cf-cal__grid" id="cfCalGrid"></div>
+
+              <div class="cf-cal__legend">
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--done"></i>Irrigação realizada</span>
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--planned"></i>Próxima irrigação</span>
+                <span class="cf-cal__legend-item"><i class="cf-cal__swatch cf-cal__swatch--rain"></i>Chuva</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="cosmofieldRawData">
+          <div class="edit-panel__section-body">
+
+          <div class="fbill-card">
+            <div class="cf-raw-head">
+              <button type="button" class="fbill-btn fbill-btn--outline-primary" data-cf-add-event>
+                <i class="fa-solid fa-plus"></i> Adicionar evento
+              </button>
+            </div>
+
+            <div class="cf-raw-table__wrap">
+              <table class="cf-raw-table" id="cfRawTable">
+                <thead>
+                  <tr>
+                    <th><button type="button" class="cf-raw-sort" id="cfRawSort" data-dir="desc">Data e hora<i class="fa-solid fa-arrow-down-long"></i></button></th>
+                    <th>Umidade do solo
+(% vol.)</th>
+                    <th>Capacidade de campo
+(% vol.)</th>
+                    <th>Ponto de murcha permanente
+(% vol.)</th>
+                    <th>Água disponível
+(%)</th>
+                    <th>Chuva
+(mm)</th>
+                    <th>Irrigação
+(mm)</th>
+                    <th>Bateria
+(V)</th>
+                  </tr>
+                </thead>
+                <tbody id="cfRawTableBody"></tbody>
+              </table>
+            </div>
+            <div class="cf-raw-table__foot" id="cfRawCount"></div>
+            <div class="pivo-history__pagination" id="cfRawPagination" aria-label="Paginação de dados brutos"></div>
+          </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  -->
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Seções de configurações">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#cosmofieldCfgGeral">Identificação</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldCfgLocal">Localização</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldCfgSolo">Solo</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldCfgCultivo">Cultura</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldCfgIntegracao">Equipamento vinculado</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cosmofieldCfgEscala">Escala do gráfico</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- GERAL (Configurações) -->
+        <section class="edit-panel__section is-active" id="cosmofieldCfgGeral">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Identificação</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm1">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Geral</h3>
+
+            <div class="edit-panel__grid-1">
+              <div class="edit-panel__field">
+                <label class="label--required" for="cfCfgName">Nome do equipamento</label>
+                <input class="edit-panel__input" id="cfCfgName" type="text" value="">
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-2">
+              <div class="edit-panel__field">
+                <label class="label--required" for="cfCfgInstallationId">ID da instalação <span class="edit-panel__tooltip-icon" data-tooltip="Você encontra este dado no manual e na etiqueta da caixa do Cosmofield instalado."><i class="fa-regular fa-circle-question"></i></span></label>
+                <input class="edit-panel__input" id="cfCfgInstallationId" type="text" value="">
+              </div>
+              <div class="edit-panel__field">
+                <label class="label--required" for="cfCfgAccessKey">Chave de acesso <span class="edit-panel__tooltip-icon" data-tooltip="Você encontra este dado no manual e na etiqueta da caixa do Cosmofield instalado."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="cf-loc-row cf-conn-row">
+                  <input class="edit-panel__input" id="cfCfgAccessKey" type="text" value="">
+                  <button type="button" class="edit-panel__btn cf-conn-btn" id="cfCfgTestConn" title="Testar conexão" aria-label="Testar conexão"><i class="fa-solid fa-wifi" aria-hidden="true"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-1">
+              <div class="edit-panel__field">
+                <label class="label--required" for="cfCfgInstallDate">Data de instalação</label>
+                <input class="edit-panel__input" id="cfCfgInstallDate" type="text" inputmode="numeric" maxlength="16" placeholder="Ex: 30/10/2026 09:53" value="">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LOCALIZAÇÃO -->
+        <section class="edit-panel__section" id="cosmofieldCfgLocal">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm6">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+
+            <div class="cf-loc-split">
+              <div class="cf-loc-split__map">
+                <div class="cf-cfg-map" id="cfCfgMap"></div>
+              </div>
+
+              <div class="cf-loc-split__fields">
+                <div class="cf-loc-split__fields-head">
+                  <h3 class="pref-section-title">Localização</h3>
+                  <p class="cf-loc-desc">
+                    A localização em campo do equipamento é essencial para mostrar geograficamente no mapa a posição do equipamento.
+                  </p>
+                </div>
+
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgLoc">Localização do equipamento <span class="edit-panel__tooltip-icon" data-tooltip="Coordenada onde a sonda foi instalada. Clique no mapa ou arraste o pino para posicionar, ou digite a latitude e a longitude."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="cf-loc-row">
+                    <input class="edit-panel__input" id="cfCfgLoc" type="text" placeholder="Ex: -12.392318, -45.400572" value="">
+                    <button type="button" class="edit-panel__btn" id="cfCfgUseLoc" style="white-space: nowrap;">
+                      <i class="fa-solid fa-location-dot"></i> Obter localização
+                    </button>
+                  </div>
+                </div>
+
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgAddress">Endereço</label>
+                  <input class="edit-panel__input" id="cfCfgAddress" type="text" value="">
+                </div>
+
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgCountry">País</label>
+                  <div class="edit-panel__select-field" id="cfCfgCountryField" data-cf-select>
+                  <button type="button" class="edit-panel__select-btn" data-select-trigger>Brasil</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu">
+                  <button type="button" class="edit-panel__select-option is-active" data-value="Brasil">Brasil</button>
+                  <button type="button" class="edit-panel__select-option" data-value="Portugal">Portugal</button>
+                  <button type="button" class="edit-panel__select-option" data-value="Estados Unidos">Estados Unidos</button>
+                  </div>
+                  <input type="hidden" id="cfCfgCountry" value="Brasil">
+                  </div>
+                </div>
+
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgTz">Fuso horário</label>
+                  <div class="edit-panel__select-field" id="cfCfgTzField" data-cf-select>
+                  <button type="button" class="edit-panel__select-btn" data-select-trigger>America/Sao_Paulo</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu">
+                  <button type="button" class="edit-panel__select-option is-active" data-value="America/Sao_Paulo">America/Sao_Paulo</button>
+                  <button type="button" class="edit-panel__select-option" data-value="America/Manaus">America/Manaus</button>
+                  <button type="button" class="edit-panel__select-option" data-value="UTC">UTC</button>
+                  </div>
+                  <input type="hidden" id="cfCfgTz" value="America/Sao_Paulo">
+                  </div>
+                </div>
+
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgAltitude">Altitude</label>
+                  <div class="cf-altitude-row">
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="cfCfgAltitude" type="text" inputmode="decimal" value="">
+                      <span class="sc-input-suffix">m</span>
+                    </div>
+                    <button type="button" class="edit-panel__btn cf-altitude-btn" id="cfCfgCalcAltitude" title="Calcular altitude" aria-label="Calcular altitude">
+                      <i class="fa-solid fa-mountain" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PARÂMETROS DE SOLO -->
+        <section class="edit-panel__section" id="cosmofieldCfgSolo">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Solo</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm2">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+              <h3 class="pref-section-title" style="margin-top: 0;">Parâmetros do solo</h3>
+
+              <div class="edit-panel__grid-1">
+                <div class="edit-panel__field">
+                  <label for="cfCfgSoilPreset">Textura do solo <span class="edit-panel__tooltip-icon" data-tooltip="Escolha a textura para preencher a capacidade de campo e o ponto de murcha com valores de referência, ou use a definição manual para informar os seus próprios valores."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <select class="edit-panel__input" id="cfCfgSoilPreset" data-equip-select>
+                    <option value="__manual__">Definição manual</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="edit-panel__grid-2">
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgFieldCap">Capacidade de campo <span class="edit-panel__tooltip-icon" data-tooltip="Conteúdo volumétrico de água retido pelo solo após a drenagem livre, correspondente ao potencial matricial de -10 a -33 kPa conforme a textura. Define o limite superior da água disponível e o valor até o qual a lâmina recomendada repõe o perfil."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="cfCfgFieldCap" type="text" inputmode="decimal" value="30">
+                    <span class="sc-input-suffix">% vol.</span>
+                  </div>
+                </div>
+                <div class="edit-panel__field">
+                  <label class="label--required" for="cfCfgWilting">Ponto de murcha permanente <span class="edit-panel__tooltip-icon" data-tooltip="Conteúdo volumétrico de água retido a -1500 kPa, no qual a força de retenção do solo supera a capacidade de absorção radicular. Define o limite inferior da água disponível."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="cfCfgWilting" type="text" inputmode="decimal" value="17">
+                    <span class="sc-input-suffix">% vol.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cf-soil-note" id="cfCfgSoilNote" hidden>
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Valores sugeridos por textura, apenas como ponto de partida. Para um direcionamento preciso da área, consulte um técnico local e obtenha a capacidade de campo e o ponto de murcha por análise laboratorial. Os valores podem ser ajustados a qualquer momento nas configurações do equipamento.
+                  <em class="cf-soil-note__src">Fontes:
+                    <a href="https://doi.org/10.2136/sssaj1983.03615995004700040032x" target="_blank" rel="noopener noreferrer">Ratliff, Ritchie &amp; Cassel (1983), Soil Sci. Soc. Am. J. 47(4):770-775</a>
+                    <a href="https://doi.org/10.3733/ca.v054n03p38" target="_blank" rel="noopener noreferrer">Hanson, Orloff &amp; Peters (2000), California Agriculture 54(3):38-42</a>
+                  </em>
+                </span>
+              </div>
+          </div>
+        </section>
+        <!-- CULTIVO -->
+        <section class="edit-panel__section" id="cosmofieldCfgCultivo">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Cultura</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm3">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+                <h3 class="pref-section-title" style="margin-top: 0;">Ciclo da safra</h3>
+
+                <div class="edit-panel__grid-1">
+                  <div class="edit-panel__field">
+                    <label for="cfCfgCropType">Cultura <span class="edit-panel__tooltip-icon" data-tooltip="Ao selecionar a cultura, a umidade gatilho é preenchida a partir do fator de depleção p do FAO 56, que é a fração da água disponível que aquela espécie tolera perder sem estresse hídrico. A umidade alvo assume 100%, repondo o perfil até a capacidade de campo. Ambos seguem editáveis."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <select class="edit-panel__input" id="cfCfgCropType" data-equip-select>
+                      <option value="__none__">Nenhuma (definir depois)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="edit-panel__grid-2">
+                  <div class="edit-panel__field">
+                    <label for="cfCfgSowing">Data de semeadura <span class="edit-panel__tooltip-icon" data-tooltip="Início do ciclo da cultura. Serve para recortar o gráfico de umidade pelo período da safra."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <input class="edit-panel__input" id="cfCfgSowing" type="text" data-date-mask placeholder="dd/mm/aaaa" value="">
+                  </div>
+                  <div class="edit-panel__field">
+                    <label for="cfCfgHarvest">Data de colheita <span class="edit-panel__tooltip-icon" data-tooltip="Fim previsto do ciclo. Junto com a semeadura, delimita a safra no filtro do gráfico."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <input class="edit-panel__input" id="cfCfgHarvest" type="text" data-date-mask placeholder="dd/mm/aaaa" value="">
+                  </div>
+                </div>
+
+                <h3 class="pref-section-title">Manejo de irrigação</h3>
+
+                <div class="edit-panel__grid-2">
+                  <div class="edit-panel__field">
+                    <label class="label--required" for="cfCfgTarget">Umidade alvo <span class="edit-panel__tooltip-icon" data-tooltip="Percentual da água disponível que a irrigação deve repor. Com 100% a lâmina recomendada leva o solo de volta à capacidade de campo."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="cfCfgTarget" type="text" inputmode="decimal" value="100">
+                      <span class="sc-input-suffix">%</span>
+                    </div>
+                  </div>
+                  <div class="edit-panel__field">
+                    <label class="label--required" for="cfCfgTrigger">Umidade gatilho <span class="edit-panel__tooltip-icon" data-tooltip="Percentual da água disponível em que a irrigação passa a ser recomendada. Abaixo desse ponto a sonda entra em alerta, então o manejo procura nunca deixar a umidade cair além dele. Escolher a cultura sugere um valor a partir do fator de depleção do FAO 56, que segue editável."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="cfCfgTrigger" type="text" inputmode="decimal" value="">
+                      <span class="sc-input-suffix">%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cf-soil-note" id="cfCfgCropNote" hidden>
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span>Gatilho sugerido a partir do fator de depleção da cultura, apenas como ponto de partida. Para um direcionamento preciso da área, consulte um técnico local: o valor adequado depende do solo, do clima e do estágio da cultura. Pode ser ajustado a qualquer momento.
+                    <em class="cf-soil-note__src">
+                      <a href="https://www.fao.org/4/x0490e/x0490e0e.htm" target="_blank" rel="noopener noreferrer">Allen, Pereira, Raes &amp; Smith (1998), Crop evapotranspiration: guidelines for computing crop water requirements. FAO Irrigation and Drainage Paper 56, Roma</a>
+                    </em>
+                  </span>
+                </div>
+          </div>
+        </section>
+
+        <!-- INTEGRAÇÃO -->
+        <section class="edit-panel__section" id="cosmofieldCfgIntegracao">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Equipamento vinculado</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm4">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+              <div class="edit-panel__grid-2">
+                <div class="edit-panel__field">
+                  <label for="cfCfgLinkedPivot">Equipamento vinculado <span class="edit-panel__tooltip-icon" data-tooltip="Associa a sonda ao equipamento de irrigação desta área. A plataforma mostra a irrigação desse equipamento no gráfico de umidade do solo e no calendário. Não afeta as leituras da sonda."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <select class="edit-panel__input" id="cfCfgLinkedPivot" data-equip-select>
+                    <option value="__none__">Nenhum (sonda independente)</option>
+                  </select>
+                </div>
+                <div class="edit-panel__field">
+                  <label for="cfCfgRainGauge">Fonte de dados de chuva <span class="edit-panel__tooltip-icon" data-tooltip="De onde vem a chuva mostrada no gráfico e no calendário: o pluviômetro embutido na própria sonda, um pluviômetro da fazenda ou a estimativa da API de clima para a coordenada da sonda. Não afeta as leituras da sonda."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <select class="edit-panel__input" id="cfCfgRainGauge" data-equip-select>
+                    <option value="__norain__">Nenhuma (sem dados de chuva)</option>
+                    <option value="__own__">Pluviômetro próprio da sonda</option>
+                    <option value="__weather__">Estimativa da API de clima</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+        </section>
+
+        <!-- ESCALA DO GRÁFICO -->
+        <section class="edit-panel__section" id="cosmofieldCfgEscala">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Escala do gráfico</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> <span id="cfCfgLastComm5">—</span></span>
+          </div>
+          <div class="edit-panel__section-body">
+              <h3 class="pref-section-title" style="margin-top: 0;">Parâmetros de escala</h3>
+
+              <div class="edit-panel__grid-4">
+                <div class="edit-panel__field">
+                  <label for="cfCfgYMode">Modo padrão</label>
+                  <select class="edit-panel__input" id="cfCfgYMode" data-equip-select>
+                    <option value="auto">Automático</option>
+                    <option value="manual">Manual</option>
+                  </select>
+                </div>
+                <div class="edit-panel__field">
+                  <label for="cfCfgYMax">Umidade máx.</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="cfCfgYMax" type="text" inputmode="decimal" placeholder="auto" value="">
+                    <span class="sc-input-suffix">% vol.</span>
+                  </div>
+                </div>
+                <div class="edit-panel__field">
+                  <label for="cfCfgYRightMax">Chuva/irrigação máx.</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="cfCfgYRightMax" type="text" inputmode="decimal" placeholder="auto" value="">
+                    <span class="sc-input-suffix">mm</span>
+                  </div>
+                </div>
+                <div class="edit-panel__field">
+                  <label for="cfCfgYBattMax">Bateria máx.</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="cfCfgYBattMax" type="text" inputmode="decimal" placeholder="14" value="">
+                    <span class="sc-input-suffix">V</span>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HISTÓRICO ══════════════════════════════════════════════════════ -->
+  <!-- Só a sonda em edição (nunca outro equipamento). Cada Salvar das
+       Configurações gera uma linha.
+       A expansão é somente leitura e traz todos os campos das seções da aba
+       Configurações. Restaurar carrega os valores na aba Configurações sem
+       salvar. A aba não tem Salvar nem download. -->
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#cfHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#cfHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="cfHistoryList">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+
+            <div class="edit-panel__history-subtitle-line">
+              <i class="fa-regular fa-clock"></i> Todas as configurações
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-table-columns" title="Colunas"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;"></th>
+                  <th>Data e hora</th>
+                  <th>Usuário</th>
+                  <th>Nome da configuração</th>
+                  <th>Identificação</th>
+                  <th>Cultura</th>
+                  <th>Solo</th>
+                  <th style="width:90px;">Ações</th>
+                </tr>
+              </thead>
+                <tbody>
+                <tr class="edit-panel__history-row" data-row-id="cf1" data-cf-name="Cosmofield 01" data-cf-fc="32.00" data-cf-wp="18.00" data-cf-target="100.00" data-cf-trigger="45.00">
+                  <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="cf1"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>30 Oct 2026 09:41</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td>—</td>
+                  <td>Cosmofield 01</td>
+                  <td>Milho</td>
+                  <td>Franco-argiloso</td>
+                  <td><div class="table-actions"><i class="fa-regular fa-star" title="Favoritar" data-cf-fav></i><i class="fa-solid fa-clock-rotate-left" title="Restaurar" data-cf-restore></i></div></td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-cf1" style="display:none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Identificação</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>Cosmofield 01</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">ID da instalação:</span><span>CF-001234</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chave de acesso:</span><span>aw12!fg4SYufdGg3@1ssD</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de instalação:</span><span>12 Aug 2025 09:53</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Localização</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Localização do equipamento:</span><span>-12.421035, -45.418207</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Endereço:</span><span>Barreiras, Bahia, Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">País:</span><span>Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fuso horário:</span><span>America/Sao_Paulo</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Altitude:</span><span>452 m</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Solo</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Textura do solo:</span><span>Franco-argiloso</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Capacidade de campo:</span><span>32.00 % vol.</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Ponto de murcha permanente:</span><span>18.00 % vol.</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Cultura</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Cultura:</span><span>Milho</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de semeadura:</span><span>12/08/2025</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de colheita:</span><span>20/01/2026</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade alvo:</span><span>100.00 %</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade gatilho:</span><span>45.00 %</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Equipamento vinculado</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vincular a um equipamento:</span><span>Pivô 02</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fonte de dados de chuva:</span><span>Pluviômetro próprio da sonda</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Escala do gráfico</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Modo padrão:</span><span>Automático</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade máx.:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chuva/irrigação máx.:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Bateria máx.:</span><span>—</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="edit-panel__history-row" data-row-id="cf2" data-cf-name="Cosmofield 01" data-cf-fc="32.00" data-cf-wp="18.00" data-cf-target="100.00" data-cf-trigger="50.00">
+                  <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="cf2"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>02 Oct 2026 16:40</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td>Safra soja 25/26</td>
+                  <td>Cosmofield 01</td>
+                  <td>Soja</td>
+                  <td>Franco-argiloso</td>
+                  <td><div class="table-actions"><i class="fa-solid fa-star is-favorite" title="Remover dos favoritos" data-cf-fav></i><i class="fa-solid fa-clock-rotate-left" title="Restaurar" data-cf-restore></i></div></td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-cf2" style="display:none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Identificação</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>Cosmofield 01</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">ID da instalação:</span><span>CF-001234</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chave de acesso:</span><span>aw12!fg4SYufdGg3@1ssD</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de instalação:</span><span>12 Aug 2025 09:53</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Localização</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Localização do equipamento:</span><span>-12.421035, -45.418207</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Endereço:</span><span>Barreiras, Bahia, Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">País:</span><span>Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fuso horário:</span><span>America/Sao_Paulo</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Altitude:</span><span>452 m</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Solo</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Textura do solo:</span><span>Franco-argiloso</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Capacidade de campo:</span><span>32.00 % vol.</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Ponto de murcha permanente:</span><span>18.00 % vol.</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Cultura</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Cultura:</span><span>Soja</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de semeadura:</span><span>15/10/2025</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de colheita:</span><span>28/02/2026</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade alvo:</span><span>100.00 %</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade gatilho:</span><span>50.00 %</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Equipamento vinculado</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vincular a um equipamento:</span><span>Pivô 02</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fonte de dados de chuva:</span><span>Pluviômetro próprio da sonda</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Escala do gráfico</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Modo padrão:</span><span>Manual</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade máx.:</span><span>40.00</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chuva/irrigação máx.:</span><span>60.00</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Bateria máx.:</span><span>14.00</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="edit-panel__history-row" data-row-id="cf3" data-cf-name="Cosmofield 01" data-cf-fc="31.00" data-cf-wp="15.00" data-cf-target="100.00" data-cf-trigger="50.00">
+                  <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="cf3"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>12 Aug 2025 10:05</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td>—</td>
+                  <td>Cosmofield 01</td>
+                  <td>—</td>
+                  <td>Definição manual</td>
+                  <td><div class="table-actions"><i class="fa-regular fa-star" title="Favoritar" data-cf-fav></i><i class="fa-solid fa-clock-rotate-left" title="Restaurar" data-cf-restore></i></div></td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-cf3" style="display:none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Identificação</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>Cosmofield 01</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">ID da instalação:</span><span>CF-001234</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chave de acesso:</span><span>aw12!fg4SYufdGg3@1ssD</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de instalação:</span><span>12 Aug 2025 09:53</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Localização</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Localização do equipamento:</span><span>-12.421035, -45.418207</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Endereço:</span><span>Barreiras, Bahia, Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">País:</span><span>Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fuso horário:</span><span>America/Sao_Paulo</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Altitude:</span><span>452 m</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Solo</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Textura do solo:</span><span>Definição manual</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Capacidade de campo:</span><span>31.00 % vol.</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Ponto de murcha permanente:</span><span>15.00 % vol.</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Cultura</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Cultura:</span><span>Nenhuma (definir depois)</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de semeadura:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de colheita:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade alvo:</span><span>100.00 %</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade gatilho:</span><span>50.00 %</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Equipamento vinculado</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vincular a um equipamento:</span><span>Nenhum (sonda independente)</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fonte de dados de chuva:</span><span>Pluviômetro próprio da sonda</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Escala do gráfico</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Modo padrão:</span><span>Automático</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade máx.:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chuva/irrigação máx.:</span><span>—</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Bateria máx.:</span><span>—</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <div class="edit-panel__pagination">
+                <span>1-3 de 3 itens</span>
+                <div class="edit-panel__pagination-pages">
+                  <button class="edit-panel__pagination-btn" type="button" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                  <button class="edit-panel__pagination-btn" type="button" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <select class="edit-panel__pagination-select" aria-label="Itens por página">
+                  <option>10 / página</option>
+                  <option>20 / página</option>
+                  <option>50 / página</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="cfHistoryFavs">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Favoritos</h2>
+            </div>
+
+            <div class="edit-panel__history-subtitle-line">
+              <i class="fa-solid fa-star"></i> Configurações favoritas
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-table-columns" title="Colunas"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;"></th>
+                  <th>Data e hora</th>
+                  <th>Usuário</th>
+                  <th>Nome da configuração</th>
+                  <th>Identificação</th>
+                  <th>Cultura</th>
+                  <th>Solo</th>
+                  <th style="width:90px;">Ações</th>
+                </tr>
+              </thead>
+                <tbody>
+                <tr class="edit-panel__history-row" data-row-id="fav-cf2" data-cf-name="Cosmofield 01" data-cf-fc="32.00" data-cf-wp="18.00" data-cf-target="100.00" data-cf-trigger="50.00">
+                  <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="fav-cf2"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>02 Oct 2026 16:40</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td>Safra soja 25/26</td>
+                  <td>Cosmofield 01</td>
+                  <td>Soja</td>
+                  <td>Franco-argiloso</td>
+                  <td><div class="table-actions"><i class="fa-solid fa-star is-favorite" title="Remover dos favoritos" data-cf-fav></i><i class="fa-solid fa-clock-rotate-left" title="Restaurar" data-cf-restore></i></div></td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-fav-cf2" style="display:none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Identificação</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>Cosmofield 01</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">ID da instalação:</span><span>CF-001234</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chave de acesso:</span><span>aw12!fg4SYufdGg3@1ssD</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de instalação:</span><span>12 Aug 2025 09:53</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Localização</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Localização do equipamento:</span><span>-12.421035, -45.418207</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Endereço:</span><span>Barreiras, Bahia, Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">País:</span><span>Brasil</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fuso horário:</span><span>America/Sao_Paulo</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Altitude:</span><span>452 m</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Solo</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Textura do solo:</span><span>Franco-argiloso</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Capacidade de campo:</span><span>32.00 % vol.</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Ponto de murcha permanente:</span><span>18.00 % vol.</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Cultura</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Cultura:</span><span>Soja</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de semeadura:</span><span>15/10/2025</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Data de colheita:</span><span>28/02/2026</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade alvo:</span><span>100.00 %</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade gatilho:</span><span>50.00 %</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Equipamento vinculado</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vincular a um equipamento:</span><span>Pivô 02</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Fonte de dados de chuva:</span><span>Pluviômetro próprio da sonda</span></div>
+                        </div>
+                      </div>
+                      <div class="edit-panel__history-details-section">
+                        <h4>Escala do gráfico</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Modo padrão:</span><span>Manual</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Umidade máx.:</span><span>40.00</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Chuva/irrigação máx.:</span><span>60.00</span></div>
+                          <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Bateria máx.:</span><span>14.00</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <div class="edit-panel__pagination">
+                <span>1-1 de 1 itens</span>
+                <div class="edit-panel__pagination-pages">
+                  <button class="edit-panel__pagination-btn" type="button" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                  <button class="edit-panel__pagination-btn" type="button" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <select class="edit-panel__pagination-select" aria-label="Itens por página">
+                  <option>10 / página</option>
+                  <option>20 / página</option>
+                  <option>50 / página</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+<!-- Modais da aba Geral omitida (ajuda do gráfico, evento do calendário,
+       exportação) — a tela de Detalhes tem os seus. Mantidos comentados.
+  [Modal: Sobre o gráfico de umidade do solo]
+  <div class="cf-modal" id="cfInfoModal" aria-hidden="true">
+    <div class="cf-modal__backdrop" data-cf-modal-close></div>
+    <section class="cf-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cfInfoModalTitle">
+      <div class="cf-modal__top">
+        <span class="cf-modal__icon"><i class="fa-regular fa-circle-question"></i></span>
+        <button type="button" class="cf-modal__close" aria-label="Fechar" data-cf-modal-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <h2 class="cf-modal__title" id="cfInfoModalTitle">Umidade do solo</h2>
+      <p class="cf-modal__desc">Este gráfico mostra a tendência de umidade do solo medida pela instalação. Ele ajuda a entender quanta água está disponível no solo ao longo do tempo e como a área reage após chuva ou irrigação.</p>
+
+      <div class="cf-modal__box">
+        <span class="cf-modal__box-label">Como ler o gráfico</span>
+
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--line" style="--c:#8bc34a"></span>
+          <span>Linha verde: umidade volumétrica do solo medida pela sonda no perfil monitorado.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#2f7ed8"></span>
+          <span>Linha tracejada azul: capacidade de campo, o limite superior de água que o solo retém.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#e74c3c"></span>
+          <span>Linha tracejada vermelha: ponto de murcha, o limite inferior a partir do qual a água fica indisponível.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#4aa3e0"></span>
+          <span>Barras azuis: lâminas de irrigação aplicadas ao longo do tempo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#2e9e5b"></span>
+          <span>Barras verdes: volumes de chuva registrados ao longo do tempo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--block" style="--c:#bfe6f5"></span>
+          <span>Faixa azul clara: intervalo de operação da irrigação entre o trigger e o target, referência visual para o manejo.</span>
+        </div>
+        <div class="cf-modal__row">
+          <span class="cf-modal__swatch cf-modal__swatch--dash" style="--c:#a855f7"></span>
+          <span>Linha tracejada roxa: tensão da bateria da sonda.</span>
+        </div>
+      </div>
+
+      <div class="cf-modal__footer">
+        <button type="button" class="cf-modal__close-btn" data-cf-modal-close>Fechar</button>
+      </div>
+    </section>
+  </div>
+  [MODAL DE EVENTO DO CALENDÁRIO]
+  <div class="report-modal" id="cfEventModal" aria-hidden="true">
+    <div class="report-modal__backdrop" data-cf-event-close></div>
+    <div class="report-modal__container">
+      <header class="report-modal__header">
+        <h2 class="report-modal__title" id="cfEventTitle">Adicionar evento</h2>
+        <button class="report-modal__close" type="button" data-cf-event-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="report-modal__body">
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Tipo</h3>
+          <div class="report-modal__formats">
+            <button class="report-modal__format is-active" type="button" data-cf-event-type="irrigation">
+              <i class="fa-solid fa-droplet" style="color: #4aa3e0;"></i>
+              <div class="report-modal__format-info">
+                <strong>Irrigação</strong>
+                <span>Lâmina aplicada</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-event-type="rain">
+              <i class="fa-solid fa-cloud-rain" style="color: #2e9e5b;"></i>
+              <div class="report-modal__format-info">
+                <strong>Chuva</strong>
+                <span>Volume registrado</span>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        <section class="report-modal__section">
+          <div class="cf-event-form">
+            <div class="edit-panel__field">
+              <label class="label--required" for="cfEventDate">Data e hora</label>
+              <input class="edit-panel__input" id="cfEventDate" type="datetime-local" step="3600">
+            </div>
+            <div class="edit-panel__field">
+              <label class="label--required" for="cfEventMm">Lâmina</label>
+              <div class="sc-input-group">
+                <input class="equip-input sc-input" id="cfEventMm" type="text" inputmode="decimal" placeholder="Ex: 10">
+                <span class="sc-input-suffix">mm</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="report-modal__footer">
+        <button class="report-modal__btn-cancel" type="button" id="cfEventRemove" hidden>
+          <i class="fa-solid fa-trash"></i>
+          Remover
+        </button>
+        <button class="report-modal__btn-download" type="button" id="cfEventConfirm">
+          <i class="fa-solid fa-check"></i>
+          Adicionar
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  [MODAL DE EXPORTAÇÃO — mesmo padrão do modal dos relatórios]
+  <div class="report-modal" id="cfExportModal" aria-hidden="true">
+    <div class="report-modal__backdrop" data-cf-export-close></div>
+    <div class="report-modal__container">
+      <header class="report-modal__header">
+        <h2 class="report-modal__title">Exportar dados</h2>
+        <button class="report-modal__close" type="button" data-cf-export-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="report-modal__body">
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Conteúdo</h3>
+          <div class="report-modal__options">
+            <label class="report-modal__option is-active" data-cf-export-option="readings">
+              <input type="checkbox" name="cfExportContent" value="readings" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Leituras da sonda</span>
+            </label>
+            <label class="report-modal__option is-active" data-cf-export-option="chart">
+              <input type="checkbox" name="cfExportContent" value="chart" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Gráfico de umidade do solo</span>
+            </label>
+            <label class="report-modal__option" data-cf-export-option="calendar">
+              <input type="checkbox" name="cfExportContent" value="calendar">
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Calendário de irrigação</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Formato do arquivo</h3>
+          <div class="report-modal__formats">
+            <button class="report-modal__format is-active" type="button" data-cf-format="Excel">
+              <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i>
+              <div class="report-modal__format-info">
+                <strong>Excel</strong>
+                <span>.xls</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-format="PDF">
+              <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+              <div class="report-modal__format-info">
+                <strong>PDF</strong>
+                <span>.pdf</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-cf-format="CSV">
+              <i class="fa-solid fa-file-csv" style="color: #0ea5e9;"></i>
+              <div class="report-modal__format-info">
+                <strong>CSV</strong>
+                <span>.csv</span>
+              </div>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <footer class="report-modal__footer">
+        <button class="report-modal__btn-cancel" type="button" data-cf-export-close>Cancelar</button>
+        <button class="report-modal__btn-download" type="button" id="cfExportConfirm">
+          <i class="fa-solid fa-download"></i>
+          Download
+        </button>
+      </footer>
+    </div>
+  </div>
+  -->
+</section>

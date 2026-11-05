@@ -1,0 +1,467 @@
+<section class="edit-panel farm-edit config-page estd-view" id="estdPanel" aria-label="Estação Meteorológica">
+  <div class="edit-panel__titlebar">
+    <button type="button" class="edit-panel__back js-details-back" id="estdBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Estação Meteorológica</span>
+    </button>
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-hidden" type="button" data-tab="general" data-dev-only aria-selected="false">Geral</button>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select>
+          <button class="edit-panel__select-btn" type="button" id="estdSelectBtn" aria-expanded="false" aria-label="Selecionar estação meteorológica">—</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu pivo-selector" role="listbox" id="estdSelectorMenu" style="display:none;"></div>
+        </div>
+      </div>
+      <button type="button" class="edit-panel__save" id="estdExportBtn">
+        <i class="fa-solid fa-file-export"></i>
+        Exportar
+      </button>
+      <button type="button" class="edit-panel__save" id="estdSaveBtn" hidden>
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ GERAL — Dashboard / Leituras / Previsão ══════════════════════
+       Guardado pra virar a base da tela de Detalhes da Estação (dashboard
+       + leituras no padrão pivo/bomba). Escondido do fluxo normal — só
+       aparece com Ctrl+D (data-dev-only), até essa tela de detalhes
+       existir de verdade. Ver docs/engineering-fixes-log.md. ═══════════ -->
+  <div class="edit-panel__tab-body is-hidden" data-tab-body="general" data-dev-only>
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Seções">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#estdSecDashboard">Dashboard</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#estdSecRaw">Leituras</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#estdSecPrevisao">Previsão</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── DASHBOARD — indicadores do dia atual + gráfico ──────────── -->
+        <section class="edit-panel__section is-active" id="estdSecDashboard">
+          <div class="edit-panel__section-body">
+
+            <article class="cf-stats">
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Temperatura</span>
+                <strong class="cf-stats__value" id="estdKpiTemp">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Umidade</span>
+                <strong class="cf-stats__value" id="estdKpiHumidity">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Vento</span>
+                <strong class="cf-stats__value" id="estdKpiWind">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Radiação</span>
+                <strong class="cf-stats__value" id="estdKpiRadiation">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">ETo (hoje)</span>
+                <strong class="cf-stats__value" id="estdKpiEto">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Chuva (hoje)</span>
+                <strong class="cf-stats__value" id="estdKpiRainDay">—</strong>
+              </div>
+              <div class="cf-stats__item">
+                <span class="cf-stats__label">Última transmissão</span>
+                <strong class="cf-stats__value" id="estdKpiComm">—</strong>
+              </div>
+            </article>
+
+            <div class="cf-chart-card" id="estdChartCard">
+              <div class="cf-chart-card__header">
+                <div class="cf-chart-card__title">Leituras da estação</div>
+              </div>
+
+              <div class="cf-chart-card__toolbar">
+                <div class="cf-chart-card__zoom">
+                  <span class="cf-chart-card__zoom-label">Zoom</span>
+                  <button type="button" class="cf-zoom-btn" data-estd-zoom="24h">24h</button>
+                  <button type="button" class="cf-zoom-btn is-active" data-estd-zoom="7d">7d</button>
+                  <button type="button" class="cf-zoom-btn" data-estd-zoom="15d">15d</button>
+                  <button type="button" class="cf-zoom-btn" data-estd-zoom="30d">30d</button>
+                  <button type="button" class="cf-zoom-btn" data-estd-zoom="all">Tudo</button>
+                </div>
+              </div>
+
+              <div class="cf-chart-card__plot">
+                <svg class="cf-chart-card__svg" id="estdChartSvg" preserveAspectRatio="none"></svg>
+              </div>
+
+              <div class="cf-chart-card__navigator" id="estdChartNavigator">
+                <svg class="cf-chart-card__nav-svg" id="estdChartNavSvg" viewBox="0 0 1000 100" preserveAspectRatio="none"></svg>
+                <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--l" id="estdNavMaskLeft"></div>
+                <div class="cf-chart-card__nav-mask cf-chart-card__nav-mask--r" id="estdNavMaskRight"></div>
+                <div class="cf-chart-card__nav-range" id="estdNavRange">
+                  <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--l" data-handle="l"></div>
+                  <div class="cf-chart-card__nav-handle cf-chart-card__nav-handle--r" data-handle="r"></div>
+                </div>
+                <div class="cf-chart-card__nav-scrollbar"></div>
+              </div>
+
+              <div class="cf-chart-card__legend" id="estdChartLegend">
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="temp"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#ef4444"></i>Temperatura</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="humidity"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#0ea5e9"></i>Umidade</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="wind"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#14b8a6"></i>Vento</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="radiation"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#f59e0b"></i>Radiação</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="eto"><i class="cf-legend-swatch cf-legend-swatch--line" style="--c:#16a34a"></i>ETo</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="rain"><i class="cf-legend-swatch cf-legend-swatch--dot" style="--c:#3b82f6"></i>Chuva</button>
+                <button type="button" class="cf-legend-item cf-legend-item--toggle is-active" data-estd-series="battery"><i class="cf-legend-swatch cf-legend-swatch--dash" style="--c:#a855f7"></i>Bateria</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── LEITURAS — leituras horárias paginadas ──────────────────── -->
+        <section class="edit-panel__section" id="estdSecRaw">
+          <div class="edit-panel__section-body">
+            <div class="fbill-card">
+              <div class="cf-raw-table__wrap estd-raw-wrap">
+                <table class="cf-raw-table estd-raw-table" id="estdRawTable">
+                  <thead>
+                    <tr>
+                      <th>Data e hora</th>
+                      <th>Temp.
+(°C)</th>
+                      <th>Umidade
+(%)</th>
+                      <th>Vento
+(m/s)</th>
+                      <th>Radiação
+(W/m²)</th>
+                      <th>Chuva
+(mm)</th>
+                      <th>ETo
+(mm)</th>
+                      <th>Bateria
+(V)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="estdRawTableBody"></tbody>
+                </table>
+              </div>
+              <div class="cf-raw-table__foot" id="estdRawCount"></div>
+              <div class="pivo-history__pagination" id="estdRawPagination" aria-label="Paginação das leituras"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PREVISÃO — somente previsão (API) ──────────────────────── -->
+        <section class="edit-panel__section" id="estdSecPrevisao">
+          <div class="edit-panel__section-body">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Previsão do tempo</h2>
+            </div>
+            <article class="pivo-data-card estd-forecast-card">
+              <div class="map-weather-card__days estd-forecast-scroll">
+                <div class="map-weather-card__days-grid" id="estdForecast">
+                  <div class="estd-forecast__empty">Carregando previsão…</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONFIGURAÇÕES — ficha técnica (a localização vem do equipamento) ═ -->
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#wsEditGeneral">General</button>
+
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <section class="edit-panel__section is-active" id="wsEditGeneral">
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">General</h2>
+              <span class="edit-panel__last-comm ws-last-comm-display" id="wsEditLastComm" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Technical Sheet</h3>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:16px;">
+              <div class="pivo-edit__field">
+                <label class="equip-label" for="wsEditProvider"><span class="equip-required">*</span> Manufacturer</label>
+                <select class="equip-input" id="wsEditProvider" data-equip-select style="height:36px;min-height:36px;padding-top:0;padding-bottom:0;font-size:12px;border-radius:7px;">
+                  <option value="davis" selected>Davis</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="wsEditName"><span class="edit-panel__req">*</span> Equipment Name</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="wsEditName" type="text" placeholder="Estação Meteorológica" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="wsEditDavisId"><span class="edit-panel__req">*</span> Weather Station ID <span class="edit-panel__tooltip-icon" data-tooltip="Unique identifier of the weather station provided by the manufacturer (e.g. Davis). You can find this code in the device manual or on the device label."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="wsEditDavisId" type="text" placeholder="001D0A719DBE" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="wsEditApiKey"><span class="edit-panel__req">*</span> Chave de API</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="wsEditApiKey" type="text" placeholder="pvsusvui3ljeqeylkrxrkizzjankiapy" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="wsEditApiSecret"><span class="edit-panel__req">*</span> API Secret</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="wsEditApiSecret" type="password" placeholder="••••••••••••••••••••••••">
+                  <div class="edit-panel__input-actions">
+                    <button type="button" id="wsEditSecretToggle" aria-label="Show/hide secret"><i class="fa-regular fa-eye-slash" style="color:#94a3b8; font-size:13px;"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HISTÓRICO ═══════════════════════════════════════════════════ -->
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#wsEditHistoryList">Histórico de Configurações</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="wsEditHistoryList">
+          <div class="edit-panel__history">
+
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+
+            <div class="edit-panel__history-subtitle-line">
+              <i class="fa-regular fa-clock"></i> Todas as configurações
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Listar</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-text-height" title="Densidade"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Nome</th>
+                    <th>Provider ID</th>
+                    <th>ID da Estação</th>
+                    <th style="width:80px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr class="edit-panel__history-row" data-row-id="ws1">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="ws1"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>19 set 2025 14:54</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td>Estação Meteorológica Sede</td>
+                    <td>001D0A719DBE</td>
+                    <td>237152</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star" title="Favoritar"></i><i class="fa-solid fa-download" title="Baixar"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-ws1" style="display:none;">
+                    <td colspan="7">
+                      <div class="edit-panel__history-details">
+                        <div class="edit-panel__history-details-section">
+                          <h4>Technical Sheet</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Equipment Name:</span><span>Headquarters Weather Station</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Provider ID:</span><span>001D0A719DBE</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">API Key:</span><span>pvsusvui3ljeqeylkrxrkizzjankiapy</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Station ID:</span><span>237152</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">API Secret:</span><span>••••••••••••••••</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="ws2">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="ws2"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>12 ago 2025 08:22</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td>Estação Sede</td>
+                    <td>001D0A719DBE</td>
+                    <td>237152</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star" title="Favoritar"></i><i class="fa-solid fa-download" title="Baixar"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-ws2" style="display:none;">
+                    <td colspan="7">
+                      <div class="edit-panel__history-details">
+                        <div class="edit-panel__history-details-section">
+                          <h4>Technical Sheet</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Equipment Name:</span><span>Headquarters Weather Station</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Provider ID:</span><span>001D0A719DBE</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">API Key:</span><span>pvsusvui3ljeqeylkrxrkizzjankiapy</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Station ID:</span><span>237152</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">API Secret:</span><span>••••••••••••••••</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL DE EXPORTAÇÃO — mesmo padrão do Cosmofield (.report-modal) ═ -->
+  <div class="report-modal" id="estdExportModal" aria-hidden="true">
+    <div class="report-modal__backdrop" data-estd-export-close></div>
+    <div class="report-modal__container">
+      <header class="report-modal__header">
+        <h2 class="report-modal__title">Exportar dados</h2>
+        <button class="report-modal__close" type="button" data-estd-export-close aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="report-modal__body">
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Período</h3>
+          <button type="button" class="report-modal__range js-period-trigger" id="estdExportRange">
+            <i class="fa-regular fa-calendar"></i>
+            <span class="pivo-agenda__period-label">—</span>
+            <i class="fa-solid fa-chevron-down report-modal__range-caret"></i>
+          </button>
+        </section>
+
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Conteúdo</h3>
+          <div class="report-modal__options">
+            <label class="report-modal__option is-active" data-estd-export-col="temp">
+              <input type="checkbox" name="estdExportContent" value="temp" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Temperatura</span>
+            </label>
+            <label class="report-modal__option is-active" data-estd-export-col="humidity">
+              <input type="checkbox" name="estdExportContent" value="humidity" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Umidade</span>
+            </label>
+            <label class="report-modal__option is-active" data-estd-export-col="wind">
+              <input type="checkbox" name="estdExportContent" value="wind" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Vento</span>
+            </label>
+            <label class="report-modal__option is-active" data-estd-export-col="radiation">
+              <input type="checkbox" name="estdExportContent" value="radiation" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Radiação</span>
+            </label>
+            <label class="report-modal__option is-active" data-estd-export-col="rain">
+              <input type="checkbox" name="estdExportContent" value="rain" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Chuva</span>
+            </label>
+            <label class="report-modal__option is-active" data-estd-export-col="eto">
+              <input type="checkbox" name="estdExportContent" value="eto" checked>
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">ETo</span>
+            </label>
+            <label class="report-modal__option" data-estd-export-col="battery">
+              <input type="checkbox" name="estdExportContent" value="battery">
+              <div class="report-modal__check"></div>
+              <span class="report-modal__label">Bateria</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="report-modal__section">
+          <h3 class="report-modal__section-title">Formato do arquivo</h3>
+          <div class="report-modal__formats">
+            <button class="report-modal__format is-active" type="button" data-estd-format="Excel">
+              <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i>
+              <div class="report-modal__format-info">
+                <strong>Excel</strong>
+                <span>.xls</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-estd-format="PDF">
+              <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+              <div class="report-modal__format-info">
+                <strong>PDF</strong>
+                <span>.pdf</span>
+              </div>
+            </button>
+            <button class="report-modal__format" type="button" data-estd-format="CSV">
+              <i class="fa-solid fa-file-csv" style="color: #0ea5e9;"></i>
+              <div class="report-modal__format-info">
+                <strong>CSV</strong>
+                <span>.csv</span>
+              </div>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <footer class="report-modal__footer">
+        <button class="report-modal__btn-cancel" type="button" data-estd-export-close>Cancelar</button>
+        <button class="report-modal__btn-download" type="button" id="estdExportConfirm">
+          <i class="fa-solid fa-download"></i>
+          Download
+        </button>
+      </footer>
+    </div>
+  </div>
+</section>

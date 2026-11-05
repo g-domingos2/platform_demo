@@ -1,0 +1,739 @@
+<section class="edit-panel" id="linestarEditPanel" aria-label="Editar LineStar">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="linestarEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar LineStar</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" id="linestarEditSelectField" data-bound="1">
+          <button class="edit-panel__select-btn" type="button" id="linestarEditSelectBtn" aria-expanded="false" aria-label="Select another equipment">Equipamento</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="linestarEditSelectMenu"></div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button" id="linestarEditSaveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#linestarEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditPump">Bombeamento</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditLocation">Localização e Segmentos</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditIntermediate">Posição Intermediária</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditEndGun">Canhão Final</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditFirmware">Firmware</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <!-- SEÇÃO: GERAL -->
+        <section class="edit-panel__section is-active" id="linestarEditGeneral">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Geral</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Conectividade</h3>
+
+            <div class="edit-panel__grid-3" style="margin-bottom: 16px;">
+              <div class="sc-field">
+                <label class="equip-label" for="linestarEditCommType"><span class="equip-required">*</span>Communication type</label>
+                <div class="equip-select is-disabled">
+                  <button type="button" class="equip-select__trigger" style="height: 36px; min-height: 36px; padding-top: 0; padding-bottom: 0; font-size: 12px; border-radius: 7px;" aria-haspopup="listbox" aria-expanded="false" aria-controls="linestarEditCommType__list" disabled>
+                    <span class="equip-select__value">4G</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="equip-select__list" role="listbox" id="linestarEditCommType__list">
+                    <button type="button" class="equip-select__option is-selected" data-value="4G" role="option" aria-selected="true">4G</button>
+                  </div>
+                  <select class="equip-input equip-select__native" id="linestarEditCommType" aria-hidden="true" tabindex="-1" disabled>
+                    <option value="4G" selected>4G</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Campo ID do equipamento (LineStar é sempre 4G) -->
+            <div id="linestarEditGatewayField" class="edit-panel__grid-3" style="margin-bottom: 16px;">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="equip-required">*</span> ID do equipamento</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="linestarEditGateway" type="text" placeholder="10000000351D266D" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar" data-clear="linestarEditGateway"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid de rádios (LineStar é sempre 4G, grid oculta por padrão) -->
+            <div id="linestarEditRadioGrid" class="edit-panel__grid-4" style="display:none;">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio da central</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="linestarEditRadioCentral" type="text" value="" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio do controlador <span class="edit-panel__req">*</span></span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="linestarEditRadioControl" type="text" value="" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio GPS <span class="edit-panel__req">*</span></span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="linestarEditRadioGps" type="text" value="" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio da bomba</span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="linestarEditRadioBomba" type="text" value="" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+            <h3 class="pref-section-title" style="margin-top: 0;">Ficha Técnica</h3>
+
+            <div class="edit-panel__grid-3">
+              <div class="edit-panel__field-box" style="padding: 0; border: none; background: transparent;">
+                <label for="linestarEditName"><span class="edit-panel__req">*</span> Nome do equipamento</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="linestarEditName" type="text" value="LineStar 01" />
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box" style="padding: 0; border: none; background: transparent;">
+                <label for="linestarEditUid">Unique ID (UID)</label>
+                <input class="edit-panel__input is-disabled" id="linestarEditUid" type="text" value="aca7cd21-29fb-4d13-970e-753b65de5172" disabled />
+              </div>
+
+              <div class="edit-panel__field-box" style="padding: 0; border: none; background: transparent;">
+                <label for="linestarEditControllerId">Controller ID (Ecostar)</label>
+                <input class="edit-panel__input" id="linestarEditControllerId" type="text" value="0357299070883654" />
+              </div>
+
+              <div class="edit-panel__field-box">
+                <label for="linestarEditSpeedMax">Velocidade máxima</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="linestarEditSpeedMax" type="number" step="0.1" />
+                  <span class="sc-input-suffix">m/min</span>
+                </div>
+              </div>
+              <div class="edit-panel__field-box">
+                <label for="linestarEditArmWidth">Largura total irrigada <span class="edit-panel__tooltip-icon" data-tooltip="Largura total da faixa irrigada pela linha (soma dos dois lados a partir do traçado), usada para calcular a área irrigada."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="linestarEditArmWidth" type="number" value="40" step="0.1" disabled />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <div style="margin-top: 16px;">
+              <div class="edit-panel__grid-2" style="grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                  <h3 class="pref-section-title" style="margin: 0;">Preferências</h3>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="linestarEditUseMeter" checked="" style="width: 18px; height: 18px; accent-color: #16a34a; cursor: pointer;">
+                    <label for="linestarEditUseMeter" style="font-size: 13px; color: #334155; cursor: pointer; margin: 0;">Usar medidor de água do equipamento (Volume)</label>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="pref-section-title" style="margin: 0 0 12px;">Notas</h3>
+                  <textarea class="edit-panel__input" id="linestarEditComments" rows="4" style="height: auto; padding: 12px; resize: none;" placeholder="Adicionar notas sobre este LineStar..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO: LOCALIZAÇÃO -->
+        <section class="edit-panel__section" id="linestarEditLocation">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização e Segmentos</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+
+           <div class="pivo-edit__loc-split" style="display: grid; grid-template-columns: 0.97fr 1fr; gap: 32px;">
+             <!-- Mapa -->
+             <div class="pivo-edit__loc-map" style="position: relative; border-radius: 0; overflow: hidden; border: 1px solid #e5e7eb; min-height: 420px;">
+               <div id="linestarEditLocMap" style="width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+             </div>
+             <!-- Form Localização -->
+             <div class="pivo-edit__loc-form pivo-edit-specifics">
+               <h3 class="pref-section-title" style="margin-top: 0;">Localização</h3>
+               <p class="pivo-edit__loc-desc">
+                 A localização em campo do dispositivo é essencial para mostrar geograficamente no mapa a posição do equipamento.
+               </p>
+
+               <div class="pivo-edit__field">
+                 <label for="linestarEditLocA"><span class="edit-panel__req">*</span> Ponto de Início (A) <span class="edit-panel__tooltip-icon" data-tooltip="Coordenada onde a linha de irrigação começa a se deslocar."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="edit-panel__input-wrap" style="display: flex; gap: 8px;">
+                   <input class="edit-panel__input" id="linestarEditLocA" type="text" placeholder="-18.8460, -48.3864" style="flex: 1;" />
+                   <button type="button" class="edit-panel__btn" id="linestarPickA" style="white-space: nowrap;"><i class="fa-solid fa-location-dot" style="color: #16a34a;"></i> Obter Localização</button>
+                 </div>
+               </div>
+
+               <div class="pivo-edit__field">
+                 <label for="linestarEditLocB"><span class="edit-panel__req">*</span> Ponto de Fim (B) <span class="edit-panel__tooltip-icon" data-tooltip="Coordenada onde a linha de irrigação termina o deslocamento."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="edit-panel__input-wrap" style="display: flex; gap: 8px;">
+                   <input class="edit-panel__input" id="linestarEditLocB" type="text" placeholder="-18.8500, -48.3900" style="flex: 1;" />
+                   <button type="button" class="edit-panel__btn" id="linestarPickB" style="white-space: nowrap;"><i class="fa-solid fa-location-dot" style="color: #dc2626;"></i> Obter Localização</button>
+                 </div>
+               </div>
+
+               <div class="sc-loc__field" style="margin-top: 16px;">
+                 <label class="sc-loc__label" for="linestarEditWidthA">Largura irrigada — lado A <span class="edit-panel__tooltip-icon" data-tooltip="Largura medida a partir da linha central para o lado A."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="sc-loc__row">
+                   <div class="sc-loc__input-wrapper">
+                     <input class="edit-panel__input sc-loc__input-field" id="linestarEditWidthA" type="text" inputmode="decimal" placeholder="40" style="flex: 1;" />
+                   </div>
+                   <button type="button" class="edit-panel__btn sc-loc__btn ls-loc__btn--w" data-linestar-width-side="A" style="white-space: nowrap;"><i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i> Medir lado A</button>
+                 </div>
+               </div>
+
+               <div class="sc-loc__field" style="margin-top: 16px;">
+                 <label class="sc-loc__label" for="linestarEditWidthB">Largura irrigada — lado B <span class="edit-panel__tooltip-icon" data-tooltip="Largura medida a partir da linha central para o lado B."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="sc-loc__row">
+                   <div class="sc-loc__input-wrapper">
+                     <input class="edit-panel__input sc-loc__input-field" id="linestarEditWidthB" type="text" inputmode="decimal" placeholder="40" style="flex: 1;" />
+                   </div>
+                   <button type="button" class="edit-panel__btn sc-loc__btn ls-loc__btn--w" data-linestar-width-side="B" style="white-space: nowrap;"><i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i> Medir lado B</button>
+                 </div>
+               </div>
+
+               <div class="sc-loc__field" style="margin-top: 16px;">
+                 <div class="sc-loc__label">Lado da mangueira <span class="edit-panel__tooltip-icon" data-tooltip="Selecione o lado em que a mangueira está conectada: A (esquerda) ou B (direita), olhando do ponto A para o ponto B. A seta indica a posição zero da mangueira."><i class="fa-regular fa-circle-question"></i></span></div>
+                 <div class="pivo-edit__segmented-control js-linestar-hose-side-group" style="max-width: 360px; width: 100%;">
+                   <button type="button" class="js-linestar-hose-side is-active" data-side="A" aria-pressed="true">Lado A — esquerda</button>
+                   <button type="button" class="js-linestar-hose-side" data-side="B" aria-pressed="false">Lado B — direita</button>
+                 </div>
+               </div>
+             </div>
+
+           </div>
+
+           <div class="pivo-edit__segments-section pivo-edit-specifics" style="margin-top: 32px;">
+             <div class="edit-panel__divider-label" style="margin: 16px 0 16px; font-weight: 600; font-size: 16px; color: #1e293b; border-top: none; padding-top: 0;">Segmentos</div>
+             <p style="font-size: 13px; color: rgba(0,0,0,0.88); margin-bottom: 40px; line-height: 1.4;">
+               É comum segmentar o LineStar em faixas ao longo do traçado para representar diferentes sementes, cultivos ou manejos. Isso facilita a visualização dos dados e o controle da irrigação em diferentes lâminas. Com esta funcionalidade, você pode segmentar o seu LineStar para facilitar os comandos de irrigação durante a safra.
+             </p>
+
+             <div class="linestar-segment-toolbar__left">
+               <div class="edit-panel__divider-label" style="margin-bottom: 6px; font-weight: 400; font-size: 14px; color: #0f172a; border-top: none; padding-top: 0;">Configuração automática</div>
+               <div class="pivo-preset-row">
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="2">2</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="3">3</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="4">4</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="5">5</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="6">6</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="7">7</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="8">8</button>
+                 <button type="button" class="pivo-preset-btn" data-linestar-preset="9">9</button>
+               </div>
+               <div class="edit-panel__divider-label" style="margin: 20px 0 6px; font-weight: 400; font-size: 14px; color: #0f172a; border-top: none; padding-top: 0;">Configuração manual</div>
+               <div id="linestarEditSegmentList" class="linestar-segment-toolbar__segment-list"></div>
+             </div>
+
+             <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
+               <div class="pivo-edit__field" style="grid-column: span 2;">
+                 <label class="edit-panel__label" for="linestarEditSegName">Nome de identificação</label>
+                 <input class="edit-panel__input" id="linestarEditSegName" type="text" placeholder="Ex: Milho" />
+               </div>
+
+                <div class="pivo-edit__field">
+                  <label for="linestarEditSegStartPct"><span class="edit-panel__req">*</span> Faixa inicial (%)</label>
+                  <div class="edit-panel__input-suffix-wrap">
+                    <input class="edit-panel__input is-disabled" id="linestarEditSegStartPct" type="text" value="0" inputmode="decimal" autocomplete="off" disabled="" style="background: rgb(241, 245, 249); color: rgb(148, 163, 184); cursor: not-allowed; pointer-events: none;">
+                    <span class="edit-panel__input-suffix">%</span>
+                  </div>
+                </div>
+
+                <div class="pivo-edit__field">
+                  <label for="linestarEditSegEndPct"><span class="edit-panel__req">*</span> Faixa final (%)</label>
+                  <div class="edit-panel__input-suffix-wrap">
+                    <input class="edit-panel__input is-disabled" id="linestarEditSegEndPct" type="text" value="100" inputmode="decimal" autocomplete="off" disabled="" style="background: rgb(241, 245, 249); color: rgb(148, 163, 184); cursor: not-allowed; pointer-events: none;">
+                    <span class="edit-panel__input-suffix">%</span>
+                  </div>
+                </div>
+             </div>
+           </div>
+        </section>
+
+        <!-- SEÇÃO: POSIÇÃO INTERMEDIÁRIA -->
+        <section class="edit-panel__section" id="linestarEditIntermediate">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Posição Intermediária</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+
+          <div class="pivo-edit__loc-split" style="display: grid; grid-template-columns: 0.97fr 1fr; gap: 32px;">
+            <!-- Mapa -->
+            <div class="pivo-edit__loc-map" style="position: relative; border-radius: 0; overflow: hidden; border: 1px solid #e5e7eb; min-height: 420px;">
+              <div id="linestarEditIntermediateMap" style="width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+            </div>
+            <!-- Form Posições Intermediárias -->
+            <div class="pivo-edit__loc-form pivo-edit-specifics">
+              <h3 class="pref-section-title" style="margin-top: 0;">Posições Intermediárias</h3>
+              <p class="pivo-edit__loc-desc">
+                Defina posições intermediárias ao longo do traçado do LineStar para marcar pontos de controle, como porteiras ou mudanças de talhão.
+              </p>
+
+              <div class="linestar-segment-toolbar__left">
+                <div class="edit-panel__divider-label" style="margin-bottom: 6px; font-weight: 400; font-size: 14px; color: #0f172a; border-top: none; padding-top: 0;">Posições cadastradas</div>
+                <div id="linestarEditIntermediateList" class="linestar-segment-toolbar__segment-list"></div>
+              </div>
+
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr; gap: 16px; margin-top: 24px;">
+                <div class="pivo-edit__field">
+                  <label for="linestarEditIntermediateDistance"><span class="edit-panel__req">*</span> Distância a partir do início (m)</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="linestarEditIntermediateDistance" type="number" step="0.1" min="0" placeholder="0">
+                    <span class="sc-input-suffix">m</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO: BOMBA -->
+        <section class="edit-panel__section" id="linestarEditPump">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Bombeamento</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+
+            <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+               <div class="equip-label" style="font-size:16px;font-weight:600;color:#0f172a;margin-bottom:16px;display:block;">Geral</div>
+               <div class="edit-panel__grid-3">
+                 <div class="pivo-edit__field">
+                   <label id="linestarEditPowerLabel" for="linestarEditPower">Potência elétrica <span class="edit-panel__tooltip-icon" data-tooltip="Potência real (absorvida): energia efetivamente absorvida da rede elétrica para operar o equipamento no ponto de trabalho atual, considerando o rendimento e a conversão para o sistema internacional de unidades."><i class="fa-regular fa-circle-question"></i></span></label>
+                   <div class="sc-input-group">
+                     <input class="equip-input sc-input" id="linestarEditPower" type="number" />
+                     <span class="sc-input-suffix">kW</span>
+                   </div>
+                 </div>
+               </div>
+
+               <div class="edit-panel__grid-3" style="margin-top: 16px;">
+                 <div class="pivo-edit__field">
+                   <label for="linestarEditFlow">Vazão nominal</label>
+                   <div class="sc-input-group">
+                     <input class="equip-input sc-input" id="linestarEditFlow" type="number" value="200" />
+                     <span class="sc-input-suffix">m³/h</span>
+                   </div>
+                 </div>
+                 <div class="pivo-edit__field">
+                   <label for="linestarEditPressMin">Pressão mínima</label>
+                   <div class="sc-input-group">
+                     <input class="equip-input sc-input" id="linestarEditPressMin" type="number" step="0.1" value="1.0" />
+                     <span class="sc-input-suffix">bar</span>
+                   </div>
+                 </div>
+                 <div class="pivo-edit__field">
+                   <label for="linestarEditPressMax">Pressão máxima</label>
+                   <div class="sc-input-group">
+                     <input class="equip-input sc-input" id="linestarEditPressMax" type="number" step="0.1" value="8.0" />
+                     <span class="sc-input-suffix">bar</span>
+                   </div>
+                 </div>
+               </div>
+            </div>
+        </section>
+
+        <section class="edit-panel__section" id="linestarEditEndGun">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Canhão Final</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            <p class="pivo-edit__loc-desc">Para LineStars que possuem canhão final instalado, é possível personalizar o seu acionamento de acordo com a posição atual do equipamento através de um mapa de segmentos para o canhão. Dessa forma é possível evitar que o canhão ligue em locais impróprios, como estradas, casas, entre outros.</p>
+          </div>
+
+          <div class="pivo-edit__loc-split" style="display: grid; grid-template-columns: 0.65fr 1fr; gap: 24px;">
+            <!-- Mapa -->
+            <div class="pivo-edit__loc-map" style="position: relative; border-radius: 0; overflow: hidden; border: 1px solid #e5e7eb; min-height: 420px;">
+              <div id="linestarEditEndGunMap" style="width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+            </div>
+            <!-- Controles -->
+            <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <div class="linestar-segment-toolbar__right">
+                <h3 class="pref-section-title" style="margin-top: 0; margin-bottom: 8px;">Segmentos com canhão ativo</h3>
+
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+                  <i class="fa-solid fa-circle-info" style="color:#3b82f6;"></i>
+                  Você pode criar até 6 segmentos. Configure os trechos onde o canhão deve ligar.
+                </div>
+                <input type="hidden" id="linestarSegmentEndGunSide" value="both" />
+
+                <div id="linestarEndGunSideCards"></div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+                  <div class="pivo-edit__field is-disabled">
+                    <label for="linestarEditEndGunStartPct">Início da seção</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input is-disabled" id="linestarEditEndGunStartPct" type="number" step="1" min="0" disabled="">
+                      <span class="sc-input-suffix">m</span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field is-disabled">
+                    <label for="linestarEditEndGunEndPct">Fim da seção</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input is-disabled" id="linestarEditEndGunEndPct" type="number" step="1" min="1" disabled="">
+                      <span class="sc-input-suffix">m</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO: FIRMWARE -->
+        <section class="edit-panel__section" id="linestarEditFirmware">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Firmware</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            <p style="font-size: 13px; color: rgba(0,0,0,0.88); line-height: 1.5;">Versão de firmware atual instalada no dispositivo.</p>
+          </div>
+          <div class="edit-panel__section-body pivo-edit-specifics">
+            <div class="edit-panel__fw-box">
+              <i class="fa-solid fa-microchip" style="color: #16a34a; font-size: 15px;"></i>
+              <span style="font-size: 13px; color: #64748b;">Versão</span>
+              <strong style="font-size: 13px; margin-left: auto;">3.1.2</strong>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#linestarEditHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#linestarEditHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <!-- Section: History List -->
+        <section class="edit-panel__section is-active" id="linestarEditHistoryList">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+          </div>
+
+          <div class="edit-panel__history-subtitle-line">
+            <i class="fa-regular fa-clock"></i> Todas as configurações
+          </div>
+
+          <div class="edit-panel__history-table-container">
+            <div class="edit-panel__history-table-toolbar">
+              <h3>Lista</h3>
+              <div class="edit-panel__history-table-actions">
+                <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                <i class="fa-solid fa-i-cursor" title="Densidade"></i>
+                <i class="fa-solid fa-gear" title="Configurações"></i>
+              </div>
+            </div>
+
+            <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"></th>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Status Controlador</th>
+                  <th>Status Hardware</th>
+                  <th>Status GPS</th>
+                  <th>Status Bomba</th>
+                  <th style="width: 80px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1 -->
+                <tr class="edit-panel__history-row" data-row-id="1">
+                  <td>
+                    <button class="edit-panel__history-expand-btn" type="button" data-toggle-details="1">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </td>
+                  <td>14 Jan 2026 20:08</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                  <td><span class="status-dot dot-not-sent"></span> Não enviado</td>
+                  <td>
+                    <div class="table-actions">
+                      <i class="fa-regular fa-star" title="Adicionar aos favoritos"></i>
+                      <span class="table-actions__icon" title="Carregar configuração" style="display:inline-flex;cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-1" style="display: none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Geral</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-subtitle">Conectividade</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tipo de comunicação:</span>
+                            <span>4G</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Ficha Técnica</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Nome do equipamento:</span>
+                            <span>LineStar 01</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Fabricante:</span>
+                            <span>Valley</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tipo de painel:</span>
+                            <span>LineStar</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Idioma:</span>
+                            <span>Português</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Velocidade máxima:</span>
+                            <span>2,5 m/min</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Largura total irrigada:</span>
+                            <span>40,0 m</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Área irrigada:</span>
+                            <span>55,0 ha</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Localização e Segmentos</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Ponto A (Início):</span>
+                            <span>-18.253632, -47.364949</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Ponto B (Fim):</span>
+                            <span>-18.255893, -47.360301</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Largura total irrigada:</span>
+                            <span>40,0 m</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Lado da mangueira:</span>
+                            <span>Esquerda</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Nome):</span>
+                            <span>Segmento 1</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Início %):</span>
+                            <span>0%</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Fim %):</span>
+                            <span>100%</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Bombeamento</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Potência elétrica:</span>
+                            <span>153,23 kW</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Vazão nominal:</span>
+                            <span>500 m³/h</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Pressão mínima:</span>
+                            <span>2,0 bar</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Pressão máxima:</span>
+                            <span>8,0 bar</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Canhão Final</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Modo de ativação:</span>
+                            <span>Por segmento</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Canhão segmento 1 (Início %):</span>
+                            <span>45%</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Canhão segmento 1 (Fim %):</span>
+                            <span>90%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 2 (Summary) -->
+                <tr class="edit-panel__history-row" data-row-id="2">
+                  <td><button class="edit-panel__history-expand-btn" type="button"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>05 dez 2025 07:42</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-not-sent"></span> Não enviado</td>
+                  <td>
+                    <div class="table-actions">
+                      <i class="fa-regular fa-star"></i>
+                      <span class="table-actions__icon" title="Carregar configuração" style="display:inline-flex;cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="edit-panel__pagination">
+              <span>1-10 de 87 itens</span>
+              <div class="edit-panel__pagination-pages">
+                <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                <button class="edit-panel__pagination-btn" type="button">2</button>
+                <button class="edit-panel__pagination-btn" type="button">3</button>
+                <button class="edit-panel__pagination-btn" type="button">4</button>
+                <button class="edit-panel__pagination-btn" type="button">5</button>
+                <span style="margin: 0 4px;">...</span>
+                <button class="edit-panel__pagination-btn" type="button">9</button>
+                <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+              <select class="edit-panel__pagination-select" id="linestarEditHistoryPageSize" aria-label="Itens por página">
+                <option>10 / página</option>
+                <option>20 / página</option>
+                <option>50 / página</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Favorites -->
+        <section class="edit-panel__section" id="linestarEditHistoryFavs">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Favoritos</h2>
+          </div>
+
+          <div class="edit-panel__history-subtitle-line">
+            <i class="fa-solid fa-star"></i> Configurações favoritas
+          </div>
+
+          <div class="edit-panel__history-table-container">
+            <div class="edit-panel__history-table-toolbar">
+              <h3>Lista</h3>
+              <div class="edit-panel__history-table-actions">
+                <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                <i class="fa-solid fa-i-cursor" title="Densidade"></i>
+                <i class="fa-solid fa-gear" title="Configurações"></i>
+              </div>
+            </div>
+
+            <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"></th>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Status Controlador</th>
+                  <th>Status Hardware</th>
+                  <th>Status GPS</th>
+                  <th>Status Bomba</th>
+                  <th style="width: 80px;">Ações</th>
+                </tr>
+              </thead>
+            </table>
+
+            <div class="edit-panel__history-no-data">
+              <i class="fa-solid fa-inbox"></i>
+              <span>Sem dados</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>

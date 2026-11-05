@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Light theme */
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --text: #0f1720;
+  --muted: rgba(15, 23, 32, .62);
+
+  /* Sidebar (azul bem escuro) */
+  --sidebar: #374553;
+  --sidebar2: #2f3b47;
+  --sidebarText: rgba(255, 255, 255, .92);
+  --sidebarMuted: rgba(255, 255, 255, .62);
+
+  /* Primary */
+  --primary: #16a34a;
+  --primary2: #12813b;
+
+  /* Borders / shadows */
+  --border: rgba(15, 23, 32, .10);
+  --shadow: 0 12px 28px rgba(0, 0, 0, .12);
+
+  /* Design tokens */
+  --ink-900: #0f172a;
+  --ink-800: #111827;
+  --muted-600: #64748b;
+  --muted-500: #6b7280;
+  --slate-100: #f1f5f9;
+  --slate-50: #f8fafc;
+  --border-200: #e5e7eb;
+  --border-300: #d1d5db;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #2563eb;
+  --success: #16a34a;
+  --map-radio-idle: rgba(255, 255, 255, 0.4);
+  --map-radio-active: #22c55e;
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 6px 16px rgba(15, 23, 32, .08);
+  --shadow-md: 0 10px 24px rgba(15, 23, 32, .18);
+  --shadow-lg: 0 18px 40px rgba(15, 23, 32, .18);
+
+  --radius: 14px;
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #141414;
+  --text: #f1f5f9;
+  --muted: rgba(241, 245, 249, .62);
+
+  --sidebar: #0a0a0a;
+  --sidebar2: #000000;
+  --sidebarText: rgba(255, 255, 255, .92);
+  --sidebarMuted: rgba(255, 255, 255, .55);
+
+  --border: rgba(255, 255, 255, .10);
+  --shadow: 0 12px 28px rgba(0, 0, 0, .35);
+  --shadow-sm: 0 6px 16px rgba(0, 0, 0, .20);
+  --shadow-md: 0 10px 24px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, .45);
+
+  --slate-100: #1e293b;
+  --slate-50: #1a2233;
+  --border-200: #2d3748;
+  --border-300: #374151;
+  --ink-900: #f1f5f9;
+  --ink-800: #e2e8f0;
+  --muted-600: #94a3b8;
+  --muted-500: #9ca3af;
+}
+
+[data-theme="dark"] .nav__item.is-active {
+  background: var(--primary);
+  box-shadow: none;
+}
+
+* {
+  box-sizing: border-box;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Remove contorno preto em elementos do mapa */
+.leaflet-container :focus {
+  outline: none !important;
+}
+
+.leaflet-interactive:focus {
+  outline: none !important;
+}
+
+/* thin black outline for white overlay lines (e.g. map overlays around pivôs) */
+.leaflet-interactive[stroke="#ffffff"],
+.leaflet-interactive[stroke="#ffffff"][fill="none"] {
+  /* subtle thin black contour under the white stroke */
+  filter: drop-shadow(0 0 1px rgba(0,0,0,0.9));
+  paint-order: stroke fill markers;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Slight translucency for the 'rep' SVG icon paths and center circle */
+.rep-path-1,
+.rep-path-2,
+.rep-path-3,
+.rep-path-4,
+.rep-path-5,
+svg.rep-icon circle,
+svg .rep-path-1,
+svg .rep-path-2,
+svg .rep-path-3,
+svg .rep-path-4,
+svg .rep-path-5 {
+  stroke-opacity: 0.85;
+  fill-opacity: 0.85;
+}
+
+/* Optional: small overall icon opacity when svg has class 'rep-icon' */
+svg.rep-icon { opacity: 0.92; }
+
+/* Override default pivot/map vector colors (Leaflet shapes using yellow fill) */
+.leaflet-interactive[fill="#eab308"],
+.leaflet-interactive[stroke="#ca8a04"],
+.leaflet-interactive[fill="#eab308"][stroke="#ca8a04"] {
+  /* restore original pivot colors */
+  stroke: #ca8a04 !important;
+  fill: #eab308 !important;
+  stroke-width: 1 !important;
+  filter: none !important;
+}
+
+/* make the center more glossy/vivid and add a subtle hover boost */
+.leaflet-interactive[fill="#eab308"] {
+  transition: none !important;
+  paint-order: stroke fill markers;
+}
+
+/* hover: don't move elements, only tweak colors for emphasis */
+.leaflet-interactive[fill="#eab308"]:hover {
+  /* no visual change on hover for pivô shapes */
+  filter: none !important;
+  stroke: #ca8a04 !important;
+  fill: #eab308 !important;
+}
+
+/* Utilities */
+.is-hidden {
+  display: none !important;
+}

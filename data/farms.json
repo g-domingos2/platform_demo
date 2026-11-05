@@ -1,0 +1,237 @@
+[
+  {
+    "id": "farm_demo_001",
+    "displayId": "001",
+    "name": "Fazenda Demo",
+    "lat": -12.382396,
+    "lng": -45.565603,
+    "loc": "-12.382396, -45.565603",
+    "clientName": "Demonstração Irricontrol",
+    "energyBillDay": "",
+    "waterBillDay": "",
+    "timezone": "America/Sao_Paulo",
+    "hasCentral": true,
+    "centralRadio": "",
+    "equipments": [
+      {
+        "id": "equip_1793896661390",
+        "type": "smart_connect",
+        "category": "pivos",
+        "name": "Pivô 01",
+        "createdAt": "2026-11-05T16:37:41.390Z",
+        "data": {
+          "centerLat": -12.390389,
+          "centerLng": -45.563006,
+          "center": "-12.390389, -45.563006",
+          "radius": "",
+          "bearing": 273.3855562188223,
+          "ref": "-12.389970, -45.570250",
+          "refLat": -12.389970341413486,
+          "refLng": -45.570250052803765,
+          "segments": [
+            {
+              "name": "Segmento 1",
+              "startAngle": 0,
+              "endAngle": 360
+            }
+          ],
+          "activeSegIdx": 0,
+          "canhaoSegments": [],
+          "activeCanhaoSegIdx": 0,
+          "canhaoMode": "off",
+          "manufacturer": "Bauer",
+          "panelType": "Nexus",
+          "powerUnit": "kw",
+          "converted": "",
+          "name": "",
+          "manufacturerOther": "",
+          "lang": "en",
+          "speed": "",
+          "pluvioEnabled": false,
+          "pluvioScale": "0.2",
+          "pluvioStopCondition": "decrement",
+          "pluvioValue": "1",
+          "autoRevEnabled": false,
+          "autoRevCondition": "fim",
+          "autoRevTime": "30s",
+          "energyTime": "1",
+          "voltageController": true,
+          "minVoltage": "400",
+          "maxVoltage": "600",
+          "timeLimit": "2",
+          "power": "",
+          "flow": "",
+          "pressure": "pressostato",
+          "pumpTime": "",
+          "delayTime": "",
+          "unstableTime": "",
+          "sensorMin": "",
+          "sensorMax": "",
+          "sensorScale": "",
+          "fertigation": false,
+          "commType": "4G",
+          "gateway": "",
+          "radioController": "",
+          "radioMonitor": "",
+          "remoteCable": "",
+          "radioCentral": "",
+          "radioCtrl": "",
+          "radioGps": "",
+          "radioBomba": ""
+        }
+      },
+      {
+        "id": "equip_1793896701492",
+        "type": "rainstar",
+        "category": "carreteis",
+        "name": "Carretel 01",
+        "createdAt": "2026-11-05T16:38:21.492Z",
+        "data": {
+          "reelLat": -12.387287667053856,
+          "reelLng": -45.57204008102418,
+          "startLat": -12.390137957885605,
+          "startLng": -45.58392763137818,
+          "initialLat": -12.390137957885605,
+          "initialLng": -45.58392763137818,
+          "laneLength": 1329,
+          "status": "irrigating",
+          "connected": true,
+          "signal": "Bom",
+          "battery": 100,
+          "irrigationProgress": 0.7280626227419751,
+          "irrigatedPipeLength": 967.9,
+          "startPositionPendingIrrigation": false,
+          "pulledPipeLength": 361.5,
+          "hosePulledLength": 361.5,
+          "lastCommunication": "2026-11-05T16:53:48.111Z",
+          "name": "",
+          "setupMethod": "Puxando o carrinho (Padrão)",
+          "method": "Puxando o carrinho (Padrão)",
+          "model": "-",
+          "flowRate": "",
+          "flow": "",
+          "workingWidth": "",
+          "width": "",
+          "hoseLength": "400",
+          "range": "",
+          "nozzleDiameter": "",
+          "nozzle": "",
+          "minPressure": "",
+          "pressure": "",
+          "preEnabled": false,
+          "preDuration": "",
+          "preDistance": "",
+          "postEnabled": false,
+          "postDuration": "",
+          "postDistance": "",
+          "preIrrigation": {
+            "enabled": false,
+            "duration": "",
+            "distance": ""
+          },
+          "postIrrigation": {
+            "enabled": false,
+            "duration": "",
+            "distance": ""
+          },
+          "machineAddress": "",
+          "imei": "",
+          "connectivityType": "4g",
+          "statusText": "IRRIGANDO",
+          "currentSpeed": 18.8,
+          "currentPressure": 7.16,
+          "timeRemaining": "19h 14min"
+        }
+      }
+    ],
+    "owner": "",
+    "contact": "",
+    "autoBilling": false,
+    "billing": {
+      "legal_name": "",
+      "document_type": "cpf",
+      "document_number": "",
+      "email": "",
+      "email_language": "pt-BR",
+      "phone": "",
+      "country": "BR",
+      "postal": "",
+      "city": "",
+      "region": "",
+      "address": "",
+      "auto_enabled": false
+    },
+    "technical": {
+      "country": "Brasil",
+      "postal": "",
+      "state": "",
+      "address": "",
+      "city": "",
+      "contact_phone": "",
+      "signalStudy": null
+    },
+    "energyFaixas": [
+      {
+        "days": [
+          "seg",
+          "ter",
+          "qua",
+          "qui",
+          "sex"
+        ],
+        "rows": [
+          {
+            "ini": "00:00",
+            "fim": "06:00",
+            "tipo": "reduzido"
+          },
+          {
+            "ini": "06:00",
+            "fim": "18:00",
+            "tipo": "fora_ponta"
+          },
+          {
+            "ini": "18:00",
+            "fim": "21:00",
+            "tipo": "ponta"
+          },
+          {
+            "ini": "21:00",
+            "fim": "21:30",
+            "tipo": "fora_ponta"
+          },
+          {
+            "ini": "21:30",
+            "fim": "23:59",
+            "tipo": "reduzido"
+          }
+        ]
+      },
+      {
+        "days": [
+          "sab",
+          "dom"
+        ],
+        "rows": [
+          {
+            "ini": "00:00",
+            "fim": "06:00",
+            "tipo": "reduzido"
+          },
+          {
+            "ini": "06:00",
+            "fim": "21:30",
+            "tipo": "fora_ponta"
+          },
+          {
+            "ini": "21:30",
+            "fim": "23:59",
+            "tipo": "reduzido"
+          }
+        ]
+      }
+    ],
+    "centralLat": -12.382394,
+    "centralLng": -45.565521
+  }
+]

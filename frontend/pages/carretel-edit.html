@@ -1,0 +1,573 @@
+<section class="edit-panel" id="crtEditPanel" aria-label="Editar carretel">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="crtEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Carretel</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select>
+          <button class="edit-panel__select-btn" type="button" id="crtEditSelectBtn" aria-expanded="false" aria-label="Selecionar carretel">—</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="crtEditSelectMenu"></div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button" id="crtEditSaveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ CONFIGURAÇÕES ══════════════════════════════════════════════════ -->
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#crtEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#crtEditIrrigationTiming">Pré e Pós-Irrigação</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#crtEditZones">Zonas de Irrigação</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── GERAL ─────────────────────────────────────────────────── -->
+        <section class="edit-panel__section is-active" id="crtEditGeneral">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Geral</h2>
+              <span class="edit-panel__last-comm crt-last-comm-display" id="crtEditLastComm" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Conectividade</h3>
+
+            <div class="edit-panel__grid-3">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> ID do equipamento <span class="edit-panel__tooltip-icon" data-tooltip="Identificador único do controlador do carretel (IMEI do modem 4G). Está na etiqueta do equipamento e pode ser lido pelo QR Code."><i class="fa-regular fa-circle-question"></i></span></span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="crtEditMachineAddress" type="text" inputmode="numeric" placeholder="000000000000000" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div></div>
+              <div></div>
+            </div>
+
+            <div class="pref-divider" style="margin-top:24px;"></div>
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Ficha Técnica</h3>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="crtEditName"><span class="edit-panel__req">*</span> Nome do equipamento <span class="edit-panel__tooltip-icon" data-tooltip="Nome usado para identificar o carretel no mapa, nas listas e nos relatórios."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="crtEditName" type="text" placeholder="Carretel 01" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <div class="pivo-edit__field-label"><span class="edit-panel__req">*</span> Método de configuração <span class="edit-panel__tooltip-icon" data-tooltip="Como o carretel é preparado antes da irrigação: puxando o carrinho até a posição inicial (padrão) ou puxando a mangueira."><i class="fa-regular fa-circle-question"></i></span></div>
+                <div class="edit-panel__select-field" style="width:100%;">
+                  <button class="edit-panel__select-btn" type="button" id="crtEditSetupMethodBtn" data-edit-select="setupMethod" aria-expanded="false">Puxando o carrinho (Padrão)</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="setupMethod" id="crtEditSetupMethodMenu">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="Puxando o carrinho (Padrão)">Puxando o carrinho (Padrão)</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Puxando a mangueira">Puxando a mangueira</button>
+                  </div>
+                </div>
+                <input type="hidden" id="crtEditSetupMethod" value="Puxando o carrinho (Padrão)" />
+              </div>
+
+              <div class="pivo-edit__field">
+                <div class="pivo-edit__field-label"><span class="edit-panel__req">*</span> Modelo <span class="edit-panel__tooltip-icon" data-tooltip="Modelo do carretel informado pelo fabricante. Define as características mecânicas usadas pelo controlador."><i class="fa-regular fa-circle-question"></i></span></div>
+                <div class="edit-panel__select-field" style="width:100%;">
+                  <button class="edit-panel__select-btn" type="button" id="crtEditModelBtn" data-edit-select="model" aria-expanded="false">-</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="model" id="crtEditModelMenu">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="-">-</button>
+                    <button class="edit-panel__select-option" type="button" data-value="eco ProRain F30">eco ProRain F30</button>
+                    <button class="edit-panel__select-option" type="button" data-value="eco ProRain F40">eco ProRain F40</button>
+                    <button class="edit-panel__select-option" type="button" data-value="eco ProRain F50">eco ProRain F50</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar A2">Rainstar A2</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar A3">Rainstar A3</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar A4">Rainstar A4</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E100">Rainstar E100</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E11">Rainstar E11</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E200">Rainstar E200</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E21">Rainstar E21</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E300">Rainstar E300</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E31">Rainstar E31</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E400">Rainstar E400</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E41">Rainstar E41</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E500">Rainstar E500</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E51">Rainstar E51</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E55 L">Rainstar E55 L</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E55 XL">Rainstar E55 XL</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E600 4W">Rainstar E600 4W</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar E600 4WB">Rainstar E600 4WB</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar T32">Rainstar T32</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar T42">Rainstar T42</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar T51">Rainstar T51</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Rainstar T61">Rainstar T61</button>
+                  </div>
+                </div>
+                <input type="hidden" id="crtEditModel" value="-" />
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="crtEditFlowRate"><span class="edit-panel__req">*</span> Vazão <span class="edit-panel__tooltip-icon" data-tooltip="Vazão de água do canhão durante a irrigação, em m³/h. Usada no cálculo da lâmina e do volume aplicados."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditFlowRate" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">m³/h</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="crtEditHoseLength"><span class="edit-panel__req">*</span> Comprimento da mangueira <span class="edit-panel__tooltip-icon" data-tooltip="Comprimento total da mangueira do carretel, em metros. Limita até onde o carrinho pode ser puxado."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditHoseLength" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="crtEditWorkingWidth"><span class="edit-panel__req">*</span> Largura de trabalho <span class="edit-panel__tooltip-icon" data-tooltip="Largura da faixa molhada pelo canhão, em metros. Usada no cálculo da área irrigada e da lâmina."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditWorkingWidth" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="crtEditMinPressure"><span class="edit-panel__req">*</span> Pressão mínima <span class="edit-panel__tooltip-icon" data-tooltip="Pressão mínima de operação, em bar. Abaixo dela o controlador considera falta de pressão e interrompe a irrigação."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditMinPressure" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">bar</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="crtEditNozzleDiameter"><span class="edit-panel__req">*</span> Diâmetro do bico <span class="edit-panel__tooltip-icon" data-tooltip="Diâmetro do bocal do canhão, em milímetros. Junto com a pressão, define a vazão e o alcance do jato."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditNozzleDiameter" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">mm</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="crtEditRange"><span class="edit-panel__req">*</span> Alcance <span class="edit-panel__tooltip-icon" data-tooltip="Distância alcançada pelo jato do canhão, em metros."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditRange" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pivo-edit__field" style="margin-top:16px;">
+              <label><span class="edit-panel__req">*</span> Modo de Irrigação <span class="edit-panel__tooltip-icon" data-tooltip="Início imediato: a irrigação começa assim que o comando é enviado. Hora de início programada: a irrigação começa no horário agendado."><i class="fa-regular fa-circle-question"></i></span></label>
+              <div id="crtEditIrrigationModeGroup" style="display:flex; gap:16px; margin-top:8px;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; color:#0f172a;">
+                  <input type="radio" name="crtEditIrrigationMode" value="immediate" checked style="margin:0; width:16px; height:16px; accent-color:#16a34a;">
+                  <span>Início imediato</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; color:#0f172a;">
+                  <input type="radio" name="crtEditIrrigationMode" value="programmed" style="margin:0; width:16px; height:16px; accent-color:#16a34a;">
+                  <span>Hora de início programada</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── PRÉ E PÓS-IRRIGAÇÃO (mesma etapa opcional do create) ────── -->
+        <section class="edit-panel__section" id="crtEditIrrigationTiming">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Pré e Pós-Irrigação</h2>
+              <span class="edit-panel__last-comm crt-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <div style="margin-top:0;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="crtEditPreEnabled" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Pré-Irrigação</label>
+                <label class="pivo-edit__switch">
+                  <input id="crtEditPreEnabled" type="checkbox" />
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="crtEditPreDuration"><span class="edit-panel__req">*</span> Duração <span class="edit-panel__tooltip-icon" data-tooltip="Tempo, em minutos, em que o canhão irriga com o carrinho parado na posição inicial, antes de começar o recolhimento."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="crtEditPreDuration" type="number" min="0" step="1" placeholder="0" disabled />
+                    <span class="sc-input-suffix">min</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="crtEditPreDistance"><span class="edit-panel__req">*</span> Distância <span class="edit-panel__tooltip-icon" data-tooltip="Trecho inicial, em metros, em que a pré-irrigação é aplicada."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="crtEditPreDistance" type="number" min="0" step="1" placeholder="0" disabled />
+                    <span class="sc-input-suffix">m</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <div style="margin-top:16px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="crtEditPostEnabled" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Pós-Irrigação</label>
+                <label class="pivo-edit__switch">
+                  <input id="crtEditPostEnabled" type="checkbox" />
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="crtEditPostDuration"><span class="edit-panel__req">*</span> Duração <span class="edit-panel__tooltip-icon" data-tooltip="Tempo, em minutos, em que o canhão continua irrigando com o carrinho parado ao final do recolhimento, junto ao carretel."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="crtEditPostDuration" type="number" min="0" step="1" placeholder="0" disabled />
+                    <span class="sc-input-suffix">min</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="crtEditPostDistance"><span class="edit-panel__req">*</span> Distância <span class="edit-panel__tooltip-icon" data-tooltip="Trecho final, em metros, em que a pós-irrigação é aplicada."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="crtEditPostDistance" type="number" min="0" step="1" placeholder="0" disabled />
+                    <span class="sc-input-suffix">m</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── ZONAS DE IRRIGAÇÃO (até 4 zonas, lâmina/velocidade por trecho da puxada) ──── -->
+        <section class="edit-panel__section" id="crtEditZones">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Zonas de Irrigação</h2>
+              <span class="edit-panel__last-comm crt-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <div style="margin-top:0;">
+              <p style="font-size:13px; color:#64748b; margin:0 0 16px;">Defina até 4 zonas, em metros, para aplicar velocidades diferentes ao longo do recolhimento da mangueira.</p>
+              <div id="crtEditZonesBar" style="display:none; margin-bottom:20px;"></div>
+              <div id="crtEditZonesRows"></div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; margin-top:4px;">
+                <button type="button" class="edit-panel__btn" id="crtEditCreateZoneBtn"><i class="fa-solid fa-plus"></i> Criar Zona</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── PEAK HOURS ────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="crtEditHorarios">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Horários de Pico</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28/05/2026 11:22</span>
+            <p class="pivo-edit__loc-desc">
+              Horários de pico são faixas de tempo no qual o carretel não deve operar com água para evitar o uso em horários críticos, por exemplo, quando o custo da energia elétrica é alto.
+            </p>
+            <div style="display: flex; align-items: flex-start; gap: 10px; background: #fffbe6; border: 1px solid #ffd666; border-radius: 8px; padding: 10px 14px; margin: 16px 0;">
+              <i class="fa-solid fa-triangle-exclamation" style="color: #faad14; font-size: 14px; margin-top: 2px;"></i>
+              <span style="font-size: 13px; color: rgba(0,0,0,0.88); line-height: 1.5;">A configuração de horário de pico é apenas informativa, utilizada para a geração de relatórios. O desligamento do equipamento nesses horários deve ser feito manualmente.</span>
+            </div>
+            <button type="button" class="edit-panel__btn">Ver Faixas de Energia</button>
+          </div>
+            <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <h3 class="pref-section-title">Dias da semana</h3>
+              <div class="pivo-edit__days-row">
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDayDom" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDayDom" class="pivo-edit__check-label">Domingo</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDaySeg" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDaySeg" class="pivo-edit__check-label">Segunda</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDayTer" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDayTer" class="pivo-edit__check-label">Terça</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDayQua" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDayQua" class="pivo-edit__check-label">Quarta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDayQui" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDayQui" class="pivo-edit__check-label">Quinta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDaySex" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDaySex" class="pivo-edit__check-label">Sexta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="crtEditDaySab" style="width: 16px; height: 16px; accent-color: #16a34a; cursor: pointer;">
+                      <label for="crtEditDaySab" class="pivo-edit__check-label">Sábado</label>
+                  </div>
+              </div>
+
+              <!-- Horario de Pico 1 -->
+              <div id="crtEditPico1Container" class="pivo-edit__peak-section is-disabled">
+                <div class="pivo-edit__switch-row" style="margin-bottom: 12px;">
+                    <label for="crtEditPeak1Enabled" class="pivo-edit__switch-heading">Horário de Pico 1</label>
+                    <label class="pivo-edit__switch">
+                        <input id="crtEditPeak1Enabled" type="checkbox">
+                        <span class="pivo-edit__switch-slider"></span>
+                    </label>
+                </div>
+                <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPeak1Start"><span class="edit-panel__req" style="display: none;">*</span> Horário de início</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPeak1Start" type="time" value="00:00" disabled="">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPeak1End"><span class="edit-panel__req" style="display: none;">*</span> Horário de término</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPeak1End" type="time" value="00:00" disabled="">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horario de Pico 2 -->
+              <div id="crtEditPico2Container" class="pivo-edit__peak-section is-disabled" style="margin-top: 24px;">
+                <div class="pivo-edit__switch-row" style="margin-bottom: 12px;">
+                    <label for="crtEditPeak2Enabled" class="pivo-edit__switch-heading">Horário de Pico 2</label>
+                    <label class="pivo-edit__switch">
+                        <input id="crtEditPeak2Enabled" type="checkbox">
+                        <span class="pivo-edit__switch-slider"></span>
+                    </label>
+                </div>
+                <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPeak2Start">Horário de início</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPeak2Start" type="time" value="00:00" disabled="">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPeak2End">Horário de término</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPeak2End" type="time" value="00:00" disabled="">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preços -->
+              <div class="pivo-edit__subsection-block">
+                <h3 class="pref-section-title">Preços por Faixa</h3>
+                <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPricePonta">Pico (Ponta)</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPricePonta" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPriceForaPonta">Fora de pico (Fora de ponta)</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPriceForaPonta" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="crtEditPriceReduzido">Reduzido</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="crtEditPriceReduzido" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div><!-- /.edit-panel__tab-body config -->
+
+  <!-- ══ HISTÓRICO ══════════════════════════════════════════════════════ -->
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#crtEditHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#crtEditHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── SETTINGS HISTORY ───────────────────────────── -->
+        <section class="edit-panel__section is-active" id="crtEditHistoryList">
+          <div class="edit-panel__history">
+
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Status</th>
+                    <th style="width:100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="crtEditHistoryBody">
+
+                  <tr class="edit-panel__history-row" data-row-id="c1">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="c1"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>10/09/2026 15:33</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star" title="Favorito"></i><i class="fa-solid fa-download" title="Download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-c1" style="display:none;">
+                    <td colspan="5">
+                      <div class="edit-panel__history-details">
+                        <div class="edit-panel__history-details-section">
+                          <h4>Conectividade</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">ID do equipamento:</span><span>001D0A719DBE</span></div>
+                          </div>
+                        </div>
+                        <div class="edit-panel__history-details-section">
+                          <h4>Ficha Técnica</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>MHP 10</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Método de configuração:</span><span>Puxando o carrinho (Padrão)</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Modelo:</span><span>Rainstar E41</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vazão:</span><span>90m³/h</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Comprimento da mangueira:</span><span>120m</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Largura de trabalho:</span><span>80m</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Pressão mínima:</span><span>2.5bar</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Diâmetro do bico:</span><span>22mm</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Alcance:</span><span>80m</span></div>
+                          </div>
+                        </div>
+                        <div class="edit-panel__history-details-section">
+                          <h4>Pré e Pós-Irrigação</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Pré-Irrigação:</span><span>Desativado</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Pós-Irrigação:</span><span>Desativado</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="c2">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="c2"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>09/09/2026 15:27</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star" title="Favorito"></i><i class="fa-solid fa-download" title="Download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-c2" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="c3">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="c3"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>08/09/2026 15:21</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star" title="Favorito"></i><i class="fa-solid fa-download" title="Download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-c3" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                </tbody>
+              </table>
+
+              <div class="edit-panel__pagination">
+                <span>1-3 de 3 itens</span>
+                <div class="edit-panel__pagination-pages">
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <select class="edit-panel__pagination-select" id="crtEditHistoryPageSize" aria-label="Itens por página">
+                  <option>10 / página</option>
+                  <option>20 / página</option>
+                  <option>50 / página</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── FAVORITES ─────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="crtEditHistoryFavs">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Favoritos</h2>
+            </div>
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+              <div class="edit-panel__history-no-data" style="padding:40px; text-align:center; color:#94a3b8; font-size:13px;">
+                Nenhuma configuração favorita.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div>
+</section>

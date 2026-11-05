@@ -1,0 +1,1681 @@
+<section class="edit-panel" id="pivoEditPanel" aria-label="Editar pivô">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="pivoEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Pivô</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select="">
+          <button class="edit-panel__select-btn" type="button" id="pivoEditSelectBtn" data-pluv-select-trigger="" aria-expanded="false" aria-label="Selecionar pivô" data-value="equip_1774963893775">Pivô 1</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="pivoEditSelectMenu" data-pluv-menu="pivo">
+            <button type="button" class="edit-panel__select-option is-active" data-value="equip_1774963893775">Pivô 1</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774964464593">Pivô 2</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774966059369">Pivô 3</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774967223267">Pivô 4</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774967250779">Pivô 5</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774974940663">Pivô 6</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774974975447">Pivô 7</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975050199">Pivô 8</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975074411">Pivô 9</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975735799">Pivô 10</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975752983">Pivô 11</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975770945">Pivô 12</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774975786239">Pivô 13</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774976315469">Pivô 15</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977037076">Pivô 17</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977056418">Pivô 18</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977077385">Pivô 19</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977106399">Pivô 20</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977136027">Pivô 21</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977152704">Pivô 22</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977168938">Pivô 23</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977183270">Pivô 24</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977203278">Pivô 25</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977219946">Pivô 26</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977245512">Pivô 27</button>
+            <button type="button" class="edit-panel__select-option" data-value="equip_1774977264877">Pivô 28</button>
+          </div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#pivoEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditBomba">Bombeamento</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditLocation">Localização e Segmentos</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditCanhao">Canhão Final</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditPluviometro" style="display:none;">Pluviômetro</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditProtecao" style="display:none;">Proteção e Religamento</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditHorarios">Horários de Pico</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditAutorreversao" style="display:none;">Autorreversão</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditFirmware">Firmware</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="pivoEditGeneral">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Geral</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Conectividade</h3>
+
+            <div class="edit-panel__grid-3" style="margin-bottom: 16px;">
+              <div class="sc-field">
+                <label class="equip-label" for="pivoEditCommType"><span class="equip-required">*</span>Tipo de comunicação</label>
+                <div class="equip-select" style="position: relative;">
+                  <button type="button" class="equip-select__trigger" style="height: 36px; min-height: 36px; padding-top: 0; padding-bottom: 0; font-size: 12px; border-radius: 7px;" aria-haspopup="listbox" aria-expanded="false" aria-controls="pivoEditCommType__list">
+                    <span class="equip-select__value">Rádio</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="equip-select__list" role="listbox" id="pivoEditCommType__list" style="position: absolute; top: calc(100% + 6px); left: 0; width: 100%; z-index: 100;">
+                    <button type="button" class="equip-select__option is-selected" data-value="XBEE" role="option" aria-selected="true">Rádio</button>
+                    <button type="button" class="equip-select__option" data-value="4G" role="option" aria-selected="false">4G</button>
+                  </div>
+                  <select class="equip-input equip-select__native" id="pivoEditCommType" aria-hidden="true" tabindex="-1">
+                    <option value="XBEE" selected>Rádio</option>
+                    <option value="4G">4G</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Campo ID do equipamento (visível apenas no modo 4G) -->
+            <div id="pivoEditGatewayField" class="edit-panel__grid-3" style="display:none; margin-bottom: 16px;">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="equip-required">*</span> ID do equipamento</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="pivoEditGateway" type="text" placeholder="10000000351D266D" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar" data-clear="pivoEditGateway"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid de rádios (visível apenas no modo Rádio/XBEE) -->
+            <div id="pivoEditRadioGrid" class="edit-panel__grid-4">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio da central</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="pivoEditRadioCentral" type="text" value="0013A20042000001" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio do controlador</span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio" data-bound="1"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="pivoEditRadioControl" type="text" value="0013A20042000002" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio do GPS</span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio" data-bound="1"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="pivoEditRadioGps" type="text" value="0013A20042000003" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Radio da bomba (Spoti)</span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="pivoEditRadioBomba" type="text" value="0000000000000000" readonly />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+            <h3 class="pref-section-title" style="margin-top: 0;">Ficha Técnica</h3>
+
+            <div class="edit-panel__grid-3">
+              <div class="edit-panel__field-box">
+                <label for="pivoEditName"><span class="edit-panel__req">*</span> Nome do equipamento</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="pivoEditName" type="text" value="Test pivot" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box">
+                <div class="edit-panel__field-box-label"><span class="edit-panel__req">*</span> Fabricante do equipamento</div>
+                <div class="edit-panel__select-field">
+                  <button class="edit-panel__select-btn" type="button" data-edit-select="maker" aria-expanded="false">Bauer</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="maker">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="Bauer">Bauer</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Carborundum">Carborundum</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Fockink">Fockink</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Irrigabras">Irrigabras</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Krebs">Krebs</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Lindsay">Lindsay</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Reinke">Reinke</button>
+                    <button class="edit-panel__select-option" type="button" data-value="Valley">Valley</button>
+                    <button class="edit-panel__select-option" type="button" data-value="outro">Outro</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box">
+                <div class="edit-panel__field-box-label"><span class="edit-panel__req">*</span> Tipo de painel</div>
+                <div class="edit-panel__select-field">
+                  <button class="edit-panel__select-btn" type="button" data-edit-select="panel" aria-expanded="false">Nexus</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="panel">
+                    <button class="edit-panel__select-option" type="button" data-value="SmartConnect">SmartConnect</button>
+                    <button class="edit-panel__select-option is-active" type="button" data-value="Nexus">Nexus</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3">
+              <div class="edit-panel__field-box">
+                <div class="edit-panel__field-box-label"><span class="edit-panel__req">*</span> Idioma do equipamento <span class="edit-panel__tooltip-icon" data-tooltip="Idioma usado no controlador do painel do equipamento."><i class="fa-regular fa-circle-question"></i></span></div>
+                <div class="edit-panel__select-field">
+                  <button class="edit-panel__select-btn" type="button" data-edit-select="lang" aria-expanded="false">English</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="lang">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="en">English</button>
+                    <button class="edit-panel__select-option" type="button" data-value="pt">Português</button>
+                    <button class="edit-panel__select-option" type="button" data-value="es">Español</button>
+                    <button class="edit-panel__select-option" type="button" data-value="ru">Russo</button>
+                    <button class="edit-panel__select-option" type="button" data-value="de">Alemão</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box">
+                <label for="pivoEditRadius"><span class="edit-panel__req">*</span> Raio até a última torre <span class="edit-panel__tooltip-icon" data-tooltip="Distância do centro do pivô até a última torre (sem incluir o alcance do canhão/aspersor final)."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="pivoEditRadius" type="text" inputmode="decimal" placeholder="—" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box">
+                <label for="pivoEditSpeed"><span class="edit-panel__req">*</span> Velocidade da última torre <span class="edit-panel__tooltip-icon" data-tooltip="Velocidade da última torre a 100%."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="pivoEditSpeed" type="number" value="240" />
+                  <span class="sc-input-suffix">m/h</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3">
+              <div class="edit-panel__field-box is-disabled">
+                <label for="pivoEditRaioTotal"><span class="edit-panel__req">*</span> Raio total irrigado <span class="edit-panel__tooltip-icon" data-tooltip="Distância do centro do pivô até o final do último tubo do pivô."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input is-disabled" id="pivoEditRaioTotal" type="text" value="600.00" readonly />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box is-disabled">
+                <label for="pivoEditAnguloMax"><span class="edit-panel__req">*</span> Ângulo máximo de trabalho <span class="edit-panel__tooltip-icon" data-tooltip="Define o ângulo máximo de trabalho do pivô. Use 360° para irrigação em círculo completo, ou um valor menor para um pivô setorial."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input is-disabled" id="pivoEditAnguloMax" type="text" value="360" readonly />
+                  <span class="sc-input-suffix">°</span>
+                </div>
+              </div>
+
+              <div class="edit-panel__field-box is-disabled">
+                <label for="pivoEditArea"><span class="edit-panel__req">*</span> Área irrigada</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input is-disabled" id="pivoEditArea" type="text" value="113,10" readonly />
+                  <span class="sc-input-suffix">ha</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+            <h3 class="pref-section-title" style="margin-top: 0;">Pluviômetro</h3>
+
+            <div class="pivo-edit__switch-row" style="margin-top: 0;">
+              <label for="pivoEditPluvioEnabled" class="pivo-edit__check-label">Habilitar pluviômetro</label>
+              <label class="pivo-edit__switch">
+                <input id="pivoEditPluvioEnabled" type="checkbox">
+                <span class="pivo-edit__switch-slider"></span>
+              </label>
+            </div>
+
+            <div id="pivoEditPluvioFields" style="display: none;">
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                <div class="pivo-edit__field">
+                  <label for="pivoEditPluvioScale"><span class="edit-panel__req">*</span> Escala do sensor <span class="edit-panel__tooltip-icon" data-tooltip="A Escala do sensor se refere ao máximo de pressão que ele consegue medir."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditPluvioScale" type="number" value="0.2">
+                    <span class="sc-input-suffix">mm</span>
+                  </div>
+                </div>
+                <div></div>
+                <div></div>
+              </div>
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                <div class="pivo-edit__field">
+                  <div class="pivo-edit__field-label"><span class="edit-panel__req">*</span> Condição de parada <span class="edit-panel__tooltip-icon" data-tooltip="'Por valor': o comando do pivô é interrompido ao atingir o limite definido no campo 'Valor'. 'Por decremento': o pivô aumenta a velocidade para compensar a lâmina aplicada."><i class="fa-regular fa-circle-question"></i></span></div>
+                  <div class="edit-panel__select-field" style="width: 100%;">
+                    <button class="edit-panel__select-btn" type="button" data-edit-select="stop-condition" aria-expanded="false">Por decremento</button>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <div class="edit-panel__select-menu" role="listbox" data-edit-menu="stop-condition">
+                      <button class="edit-panel__select-option" type="button" data-value="none">Não configurado</button>
+                      <button class="edit-panel__select-option" type="button" data-value="value">Por valor</button>
+                      <button class="edit-panel__select-option is-active" type="button" data-value="decrement">Por decremento</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="pivoEditPluvioValue"><span class="edit-panel__req">*</span> Valor <span class="edit-panel__tooltip-icon" data-tooltip="Limite de chuva, em milímetros, estabelecido em uma determinada área."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditPluvioValue" type="number" value="1">
+                    <span class="sc-input-suffix">mm</span>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+            <h3 class="pref-section-title" style="margin-top: 0;">Autorreversão</h3>
+
+            <div class="pivo-edit__switch-row" style="margin-top: 0;">
+              <label for="pivoEditAutoRevEnabled" class="pivo-edit__check-label">Habilitar autorreversão</label>
+              <label class="pivo-edit__switch">
+                <input id="pivoEditAutoRevEnabled" type="checkbox" checked>
+                <span class="pivo-edit__switch-slider"></span>
+              </label>
+            </div>
+
+            <div id="pivoEditAutoRevFields" style="display: block;">
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                <div class="pivo-edit__field">
+                  <div class="pivo-edit__field-label">Condição de parada</div>
+                  <div class="pivo-edit__segmented-control" id="pivoEditAutoRevCondition">
+                    <button type="button" class="is-active" data-value="fim">Por fim de curso</button>
+                    <button type="button" data-value="angulo">Por ângulo</button>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <div class="pivo-edit__field-label">Tempo de espera para Autorreversão</div>
+                  <div class="edit-panel__select-field" style="width: 100%;">
+                    <button class="edit-panel__select-btn" type="button" data-edit-select="autorev-time" aria-expanded="false">30 segundos</button>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <div class="edit-panel__select-menu" role="listbox" data-edit-menu="autorev-time">
+                      <button class="edit-panel__select-option is-active" type="button" data-value="30s">30 segundos</button>
+                      <button class="edit-panel__select-option" type="button" data-value="1m">1 minuto</button>
+                      <button class="edit-panel__select-option" type="button" data-value="2m">2 minutos</button>
+                    </div>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+            <h3 class="pref-section-title" style="margin-top: 0;">Proteção e Religamento</h3>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="pivoEditEnergyTime"><span class="edit-panel__req">*</span> Tempo de energia <span class="edit-panel__tooltip-icon" data-tooltip="Tempo de espera antes de retomar a operação após uma queda de energia."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="pivoEditEnergyTime" type="number" value="1">
+                  <span class="sc-input-suffix">min</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pivo-edit__switch-row" style="margin-top: 24px;">
+              <label for="pivoEditVoltageController" class="pivo-edit__check-label">Controlador de tensão <span class="edit-panel__tooltip-icon" data-tooltip="Impede que o equipamento opere fora das tensões mínima e máxima por tempo maior do que o tempo limite."><i class="fa-regular fa-circle-question"></i></span></label>
+              <label class="pivo-edit__switch">
+                <input type="checkbox" id="pivoEditVoltageController" checked>
+                <span class="pivo-edit__switch-slider"></span>
+              </label>
+            </div>
+
+            <div id="pivoEditVoltageFields" style="margin-top: 16px;">
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="pivoEditMinVoltage"><span class="edit-panel__req">*</span> Tensão mínima de operação</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditMinVoltage" type="number" value="400">
+                    <span class="sc-input-suffix">V</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="pivoEditMaxVoltage"><span class="edit-panel__req">*</span> Tensão máxima de operação</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditMaxVoltage" type="number" value="600">
+                    <span class="sc-input-suffix">V</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="pivoEditTimeLimit"><span class="edit-panel__req">*</span> Tempo limite <span class="edit-panel__tooltip-icon" data-tooltip="Período de tolerância em que o pivô pode operar fora das tensões mínima ou máxima antes de desligar por segurança."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditTimeLimit" type="number" value="2">
+                    <span class="sc-input-suffix">min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Other Sections Placeholders -->
+        <section class="edit-panel__section" id="pivoEditLocation">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização e Segmentos</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+           <div class="pivo-edit__loc-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+             <!-- Mapa -->
+             <div class="pivo-edit__loc-map" style="position: relative; border-radius: 0; overflow: hidden; min-height: 400px;">
+               <div id="pivoEditLocationMap" style="width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+             </div>
+             <!-- Form Localização -->
+             <div class="pivo-edit__loc-form pivo-edit-specifics" style="margin-top: -30px;">
+               <h3 class="pref-section-title">Localização</h3>
+               <p class="pivo-edit__loc-desc">
+                 A localização em campo do dispositivo é essencial para mostrar geograficamente no mapa a posição do equipamento.
+               </p>
+
+               <div class="pivo-edit__field">
+                 <label for="pivoEditLocCenter"><span class="edit-panel__req">*</span> Localização do centro <span class="edit-panel__tooltip-icon" data-tooltip="Localização do centro do pivô."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="edit-panel__input-wrap" style="display: flex; gap: 8px;">
+                   <input class="edit-panel__input" id="pivoEditLocCenter" type="text" value="-18.846005, -48.386471" style="flex: 1; padding-right: 12px;" />
+                   <button type="button" class="edit-panel__btn" style="white-space: nowrap;"><i class="fa-solid fa-location-dot"></i> Obter Localização</button>
+                 </div>
+               </div>
+
+               <div class="pivo-edit__field">
+                 <label for="pivoEditRefDist"><span class="edit-panel__req">*</span> Raio total irrigado <span class="edit-panel__tooltip-icon" data-tooltip="Distância do centro do pivô até o final do último tubo do pivô."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="edit-panel__input-wrap" style="display: flex; gap: 8px;">
+                   <div class="sc-input-group" style="flex: 1;">
+                     <input class="equip-input sc-input" id="pivoEditRefDist" type="text" inputmode="decimal" placeholder="—" />
+                     <span class="sc-input-suffix">m</span>
+                   </div>
+                   <input type="hidden" id="pivoEditLocRef" value="-18.849702, -48.391492" />
+                   <button type="button" class="edit-panel__btn" style="white-space: nowrap;"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> Obter Localização</button>
+                 </div>
+               </div>
+
+               <div style="display: flex; gap: 12px; align-items: flex-end;">
+                 <div class="pivo-edit__field" style="flex: 1; margin-bottom: 0; display: none;">
+                   <label for="pivoEditLocRadius"><span class="edit-panel__req">*</span> Raio (m)</label>
+                   <input class="edit-panel__input" id="pivoEditLocRadius" type="number" value="414.28" step="0.01" placeholder="Auto pelo ângulo zero" />
+                 </div>
+                 <div class="pivo-edit__field" style="flex: 1; margin-bottom: 0; display: none;">
+                   <label for="pivoEditLocLastTower">Última torre</label>
+                   <div class="edit-panel__input-wrap" style="display: flex; gap: 8px;">
+                     <input class="edit-panel__input" id="pivoEditLocLastTower" type="number" step="0.01" placeholder="Auto pela última torre" style="flex: 1;" />
+                     <button type="button" class="edit-panel__btn" id="pivoEditMapPickLastTowerBtn" style="white-space: nowrap; flex-shrink: 0;"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> Obter última torre</button>
+                   </div>
+                 </div>
+               </div>
+
+               <div class="pivo-edit__field">
+                 <label for="pivoEditLocMaxAng"><span class="edit-panel__req">*</span> Ângulo máximo de trabalho <span class="edit-panel__tooltip-icon" data-tooltip="Define o ângulo máximo de trabalho do pivô. Use 360° para irrigação em círculo completo, ou um valor menor para um pivô setorial."><i class="fa-regular fa-circle-question"></i></span></label>
+                 <div class="sc-input-group">
+                   <input class="equip-input sc-input" id="pivoEditLocMaxAng" type="number" value="360" />
+                   <span class="sc-input-suffix">°</span>
+                 </div>
+                 <span style="font-size: 10px; color: #94a3b8; display: block; margin-top: 4px;">Entre 1 e 360</span>
+               </div>
+
+                 <div style="margin-top: 16px; display: flex; flex-wrap: nowrap; align-items: flex-start;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="pivo-edit__cardinal-label" style="display: flex; align-items: center; gap: 6px; white-space: nowrap;">Alinhar ângulo zero (selecione um dos pontos cardeais ou demarque no mapa) <span class="edit-panel__tooltip-icon" data-tooltip="Ponto de referência 0° do pivô. Selecione um ponto cardeal (N, L, S, O) ou demarque no mapa."><i class="fa-regular fa-circle-question"></i></span></div>
+                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: nowrap;">
+                       <div class="pivo-cardinal-btns" data-loc-bound="1" style="flex-wrap: nowrap;">
+                         <button type="button" class="pivo-cardinal-btn" data-bearing="0" title="Norte">N</button>
+                         <button type="button" class="pivo-cardinal-btn" data-bearing="90" title="Leste">L</button>
+                         <button type="button" class="pivo-cardinal-btn" data-bearing="180" title="Sul">S</button>
+                         <button type="button" class="pivo-cardinal-btn" data-bearing="270" title="Oeste">O</button>
+                       </div>
+                     </div>
+                  </div>
+                  <div style="width: 60px;"></div>
+                  <!-- Exclusivo SmartTouch/Centerstar: este template (pivo-edit.html) é usado por Nexus/SmartConnect,
+                       então o campo fica sempre oculto aqui. Mantido só por consistência de código entre as famílias. -->
+                  <div class="pivo-edit__field" id="pivoEditMaxLapsField" style="max-width: 220px; display: none;">
+                    <label for="pivoEditMaxLaps">Número máximo de voltas <span class="edit-panel__tooltip-icon" data-tooltip="Quantidade máxima de voltas que o pivô pode realizar antes de parar automaticamente."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <input type="number" class="equip-input" id="pivoEditMaxLaps" min="1" step="1" style="padding: 8px 12px; font-size: 13px; border-radius: 8px;" />
+                  </div>
+                </div>
+             </div>
+           </div>
+
+           <!-- Parcelas -->
+           <div class="pivo-edit__segments-section pivo-edit-specifics" style="margin-top: 16px;">
+             <div class="edit-panel__divider-label" style="margin: 16px 0 16px; font-weight: 600; font-size: 16px; color: #1e293b; border-top: none; padding-top: 0;">Segmentos</div>
+             <p style="font-size: 13px; color: rgba(0,0,0,0.88); margin-bottom: 40px; line-height: 1.4;">É comum segmentar o pivô em faixas de ângulos para representar diferentes sementes, cultivos ou manejos. Isso facilita a visualização dos dados e o controle da irrigação em diferentes lâminas. Com esta funcionalidade, você pode segmentar o seu pivô para facilitar os comandos de irrigação durante a safra.</p>
+
+             <!-- Segmentos Pré-Definidos -->
+             <div style="margin-bottom: 20px;">
+               <div class="edit-panel__divider-label" style="margin-bottom: 6px; font-weight: 400; font-size: 14px; color: #0f172a; border-top: none; padding-top: 0;">Configuração automática</div>
+               <div class="pivo-preset-row">
+                 <button type="button" class="pivo-preset-btn" data-preset="1">1</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="2">2</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="3">3</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="4">4</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="5">5</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="6">6</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="7">7</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="8">8</button>
+                 <button type="button" class="pivo-preset-btn" data-preset="9">9</button>
+               </div>
+             </div>
+
+             <!-- Controles do Segmento -->
+             <div class="edit-panel__divider-label" style="margin-bottom: 6px; font-weight: 400; font-size: 14px; color: #0f172a; border-top: none; padding-top: 0;">Configuração manual</div>
+             <div id="pivoEditSegmentList" style="display: flex; gap: 8px; margin-bottom: 24px; align-items: center; flex-wrap: wrap;">
+             </div>
+
+             <!-- Formulário do Segmento -->
+             <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+               <div class="pivo-edit__field">
+                 <label class="edit-panel__label" for="pivoEditSegName">Nome do segmento</label>
+                 <div class="sc-input-group">
+                   <input class="equip-input sc-input" id="pivoEditSegName" type="text" autocomplete="off" value="Segmento 1" placeholder="Digite o nome do segmento" />
+                 </div>
+               </div>
+
+               <div class="pivo-edit__field">
+                 <label for="pivoEditSegStartAng"><span class="edit-panel__req">*</span> Ângulo inicial</label>
+                 <div class="sc-input-group">
+                   <input class="equip-input sc-input" id="pivoEditSegStartAng" type="number" value="0" min="0" max="360" />
+                   <span class="sc-input-suffix">°</span>
+                 </div>
+               </div>
+
+               <div class="pivo-edit__field">
+                 <label for="pivoEditSegEndAng"><span class="edit-panel__req">*</span> Ângulo final</label>
+                 <div class="sc-input-group">
+                   <input class="equip-input sc-input" id="pivoEditSegEndAng" type="number" min="0" max="360" />
+                   <span class="sc-input-suffix">°</span>
+                 </div>
+               </div>
+             </div>
+
+           </div>
+        </section>
+
+        <section class="edit-panel__section" id="pivoEditBomba">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Bombeamento</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+          </div>
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <h3 class="pref-section-title" style="margin-top: 0;">Ficha Técnica</h3>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 16px; align-items: end;">
+              <div class="pivo-edit__field sc-field">
+                <label for="scPower"><span class="edit-panel__req">*</span> Potência elétrica <span class="edit-panel__tooltip-icon" data-tooltip="Potência real (absorvida): energia efetivamente absorvida da rede elétrica para operar o equipamento no ponto de trabalho atual, considerando o rendimento e a conversão para o sistema internacional de unidades."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scPower" type="number" min="0" step="0.01" value="">
+                  <span class="sc-input-suffix">kW</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 12px;">
+              <div class="pivo-edit__field">
+                <label for="scPressure"><span class="edit-panel__req">*</span> Leitura de pressão <span class="edit-panel__tooltip-icon" data-tooltip="Equipamento para aferir a pressão no centro do pivô."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="edit-panel__select-field" style="width: 100%;">
+                  <button class="edit-panel__select-btn" type="button" aria-expanded="false">Por pressostato</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox">
+                    <button class="edit-panel__select-option" type="button" data-value="desabilitado">Desabilitado</button>
+                    <button class="edit-panel__select-option is-active" type="button" data-value="pressostato">Por pressostato</button>
+                    <button class="edit-panel__select-option" type="button" data-value="sensor">Por sensor de pressão</button>
+                  </div>
+                  <select id="scPressure" aria-hidden="true" tabindex="-1" style="display:none;">
+                    <option value="desabilitado">Desabilitado</option>
+                    <option value="pressostato" selected="">Por pressostato</option>
+                    <option value="sensor">Por sensor de pressão</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="scFlow"><span class="edit-panel__req">*</span> Vazão</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scFlow" type="number" min="0" step="0.01" value="">
+                  <span class="sc-input-suffix">m³/h</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field is-disabled">
+                <label for="scIrrigationRate">Lâmina de irrigação <span class="edit-panel__tooltip-icon" data-tooltip="Irrigation Rate 100% = VAZ × (2π × RUT × AMT / 360) / VUT / (π × RTI² × AMT / 10000 / 360) × 0.1"><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input is-disabled" id="scIrrigationRate" type="text" value="" readonly="">
+                  <span class="sc-input-suffix">mm</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 12px;">
+              <div class="pivo-edit__field">
+                <label for="scPumpTime"><span class="edit-panel__req">*</span> Tempo de bomba <span class="edit-panel__tooltip-icon" data-tooltip="Se refere ao tempo limite para que o pivô pressurize. Caso este tempo seja ultrapassado sem atingir a pressão, a bomba é desligada por segurança."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scPumpTime" type="number" min="0" step="1" value="">
+                  <span class="sc-input-suffix">min</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="scDelayTime"><span class="edit-panel__req">*</span> Tempo de retardo <span class="edit-panel__tooltip-icon" data-tooltip="O Tempo de retardo se refere ao tempo posterior à pressurização do pivô. Há uma espera para que a pressão chegue até a última torre, para então o pivô começar a se movimentar."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scDelayTime" type="number" min="0" step="1" value="">
+                  <span class="sc-input-suffix">s</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="scUnstableTime"><span class="edit-panel__req">*</span> Tempo instável de pressostato <span class="edit-panel__tooltip-icon" data-tooltip="Caso o pivô esteja operando fora dos limites de pressão por um período maior que o estabelecido, a ação do pivô é interrompida."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scUnstableTime" type="number" min="0" step="1" value="">
+                  <span class="sc-input-suffix">min</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 12px;">
+              <div class="pivo-edit__field">
+                <label for="scSensorMin">Valor mínimo do sensor <span class="edit-panel__tooltip-icon" data-tooltip="O valor mínimo indica a faixa de pressão na qual o dispositivo deve se manter. Abaixo do valor mínimo, o funcionamento do pivô é parado."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scSensorMin" type="number" min="0" step="0.1" value="" disabled="">
+                  <span class="sc-input-suffix">bar</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="scSensorMax">Valor máximo do sensor <span class="edit-panel__tooltip-icon" data-tooltip="O valor máximo indica a faixa de pressão na qual o dispositivo deve se manter. Acima do valor máximo, o funcionamento do pivô é parado."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scSensorMax" type="number" min="0" step="0.1" value="" disabled="">
+                  <span class="sc-input-suffix">bar</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="scSensorScale"><span class="edit-panel__req">*</span> Escala do sensor <span class="edit-panel__tooltip-icon" data-tooltip="A Escala do sensor se refere ao máximo de pressão que ele consegue medir."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="scSensorScale" type="number" min="0" step="0.1" value="" disabled="">
+                  <span class="sc-input-suffix">bar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pivo-edit__subsection-block">
+              <h3 class="pref-section-title" style="margin-bottom: 16px;">Bomba de Fertirrigação</h3>
+              <div class="pivo-edit__check-row" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="scFertigation" value="" style="accent-color: #16a34a;">
+                <label for="scFertigation" class="pivo-edit__check-label" style="margin: 0; cursor: pointer;">Permitir fertirrigação <span class="edit-panel__tooltip-icon" data-tooltip="Habilita a fertirrigação (aplicação de fertilizantes junto com a água) nos comandos de irrigação deste pivô."><i class="fa-regular fa-circle-question"></i></span></label>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <section class="edit-panel__section" id="pivoEditPluviometro">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Pluviômetro</h2>
+          </div>
+           <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <div class="pivo-edit__switch-row">
+                  <label for="pivoEditPluvioEnabledTab" class="pivo-edit__check-label">Habilitar pluviômetro</label>
+                  <label class="pivo-edit__switch">
+                      <input id="pivoEditPluvioEnabledTab" type="checkbox">
+                      <span class="pivo-edit__switch-slider"></span>
+                  </label>
+              </div>
+
+              <div id="pivoEditPluvioFieldsTab" style="display: none;">
+                  <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                      <div class="pivo-edit__field">
+                        <label for="pivoEditPluvioScaleTab"><span class="edit-panel__req">*</span> Escala do sensor <span class="edit-panel__tooltip-icon" data-tooltip="A Escala do sensor se refere ao máximo de pressão que ele consegue medir."><i class="fa-regular fa-circle-question"></i></span></label>
+                        <div class="sc-input-group">
+                          <input class="equip-input sc-input" id="pivoEditPluvioScaleTab" type="number" value="0.2" />
+                          <span class="sc-input-suffix">mm</span>
+                        </div>
+                      </div>
+                      <div></div>
+                      <div></div>
+                  </div>
+                  <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                      <div class="pivo-edit__field">
+                        <div class="pivo-edit__field-label"><span class="edit-panel__req">*</span> Condição de parada <span class="edit-panel__tooltip-icon" data-tooltip="'Por valor': o comando do pivô é interrompido ao atingir o limite definido no campo 'Valor'. 'Por decremento': o pivô aumenta a velocidade para compensar a lâmina aplicada."><i class="fa-regular fa-circle-question"></i></span></div>
+                        <div class="edit-panel__select-field" style="width: 100%;">
+                          <button class="edit-panel__select-btn" type="button" data-edit-select="stop-condition-tab" aria-expanded="false">Por decremento</button>
+                          <i class="fa-solid fa-chevron-down"></i>
+                          <div class="edit-panel__select-menu" role="listbox" data-edit-menu="stop-condition-tab">
+                            <button class="edit-panel__select-option" type="button" data-value="none">Não configurado</button>
+                            <button class="edit-panel__select-option" type="button" data-value="value">Por valor</button>
+                            <button class="edit-panel__select-option is-active" type="button" data-value="decrement">Por decremento</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="pivo-edit__field">
+                        <label for="pivoEditPluvioValueTab"><span class="edit-panel__req">*</span> Valor <span class="edit-panel__tooltip-icon" data-tooltip="Limite de chuva, em milímetros, estabelecido em uma determinada área."><i class="fa-regular fa-circle-question"></i></span></label>
+                        <div class="sc-input-group">
+                          <input class="equip-input sc-input" id="pivoEditPluvioValueTab" type="number" value="1" />
+                          <span class="sc-input-suffix">mm</span>
+                        </div>
+                      </div>
+                      <div></div>
+                  </div>
+              </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="pivoEditProtecao">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Proteção e Religamento</h2>
+          </div>
+           <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="pivoEditEnergyTimeTab"><span class="edit-panel__req">*</span> Tempo de energia <span class="edit-panel__tooltip-icon" data-tooltip="Tempo de espera antes de retomar a operação após uma queda de energia."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="pivoEditEnergyTimeTab" type="number" value="1" />
+                    <span class="sc-input-suffix">min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pivo-edit__switch-row" style="margin-top: 24px;">
+                <label for="pivoEditVoltageControllerTab" class="pivo-edit__check-label">Controlador de tensão <span class="edit-panel__tooltip-icon" data-tooltip="Impede que o equipamento opere fora das tensões mínima e máxima por tempo maior do que o tempo limite."><i class="fa-regular fa-circle-question"></i></span></label>
+                <label class="pivo-edit__switch">
+                  <input type="checkbox" id="pivoEditVoltageControllerTab" checked>
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+
+              <div id="pivoEditVoltageFieldsTab" style="margin-top: 16px;">
+                <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditMinVoltageTab"><span class="edit-panel__req">*</span> Tensão mínima de operação</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditMinVoltageTab" type="number" value="400" />
+                      <span class="sc-input-suffix">V</span>
+                    </div>
+                  </div>
+
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditMaxVoltageTab"><span class="edit-panel__req">*</span> Tensão máxima de operação</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditMaxVoltageTab" type="number" value="600" />
+                      <span class="sc-input-suffix">V</span>
+                    </div>
+                  </div>
+
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditTimeLimitTab"><span class="edit-panel__req">*</span> Tempo limite <span class="edit-panel__tooltip-icon" data-tooltip="Período de tolerância em que o pivô pode operar fora das tensões mínima ou máxima antes de desligar por segurança."><i class="fa-regular fa-circle-question"></i></span></label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditTimeLimitTab" type="number" value="2" />
+                      <span class="sc-input-suffix">min</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           </div>
+        </section>
+
+        <section class="edit-panel__section" id="pivoEditHorarios">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Horários de Pico</h2>
+            <span><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            <p class="pivo-edit__loc-desc">
+              Horários de pico são faixas de tempo no qual o pivô não deve operar com água para evitar o uso em horários críticos, por exemplo, quando o custo da energia elétrica é alto.
+            </p>
+            <button type="button" class="edit-panel__btn" id="pivoEditVerFaixasBtn">Ver Faixas de Energia</button>
+          </div>
+            <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <h3 class="pref-section-title">Dias da semana</h3>
+              <div class="pivo-edit__days-row">
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDayDom">
+                      <label for="pivoEditDayDom" class="pivo-edit__check-label">Domingo</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDaySeg">
+                      <label for="pivoEditDaySeg" class="pivo-edit__check-label">Segunda</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDayTer">
+                      <label for="pivoEditDayTer" class="pivo-edit__check-label">Terça</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDayQua">
+                      <label for="pivoEditDayQua" class="pivo-edit__check-label">Quarta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDayQui">
+                      <label for="pivoEditDayQui" class="pivo-edit__check-label">Quinta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDaySex">
+                      <label for="pivoEditDaySex" class="pivo-edit__check-label">Sexta</label>
+                  </div>
+                  <div class="pivo-edit__day-item">
+                      <input type="checkbox" id="pivoEditDaySab">
+                      <label for="pivoEditDaySab" class="pivo-edit__check-label">Sábado</label>
+                  </div>
+              </div>
+
+              <!-- Horario de Pico 1 -->
+              <div id="pico1Container" class="pivo-edit__peak-section">
+                <div class="pivo-edit__switch-row">
+                    <label for="pivoEditPeak1Enabled" class="pivo-edit__switch-heading">Horário de Pico 1</label>
+                    <label class="pivo-edit__switch">
+                        <input id="pivoEditPeak1Enabled" type="checkbox">
+                        <span class="pivo-edit__switch-slider"></span>
+                    </label>
+                </div>
+                <div class="edit-panel__grid-3">
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPeak1Start"><span class="edit-panel__req">*</span> Horário de início</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPeak1Start" type="time" value="00:00">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPeak1End"><span class="edit-panel__req">*</span> Horário de término</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPeak1End" type="time" value="00:00">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horario de Pico 2 -->
+              <div id="pico2Container" class="pivo-edit__peak-section">
+                <div class="pivo-edit__switch-row">
+                    <label for="pivoEditPeak2Enabled" class="pivo-edit__switch-heading">Horário de Pico 2</label>
+                    <label class="pivo-edit__switch">
+                        <input id="pivoEditPeak2Enabled" type="checkbox">
+                        <span class="pivo-edit__switch-slider"></span>
+                    </label>
+                </div>
+                <div class="edit-panel__grid-3">
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPeak2Start">Horário de início</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPeak2Start" type="time" value="00:00">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPeak2End">Horário de término</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPeak2End" type="time" value="00:00">
+                      <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preços -->
+              <div class="pivo-edit__subsection-block">
+                <h3 class="pref-section-title">Preços por Faixa</h3>
+                <div class="edit-panel__grid-3">
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPricePonta">Pico (Ponta)</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPricePonta" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPriceForaPonta">Fora de pico (Fora de ponta)</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPriceForaPonta" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                  <div class="pivo-edit__field">
+                    <label for="pivoEditPriceReduzido">Reduzido</label>
+                    <div class="sc-input-group">
+                      <input class="equip-input sc-input" id="pivoEditPriceReduzido" type="number" value="1.00">
+                      <span class="sc-input-suffix">$/kWh</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+        
+        <section class="edit-panel__section" id="pivoEditCanhao">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Canhão Final</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            <p class="pivo-edit__loc-desc">Para pivôs que possuem canhão final instalado na última torre, é possível personalizar o seu acionamento de acordo com o ângulo atual do pivô através de um mapa de segmentos para o canhão. Dessa forma é possível evitar que o canhão ligue em locais impróprios, como estradas, casas, entre outros.</p>
+            <div class="pivo-edit__field" style="margin-top: 16px;">
+              <label for="pivoEditCanhaoMode">Modo de acionamento</label>
+              <div class="edit-panel__select-field" style="width: 100%;">
+                <button class="edit-panel__select-btn" type="button" aria-expanded="false">Ligado por segmento</button>
+                <i class="fa-solid fa-chevron-down"></i>
+                <div class="edit-panel__select-menu" role="listbox">
+                  <button class="edit-panel__select-option" type="button" data-value="off">Sempre desligado</button>
+                  <button class="edit-panel__select-option" type="button" data-value="on">Sempre ligado</button>
+                  <button class="edit-panel__select-option is-active" type="button" data-value="segment">Ligado por segmento</button>
+                </div>
+                <select id="pivoEditCanhaoMode" aria-hidden="true" tabindex="-1" style="display: none;">
+                  <option value="off">Sempre desligado</option>
+                  <option value="on">Sempre ligado</option>
+                  <option value="segment" selected>Ligado por segmento</option>
+                </select>
+              </div>
+            </div>
+          </div>
+           <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <div id="pivoEditCanhaoSegmentSection" style="margin-top: 0;">
+                <div class="pivo-edit__loc-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+                  <!-- Mapa do Canhão -->
+                  <div class="pivo-edit__loc-map" style="position: relative; border-radius: 0; overflow: hidden; min-height: 450px;">
+                    <div id="pivoEditCanhaoMap" style="width: 100%; height: 100%; position: absolute; inset: 0;"></div>
+                  </div>
+
+                  <!-- Controles do Canhão -->
+                  <div class="pivo-edit__canhao-controls">
+
+                    <h3 class="pref-section-title" style="margin-top: 0; margin-bottom: 8px;">Segmentos com canhão ativo</h3>
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#121829;padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:center;gap:8px;">
+                      <i class="fa-solid fa-circle-info" style="color:#3b82f6;"></i>
+                      Você pode criar até 9 segmentos. Configure os ângulos onde o canhão deve ligar.
+                    </div>
+
+                    <!-- Lista de Segmentos -->
+                    <div id="pivoEditCanhaoSegmentList" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                      <!-- Rendered via JS -->
+                    </div>
+
+                    <!-- Inputs do Segmento Ativo -->
+                    <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <div class="pivo-edit__field">
+                        <label for="pivoEditCanhaoSegStart"><span class="edit-panel__req">*</span> Ângulo inicial</label>
+                        <div class="sc-input-group">
+                          <input class="equip-input sc-input" id="pivoEditCanhaoSegStart" type="number" min="0" max="360" placeholder="Ex: 270" />
+                          <span class="sc-input-suffix">°</span>
+                        </div>
+                        <div class="pivo-edit__input-hint">Máximo de 360</div>
+                      </div>
+                      <div class="pivo-edit__field">
+                        <label for="pivoEditCanhaoSegEnd"><span class="edit-panel__req">*</span> Ângulo final</label>
+                        <div class="sc-input-group">
+                          <input class="equip-input sc-input" id="pivoEditCanhaoSegEnd" type="number" min="0" max="360" placeholder="Ex: 90" />
+                          <span class="sc-input-suffix">°</span>
+                        </div>
+                        <div class="pivo-edit__input-hint">Máximo de 360</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           </div>
+        </section>
+        
+        <section class="edit-panel__section" id="pivoEditAutorreversao">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0, 0, 0, 0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Autorreversão</h2>
+          </div>
+           <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                  <label for="pivoEditAutorreversaoEnabled" style="font-size:13px;color:#334155;cursor:pointer;">Ativar autorreversão</label>
+                  <label class="pivo-edit__switch">
+                      <input id="pivoEditAutorreversaoEnabled" type="checkbox" checked>
+                      <span class="pivo-edit__switch-slider"></span>
+                  </label>
+              </div>
+              
+              <div id="pivoEditAutorreversaoFields">
+                  <div class="pivo-edit__field">
+                      <div class="pivo-edit__field-label" style="margin-bottom: 8px;">Condição de parada</div>
+                      <div class="pivo-edit__segmented-control">
+                          <button type="button" class="is-active">Por fim de curso</button>
+                          <button type="button">Por ângulo</button>
+                      </div>
+                  </div>
+
+                  <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 16px;">
+                    <div class="pivo-edit__field">
+                        <div class="pivo-edit__field-label">Tempo de espera para Autorreversão <span class="edit-panel__tooltip-icon" data-tooltip="Tempo de espera antes do pivô reverter automaticamente o sentido de operação."><i class="fa-regular fa-circle-question"></i></span></div>
+                        <div class="edit-panel__select-field" style="width: 100%;">
+                            <button class="edit-panel__select-btn" type="button" aria-expanded="false">30 segundos</button>
+                            <i class="fa-solid fa-chevron-down"></i>
+                            <div class="edit-panel__select-menu" role="listbox">
+                                <button class="edit-panel__select-option is-active" type="button" data-value="30s">30 segundos</button>
+                                <button class="edit-panel__select-option" type="button" data-value="1m">1 minuto</button>
+                                <button class="edit-panel__select-option" type="button" data-value="2m">2 minutos</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+           </div>
+        </section>
+
+        <section class="edit-panel__section" id="pivoEditFirmware">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Firmware</h2>
+            <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            <p style="font-size: 13px; color: rgba(0,0,0,0.88); line-height: 1.5;">Versão de firmware atual instalada no dispositivo.</p>
+          </div>
+          <div class="edit-panel__section-body pivo-edit-specifics">
+            <div class="edit-panel__fw-box">
+              <i class="fa-solid fa-microchip" style="color: #16a34a; font-size: 15px;"></i>
+              <span style="font-size: 13px; color: #64748b;">Versão</span>
+              <strong style="font-size: 13px; margin-left: auto;">3.1.2</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#pivoEditHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pivoEditHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <!-- Section: History List -->
+        <section class="edit-panel__section is-active" id="pivoEditHistoryList">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+          </div>
+
+          <div class="edit-panel__history-subtitle-line">
+            <i class="fa-regular fa-clock"></i> Todas as configurações
+          </div>
+
+          <div class="edit-panel__history-table-container">
+            <div class="edit-panel__history-table-toolbar">
+              <h3>Lista</h3>
+              <div class="edit-panel__history-table-actions">
+                <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                <i class="fa-solid fa-i-cursor" title="Densidade"></i>
+                <i class="fa-solid fa-gear" title="Configurações"></i>
+              </div>
+            </div>
+
+            <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"></th>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Status Controlador</th>
+                  <th>Status Hardware</th>
+                  <th>Status GPS</th>
+                  <th>Status Bomba</th>
+                  <th style="width: 80px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1 -->
+                <tr class="edit-panel__history-row" data-row-id="1">
+                  <td>
+                    <button class="edit-panel__history-expand-btn" type="button" data-toggle-details="1">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </td>
+                  <td>14 Jan 2026 20:08</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                  <td><span class="status-dot dot-not-sent"></span> Não enviado</td>
+                  <td>
+                    <div class="table-actions">
+                      <i class="fa-regular fa-star" title="Favoritar"></i>
+                      <span class="table-actions__icon" title="Carregar configuração" style="display:inline-flex;cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="edit-panel__history-details-row" id="details-1" style="display: none;">
+                  <td colspan="8">
+                    <div class="edit-panel__history-details">
+                      <div class="edit-panel__history-details-section">
+                        <h4>Geral</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-subtitle">Conectividade</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tipo de comunicação:</span>
+                            <span>4G</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Ficha Técnica</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Nome do equipamento:</span>
+                            <span>Pivô 02</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Fabricante do equipamento:</span>
+                            <span>Valley</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tipo de painel:</span>
+                            <span>Nexus</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Idioma do equipamento:</span>
+                            <span>Português</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Raio até a última torre:</span>
+                            <span>550.0m</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Velocidade da última torre:</span>
+                            <span>282m/h</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Raio total irrigado:</span>
+                            <span>565.0m</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Ângulo máximo de trabalho:</span>
+                            <span>360°</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Área irrigada:</span>
+                            <span>550.0 ha</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Pluviômetro</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Habilitar pluviômetro:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Escala do sensor:</span>
+                            <span>0.2mm</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Condição de parada:</span>
+                            <span>Por valor</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Valor:</span>
+                            <span>1010mm</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Autorreversão</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Habilitar autorreversão:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Condição de parada:</span>
+                            <span>Por fim de curso</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo de espera para Autorreversão:</span>
+                            <span>30 segundos</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Proteção e Religamento</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo de energia:</span>
+                            <span>7min</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Controlador de tensão:</span>
+                            <span>Desabilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tensão mínima de operação:</span>
+                            <span>400V</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tensão máxima de operação:</span>
+                            <span>600V</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo limite:</span>
+                            <span>2min</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="edit-panel__history-details-section">
+                        <h4>Bombeamento</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-subtitle">Ficha Técnica</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Potência elétrica:</span>
+                            <span>153.23kW</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Leitura de pressão:</span>
+                            <span>Por sensor de pressão</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Vazão:</span>
+                            <span>500m³/h</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Lâmina de irrigação:</span>
+                            <span>5.51mm</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo de bomba:</span>
+                            <span>12min</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo de retardo:</span>
+                            <span>59 s</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Tempo instável de pressostato:</span>
+                            <span>6min</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Valor mínimo do sensor:</span>
+                            <span>2.0bar</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Valor máximo do sensor:</span>
+                            <span>8.0bar</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Escala do sensor:</span>
+                            <span>10.0bar</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Bomba de Fertirrigação</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Permitir fertirrigação:</span>
+                            <span>Desabilitado</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="edit-panel__history-details-section">
+                        <h4>Localização e Segmentos</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-subtitle">Localização</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Localização do centro:</span>
+                            <span>-18.253632, -47.364949</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Raio total irrigado:</span>
+                            <span>565.0m</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Ângulo máximo de trabalho:</span>
+                            <span>360°</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Ângulo zero:</span>
+                            <span>-18.255893, -47.360301</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Segmentos</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Nome):</span>
+                            <span>Segmento 1</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Ângulo inicial):</span>
+                            <span>0°</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento 1 (Ângulo final):</span>
+                            <span>360°</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="edit-panel__history-details-section">
+                        <h4>Canhão Final</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Modo de acionamento:</span>
+                            <span>Ligado por segmento</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento canhão 1 (Ângulo inicial):</span>
+                            <span>45°</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segmento canhão 1 (Ângulo final):</span>
+                            <span>90°</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="edit-panel__history-details-section">
+                        <h4>Horários de Pico</h4>
+                        <div class="edit-panel__history-details-grid">
+                          <div class="edit-panel__history-details-subtitle">Dias da semana</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Domingo:</span>
+                            <span>Desabilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Segunda:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Terça:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Quarta:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Quinta:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Sexta:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Sábado:</span>
+                            <span>Desabilitado</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Horário de Pico 1</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Horário de Pico 1:</span>
+                            <span>Habilitado</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Horário de início:</span>
+                            <span>17:41</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Horário de término:</span>
+                            <span>21:07</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Horário de Pico 2</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Horário de Pico 2:</span>
+                            <span>Desabilitado</span>
+                          </div>
+
+                          <div class="edit-panel__history-details-subtitle">Preços por Faixa</div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Pico (Ponta):</span>
+                            <span>R$ 2,50</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Fora de pico (Fora de ponta):</span>
+                            <span>R$ 5,00</span>
+                          </div>
+                          <div class="edit-panel__history-details-item">
+                            <span class="edit-panel__history-details-key">Reduzido:</span>
+                            <span>R$ 1,25</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 2 (Summary) -->
+                <tr class="edit-panel__history-row" data-row-id="2">
+                  <td><button class="edit-panel__history-expand-btn" type="button"><i class="fa-solid fa-plus"></i></button></td>
+                  <td>05 dez 2025 07:42</td>
+                  <td>bauer@irricontrol.com</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-received"></span> Recebido</td>
+                  <td><span class="status-dot dot-not-sent"></span> Não enviado</td>
+                  <td>
+                    <div class="table-actions">
+                      <i class="fa-regular fa-star"></i>
+                      <span class="table-actions__icon" title="Carregar configuração" style="display:inline-flex;cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="edit-panel__pagination">
+              <span>1-10 de 87 itens</span>
+              <div class="edit-panel__pagination-pages">
+                <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                <button class="edit-panel__pagination-btn" type="button">2</button>
+                <button class="edit-panel__pagination-btn" type="button">3</button>
+                <button class="edit-panel__pagination-btn" type="button">4</button>
+                <button class="edit-panel__pagination-btn" type="button">5</button>
+                <span style="margin: 0 4px;">...</span>
+                <button class="edit-panel__pagination-btn" type="button">9</button>
+                <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+              <select class="edit-panel__pagination-select" id="pivoEditHistoryPageSize" aria-label="Itens por página">
+                <option>10 / página</option>
+                <option>20 / página</option>
+                <option>50 / página</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Favorites -->
+        <section class="edit-panel__section" id="pivoEditHistoryFavs">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Favoritos</h2>
+          </div>
+
+          <div class="edit-panel__history-subtitle-line">
+            <i class="fa-solid fa-star"></i> Configurações Favoritas
+          </div>
+
+          <div class="edit-panel__history-table-container">
+            <div class="edit-panel__history-table-toolbar">
+              <h3>Lista</h3>
+              <div class="edit-panel__history-table-actions">
+                <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                <i class="fa-solid fa-i-cursor" title="Densidade"></i>
+                <i class="fa-solid fa-gear" title="Configurações"></i>
+              </div>
+            </div>
+            
+            <table class="edit-panel__history-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"></th>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Status Controlador</th>
+                  <th>Status Hardware</th>
+                  <th>Status GPS</th>
+                  <th>Status Bomba</th>
+                  <th style="width: 80px;">Ações</th>
+                </tr>
+              </thead>
+            </table>
+
+            <div class="edit-panel__history-no-data">
+              <i class="fa-solid fa-inbox"></i>
+              <span>Não há dados</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Trocar o rádio -->
+  <div class="op-modal is-hidden" id="radioTrocarModal" role="dialog" aria-modal="true" aria-labelledby="radioTrocarModalTitle">
+    <div class="op-modal__backdrop" id="radioTrocarModalBackdrop"></div>
+    <div class="op-modal__dialog" style="max-width:580px;">
+      <header class="op-modal__header">
+        <div>
+          <h3 class="op-modal__title" id="radioTrocarModalTitle">Trocar o rádio do Controlador</h3>
+          <p class="radio-trocar__subtitle">Selecione o pivô para trocar o rádio do controlador.</p>
+        </div>
+        <button class="op-modal__close" type="button" id="radioTrocarModalClose" aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+      <div class="radio-trocar__body">
+        <div class="radio-trocar__grid" id="radioTrocarGrid">
+          <!-- populated via JS -->
+        </div>
+      </div>
+      <footer class="op-modal__footer" style="padding:12px 20px;display:flex;justify-content:flex-end;">
+        <button type="button" class="radio-trocar__confirm" id="radioTrocarConfirm">Confirmar</button>
+      </footer>
+    </div>
+  </div>
+
+  <style>
+    .radio-trocar__subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0;
+    }
+    .radio-trocar__body {
+      overflow-y: auto;
+      max-height: 62vh;
+      padding: 16px 20px;
+    }
+    .radio-trocar__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .radio-trocar__card {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      background: #fff;
+      transition: border-color .15s, background .15s;
+    }
+    .radio-trocar__card:hover {
+      border-color: #10b981;
+    }
+    .radio-trocar__card.is-selected {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .radio-trocar__card-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      display: block;
+      text-align: left;
+    }
+    .radio-trocar__card-id {
+      font-size: 11px;
+      color: #64748b;
+      display: block;
+      margin-top: 2px;
+      font-family: monospace;
+      text-align: left;
+    }
+    .radio-trocar__confirm {
+      background: #10b981;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .radio-trocar__confirm:hover { background: #059669; }
+    [data-theme="dark"] .radio-trocar__card { background: #1e293b; border-color: rgba(255,255,255,.08); }
+    [data-theme="dark"] .radio-trocar__card:hover,
+    [data-theme="dark"] .radio-trocar__card.is-selected { background: #0f2a1e; border-color: #10b981; }
+    [data-theme="dark"] .radio-trocar__card-name { color: #e2e8f0; }
+    [data-theme="dark"] .radio-trocar__card-id { color: #94a3b8; }
+    [data-theme="dark"] .radio-trocar__subtitle { color: #94a3b8; }
+  </style>
+
+  <!-- Modal: Ver Faixas de Energia (Horários de Pico) -->
+  <div class="op-modal is-hidden" id="faixasEnergiaModal" role="dialog" aria-modal="true" aria-labelledby="faixasEnergiaTitle">
+    <div class="op-modal__backdrop" id="faixasEnergiaBackdrop"></div>
+    <div class="op-modal__dialog" style="max-width:560px;">
+      <header class="op-modal__header">
+        <div>
+          <h3 class="op-modal__title" id="faixasEnergiaTitle">Horários de Pico</h3>
+        </div>
+        <button class="op-modal__close" type="button" id="faixasEnergiaClose" aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+      <div class="faixas-view__body" id="faixasEnergiaBody">
+        <!-- preenchido via JS -->
+      </div>
+      <footer class="op-modal__footer" style="padding:12px 20px;display:flex;justify-content:flex-end;">
+        <button type="button" class="faixas-view__close-btn" id="faixasEnergiaCloseFooter">Fechar</button>
+      </footer>
+    </div>
+  </div>
+
+  <style>
+    .faixas-view__body {
+      overflow-y: visible;
+      max-height: none;
+      padding: 26px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .faixas-view__group {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px 6px;
+    }
+    .faixas-view__days {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .faixas-view__day-chip {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 5px;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      background: #fff;
+    }
+    .faixas-view__day-chip--weekend {
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    .faixas-view__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .faixas-view__table th {
+      text-align: left;
+      font-weight: 600;
+      color: #64748b;
+      padding: 8px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+    .faixas-view__table td {
+      padding: 12px 8px;
+      color: #0f172a;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .faixas-view__table tr:last-child td { border-bottom: none; }
+    .faixas-view__badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .faixas-view__badge--ponta      { background: #fca5a5; color: #7f1d1d; }
+    .faixas-view__badge--fora_ponta { background: #bfdbfe; color: #1e3a8a; }
+    .faixas-view__badge--reduzido   { background: #bbf7d0; color: #14532d; }
+    .faixas-view__close-btn {
+      background: #fff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+    .faixas-view__close-btn:hover,
+    .faixas-view__close-btn:focus,
+    .faixas-view__close-btn:active {
+      background: #fff;
+      border-color: #10b981;
+      color: #10b981;
+      outline: none;
+    }
+    [data-theme="dark"] .faixas-view__group { border-color: rgba(255,255,255,.08); }
+    [data-theme="dark"] .faixas-view__day-chip { background: #1e293b; }
+    [data-theme="dark"] .faixas-view__table th { background: #1e293b; color: #94a3b8; border-color: rgba(255,255,255,.08); }
+    [data-theme="dark"] .faixas-view__table td { color: #cbd5e1; border-color: rgba(255,255,255,.06); }
+    [data-theme="dark"] .faixas-view__close-btn { background: #1e293b; color: #cbd5e1; border-color: rgba(255,255,255,.12); }
+  </style>
+
+
+</section>

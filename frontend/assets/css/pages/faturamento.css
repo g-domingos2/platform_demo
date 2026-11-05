@@ -1,0 +1,831 @@
+/* Faturamento: próxima cobrança, cupom, métodos de pagamento (PIX/transferência),
+   modal de cartão e variações de bandeira. Complementa os estilos .fbill-* de cadastros.css. */
+
+/* ---- Próxima cobrança ---- */
+.fbill-next {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.fbill-next__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fbill-next__cell {
+  padding: 18px 20px;
+  min-width: 0;
+}
+
+.fbill-next__cell + .fbill-next__cell {
+  border-left: 1px solid #e2e8f0;
+}
+
+.fbill-next__old {
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-right: 8px;
+}
+
+.fbill-next__status {
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.fbill-btn--sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.fbill-btn--neutral {
+  background: #fff;
+  border-color: #d1d5db;
+  color: #334155;
+}
+
+.fbill-btn--neutral:hover {
+  background: #f8fafc;
+}
+
+.fbill-link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.fbill-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---- Cupom ---- */
+.fbill-coupon {
+  border-top: 1px solid #e2e8f0;
+  padding: 12px 20px;
+}
+
+.fbill-coupon__toggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #00a25e;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fbill-coupon__toggle:hover {
+  text-decoration: underline;
+}
+
+.fbill-coupon__form {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  max-width: 420px;
+}
+
+.fbill-coupon__form[hidden] {
+  display: none;
+}
+
+.fbill-coupon__form .edit-panel__input {
+  text-transform: uppercase;
+}
+
+.fbill-coupon__applied {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.fbill-coupon__applied > i {
+  color: #00b96b;
+}
+
+.fbill-coupon__code {
+  font-weight: 700;
+  letter-spacing: .04em;
+  background: rgba(0, 185, 107, .12);
+  color: #067a48;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.fbill-coupon__remove {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: #b91c1c;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fbill-coupon__remove:hover {
+  text-decoration: underline;
+}
+
+.fbill-field-error {
+  min-height: 0;
+  font-size: 11.5px;
+  color: #b91c1c;
+  margin-top: 4px;
+}
+
+.fbill-field-error:empty {
+  display: none;
+}
+
+.edit-panel__input.is-invalid,
+.edit-panel__select-field.is-invalid .edit-panel__select-btn {
+  border-color: #ef4444;
+}
+
+/* ---- Abas de método de pagamento ---- */
+.fbill-method-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fbill-method-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.fbill-method-tab:hover {
+  border-color: #00b96b;
+}
+
+.fbill-method-tab.is-active {
+  border-color: #00b96b;
+  background: rgba(0, 185, 107, .08);
+  color: #067a48;
+}
+
+/* ---- PIX ---- */
+.fbill-pix {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.fbill-pix[hidden] {
+  display: none;
+}
+
+.fbill-pix__qr {
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px;
+  line-height: 0;
+}
+
+.fbill-pix__info {
+  flex: 1;
+  min-width: 240px;
+}
+
+.fbill-pix__amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-pix__due {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.fbill-pix__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #94a3b8;
+  margin: 14px 0 6px;
+}
+
+.fbill-pix__code {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.fbill-pix__code code {
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+  word-break: break-all;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #334155;
+}
+
+/* ---- Variações de bandeira (cartão cadastrado e preview do modal) ---- */
+.fbill-card-visual.is-amex,
+.fbill-cc-preview.is-amex {
+  background: linear-gradient(135deg, #5b8def 0%, #2563eb 55%, #1e3a8a 100%);
+}
+
+.fbill-card-visual.is-elo,
+.fbill-cc-preview.is-elo {
+  background: linear-gradient(135deg, #3f3f46 0%, #18181b 60%, #000 100%);
+}
+
+.fbill-card-visual.is-mastercard {
+  background: linear-gradient(135deg, #ff9966 0%, #eb001b 55%, #6b1839 100%);
+}
+
+.fbill-cc-preview.is-mastercard {
+  background: linear-gradient(135deg, #ff9966 0%, #eb001b 55%, #6b1839 100%);
+}
+
+/* ---- Modal (adicionar/editar cartão) ---- */
+.fbill-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+
+.fbill-modal.is-open {
+  opacity: 1;
+}
+
+.fbill-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, .5);
+}
+
+.fbill-modal__dialog {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, .3);
+  transform: translateY(8px);
+  transition: transform .18s ease;
+}
+
+.fbill-modal.is-open .fbill-modal__dialog {
+  transform: none;
+}
+
+.fbill-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fbill-modal__head h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink-900);
+}
+
+.fbill-modal__close {
+  background: none;
+  border: 0;
+  font-size: 16px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.fbill-modal__body {
+  padding: 22px;
+}
+
+.fbill-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (max-width: 760px) {
+  .fbill-next__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fbill-next__cell + .fbill-next__cell {
+    border-left: 0;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .fbill-bank__row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+/* ---- Contratação ---- */
+.fbill-cycle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.fbill-cycle__left {
+  font-size: 12px;
+  font-weight: 600;
+  color: #067a48;
+  background: rgba(0, 185, 107, .12);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.fbill-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 3px;
+  background: #fff;
+}
+
+.fbill-stepper.is-changed {
+  border-color: #00b96b;
+}
+
+.fbill-stepper__btn {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.fbill-stepper__btn:hover:not(:disabled) {
+  background: rgba(0, 185, 107, .15);
+  color: #067a48;
+}
+
+.fbill-stepper__btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.fbill-stepper__val {
+  min-width: 28px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fbill-chip {
+  padding: 8px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.fbill-chip:hover {
+  border-color: #00b96b;
+}
+
+.fbill-chip.is-active {
+  border-color: #00b96b;
+  background: rgba(0, 185, 107, .1);
+  color: #067a48;
+}
+
+.fbill-chip--clear {
+  border-style: dashed;
+  color: #64748b;
+}
+
+.fbill-sim-date {
+  margin-top: 14px;
+  max-width: 220px;
+}
+
+.fbill-sim-date label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #334155;
+}
+
+.fbill-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.fbill-impact__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fbill-impact__cell {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.fbill-impact__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.fbill-impact__value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-impact__delta {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+}
+
+.fbill-impact__delta.is-neg {
+  color: #067a48;
+}
+
+.fbill-impact__line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid #eef2f7;
+}
+
+.fbill-impact__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.fbill-impact__desc {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.fbill-impact__amount {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fbill-impact__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fbill-actions--end {
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+@media (max-width: 760px) {
+  .fbill-impact__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Cupom na tela de anuidade ---- */
+.fbill-card--coupon .fbill-coupon {
+  border-top: 0;
+  padding: 0;
+}
+
+.fbill-coupon__scope {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.fbill-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #067a48;
+  background: rgba(0, 185, 107, .12);
+  vertical-align: middle;
+}
+
+/* ---- Contratação por equipamento ---- */
+.fbill-topic__legend,
+.fbill-topic__head {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 150px 110px 120px 32px;
+  align-items: center;
+  gap: 12px;
+}
+
+.fbill-topic__legend {
+  padding: 0 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #94a3b8;
+}
+
+.fbill-topic__legend span:nth-child(n + 3) {
+  text-align: right;
+}
+
+.fbill-topics {
+  border-top: 1px solid #eef2f7;
+}
+
+.fbill-topic {
+  border-bottom: 1px solid #eef2f7;
+}
+
+.fbill-topic__head {
+  padding: 12px 4px;
+}
+
+.fbill-topic__all-spacer {
+  display: block;
+}
+
+.fbill-topic__all,
+.fbill-dev input {
+  width: 16px;
+  height: 16px;
+  accent-color: #00b96b;
+  cursor: pointer;
+}
+
+.fbill-topic__count {
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.fbill-topic__count.is-changed {
+  color: #b45309;
+}
+
+.fbill-topic__count span {
+  font-weight: 400;
+  color: #64748b;
+}
+
+.fbill-topic__num {
+  text-align: right;
+  font-size: 13px;
+  color: #334155;
+}
+
+.fbill-topic__num--strong {
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-topic__toggle {
+  background: none;
+  border: 0;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.fbill-topic__toggle:hover {
+  background: #f1f5f9;
+}
+
+.fbill-topic.is-open .fbill-topic__toggle {
+  transform: rotate(180deg);
+}
+
+.fbill-topic__body {
+  display: none;
+  padding: 0 4px 14px 40px;
+}
+
+.fbill-topic.is-open .fbill-topic__body {
+  display: block;
+}
+
+.fbill-devs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+}
+
+.fbill-dev {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.fbill-dev:hover {
+  border-color: #00b96b;
+}
+
+.fbill-dev.is-off {
+  color: #94a3b8;
+  background: #f8fafc;
+}
+
+.fbill-dev.is-changed {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+@media (max-width: 900px) {
+  .fbill-topic__legend {
+    display: none;
+  }
+
+  .fbill-topic__head {
+    grid-template-columns: 24px minmax(0, 1fr) 32px;
+  }
+
+  .fbill-topic__count,
+  .fbill-topic__num {
+    grid-column: 2;
+    text-align: left;
+  }
+}
+
+.fbill-impact__sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ---- Chave da API ---- */
+.fbill-hint--top {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.fbill-apikey__count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #067a48;
+  margin-bottom: 12px;
+}
+
+.fbill-apikey {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  max-width: 640px;
+}
+
+.fbill-apikey__input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  background: #f8fafc;
+}
+
+.fbill-apikey__meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.fbill-apikey__regen {
+  margin-top: 12px;
+}
+
+.fbill-apikey__confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  background: #fffbeb;
+}
+
+.fbill-apikey__confirm .fbill-alert__icon {
+  color: #d97706;
+}
+
+.fbill-apikey__confirm .fbill-alert__body {
+  flex: 1;
+}
+
+.fbill-impact__line.is-removed .fbill-impact__name,
+.fbill-impact__line.is-removed .fbill-impact__amount {
+  text-decoration: line-through;
+  opacity: .6;
+}
+
+.fbill-change__icon {
+  width: 18px;
+  margin-right: 6px;
+  color: #00b96b;
+  text-align: center;
+}
+
+/* ---- Vários cupons ativos ---- */
+.fbill-coupon__item {
+  margin-bottom: 12px;
+}
+
+.fbill-coupon__item + .fbill-coupon__applied,
+.fbill-coupon__applied + .fbill-coupon__applied {
+  margin-top: 8px;
+}
+
+.fbill-coupon__item ~ .fbill-coupon__toggle {
+  margin-top: 4px;
+}
+
+/* ---- Detalhes da Anuidade: seções do extrato ---- */
+.fbill-annuity__heading {
+  margin: 6px 0 -4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+}

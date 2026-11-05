@@ -1,0 +1,164 @@
+<section class="edit-panel farm-edit config-page" id="notificacoesPanel" aria-label="Notificações">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="notificacoesBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Notificações</span>
+    </button>
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <button class="edit-panel__tab is-active" type="button" data-tab="general" aria-selected="true">Geral</button>
+  </div>
+
+  <div class="edit-panel__tab-body is-active">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Seções de notificações">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#notifPivo">Pivô</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#notifBomba">Bomba</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#notifMedidor">Medidores de nível</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- PIVÔ -->
+        <section class="edit-panel__section is-active" id="notifPivo">
+          <div class="notif-section-header">
+            <h2 class="notif-section-title">Notificações de Pivô</h2>
+            <button class="btn btn--primary notif-add-btn" type="button" data-notif-open data-notif-category="pivo">
+              <i class="fa-solid fa-circle-plus"></i>
+              Adicionar Notificação
+            </button>
+          </div>
+          <div class="notif-empty">
+            <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
+            <span class="notif-empty__text">Não há dados</span>
+          </div>
+        </section>
+
+        <!-- BOMBA -->
+        <section class="edit-panel__section" id="notifBomba">
+          <div class="notif-section-header">
+            <h2 class="notif-section-title">Notificações de Bomba</h2>
+            <button class="btn btn--primary notif-add-btn" type="button" data-notif-open data-notif-category="bomba">
+              <i class="fa-solid fa-circle-plus"></i>
+              Adicionar Notificação
+            </button>
+          </div>
+          <div class="notif-empty">
+            <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
+            <span class="notif-empty__text">Não há dados</span>
+          </div>
+        </section>
+
+        <!-- MEDIDORES DE NÍVEL -->
+        <section class="edit-panel__section" id="notifMedidor">
+          <div class="notif-section-header">
+            <h2 class="notif-section-title">Notificações de Medidores de Nível</h2>
+            <button class="btn btn--primary notif-add-btn" type="button" data-notif-open data-notif-category="medidor">
+              <i class="fa-solid fa-circle-plus"></i>
+              Adicionar Notificação
+            </button>
+          </div>
+          <div class="notif-empty">
+            <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
+            <span class="notif-empty__text">Não há dados</span>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar Notificação -->
+  <div class="create-equip" id="notifAddModal" aria-hidden="true">
+    <div class="create-equip__backdrop" data-notif-close></div>
+    <section class="create-equip__dialog" role="dialog" aria-modal="true" aria-labelledby="notifAddTitle">
+      <header class="create-equip__header">
+        <h3 class="create-equip__title" id="notifAddTitle">Adicionar Notificação</h3>
+        <button class="create-equip__close" type="button" aria-label="Fechar" data-notif-close>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="create-equip__steps" id="notifAddSteps">
+        <div class="create-equip__step create-equip__step--active" data-notif-step="0">
+          <span class="create-equip__step-num">1</span>
+          <span class="create-equip__step-label">Informações</span>
+        </div>
+        <div class="create-equip__step" data-notif-step="1">
+          <span class="create-equip__step-num">2</span>
+          <span class="create-equip__step-label">Opções</span>
+        </div>
+      </div>
+
+      <div class="create-equip__dynamic" id="notifAddBody">
+        <!-- Etapa 1: Informações -->
+        <div class="notif-add-step" id="notifAddStep0">
+          <div class="equip-field">
+            <label class="equip-label" for="notifGroupName"><span class="equip-required">*</span>Nome do grupo de notificações</label>
+            <input class="equip-input" id="notifGroupName" type="text" placeholder="Grupo do pivô" />
+          </div>
+
+          <div class="notif-period">
+            <div class="notif-period__title">Escolha um período para este grupo de notificações</div>
+            <div class="notif-period__row">
+              <div class="equip-field">
+                <label class="equip-label" for="notifPeriodStart"><span class="equip-required">*</span>Começa em</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="notifPeriodStart" type="time" value="00:00" disabled />
+                  <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                </div>
+              </div>
+              <div class="equip-field">
+                <label class="equip-label" for="notifPeriodEnd"><span class="equip-required">*</span>Termina em</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="notifPeriodEnd" type="time" value="23:59" disabled />
+                  <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                </div>
+              </div>
+              <label class="edit-panel__check notif-period__allday">
+                Todo o dia
+                <input type="checkbox" id="notifPeriodAllDay" checked />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etapa 2: Opções -->
+        <div class="notif-add-step" id="notifAddStep1" hidden>
+          <div class="equip-field" id="notifDevicesField">
+            <label class="equip-label" for="notifDevicesTrigger"><span class="equip-required">*</span>Selecione os dispositivos para este grupo de notificações</label>
+            <div class="ip-multiselect" id="notifDevicesWrap">
+              <button type="button" class="equip-input ip-multiselect__trigger" id="notifDevicesTrigger">
+                <span class="ip-multiselect__label ip-multiselect__label--placeholder" id="notifDevicesLabel">Por favor selecione</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="ip-multiselect__dropdown" id="notifDevicesDropdown" style="display:none;">
+                <div class="ip-multiselect__search-wrap">
+                  <i class="fa-solid fa-magnifying-glass ip-multiselect__search-icon"></i>
+                  <input class="ip-multiselect__search" id="notifDevicesSearch" type="text" placeholder="Buscar…" autocomplete="off">
+                </div>
+                <div class="ip-multiselect__list" id="notifDevicesList"></div>
+              </div>
+            </div>
+            <span class="notif-field-error" id="notifDevicesError" hidden>Este campo é obrigatório</span>
+          </div>
+
+          <div class="notif-opt-list" id="notifOptList"></div>
+        </div>
+      </div>
+
+      <footer class="create-equip__footer no-prev" id="notifAddFooter">
+        <div class="create-equip__footer-right">
+          <button class="create-equip__btn btn" type="button" id="btnNotifAddPrev" style="display:none;">
+            Anterior
+          </button>
+          <button class="create-equip__btn create-equip__btn--primary btn" type="button" id="btnNotifAddNext">
+            Próximo
+          </button>
+        </div>
+      </footer>
+    </section>
+  </div>
+</section>

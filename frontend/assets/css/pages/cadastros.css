@@ -1,0 +1,5552 @@
+/* assets/css/pages/cadastros.css */
+@import url("../components/edit-panel.css");
+@import url("./pluviometria.css");
+
+.cadastros-page {
+  min-height: 100dvh;
+  padding: var(--page-pad-y) var(--page-pad-x) 26px;
+  --cadastros-map-max-height: calc(100dvh - 80px);
+}
+
+.cadastros-page .cad-body {
+  height: auto;
+  min-height: 0;
+  flex: 1;
+  padding: 0;
+}
+
+.cadastros-page .cad-content {
+  min-height: 0;
+  padding: 12px clamp(12px, 2vw, 26px) 28px;
+}
+
+.cadastros-page .cad-section {
+  margin: 0;
+}
+
+.cadastros-page .cad-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.cadastros-menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: nowrap;
+  padding: 20px clamp(12px, 2vw, 26px) 10px;
+  background: transparent;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cadastros-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.cadastros-menu__back {
+  border: 0;
+  background: transparent;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 700;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: none;
+}
+
+.cadastros-menu__back:hover {
+  background: transparent;
+  color: #0f172a;
+}
+
+.cadastros-menu__back i {
+  color: #16a34a;
+}
+
+.cadastros-menu__sep {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.cadastros-menu__back span {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.cadastros-menu__items {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cadastros-menu__items::-webkit-scrollbar {
+  display: none;
+}
+
+.cadastros-menu__item {
+  border: 0;
+  background: transparent;
+  color: var(--muted-600);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 4px 10px;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  letter-spacing: -0.01em;
+}
+
+.cadastros-menu__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cadastros-menu-action-btn {
+  white-space: nowrap;
+}
+
+.cadastros-menu__item:hover {
+  color: #15803d;
+}
+
+.cadastros-menu__item.is-active {
+  color: #16a34a;
+}
+
+.cadastros-menu__item::before {
+  content: none !important;
+  display: none !important;
+}
+
+.cadastros-menu__item.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+.cadastros-page .cad-nav {
+  display: none;
+}
+
+.cadastros-fazendas {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-200);
+  padding: clamp(18px, 2vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.cadastros-fazendas__body {
+  width: 100%;
+}
+
+.cadastros-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 32px 28px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #fdfdfd, #f4f7fb);
+  border: 1px dashed var(--border-300);
+  box-shadow: 0 10px 24px rgba(15, 23, 32, 0.08);
+}
+
+.cadastros-empty-state__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.cadastros-table__empty td {
+  padding: 0;
+  border: none;
+}
+
+.cadastros-empty-state p {
+  margin: 0;
+  color: var(--muted-600);
+  line-height: 1.5;
+}
+
+.cadastros-empty-state .map-card__cta {
+  align-self: center;
+}
+
+.cadastros-fazendas .table-responsive {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-200);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+#section-fazendas .cadastros-table th,
+#section-fazendas .cadastros-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#section-fazendas .cadastros-table {
+  display: table !important;
+  width: 100%;
+}
+
+#section-fazendas .cadastros-fazendas-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.cadastros-section-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.cadastros-section-layout > .table-responsive {
+  width: 100%;
+  max-width: 100%;
+  justify-self: stretch;
+}
+
+.cadastros-section-layout .cadastros-map-card--section {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.cadastros-map-column {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.cadastros-map-column > .cadastros-map-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.cadastros-section-layout .cadastros-map-card--section .cadastros-map-card__canvas {
+  height: 100%;
+  max-height: var(--cadastros-map-max-height);
+  min-height: 260px;
+}
+
+#section-fazendas .cadastros-fazendas-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  justify-self: stretch;
+}
+
+#section-fazendas .cadastros-map-card--fazendas {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+#section-fazendas .cadastros-map-card--fazendas .cadastros-map-card__canvas {
+  height: 100%;
+  max-height: var(--cadastros-map-max-height);
+  min-height: 260px;
+}
+
+#section-fazendas.is-form-view .cad-section-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cad-section-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cadastros-section-layout {
+  display: block;
+  min-width: 0;
+}
+
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cadastros-map-card--section {
+  height: 100%;
+}
+
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cadastros-map-card--section .cadastros-map-card__canvas {
+  height: 100%;
+  max-height: var(--cadastros-map-max-height);
+  min-height: 280px;
+}
+
+#section-fazendas.is-form-view .cadastros-form-host {
+  display: block;
+  min-width: 0;
+}
+
+#section-fazendas.is-form-view .cadastros-fazendas-layout {
+  display: block;
+  min-width: 0;
+}
+
+#section-fazendas.is-form-view .cadastros-map-card--fazendas {
+  height: 100%;
+}
+
+#section-fazendas.is-form-view .cadastros-map-card--fazendas .cadastros-map-card__canvas {
+  height: 100%;
+  max-height: var(--cadastros-map-max-height);
+  min-height: 280px;
+}
+
+.cadastros-fazendas .farm-report__stats {
+  margin: 0;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: #f8fafc;
+  border: 1px solid var(--border-200);
+}
+
+.cadastros-fazendas .farm-report__stats-item {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid var(--border-200);
+  min-height: 0;
+}
+
+.cadastros-fazendas .indicator-kpi__t {
+  font-size: 11px;
+  color: var(--muted-600);
+}
+
+.cadastros-fazendas .indicator-kpi__v {
+  font-size: 18px;
+  color: var(--ink-900);
+}
+
+.cadastros-form-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: 0;
+}
+
+.cadastros-form-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cadastros-form-content {
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  background-color: #fff;
+  max-height: calc(100vh - 240px);
+}
+
+.cadastros-form-host {
+  min-height: 0;
+}
+
+.cadastros-form-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fcfcfd;
+  overflow-x: auto;
+}
+
+.cadastros-form-topbar__sep {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-400, #9ca3af);
+  flex-shrink: 0;
+}
+
+.cadastros-form-topbar__text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-900);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cadastros-form-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+#cadastrosPanel .cadastros-form-topbar .edit-panel__nav.cadastros-form-topbar__actions {
+  border: 0;
+  padding: 0;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  overflow-x: auto;
+}
+
+#cadastrosPanel .cadastros-form-topbar .edit-panel__nav-item {
+  text-align: center;
+}
+
+#cadastrosPanel .cadastros-form-topbar .edit-panel__nav-item.is-active::after {
+  content: none;
+}
+
+/* ── Maintenance timeline – cadastros panel overrides ── */
+#cadastrosPanel .maint__track {
+  position: relative;
+  height: 34px;
+}
+
+#cadastrosPanel .maint__line {
+  position: absolute;
+  top: 50%;
+  height: 5px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+#cadastrosPanel .maint__line--base {
+  left: 0;
+  right: 0;
+  background: #e5e7eb;
+}
+
+#cadastrosPanel .maint__line--ok {
+  left: 0;
+  width: var(--maint-today, 50%);
+  background: var(--maint-done-gradient, #16a34a);
+}
+
+#cadastrosPanel .maint__timeline.is-overdue .maint__line--ok {
+  width: var(--maint-today, 60%);
+  background: var(--maint-overdue-gradient, linear-gradient(90deg, #f59e0b 0%, #ef4444 100%));
+}
+
+#cadastrosPanel .maint__marker {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  box-shadow: 0 2px 6px rgba(15, 23, 32, .12);
+}
+
+#cadastrosPanel .maint__marker--last {
+  left: 0;
+  background: #9ca3af;
+  border-color: #9ca3af;
+}
+
+#cadastrosPanel .maint__marker--today {
+  left: var(--maint-today, 50%);
+  width: 22px;
+  height: 22px;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+#cadastrosPanel .maint__marker--today::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+#cadastrosPanel .maint__marker--next {
+  left: var(--maint-next, 85%);
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+#cadastrosPanel .maint__marker--next.is-warn {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+#cadastrosPanel .maint__marker--next.is-overdue {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+#cadastrosPanel .maint__labels {
+  position: relative;
+  margin-top: 10px;
+  height: 42px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+#cadastrosPanel .maint__label {
+  position: absolute;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+#cadastrosPanel .maint__label--last {
+  left: 0;
+}
+
+#cadastrosPanel .maint__label--today {
+  left: var(--maint-today, 50%);
+  transform: translateX(-50%);
+}
+
+#cadastrosPanel .maint__label--next {
+  left: var(--maint-next, 85%);
+  transform: translate(-50%, 0);
+  text-align: center;
+}
+
+#cadastrosPanel .maint__label-title {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+#cadastrosPanel .maint__label-date {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+#cadastrosPanel .maint__alert--danger {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+#cadastrosPanel .maint__alert--danger .maint__alert-ico {
+  background: #ef4444;
+}
+
+#cadastrosPanel .maint__alert--danger .maint__alert-sub {
+  color: #991b1b;
+}
+
+#cadastrosPanel .maint__pill {
+  border-radius: 6px;
+}
+
+#cadastrosPanel .maint__summary-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+#cadastrosPanel .maint__summary-pill--ok {
+  background: #16a34a;
+}
+
+#cadastrosPanel .maint__summary-pill--warn {
+  background: #f59e0b;
+}
+
+#cadastrosPanel .maint__summary-pill--danger {
+  background: #ef4444;
+}
+
+.cadastros-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #fcfcfd;
+}
+
+.cad-form-action-btn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+}
+
+.cad-form-action-btn--ghost {
+  background: #ffffff;
+  color: #475569;
+}
+
+.cad-form-action-btn--primary {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.cadastros-form-section {
+  padding: 16px;
+  display: none;
+}
+
+.cadastros-form-section.is-active {
+  display: block;
+}
+
+.cadastros-form-block {
+  margin: 0 0 16px;
+}
+
+.cadastros-form-block__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.cadastros-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+}
+
+.cadastros-form-grid .col-span-2 {
+  grid-column: span 2;
+}
+
+.cadastros-form-grid .col-span-3 {
+  grid-column: 1 / -1;
+}
+
+.pivo-radio-cards {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pivo-radio-card {
+  border: 1px solid #d9dee6;
+  border-radius: 7px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.pivo-radio-card__head {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pivo-radio-card__head .equip-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.pivo-radio-card__sync {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pivo-radio-card__body {
+  padding: 8px 10px;
+  background: #ffffff;
+}
+
+.pivo-radio-card__body .equip-input {
+  min-height: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
+
+.pivo-radio-input-wrap {
+  position: relative;
+}
+
+.pivo-radio-input-wrap .equip-input {
+  padding-right: 66px;
+}
+
+.pivo-radio-input-wrap--scan-only .equip-input {
+  padding-right: 34px;
+}
+
+.pivo-radio-input__actions {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.pivo-radio-input__off {
+  color: #b9c0cb;
+  font-size: 11px;
+}
+
+.pivo-radio-input__on {
+  color: #3b82f6;
+  font-size: 7px;
+}
+
+.pivo-radio-input__scan {
+  color: #1f2937;
+  font-size: 12px;
+}
+
+.cadastros-map-picker-btn {
+  width: fit-content;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.cadastros-map-picker-btn i {
+  font-size: 14px;
+}
+
+.cadastros-map-picker-btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.cadastros-map-picker-btn.is-active {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
+}
+
+.cadastros-form-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  gap: 0;
+}
+
+.cadastros-form-half {
+  flex: 1;
+  overflow: hidden;
+  padding: 16px;
+  background-color: #f9fafb;
+}
+
+.cadastros-map-half {
+  flex: 1;
+  background-color: #e5e7eb;
+  border-top: 1px solid #d1d5db;
+  position: relative;
+}
+
+.cadastros-toolbar {
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+#cadastrosPanel .cad-section .cadastros-toolbar {
+  display: none;
+}
+
+#section-fazendas .cad-section-body > .cadastros-toolbar {
+  display: none !important;
+}
+
+.cadastros-toolbar__form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cadastros-page .cadastros-toolbar__add,
+.cadastros-page .map-card__cta--secondary,
+.cadastros-page .cad-save-btn {
+  min-width: 110px;
+  height: 32px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.cadastros-page .cadastros-toolbar__add {
+  border: 1px solid #16a34a;
+  border-radius: 8px;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadastros-page .cadastros-toolbar__add:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.cadastros-page .cad-save-btn {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #00b96b;
+  border-radius: 8px;
+  background: #00b96b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cadastros-page .cad-save-btn:hover {
+  background: #26d08a;
+  border-color: #26d08a;
+}
+
+.cadastros-page .map-card__cta--secondary {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadastros-page .map-card__cta--secondary:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.table-responsive {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow-x: auto;
+  overflow-y: visible;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin: 0;
+}
+
+#cadastrosPanel .cad-section:not(.is-form-view) .cadastros-section-layout,
+#section-fazendas:not(.is-form-view) .cadastros-fazendas-layout {
+  min-height: 0;
+}
+
+#cadastrosPanel .cad-section:not(.is-form-view) .table-responsive {
+  height: auto;
+  max-height: none;
+  overflow-y: visible;
+}
+
+#cadastrosPanel .cad-section:not(.is-form-view) .table-responsive .cadastros-table {
+  min-height: 0;
+}
+
+.cadastros-map-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  padding: 16px;
+  border: 1px solid var(--border-200);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.cadastros-map-card__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cadastros-map-card__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.cadastros-map-card__hint {
+  font-size: 12px;
+  color: var(--muted-600);
+}
+
+.cadastros-map-card__canvas-wrap {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  width: 100%;
+}
+
+.cadastros-map-actions {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 8px;
+}
+
+.cadastros-map-actions--external {
+  width: 100%;
+  min-height: 56px;
+  height: auto;
+  flex: 0 0 auto;
+  align-content: flex-start;
+}
+
+.cadastros-map-overlay {
+  position: static;
+  z-index: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.cadastros-map-overlay--pivos {
+  flex-direction: row;
+}
+
+#section-sistemas-irrigacao:not(.is-form-view) .cadastros-map-overlay--pivos {
+  display: none;
+}
+
+#section-talhoes:not(.is-form-view) .cadastros-map-overlay--talhoes {
+  display: none;
+}
+
+#section-fazendas .cadastros-map-picker-top {
+  position: static;
+  z-index: auto;
+  align-self: center;
+  margin-top: 0;
+}
+
+#section-fazendas:not(.is-form-view) .cadastros-map-picker-top {
+  display: none;
+}
+
+.cadastros-map-card__canvas {
+  width: 100%;
+  height: 100%;
+  max-height: var(--cadastros-map-max-height);
+  min-height: 260px;
+  flex: 1 1 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  background: linear-gradient(180deg, #f8fafc, #eef4f7);
+}
+
+.cadastros-map-card__canvas .leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.cadastros-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  white-space: nowrap;
+  background: #ffffff;
+}
+
+.cadastros-table thead th {
+  color: #475569;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 8px 10px;
+  text-align: center;
+  vertical-align: bottom;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cadastros-table td {
+  padding: 8px 10px;
+  text-align: center;
+  color: #0f172a;
+  font-size: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+#cadastrosPanel .cad-section:not(#section-fazendas) .cadastros-table {
+  table-layout: fixed;
+}
+
+.cadastros-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.cadastros-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.cadastros-table tbody tr {
+  transition: background-color 0.15s ease;
+  height: 52px;
+}
+
+.cadastros-table tbody tr:hover {
+  background: #ecfeff;
+}
+
+.cadastros-table tbody tr.cad-row--active {
+  background: #f0fdf4 !important;
+  border-left: 3px solid #16a34a;
+}
+
+.cadastros-table tbody tr.cad-row--active:hover {
+  background: #dcfce7 !important;
+}
+
+.cad-row-active-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.cadastros-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cadastros-form-grid--farm {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.cadastros-form-grid--pivo {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+
+.cadastros-form-grid--pivo .equip-field {
+  min-width: 0;
+}
+
+.cadastros-pivo-talhoes-select {
+  display: none;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi {
+  position: relative;
+  width: 100%;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__multi-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  border: 1px solid #d4dde8;
+  border-radius: 10px;
+  padding: 6px 10px;
+  min-height: 36px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #eef2f7;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #0f172a;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__chip button {
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__chip--count {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__search {
+  border: 0;
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+  font-size: 12px;
+  color: #334155;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__chev {
+  color: #94a3b8;
+  font-size: 11px;
+  margin-left: auto;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  padding: 6px 0;
+  display: none;
+  z-index: 30;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__dropdown.is-open {
+  display: block;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__list {
+  max-height: 220px;
+  overflow: auto;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item:hover {
+  background: #e7f8ee;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item .check {
+  color: #16a34a;
+  opacity: 0;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item.is-selected .check {
+  opacity: 1;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item.is-disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__item.is-disabled:hover {
+  background: transparent;
+}
+
+#cadastrosPanel .cadastros-pivo-talhoes-multi .farm-report__all {
+  width: calc(100% - 12px);
+  margin: 6px;
+  height: 30px;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cadastros-form-grid--pivo .cadastros-form-block {
+  margin: 2px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid #edf2f7;
+}
+
+.cadastros-form-grid--pivo .cadastros-form-block:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.cadastros-form-grid--pivo .cadastros-form-block__title {
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.cadastros-form-coords-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.cadastros-form-coords-stack .equip-field {
+  margin: 0;
+}
+
+.cadastros-form-map-actions {
+  display: flex;
+  align-items: stretch;
+}
+
+.cadastros-form-map-actions > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.cadastros-form-map-actions .cadastros-map-picker-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.cadastros-form-grid--pivo-angles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cadastros-form-grid--picos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.cadastros-pivo-parcelas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cadastros-pivo-parcelas__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+  align-content: start;
+}
+
+.cadastros-pivo-parcelas__form .equip-field:first-child {
+  grid-column: span 2;
+}
+
+.cadastros-pivo-parcelas__actions {
+  grid-column: span 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cadastros-pivo-parcelas__table-wrap {
+  max-height: 220px;
+  overflow: auto;
+}
+
+.cadastros-table--parcelas-inline td,
+.cadastros-table--parcelas-inline th {
+  text-align: center;
+}
+
+.cadastros-table--parcelas-inline td:first-child,
+.cadastros-table--parcelas-inline th:first-child {
+  text-align: left;
+}
+
+.cadastros-form-grid .col-span-2-xl {
+  grid-column: span 2;
+}
+
+.cadastros-form-grid .col-span-3-xl {
+  grid-column: span 3;
+}
+
+.cadastros-form-grid .col-span-4-xl {
+  grid-column: span 4;
+}
+
+.cadastros-form-action-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cadastros-form-check--compact {
+  min-height: 32px;
+  padding: 2px 0;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.cadastros-form-grid--farm .equip-field {
+  min-width: 0;
+}
+
+.cadastros-form-grid--farm .equip-label {
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.cadastros-form-grid--farm .equip-input {
+  min-height: 32px;
+  padding: 5px 9px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .vinc-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-form-grid--farm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cadastros-form-grid--pivo {
+    grid-template-columns: 1fr;
+  }
+
+  .equip-pluv-pane__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pivo-radio-cards {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-form-grid--pivo-angles {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-form-grid--picos {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-pivo-parcelas {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-pivo-parcelas__form {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-pivo-parcelas__form .equip-field:first-child,
+  .cadastros-pivo-parcelas__actions {
+    grid-column: span 1;
+  }
+
+  .cadastros-menu {
+    gap: 10px;
+  }
+
+  .cadastros-menu__actions {
+    min-width: 220px;
+  }
+
+  .cadastros-form-grid .col-span-2-xl,
+  .cadastros-form-grid .col-span-3-xl,
+  .cadastros-form-grid .col-span-4-xl {
+    grid-column: span 2;
+  }
+
+  .cadastros-form-grid--pivo .col-span-2-xl,
+  .cadastros-form-grid--pivo .col-span-3-xl,
+  .cadastros-form-grid--pivo .col-span-4-xl {
+    grid-column: span 1;
+  }
+}
+
+.cadastros-table--fazendas {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  table-layout: fixed;
+  margin: 0;
+}
+
+.cadastros-page .cadastros-table {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  table-layout: fixed;
+  margin: 0;
+}
+
+.cadastros-page .cadastros-table th,
+.cadastros-page .cadastros-table td {
+  padding: 4px 5px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.cadastros-page .cadastros-table th:last-child,
+.cadastros-page .cadastros-table td:last-child {
+  width: 80px;
+  text-align: center;
+}
+
+.cadastros-table--fazendas th,
+.cadastros-table--fazendas td {
+  padding: 4px 5px;
+  font-size: 10px;
+}
+
+.cadastros-table--fazendas th:nth-child(1),
+.cadastros-table--fazendas td:nth-child(1) {
+  width: 148px;
+  text-align: left;
+}
+
+.cadastros-table--fazendas th:nth-child(2),
+.cadastros-table--fazendas td:nth-child(2) {
+  width: 124px;
+  text-align: left;
+}
+
+.cadastros-table--fazendas th:nth-child(3),
+.cadastros-table--fazendas td:nth-child(3) {
+  width: 124px;
+  text-align: left;
+}
+
+.cadastros-table--fazendas th:nth-child(4),
+.cadastros-table--fazendas td:nth-child(4) {
+  width: 80px;
+}
+
+/* Distribuição padronizada de colunas por tabela */
+#section-fazendas .cadastros-table th:nth-child(1),
+#section-fazendas .cadastros-table td:nth-child(1) { width: 34%; text-align: left; }
+#section-fazendas .cadastros-table th:nth-child(2),
+#section-fazendas .cadastros-table td:nth-child(2) { width: 28%; text-align: left; }
+#section-fazendas .cadastros-table th:nth-child(3),
+#section-fazendas .cadastros-table td:nth-child(3) { width: 26%; text-align: left; }
+#section-fazendas .cadastros-table th:nth-child(4),
+#section-fazendas .cadastros-table td:nth-child(4) { width: 12%; min-width: 88px; }
+
+#section-talhoes .cadastros-table th:nth-child(1),
+#section-talhoes .cadastros-table td:nth-child(1) { width: 26%; text-align: center; }
+#section-talhoes .cadastros-table th:nth-child(2),
+#section-talhoes .cadastros-table td:nth-child(2) { width: 18%; }
+#section-talhoes .cadastros-table th:nth-child(3),
+#section-talhoes .cadastros-table td:nth-child(3) { width: 16%; }
+#section-talhoes .cadastros-table th:nth-child(4),
+#section-talhoes .cadastros-table td:nth-child(4) { width: 26%; }
+#section-talhoes .cadastros-table th:nth-child(5),
+#section-talhoes .cadastros-table td:nth-child(5) { width: 14%; min-width: 108px; }
+
+#section-talhoes .cadastros-table th,
+#section-talhoes .cadastros-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#section-talhoes .cadastros-table td:nth-child(1) > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#section-sistemas-irrigacao .cadastros-table th:nth-child(1),
+#section-sistemas-irrigacao .cadastros-table td:nth-child(1) { width: 58%; text-align: left; }
+#section-sistemas-irrigacao .cadastros-table th:nth-child(2),
+#section-sistemas-irrigacao .cadastros-table td:nth-child(2) { width: 30%; }
+#section-sistemas-irrigacao .cadastros-table th:nth-child(3),
+#section-sistemas-irrigacao .cadastros-table td:nth-child(3) { width: 12%; min-width: 88px; }
+
+#section-parcelas .cadastros-table th:nth-child(1),
+#section-parcelas .cadastros-table td:nth-child(1) { width: 24%; text-align: left; }
+#section-parcelas .cadastros-table th:nth-child(2),
+#section-parcelas .cadastros-table td:nth-child(2) { width: 16%; }
+#section-parcelas .cadastros-table th:nth-child(3),
+#section-parcelas .cadastros-table td:nth-child(3) { width: 12%; }
+#section-parcelas .cadastros-table th:nth-child(4),
+#section-parcelas .cadastros-table td:nth-child(4) { width: 12%; }
+#section-parcelas .cadastros-table th:nth-child(5),
+#section-parcelas .cadastros-table td:nth-child(5) { width: 12%; }
+#section-parcelas .cadastros-table th:nth-child(6),
+#section-parcelas .cadastros-table td:nth-child(6) { width: 12%; }
+#section-parcelas .cadastros-table th:nth-child(7),
+#section-parcelas .cadastros-table td:nth-child(7) { width: 12%; min-width: 88px; }
+
+#section-equipamentos .cadastros-table th:nth-child(1),
+#section-equipamentos .cadastros-table td:nth-child(1) { width: 26%; }
+#section-equipamentos .cadastros-table th:nth-child(2),
+#section-equipamentos .cadastros-table td:nth-child(2) { width: 56%; text-align: left; }
+#section-equipamentos .cadastros-table th:nth-child(3),
+#section-equipamentos .cadastros-table td:nth-child(3) { width: 18%; min-width: 88px; }
+
+#section-energia .cadastros-table th:nth-child(1),
+#section-energia .cadastros-table td:nth-child(1) { width: 58%; text-align: left; }
+#section-energia .cadastros-table th:nth-child(2),
+#section-energia .cadastros-table td:nth-child(2) { width: 30%; }
+#section-energia .cadastros-table th:nth-child(3),
+#section-energia .cadastros-table td:nth-child(3) { width: 12%; min-width: 88px; }
+
+#section-faturas .cadastros-table th:nth-child(1),
+#section-faturas .cadastros-table td:nth-child(1) { width: 88%; text-align: left; }
+#section-faturas .cadastros-table th:nth-child(2),
+#section-faturas .cadastros-table td:nth-child(2) { width: 12%; min-width: 88px; }
+
+@media (max-width: 1100px) {
+  #section-fazendas .cadastros-fazendas-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-section-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastros-section-layout > .table-responsive {
+    max-width: 100%;
+  }
+
+  #section-fazendas .cadastros-fazendas-table-wrap {
+    max-width: 100%;
+  }
+
+  #section-fazendas.is-form-view .cad-section-body {
+    grid-template-columns: 1fr;
+  }
+
+  #cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cad-section-body {
+    grid-template-columns: 1fr;
+  }
+
+  #cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cadastros-map-card--section .cadastros-map-card__canvas {
+    height: 100%;
+    max-height: var(--cadastros-map-max-height);
+    min-height: min(320px, 42dvh);
+  }
+
+  #section-fazendas.is-form-view .cadastros-map-card--fazendas .cadastros-map-card__canvas {
+    height: 100%;
+    max-height: var(--cadastros-map-max-height);
+    min-height: min(320px, 42dvh);
+  }
+
+  .cadastros-form-grid--pivo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.cadastros-form-center-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+}
+
+.cadastros-form-center-cell .equip-check,
+.cadastros-form-center-cell .cadastros-map-picker-btn {
+  margin-top: 18px;
+}
+
+.cadastros-form-grid__spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cadastros-section-layout,
+#section-fazendas .cadastros-fazendas-layout,
+#section-fazendas.is-form-view .cad-section-body,
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cad-section-body {
+  min-height: 0;
+  max-height: var(--cadastros-map-max-height);
+  overflow: hidden;
+}
+
+.cadastros-map-card,
+.cadastros-map-card__canvas-wrap,
+.cadastros-map-card__canvas {
+  height: 100%;
+}
+
+.cadastros-map-card {
+  min-height: 280px;
+}
+
+.cadastros-map-card__canvas {
+  min-height: 260px;
+  max-height: var(--cadastros-map-max-height);
+}
+
+.cadastros-section-layout .cadastros-map-card--section .cadastros-map-card__canvas,
+#section-fazendas .cadastros-map-card--fazendas .cadastros-map-card__canvas,
+#cadastrosPanel .cad-section.is-form-view:not(#section-fazendas) .cadastros-map-card--section .cadastros-map-card__canvas,
+#section-fazendas.is-form-view .cadastros-map-card--fazendas .cadastros-map-card__canvas {
+  min-height: 220px;
+  max-height: var(--cadastros-map-max-height);
+}
+
+#cadastrosPanel .cad-section.is-form-view .cadastros-form-host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  max-height: var(--cadastros-map-max-height);
+  overflow: hidden;
+}
+
+#cadastrosPanel .cad-section.is-form-view .cadastros-form-card {
+  height: 100%;
+  min-height: 0;
+  max-height: var(--cadastros-map-max-height);
+}
+
+#cadastrosPanel .cad-section.is-form-view .cadastros-form-content {
+  height: 100%;
+  max-height: calc(var(--cadastros-map-max-height) - 56px);
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#cadastrosPanel .cad-section.is-form-view .cadastros-form-card--with-footer .cadastros-form-content {
+  max-height: calc(var(--cadastros-map-max-height) - 104px);
+}
+
+/* Regra final de proporcao vertical: mapa 75% / acoes 25% */
+#cadastrosPanel .cadastros-map-column {
+  height: var(--cadastros-map-max-height);
+  min-height: 0;
+}
+
+#cadastrosPanel .cadastros-map-column > .cadastros-map-card {
+  flex: 0 0 75%;
+  height: 75%;
+  min-height: 0;
+}
+
+#cadastrosPanel .cadastros-map-column > .cadastros-map-actions {
+  display: flex;
+  flex: 0 0 25%;
+  max-height: 25%;
+  min-height: 72px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-items: flex-start;
+}
+
+#cadastrosPanel .cadastros-map-column .cadastros-map-card__canvas-wrap,
+#cadastrosPanel .cadastros-map-column .cadastros-map-card__canvas {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Formularios e tabelas ocupam 100% da area util e rolam quando faltar espaco */
+#cadastrosPanel .cad-section-body > .cadastros-form-host,
+#cadastrosPanel .cad-section-body > .cadastros-section-layout,
+#cadastrosPanel .cad-section-body > .cadastros-fazendas-layout {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
+}
+
+#cadastrosPanel .table-responsive,
+#cadastrosPanel .cadastros-form-content {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+
+/* ============================================================
+    QUADRANT GRID LAYOUT — 2 colunas: 35% esq | 65% dir
+    ============================================================ */
+
+.cadastros-page .cad-section-body {
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  gap: 0;
+}
+
+/* Neutraliza regras antigas de is-form-view */
+#section-fazendas.is-form-view .cad-section-body,
+#cadastrosPanel .cad-section.is-form-view .cad-section-body {
+  display: block !important;
+  grid-template-columns: unset !important;
+  gap: 0 !important;
+}
+
+/* ── Painel da tabela (card com borda) ── */
+.cad-table-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+/* ── Toolbar — cabeçalho do card ── */
+.cad-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 6px 6px 0 0;
+}
+
+.cad-table-toolbar__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: -0.01em;
+}
+
+.cad-table-toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.talhoes__icon-btn {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  width: 34px;
+  height: 34px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Fazenda: fundo do card/tabela totalmente branco */
+#section-fazendas .cad-table-panel,
+#section-fazendas .cad-table-toolbar,
+#section-fazendas .cad-table-panel .table-responsive,
+#section-fazendas .cadastros-table,
+#section-fazendas .cadastros-table thead tr,
+#section-fazendas .cadastros-table tbody tr,
+#section-fazendas .cadastros-table tbody tr:nth-child(odd),
+#section-fazendas .cadastros-table tbody tr:nth-child(even),
+#section-fazendas .cadastros-table tbody tr:hover {
+  background: #ffffff;
+}
+
+/* Fazenda: card da tabela e mapa sem cantos arredondados */
+#section-fazendas .cad-table-panel,
+#section-fazendas .cad-table-toolbar,
+#section-fazendas .cadastros-table,
+#section-fazendas .cadastros-table--fazendas,
+#section-fazendas .cadastros-map-card--fazendas,
+#section-fazendas .cadastros-map-card--fazendas .cadastros-map-card__canvas,
+#section-fazendas .cadastros-map-card--fazendas .cadastros-map-card__canvas .leaflet-container {
+  border-radius: 0 !important;
+}
+
+/* Todos os mapas em Cadastros com cantos retos */
+#cadastrosPanel .cadastros-map-card,
+#cadastrosPanel .cadastros-map-card__canvas-wrap,
+#cadastrosPanel .cadastros-map-card__canvas,
+#cadastrosPanel .cadastros-map-card__canvas .leaflet-container {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+    FAZENDA (form): curva leve somente em campos e botoes solicitados
+    ============================================================ */
+
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm .equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm select.equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm textarea.equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm .cadastros-map-pin-btn,
+#section-fazendas .cadastros-form-footer--farm .cad-form-action-btn {
+  border-radius: var(--cad-form-soft-radius) !important;
+}
+
+/* ============================================================
+    FORMULÁRIOS SEM ARREDONDAMENTO (Cadastros)
+    ============================================================ */
+/* Removido o override que forçava cantos retos, permitindo o uso do raio suave definido acima */
+
+/* Talhões: evita área em branco grande antes do footer */
+#section-talhoes.is-form-view .cadastros-form-card--with-footer {
+  height: auto !important;
+  max-height: none !important;
+}
+
+#section-talhoes.is-form-view .cadastros-form-card--with-footer .cadastros-form-content {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.cad-toolbar-add-btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: #16a34a;
+  color: #ffffff;
+  border: 1px solid #16a34a;
+  transition: background 0.15s;
+}
+
+.cad-toolbar-add-btn:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.cadastros-quadrant-grid {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  grid-template-rows: 1fr;
+  height: calc(100dvh - 80px);
+  min-height: 0;
+  gap: 0;
+}
+
+/* Coluna esquerda: tabela ou formulário */
+.cq-left {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.cq-left .table-responsive,
+.cad-table-panel .table-responsive {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 0 !important;
+  background: #ffffff;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.cq-left .cadastros-form-host {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cq-left .cadastros-form-card {
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+}
+
+.cq-left .cadastros-form-content {
+  max-height: none;
+  height: calc(100% - 46px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Coluna direita: mapa ocupa 100% do espaço disponível */
+.cq-right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-left: 1px solid #e2e8f0;
+}
+
+.cq-right .cadastros-map-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  gap: 0;
+}
+
+.cq-right .cadastros-map-card__canvas-wrap {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cq-right .cadastros-map-card__canvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+}
+
+/* Botões de ação do mapa (Desenhar, Limpar) */
+.cq-map-actions {
+  flex: 0 0 auto;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0 0;
+}
+
+/* Label de talhão centralizado no polígono */
+.cadastros-talhao-icon {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.cadastros-talhao-label {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+  transform: translate(-50%, -50%);
+  display: inline-block;
+}
+
+/* Marcadores de pluviômetro no mapa de vínculos */
+.pivo-pluvio-icon-root {
+  background: none !important;
+  border: none !important;
+}
+
+.pivo-pluvio-marker {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: block;
+  pointer-events: none;
+}
+
+.pivo-pluvio-marker__icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: 2px solid rgba(255,255,255,0.85);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+.pivo-pluvio-marker--linked .pivo-pluvio-marker__icon {
+  background: #16a34a;
+  color: #fff;
+}
+
+.pivo-pluvio-marker--avail .pivo-pluvio-marker__icon {
+  background: #64748b;
+  color: #fff;
+}
+
+.pivo-pluvio-marker__label {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: rgba(0,0,0,0.62);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Marcador de fazenda no mapa */
+.cadastros-farm-marker {
+  width: 32px;
+  height: 32px;
+  background: #16a34a;
+  border: 2px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  cursor: grab;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.cadastros-farm-marker i {
+  transform: rotate(45deg);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.cadastros-farm-marker--central {
+  background: #0369a1;
+}
+
+/* Botão pin de localização */
+.cadastros-map-pin-btn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #16a34a;
+  background: #ffffff;
+  color: #16a34a;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.cadastros-map-pin-btn:hover {
+  background: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.15);
+}
+
+.cadastros-map-pin-btn.is-active {
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.25);
+}
+
+/* Responsivo: colapsa para 1 coluna abaixo de 900px */
+@media (max-width: 900px) {
+  .cadastros-quadrant-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+  }
+
+  .cq-left,
+  .cq-right {
+    padding: 6px 0;
+    height: auto;
+    min-height: 260px;
+  }
+
+  .cq-left .table-responsive,
+  .cq-left .cadastros-form-host {
+    height: auto;
+    max-height: 50dvh;
+  }
+
+  .cq-right .cadastros-map-card__canvas {
+    min-height: 260px;
+  }
+}
+
+/* ============================================================
+    TABELAS — PADRÃO VISUAL CONSOLIDADO
+    ============================================================ */
+
+/* Wrapper: scroll quando necessário, alinhado à esquerda */
+.cq-left .table-responsive {
+  display: block; 
+  overflow-x: auto;
+  overflow-y: auto;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Tabela: ocupa 100% do painel, sem flutuar */
+#cadastrosPanel .cadastros-table,
+#cadastrosPanel .cadastros-table--fazendas {
+  table-layout: auto !important;
+  width: 100%; 
+  min-width: 240px;
+  margin: 0; 
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.07);
+}
+
+/* Cabeçalho */
+#cadastrosPanel .cadastros-table thead tr {
+  background: #f1f5f9;
+}
+
+#cadastrosPanel .cadastros-table thead th {
+  padding: 9px 14px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b !important;
+  text-align: center !important;
+  white-space: nowrap;
+  width: auto !important;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Linhas */
+#cadastrosPanel .cadastros-table tbody tr {
+  height: auto;
+  transition: background 0.12s ease;
+}
+
+#cadastrosPanel .cadastros-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+#cadastrosPanel .cadastros-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+#cadastrosPanel .cadastros-table tbody tr:hover {
+  background: #ecfdf5;
+}
+
+#cadastrosPanel .cadastros-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Células */
+#cadastrosPanel .cadastros-table tbody td {
+  padding: 8px 14px !important;
+  font-size: 11px !important;
+  color: #0f172a;
+  text-align: center !important;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto !important;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #f1f5f9;
+  height: auto;
+  max-height: none;
+}
+
+/* Coluna de ações: compacta, sem elipse */
+#cadastrosPanel .cadastros-table thead th:last-child,
+#cadastrosPanel .cadastros-table tbody td:last-child {
+  width: 1% !important;
+  min-width: 88px;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+#cadastrosPanel .cadastros-table td:last-child .gestao-op__sch-actions {
+  min-width: 88px;
+  justify-content: center;
+}
+
+/* Linha vazia (empty state) */
+#cadastrosPanel .cadastros-table tbody tr td[colspan] {
+  text-align: center !important;
+  color: #94a3b8;
+  font-style: italic;
+  padding: 20px !important;
+  font-size: 11px !important;
+}
+
+/* ============================================================
+    FARM FORM — TABS E DIVISORES
+    ============================================================ */
+
+.farm-tab-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.farm-tab-btn.is-active {
+  background: transparent;
+  color: #16a34a;
+}
+
+.farm-tab-btn:hover:not(.is-active) {
+  background: transparent;
+  color: #16a34a;
+}
+
+.equip-pluv-panes {
+  grid-column: span 2;
+}
+
+.equip-pluv-pane {
+  display: none;
+}
+
+.equip-pluv-pane.is-active {
+  display: block;
+}
+
+.equip-pluv-pane__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.equip-pluv-pane__grid #equipTypeFieldsHost {
+  margin-top: 0;
+}
+
+.equip-pluv-placeholder {
+  border: 1px dashed #dbe4ee;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+  padding: 12px;
+}
+
+.farm-form-divider {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  padding: 6px 0 2px;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Campo Rádio da Central
+   ============================================================ */
+.farm-radio-field {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow: hidden;
+}
+
+.farm-radio-field__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  margin: -12px -14px 12px;
+}
+
+.farm-radio-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.farm-radio-field__edit {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted-600);
+  font-size: 13px;
+  padding: 2px 4px;
+  line-height: 1;
+  transition: color .12s ease;
+}
+
+.farm-radio-field__edit:hover {
+  color: var(--ink-900);
+}
+
+.farm-radio-field__value {
+  margin-top: 6px;
+}
+
+.farm-radio-input {
+  font-family: monospace;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.farm-radio-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+
+.farm-radio-clear,
+.farm-radio-qr {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.farm-radio-clear:hover { color: #ef4444; }
+
+.farm-radio-qr {
+  align-self: stretch;
+  border-left: 1px solid rgba(15, 23, 42, .12);
+  padding: 0 10px;
+  color: #64748b;
+  font-size: 14px;
+  background: transparent;
+}
+
+.farm-radio-qr:hover { color: #1e293b; }
+
+.farm-radio-status {
+  color: #9ca3af;
+  font-size: 11px;
+  padding: 0 2px;
+}
+
+.farm-radio-field__text {
+  font-size: 13px;
+  color: #94a3b8;
+  font-family: monospace;
+  letter-spacing: .04em;
+}
+
+.farm-radio-field__text:empty::before {
+  content: "";
+  color: #cbd5e1;
+}
+
+.farm-radio-field__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-family: monospace;
+  letter-spacing: .04em;
+  color: var(--ink-900);
+  min-width: 0;
+}
+
+.farm-radio-field__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Cobrança Automática
+   ============================================================ */
+.farm-cobranca__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  min-height: 24px;
+}
+
+.farm-cobranca__title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.1;
+}
+
+.farm-cobranca__title .farm-billing__section-title {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.farm-cobranca__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.farm-cobranca__expand-btn {
+  border: none;
+  background: transparent;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 4px 0 0;
+}
+
+.farm-cobranca__expand-btn:hover {
+  color: #0f172a;
+}
+
+.farm-cobranca__expand-btn:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 1px;
+}
+
+.farm-cobranca__expand-btn i {
+  pointer-events: none;
+}
+
+.farm-cobranca__info-icon {
+  width: 14px;
+  height: 14px;
+  margin-left: 2px;
+  cursor: default;
+  opacity: 0.5;
+  vertical-align: middle;
+}
+
+.farm-cobranca__toggle {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.farm-cobranca__toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.farm-cobranca__toggle-track {
+  width: 40px;
+  height: 22px;
+  background: #cbd5e1;
+  border-radius: 999px;
+  transition: background .2s ease;
+  display: block;
+  position: relative;
+}
+
+.farm-cobranca__toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .2s ease;
+}
+
+.farm-cobranca__toggle input:checked + .farm-cobranca__toggle-track {
+  background: #16a34a;
+}
+
+.farm-cobranca__toggle input:checked + .farm-cobranca__toggle-track::after {
+  transform: translateX(18px);
+}
+
+.farm-cobranca__desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.farm-cobranca__content.is-hidden {
+  display: none;
+}
+
+#cadastrosPanel .farm-billing__section.is-collapsed .farm-cobranca__header {
+  margin-bottom: 0;
+  min-height: 20px;
+}
+
+#cadastrosPanel .farm-billing__section.is-collapsed + .farm-billing__section {
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.farm-cobranca__alert {
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #92400e;
+}
+
+/* ============================================================
+   Histórico de Faturamento
+   ============================================================ */
+.farm-historico__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.farm-historico__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.farm-historico__icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #0f172a;
+  font-size: 14px;
+  padding: 2px;
+  transition: color .12s ease;
+}
+
+.farm-historico__icon-btn:hover {
+  color: #16a34a;
+}
+
+/* Cabeçalho "Status" com filtro alinhado à direita da coluna */
+.fbill-th-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fbill-filter {
+  position: relative;
+  display: inline-flex;
+}
+
+.fbill-filter__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: #00b96b;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.fbill-filter__menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 120px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 4px;
+  box-shadow: 0 14px 28px rgba(15, 23, 32, .12);
+  z-index: 30;
+  text-transform: none;
+}
+
+.fbill-filter.is-open .fbill-filter__menu {
+  display: block;
+}
+
+.fbill-filter__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.fbill-filter__option:hover {
+  background: #f8fafc;
+}
+
+.fbill-filter__option:has(input:checked) {
+  background: #e2ffec;
+  font-weight: 600;
+}
+
+.fbill-filter__option input {
+  display: none;
+}
+
+.fbill-filter__box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: transparent;
+  font-size: 9px;
+  flex-shrink: 0;
+}
+
+.fbill-filter__option input:checked + .fbill-filter__box {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+.fbill-filter__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, .08);
+}
+
+.fbill-filter__reset {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0;
+}
+
+.fbill-filter__ok {
+  background: #22c55e;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 6px;
+  padding: 5px 16px;
+  cursor: pointer;
+}
+
+.farm-historico__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.farm-historico__table thead tr {
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.farm-historico__table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.farm-historico__table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #f8fafc;
+  color: var(--ink-900);
+}
+
+.farm-historico__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.farm-historico__empty td {
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Paginação do histórico de faturamento */
+.farm-historico__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.farm-historico__pagination-count {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.farm-historico__pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.farm-historico__pagination-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 12px;
+  cursor: default;
+}
+
+.farm-historico__pagination-arrow:not([disabled]) {
+  color: #64748b;
+  cursor: pointer;
+}
+
+.farm-historico__pagination-arrow:not([disabled]):hover {
+  color: var(--ink-900);
+}
+
+.farm-historico__pagination-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.farm-historico__pagination-page.is-active {
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+[data-theme="dark"] .farm-historico__pagination {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Billing: doc number menor, nome maior */
+#cadastrosPanel .farm-billing__grid--billing-top {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#cadastrosPanel .farm-billing__grid--billing-top .farm-billing__field--span-2 {
+  grid-column: span 1;
+}
+
+#cadastrosPanel .farm-billing__grid--billing-bottom {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#cadastrosPanel .farm-billing__label-help {
+  margin-left: 4px;
+  font-size: 11px;
+  color: #94a3b8;
+  vertical-align: middle;
+}
+
+#cadastrosPanel .farm-billing__doc {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+
+#cadastrosPanel .farm-contact__grid--technical {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#cadastrosPanel .farm-contact__field--span-2 {
+  grid-column: span 2;
+}
+
+#cadastrosPanel .farm-contact__grid--contact {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 33%;
+}
+
+/* ============================================================
+    PADRONIZAÇÃO DE TEXTO EM FORMULÁRIOS
+    ============================================================ */
+
+#cadastrosPanel .cadastros-form-host .equip-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+#cadastrosPanel .farm-billing .equip-label {
+  display: flex;
+  align-items: center;
+}
+
+#cadastrosPanel .farm-billing .equip-label .equip-required {
+  order: -1;
+}
+
+#cadastrosPanel .cadastros-form-host .equip-input,
+#cadastrosPanel .cadastros-form-host .equip-select,
+#cadastrosPanel .cadastros-form-host select.equip-input {
+  min-height: 32px;
+  padding: 5px 9px;
+  font-size: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#cadastrosPanel .cadastros-form-host .sc-loc__row .sc-loc__input-wrapper .equip-input {
+  min-height: 32px;
+  height: 32px !important;
+  padding: 5px 9px;
+  font-size: 12px;
+}
+
+#cadastrosPanel .cadastros-form-host .sc-loc__btn,
+#cadastrosPanel .cadastros-form-host .sc-loc__btn.btn {
+  min-height: 32px;
+  height: 32px !important;
+  padding: 5px 9px;
+  line-height: 1.2;
+}
+
+#cadastrosPanel .cadastros-form-host .sc-loc__row .sc-loc__input-wrapper .equip-input::-webkit-input-placeholder,
+#cadastrosPanel .cadastros-form-host .sc-loc__row .sc-loc__input-wrapper .equip-input::-moz-placeholder,
+#cadastrosPanel .cadastros-form-host .sc-loc__row .sc-loc__input-wrapper .equip-input:-ms-input-placeholder,
+#cadastrosPanel .cadastros-form-host .sc-loc__row .sc-loc__input-wrapper .equip-input:-moz-placeholder {
+  line-height: 1.2;
+}
+
+@media (max-width: 1200px) {
+  #cadastrosPanel .farm-billing__grid--billing-bottom {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #cadastrosPanel .farm-contact__grid--technical {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #cadastrosPanel .farm-contact__field--span-2 {
+    grid-column: span 2;
+  }
+
+  #cadastrosPanel .farm-contact__grid--contact {
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  #cadastrosPanel .farm-contact__grid--technical {
+    grid-template-columns: 1fr;
+  }
+
+  #cadastrosPanel .farm-contact__field--span-2 {
+    grid-column: span 1;
+  }
+
+  #cadastrosPanel .farm-contact__grid--contact {
+    max-width: 100%;
+  }
+}
+
+
+/* Faturamento da fazenda: controles menos arredondados */
+#cadastrosPanel .farm-billing .equip-input,
+#cadastrosPanel .farm-billing select.equip-input {
+  border-radius: 4px;
+}
+
+/* Faturamento da fazenda: sem card em volta; apenas divisor entre as seções */
+#cadastrosPanel .farm-billing__section {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+#cadastrosPanel .farm-billing > .farm-billing__section + .farm-billing__section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+/* Aba "Geral" da fazenda com a mesma linguagem tipográfica do faturamento */
+#cadastrosPanel #content-farm-geral .equip-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+}
+
+#cadastrosPanel #content-farm-geral .equip-input,
+#cadastrosPanel #content-farm-geral select.equip-input {
+  font-size: 12px;
+  color: #0f172a;
+}
+
+#cadastrosPanel #content-farm-geral .equip-input::placeholder {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+#cadastrosPanel #content-farm-geral .cadastros-form-check--compact span {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 500;
+}
+
+#cadastrosPanel #content-farm-geral .farm-form-divider {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #0f172a;
+  padding: 8px 0 2px;
+}
+
+.equip-field > .cadastros-map-pin-btn {
+  margin-top: 2px;
+}
+
+/* Linha lat/lng/pin em 3 colunas iguais */
+.farm-coords-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.farm-coords-row .equip-field {
+  min-width: 0;
+}
+
+.farm-coords-pin {
+  display: flex;
+  flex-direction: column;
+}
+
+.farm-coords-pin .equip-label {
+  visibility: hidden;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+/* Editor de parcelas inline */
+.pivo-parcelas-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pivo-parcelas-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pivo-parcelas-form .equip-input {
+  flex: 1 1 100px;
+  min-width: 80px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+/* Botões de desenho */
+.cad-draw-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cad-draw-btn {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.cad-draw-btn--draw {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.cad-draw-btn--draw:hover {
+  background: #f1f5f9;
+}
+
+.cad-draw-btn--draw.is-active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.cad-draw-btn--clear {
+  background: #ffffff;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.cad-draw-btn--clear:hover {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.cad-draw-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* Pivôs: campo de coordenada com botão de captura inline */
+.pivo-coord-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pivo-coord-wrap .equip-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Segmentos: botões numerados e controles */
+#scSegList,
+#stSegList,
+#scCanhaoSegList,
+#stEndGun1List,
+#stEndGun2List,
+#lsSegList {
+  padding: 6px;
+  margin: -6px 0;
+}
+
+.pivo-seg-num-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s, box-shadow 0.12s;
+  flex-shrink: 0;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  position: relative;
+  z-index: 0;
+}
+
+.pivo-seg-num-btn:hover {
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.pivo-seg-num-btn.is-active {
+  border-color: #fff;
+  outline: 3px solid var(--seg-color, #1D4ED8);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+  z-index: 3;
+}
+
+.pivo-seg-add-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px dashed #cbd5e1;
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.pivo-seg-add-btn:hover:not(:disabled) {
+  border-color: #86efac;
+  color: #16a34a;
+  background: #dcfce7;
+}
+
+.pivo-seg-add-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pivo-seg-del-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #fef2f2;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.pivo-seg-del-btn:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.pivo-seg-del-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Segmentos Pré-Definidos */
+.pivo-preset-block {
+  margin-bottom: 20px;
+}
+
+.pivo-preset-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.pivo-preset-btn {
+  height: 26px;
+  min-width: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.pivo-preset-btn:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #16a34a;
+}
+
+/* Label de segmento no mapa (lista e form) */
+.pivo-seg-map-label {
+  pointer-events: none;
+}
+
+.pivo-seg-map-label__text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.65), 0 0 6px rgba(0,0,0,0.4);
+  white-space: nowrap;
+  display: block;
+  transform: translate(-50%, -50%);
+}
+
+/* Handle arrastável de fronteira de segmento no mapa */
+.pivo-seg-handle {
+  cursor: grab !important;
+}
+
+.pivo-seg-handle__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #334155;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.45);
+}
+
+.pivo-pick-icon-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+
+.pivo-pick-icon-btn:hover:not(:disabled) {
+  background: #dcfce7;
+  color: #000000;
+  border-color: #86efac;
+}
+
+.pivo-pick-icon-btn.is-active {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+.pivo-pick-icon-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.pivo-check-nowrap {
+  white-space: nowrap;
+}
+
+.pivo-reset-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.pivo-cardinal-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pivo-cardinal-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+
+.pivo-cardinal-btn:hover {
+  background: #f8fafc;
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.pivo-cardinal-btn.is-selected {
+  background: #ffffff;
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+/* Bloqueado: até o selecionado (verde) fica cinza como os demais */
+.pivo-cardinal-btn:disabled,
+.pivo-cardinal-btn.is-selected:disabled {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.pivo-parcelas-editor-wrap {
+  width: 100%;
+}
+
+.pivo-form-footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 16px 12px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.pivo-form-footer-note i {
+  flex-shrink: 0;
+  color: #3b82f6;
+  margin-top: 1px;
+}
+
+.farm-form-divider.pivo-parcelas-divider {
+  border-top: 2px dashed #3b82f6;
+  color: #2563eb;
+}
+
+/* Pivôs: multi-select de talhões com chips */
+.pivo-talhoes-multi {
+  position: relative;
+}
+
+.pivo-talhoes-multi .farm-report__multi-control {
+  min-height: 36px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  background: var(--surface, #fff);
+  gap: 6px;
+}
+
+.pivo-talhoes-multi .farm-report__search {
+  font-size: 12px;
+  color: #64748b;
+  min-width: 80px;
+}
+
+.pivo-talhoes-multi .farm-report__dropdown {
+  display: none;
+  position: absolute;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  min-width: 100%;
+  top: calc(100% + 4px);
+  left: 0;
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 60;
+}
+
+.pivo-talhoes-multi .farm-report__dropdown.is-open {
+  display: block;
+}
+
+.pivo-talhoes-multi .farm-report__list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pivo-talhoes-multi .farm-report__item {
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.pivo-talhoes-multi .farm-report__item:hover {
+  background: #dcfce7;
+}
+
+.pivo-talhoes-multi .farm-report__item .check {
+  color: #16a34a;
+  opacity: 0;
+  font-size: 11px;
+}
+
+.pivo-talhoes-multi .farm-report__item.is-selected .check {
+  opacity: 1;
+}
+
+.pivo-talhoes-multi .farm-report__chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #dcfce7;
+  border: 1px solid rgba(22,163,74,.3);
+  color: #15803d;
+}
+
+/* ── Table sort + filter ── */
+.cad-table-filter-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.cad-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  padding: 6px 14px 6px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.cad-filter-bar__icon {
+  color: #000000;
+  font-size: 12px;
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+
+.cad-filter-bar__label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #000000;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.cad-filter-bar__select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cad-custom-select {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #000000;
+  outline: none;
+  user-select: none;
+}
+
+.cad-custom-select__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1px 4px;
+  transition: all 0.2s;
+}
+
+.cad-custom-select:hover .cad-custom-select__label,
+.cad-custom-select.is-open .cad-custom-select__label {
+  color: #16a34a;
+}
+
+.cad-custom-select__label i {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-left: 6px;
+}
+
+.cad-custom-select__options {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: -8px;
+  min-width: calc(100% + 16px);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  display: none;
+  overflow: hidden;
+  animation: cadFadeInUp 0.15s ease-out;
+}
+
+@keyframes cadFadeInUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cad-custom-select.is-open .cad-custom-select__options {
+  display: block;
+}
+
+.cad-custom-select__opt {
+  padding: 10px 14px;
+  transition: all 0.15s;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cad-custom-select__opt:hover {
+  background: #f0fdf4;
+  color: #000000;
+}
+
+.cad-custom-select__opt.selected {
+  background: #f0fdf4;
+  color: #000000;
+  font-weight: 500;
+}
+
+.cad-filter-bar__count {
+  font-size: 11px;
+  font-weight: 500;
+  color: #000000;
+  opacity: 0.5;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+.cad-th-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cad-th-sortable:hover {
+  background: #f1f5f9;
+}
+
+.cad-th-sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.5;
+  vertical-align: middle;
+}
+
+.cad-th-sortable:hover .cad-th-sort-icon,
+.cad-th-sortable[data-active] .cad-th-sort-icon {
+  opacity: 1;
+  color: #16a34a;
+}
+
+/* Full-width layout (no map) for energia / faturas */
+.cadastros-full-grid {
+  height: calc(100dvh - var(--cadastros-menu-height, 56px));
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cf-main {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.cf-main .table-responsive {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin: 0 4px;
+}
+
+.cf-main .cadastros-form-host {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#section-usuarios .cadastros-usuarios-wrap {
+  padding: 16px 18px 22px;
+  overflow: auto;
+}
+
+#section-usuarios .cadastros-usuarios-content {
+  min-width: 0;
+}
+
+/* Energia: pivô checkbox list */
+
+.energia-pivo-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.energia-pivo-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.energia-pivo-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.energia-pivo-check:has(input:checked) {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+/* Lat/Lng + pin inline */
+.equip-latlng-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.equip-latlng-row .equip-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.equip-latlng-row .cadastros-map-pin-btn {
+  flex: 0 0 auto;
+}
+
+/* Computed (readonly) fields in faturas form */
+.equip-input.fatura-computed {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: default;
+}
+
+/* ============================================================
+    PADRÃO GLOBAL DOS CARDS (Cadastros)
+    Título branco + restante com bordas arredondadas
+    ============================================================ */
+#cadastrosPanel .cad-table-panel {
+  border-radius: 0 !important;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+#cadastrosPanel .cad-table-toolbar {
+  background: #ffffff !important;
+  border-radius: 0 !important;
+}
+
+#cadastrosPanel .cad-table-panel .table-responsive {
+  border-radius: 0 !important;
+  background: #ffffff !important;
+}
+
+#cadastrosPanel .cadastros-table,
+#cadastrosPanel .cadastros-table--fazendas {
+  border-radius: 0 !important;
+}
+
+#cadastrosPanel .cadastros-map-card,
+#cadastrosPanel .cadastros-map-card__canvas-wrap {
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+#cadastrosPanel .cadastros-map-card__canvas,
+#cadastrosPanel .cadastros-map-card__canvas .leaflet-container {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   OVERRIDE FINAL ABSOLUTO (Fazenda):
+   curva leve apenas em campos preenchiveis e botoes de acao
+   ============================================================ */
+#cadastrosPanel {
+  --cad-farm-soft-radius: 8px;
+}
+
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm .equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm select.equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm textarea.equip-input,
+#section-fazendas .cadastros-form-host .cadastros-form-grid--farm .cadastros-map-pin-btn,
+#section-fazendas .cadastros-form-footer--farm .cad-form-action-btn {
+  border-radius: var(--cad-farm-soft-radius) !important;
+}
+
+/* ============================================================
+   OVERRIDE FINAL ABSOLUTO (Cadastros):
+   curva leve em campos preenchiveis e botoes de acao
+   ============================================================ */
+#cadastrosPanel {
+  --cad-form-soft-radius: 8px;
+}
+
+#cadastrosPanel .cadastros-form-host .equip-input,
+#cadastrosPanel .cadastros-form-host .equip-select,
+#cadastrosPanel .cadastros-form-host select.equip-input,
+#cadastrosPanel .cadastros-form-host textarea.equip-input,
+#cadastrosPanel .cadastros-form-host .farm-billing .equip-input,
+#cadastrosPanel .cadastros-form-host .farm-billing select.equip-input,
+#cadastrosPanel .cadastros-form-host .cadastros-map-pin-btn,
+#cadastrosPanel .cadastros-form-host .cad-draw-btn,
+#cadastrosPanel .cadastros-form-host .cad-form-action-btn,
+#cadastrosPanel .cadastros-form-host .farm-tab-btn,
+#cadastrosPanel .cadastros-form-footer .cad-form-action-btn,
+#cadastrosPanel .cad-toolbar-add-btn,
+#cadastrosPanel .talhoes__icon-btn,
+#cadastrosPanel .sch-btn {
+  border-radius: var(--cad-form-soft-radius) !important;
+}
+/* ============================================================
+   Custom Select Component (.cad-csel)
+   ============================================================ */
+.cad-csel {
+  position: relative;
+  width: 100%;
+}
+.cad-csel__trigger {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  padding-right: 9px !important;
+}
+.cad-csel__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cad-csel__label--placeholder {
+  color: #9ca3af;
+}
+.cad-csel__arrow {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #9ca3af;
+  transition: transform 0.15s;
+}
+.cad-csel.is-open .cad-csel__arrow {
+  transform: rotate(180deg);
+}
+.cad-csel__trigger:focus {
+  outline: none;
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.15) !important;
+}
+.cad-csel__list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  z-index: 9999;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.cad-csel.is-open .cad-csel__list {
+  display: block;
+}
+.cad-csel__item {
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #1f2937;
+}
+.cad-csel__item:hover {
+  background: #dcfce7;
+  color: #1f2937;
+}
+.cad-csel__item.is-selected {
+  background: #dcfce7;
+  color: #1f2937;
+}
+
+/* ============================================================
+   Vínculos — Transfer List
+   ============================================================ */
+.vinc-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  padding: 16px 20px;
+}
+
+.vinc-block {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.vinc-block__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vinc-block__divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 0 -12px 8px;
+}
+
+.vinc-transfer {
+  display: grid;
+  grid-template-columns: 1fr 44px 1fr;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.vinc-transfer--single {
+  grid-template-columns: 1fr;
+}
+
+.vinc-col {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.vinc-col__header {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 6px 10px;
+  border-bottom: 1px solid #dbe4ee;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.vinc-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  min-height: 120px;
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vinc-list--single {
+  padding: 4px 0 0;
+  min-height: 0;
+  max-height: 220px;
+}
+
+.vinc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #dbe4ee;
+  background: #f1f5f9;
+  font-size: 12px;
+  font-weight: 400;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
+}
+
+.vinc-item:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.vinc-item.is-selected {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.15) inset;
+}
+
+.vinc-item__icon {
+  font-size: 12px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.vinc-item.is-selected .vinc-item__icon {
+  opacity: 1;
+  color: #16a34a;
+}
+
+.vinc-empty {
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 10px 8px;
+  text-align: center;
+  font-style: italic;
+  border: 1px dashed #dbe4ee;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.vinc-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.vinc-btn {
+  width: 32px;
+  height: 28px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #e5e7eb;
+  color: #94a3b8;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.vinc-btn.is-active {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+.vinc-btn:not(:disabled):hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+.vinc-btn:disabled {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Canhão Final
+   ============================================================ */
+.pivo-canhao-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.canhao-mode-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.canhao-mode-btn {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #374151;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.canhao-mode-btn:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+.canhao-mode-btn.is-active {
+  background: #fff7ed;
+  border-color: #f97316;
+  color: #ea580c;
+  font-weight: 600;
+}
+/* Marcador arrastável do canhão no mapa */
+.pivo-canhao-handle {
+  cursor: grab !important;
+}
+.pivo-canhao-handle__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f97316;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #f97316, 0 2px 6px rgba(0,0,0,0.35);
+}
+
+
+/* Inputs com Sufixo */
+.equip-input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.equip-input-with-suffix .equip-input {
+  padding-right: 45px;
+}
+.equip-suffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  pointer-events: none;
+  text-transform: lowercase;
+}
+/* --- Estudo de Sinal / Upload Zone --- */
+.cadastros-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 24px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.cadastros-upload-zone:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.cadastros-upload-zone i {
+  font-size: 40px;
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}
+
+.cadastros-upload-zone:hover i {
+  color: #16a34a;
+}
+
+.cadastros-upload-zone__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.cadastros-upload-zone__desc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cadastros-upload-zone .btn--primary {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cadastros-upload-info {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.cadastros-upload-info.is-hidden {
+  display: none;
+}
+
+.cadastros-upload-info i {
+  color: #16a34a;
+  font-size: 18px;
+}
+
+.cadastros-upload-info span {
+  flex: 1;
+  color: #334155;
+  font-weight: 500;
+}
+
+.cadastros-alert--info {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1e40af;
+  line-height: 1.5;
+}
+
+.cadastros-alert--info i {
+  margin-top: 2px;
+  font-size: 16px;
+}
+
+/* =====================================================
+   Dark Mode — Segment / Preset / Cardinal Buttons
+   ===================================================== */
+[data-theme="dark"] .pivo-seg-add-btn {
+  background: #141414;
+  border-color: rgba(255,255,255,.15);
+  color: #64748b;
+}
+
+[data-theme="dark"] .pivo-seg-add-btn:hover:not(:disabled) {
+  background: rgba(74,222,128,.10);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .pivo-seg-del-btn {
+  background: rgba(239,68,68,.12);
+  color: #f87171;
+}
+
+[data-theme="dark"] .pivo-seg-del-btn:hover:not(:disabled) {
+  background: rgba(239,68,68,.20);
+}
+
+[data-theme="dark"] .pivo-preset-btn {
+  background: #141414;
+  border-color: rgba(255,255,255,.10);
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-preset-btn:hover {
+  background: rgba(74,222,128,.10);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .pivo-pick-icon-btn {
+  background: #141414;
+  border-color: rgba(255,255,255,.10);
+  color: #64748b;
+}
+
+[data-theme="dark"] .pivo-pick-icon-btn:hover:not(:disabled) {
+  background: rgba(74,222,128,.10);
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .pivo-cardinal-btn {
+  background: #141414;
+  border-color: rgba(255,255,255,.10);
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-cardinal-btn:hover {
+  background: #141414;
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .pivo-cardinal-btn.is-selected {
+  background: #141414;
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+[data-theme="dark"] .pivo-cardinal-btn:disabled,
+[data-theme="dark"] .pivo-cardinal-btn.is-selected:disabled {
+  background: #141414;
+  border-color: rgba(255,255,255,.10);
+  color: #475569;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .farm-billing__section-title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .farm-historico__icon-btn {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .farm-historico__icon-btn:hover {
+  color: #16a34a;
+}
+
+[data-theme="dark"] .farm-historico__table thead tr {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .farm-cobranca__toggle-track {
+  background: #333333;
+}
+
+[data-theme="dark"] .farm-cobranca__toggle input:checked + .farm-cobranca__toggle-track {
+  background: #16a34a;
+}
+
+[data-theme="dark"] .farm-cobranca__toggle input:checked + .farm-cobranca__toggle-track::after {
+  background: #f1f5f9;
+}
+
+[data-theme="dark"] div[style*="border: 1px solid #e2e8f0"],
+[data-theme="dark"] div[style*="border:1px solid #e2e8f0"] {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+/* ============================================================
+   Faturamento — layout em cards (fbill-)
+   Resumo, forma de pagamento (cartão/boleto) e status pills.
+   ============================================================ */
+.fbill-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 1px;
+}
+
+.fbill-tile {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.fbill-tile__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fbill-tile__label i {
+  color: #00b96b;
+  font-size: 14px;
+}
+
+.fbill-tile__label .fbill-btn i {
+  color: #fff;
+  font-size: inherit;
+}
+
+.fbill-tile__label--with-action {
+  justify-content: space-between;
+}
+
+.fbill-tile__label--with-action span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- Itens do Plano (resumo estilo fatura) ---- */
+.fbill-invoice__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.fbill-invoice__number {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-invoice__paid-date {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.fbill-invoice__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.fbill-invoice__meta-block h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #94a3b8;
+}
+
+.fbill-invoice__meta-row {
+  font-size: 13px;
+  color: var(--ink-900);
+  margin-bottom: 3px;
+}
+
+.fbill-invoice__meta-row b {
+  font-weight: 700;
+}
+
+.fbill-invoice__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+}
+
+.fbill-invoice__table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #94a3b8;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 8px 6px;
+  font-weight: 600;
+}
+
+.fbill-invoice__table td {
+  font-size: 13.5px;
+  padding: 14px 6px;
+  border-bottom: 1px solid #f8fafc;
+  vertical-align: top;
+}
+
+.fbill-invoice__table tr:last-child td {
+  border-bottom: none;
+}
+
+.fbill-invoice__table th.num,
+.fbill-invoice__table td.num {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--ink-900);
+}
+
+.fbill-invoice__item-name {
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.fbill-invoice__item-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.fbill-invoice__totals {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fbill-invoice__totals-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.fbill-invoice__totals-row--balance {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-invoice__payment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fbill-invoice__payment-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(20, 118, 25, 0.133);
+  color: rgb(20, 118, 25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.fbill-invoice__payment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.fbill-invoice__payment-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.fbill-invoice__payment-desc {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.fbill-invoice__payment-date {
+  font-size: 12.5px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+@media (max-width: 620px) {
+  .fbill-invoice__meta {
+    grid-template-columns: 1fr;
+  }
+
+  .fbill-invoice__table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.fbill-tile__value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink-900);
+  line-height: 1.3;
+}
+
+.fbill-tile__sub {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 8px;
+  line-height: 1.9;
+}
+
+.fbill-tile__sub--danger {
+  color: #a8071a;
+}
+
+.fbill-tile__sub--danger strong {
+  font-weight: 700;
+}
+
+.fbill-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 14px;
+}
+
+.fbill-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.fbill-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.fbill-card__title i {
+  color: #00b96b;
+  font-size: 14px;
+}
+
+/* Forma de pagamento: cartão salvo */
+.fbill-pay-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fbill-card-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0 16px 6px;
+}
+
+.fbill-card-row__brand {
+  font-size: 30px;
+  color: #1a1f71;
+  width: 42px;
+  text-align: center;
+}
+
+.fbill-card-row__brand.is-master {
+  color: #eb001b;
+}
+
+.fbill-card-row__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fbill-card-row__num {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-900);
+  letter-spacing: .5px;
+}
+
+.fbill-card-row__meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.fbill-badge-default {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00b96b;
+  background: #e2ffec;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.fbill-card-row__del {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.fbill-card-row__del:hover {
+  color: #ff4d4f;
+  background: #fff;
+}
+
+/* Empty state */
+.fbill-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 26px 16px;
+}
+
+.fbill-empty i {
+  font-size: 26px;
+  color: #cbd5e1;
+}
+
+.fbill-empty__text {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Ações / botões */
+.fbill-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.fbill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+}
+
+.fbill-btn--primary {
+  background: #00b96b;
+  color: #fff;
+}
+
+.fbill-btn--primary:hover {
+  background: #00a25e;
+}
+
+.fbill-btn--ghost {
+  background: #fff;
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+}
+
+.fbill-btn--ghost:hover {
+  background: #fff;
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+}
+
+/* Status pills */
+.fbill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2px;
+  line-height: 1.2;
+  border-radius: 4px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.fbill-pill--paid {
+  background-color: rgba(20, 118, 25, 0.133);
+  color: rgb(20, 118, 25);
+  border-color: rgb(20, 118, 25);
+}
+
+.fbill-pill--pending {
+  background-color: rgba(37, 99, 235, 0.133);
+  color: rgb(37, 99, 235);
+  border-color: rgb(37, 99, 235);
+}
+
+.fbill-pill--overdue {
+  background-color: rgba(185, 28, 28, 0.133);
+  color: rgb(185, 28, 28);
+  border-color: rgb(185, 28, 28);
+}
+
+.fbill-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fbill-link:hover {
+  text-decoration: underline;
+}
+
+/* Segmented control (Cartão | Boleto) */
+.fbill-seg {
+  display: inline-flex;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.fbill-seg__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.fbill-seg__btn.is-active {
+  background: #fff;
+  color: var(--ink-900);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+.fbill-pm-panel[hidden] {
+  display: none;
+}
+
+.fbill-boleto-info {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.fbill-boleto-info i {
+  color: #00b96b;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.fbill-boleto-info__text {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .fbill-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Dark mode ---- */
+[data-theme="dark"] .fbill-tile,
+[data-theme="dark"] .fbill-card {
+  background: var(--surface);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .fbill-boleto-info,
+[data-theme="dark"] .fbill-seg {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .fbill-seg__btn.is-active {
+  background: #333333;
+}
+
+[data-theme="dark"] .fbill-btn--ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .fbill-card-row__del:hover {
+  background: #333333;
+}
+
+[data-theme="dark"] .fbill-invoice__head,
+[data-theme="dark"] .fbill-invoice__table th,
+[data-theme="dark"] .fbill-invoice__totals,
+[data-theme="dark"] .fbill-invoice__totals-row--balance {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .fbill-invoice__table td {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .farm-historico__table th,
+[data-theme="dark"] .farm-historico__table td,
+[data-theme="dark"] .farm-historico__pagination-count,
+[data-theme="dark"] .farm-historico__pagination-arrow[disabled] {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .fbill-filter__menu {
+  background: var(--surface);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow);
+}
+
+[data-theme="dark"] .fbill-filter__option {
+  color: var(--text);
+}
+
+[data-theme="dark"] .fbill-filter__option:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .fbill-filter__option:has(input:checked) {
+  background: rgba(0, 185, 107, 0.16);
+}
+
+[data-theme="dark"] .fbill-filter__box {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="dark"] .fbill-filter__actions {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+/* ---- Form de cartão (design/mock — em produção usar Stripe Elements) ---- */
+.fbill-card-form {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 14px;
+  background: #fff;
+}
+
+.fbill-card-form[hidden] {
+  display: none;
+}
+
+.fbill-card-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.fbill-card-form__full {
+  grid-column: span 2;
+}
+
+.fbill-card-form__note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 12px;
+}
+
+.fbill-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+[data-theme="dark"] .fbill-card-form {
+  background: var(--surface);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+/* ---- Tooltip do "Cobrança automática" na linha do cartão ---- */
+.fbill-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.fbill-tip__bubble {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: -6px;
+  width: 260px;
+  background: #1f1f1f;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s ease;
+  z-index: 100;
+  pointer-events: none;
+  white-space: normal;
+}
+
+.fbill-tip__bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 12px;
+  border: 6px solid transparent;
+  border-top-color: #1e293b;
+}
+
+.fbill-tip:hover .fbill-tip__bubble {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fbill-card-row .farm-billing__section-title {
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+/* ---- Cartão padrão (radio) + cobrança automática global + lista boleto ---- */
+.fbill-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.fbill-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fbill-radio__mark {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color .15s ease;
+}
+
+.fbill-radio input:checked + .fbill-radio__mark {
+  border-color: #00b96b;
+}
+
+.fbill-radio input:checked + .fbill-radio__mark::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #00b96b;
+}
+
+.fbill-radio input:checked ~ .fbill-radio__text {
+  color: #00b96b;
+}
+
+.fbill-autopay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.fbill-autopay__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fbill-autopay__desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  max-width: 520px;
+}
+
+.fbill-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fbill-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.fbill-list li i {
+  color: #00b96b;
+  margin-top: 3px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .fbill-autopay {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .fbill-list li {
+  color: #cbd5e1;
+}
+/* ---- Alerta de pagamento em atraso (dunning) ---- */
+.fbill-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #ffccc7;
+  border-left: 3px solid #ff4d4f;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.fbill-alert__icon {
+  color: #ff4d4f;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.fbill-alert__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.fbill-alert__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a8071a;
+}
+
+.fbill-alert__text {
+  font-size: 12px;
+  color: #820014;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.fbill-btn--danger {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.fbill-btn--danger:hover {
+  background: #e63946;
+}
+
+[data-theme="dark"] .fbill-alert {
+  background: rgba(255, 77, 79, 0.12);
+  border-color: rgba(255, 77, 79, 0.3);
+}
+
+[data-theme="dark"] .fbill-alert__title {
+  color: #ff7875;
+}
+
+[data-theme="dark"] .fbill-alert__text {
+  color: #ffa39e;
+}
+
+/* ---- Botão "Remover" (branco, borda e fonte vermelha) ---- */
+.fbill-btn-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 100px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+
+.fbill-btn-remove:hover {
+  background: #fff;
+}
+
+[data-theme="dark"] .fbill-btn-remove {
+  background: transparent;
+}
+/* ---- "Pagar agora" dentro do tile de Status (mais baixo) ---- */
+.fbill-tile .fbill-btn {
+  height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+/* ---- Alerta verde (ex.: cobrança automática habilitada) ---- */
+.fbill-alert--ok {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+  border-left-color: #00b96b;
+}
+
+.fbill-alert--ok .fbill-alert__icon {
+  color: #00b96b;
+}
+
+.fbill-alert--ok .fbill-alert__title {
+  color: var(--ink-900);
+}
+
+.fbill-alert--ok .fbill-alert__text {
+  color: var(--ink-900);
+}
+
+[data-theme="dark"] .fbill-alert--ok {
+  background: rgba(0, 185, 107, 0.12);
+  border-color: rgba(0, 185, 107, 0.3);
+}
+
+[data-theme="dark"] .fbill-alert--ok .fbill-alert__title,
+[data-theme="dark"] .fbill-alert--ok .fbill-alert__text {
+  color: #f1f5f9;
+}
+/* ---- Form de cartão inline: preview ao vivo do cartão ---- */
+.fbill-card-form__cols {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.fbill-cc-preview {
+  width: 100%;
+  aspect-ratio: 1.586;
+  border-radius: 14px;
+  padding: 20px 22px;
+  background: linear-gradient(135deg, #2b2f77 0%, #4a3f8f 40%, #1f7a6c 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .18);
+  transition: background .3s ease;
+}
+
+.fbill-cc-preview.is-master {
+  background: linear-gradient(135deg, #ff9966 0%, #eb001b 55%, #6b1839 100%);
+}
+
+.fbill-cc-preview__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fbill-cc-preview__brand {
+  font-style: italic;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: .5px;
+}
+
+.fbill-cc-preview__wifi {
+  font-size: 18px;
+  opacity: .85;
+  transform: rotate(90deg);
+}
+
+.fbill-cc-preview__number {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fbill-cc-preview__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px;
+}
+
+.fbill-cc-preview__name {
+  text-transform: uppercase;
+  font-weight: 600;
+  max-width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fbill-cc-secure {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #067a48;
+  font-weight: 600;
+}
+
+.fbill-cc-secure i { color: #00b96b; }
+
+@media (max-width: 560px) {
+  .fbill-card-form__cols {
+    grid-template-columns: 1fr;
+  }
+
+  .fbill-cc-preview {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
+/* ---- Botão "Adicionar cartão" (fundo branco, borda e fonte verdes) ---- */
+.fbill-btn--outline-primary {
+  background: #fff;
+  border: 1px solid #00b96b;
+  color: #00b96b;
+  font-weight: 500;
+}
+
+.fbill-btn--outline-primary:hover {
+  background: #fff;
+  border-color: #00a25e;
+  color: #00a25e;
+}
+
+[data-theme="dark"] .fbill-btn--outline-primary {
+  background: transparent;
+}
+/* ---- Cartão salvo com visual de cartão (mascarado), estilo teste ---- */
+.fbill-card-visual {
+  position: relative;
+  width: 280px;
+  flex-shrink: 0;
+  aspect-ratio: 1.586;
+  border-radius: 12px;
+  padding: 16px 18px;
+  background: linear-gradient(160deg, #7ed957 0%, #3fa34d 45%, #1f7a8c 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+}
+
+.fbill-card-visual__actions {
+  position: absolute;
+  top: 65px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fbill-card-visual__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 11px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.fbill-card-visual__action:hover {
+  background: rgba(255, 255, 255, .35);
+}
+
+.fbill-card-visual__action--remove:hover {
+  color: #ffb4b4;
+}
+
+.fbill-card-visual__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fbill-card-visual__brand {
+  font-style: italic;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .4px;
+}
+
+.fbill-card-visual__wifi {
+  font-size: 13px;
+  opacity: .85;
+  transform: rotate(90deg);
+}
+
+.fbill-card-visual__number {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fbill-card-visual__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 10px;
+}
+
+.fbill-card-visual__name {
+  text-transform: uppercase;
+  font-weight: 600;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}/* ---- Ações do cartão (Editar/Remover), lado a lado abaixo do cartão ---- */
+.fbill-card-row__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.fbill-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 100px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #00b96b;
+  color: #00b96b;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+
+.fbill-btn-edit:hover {
+  background: #fff;
+  border-color: #00a25e;
+  color: #00a25e;
+}
+
+[data-theme="dark"] .fbill-btn-edit {
+  background: transparent;
+}
+/* ---- Botões do form de cartão (levemente mais baixos) ---- */
+.fbill-card-form .fbill-actions .fbill-btn {
+  padding: 8px 16px;
+}

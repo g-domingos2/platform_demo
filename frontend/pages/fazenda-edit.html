@@ -1,0 +1,1121 @@
+<section class="edit-panel farm-edit" id="farmEditPanel" aria-label="Editar fazenda">
+
+
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="farmEditBack" aria-label="Voltar" onclick="if(window.IcNavigate){window.IcNavigate('visao-geral')}else{document.querySelector('.nav__item[data-route=\'visao-geral\']')?.click()}">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar fazenda</span>
+    </button>
+
+    <div class="edit-panel__actions">
+      <span class="edit-panel__save-feedback" id="farmEditSaveFeedback" role="status" aria-live="polite" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <button class="edit-panel__tab is-active" type="button" data-tab="general" aria-selected="true" data-bound="1">Fazenda</button>
+    <button class="edit-panel__save btn-save-pref" type="button">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Salvar
+    </button>
+  </div>
+
+  <div class="edit-panel__tab-body is-active">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Seções da fazenda">
+        <button class="edit-panel__nav-item is-active" type="button" onclick="window.IcFarmNav('#farmEditGeneral', this)">Geral</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditBilling', this)" style="display:none;">Faturamento</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditLocation', this)">Localização</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditContact', this)">Contato</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditEnergy', this)">Faixas de Energia</button>
+        <!-- <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditEnergyGeneral', this)">Energia Geral</button> -->
+        <!-- <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditEnergyBills', this)">Faturas de Energia</button> -->
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditHolidays', this)">Feriados</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditUsers', this)">Usuários</button>
+        <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditTalhoes', this)">Talhões</button>
+        <!-- <button class="edit-panel__nav-item" type="button" onclick="window.IcFarmNav('#farmEditSignalStudy', this)">Estudo de Sinal</button> -->
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="farmEditGeneral">
+          <div class="edit-panel__section-head">
+            <h2>Geral</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Configurações gerais da fazenda, como nome, cliente, fuso horário e rádio da central.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <!-- Rádio da central -->
+            <div class="edit-panel__section-body--grid" style="margin-bottom: 16px;">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label">Rádio da central</span>
+                  <button type="button" class="farm-radio-field__edit" title="Trocar o rádio" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="farmEditCentralRadio" name="farm_central_radio" type="text" value="" placeholder="Ex: 0013A20041F0BC0C" maxlength="16" autocomplete="off" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__section-body--grid">
+              <!-- Nome da fazenda -->
+              <div class="edit-panel__field">
+                <label for="farmEditName"><span class="edit-panel__req">*</span> Nome da fazenda</label>
+                <input class="edit-panel__input" id="farmEditName" name="farm_name" type="text" placeholder="Ex: Recanto da Serra" />
+              </div>
+
+              <!-- Nome do cliente -->
+              <div class="edit-panel__field">
+                <label for="farmEditClient"><span class="edit-panel__req">*</span> Nome do cliente</label>
+                <input class="edit-panel__input" id="farmEditClient" name="farm_client" type="text" placeholder="Ex: João da Silva" />
+              </div>
+
+              <!-- Fuso horário -->
+              <div class="edit-panel__field">
+                <div class="edit-panel__field-label"><span class="edit-panel__req">*</span> Fuso horário</div>
+                <div class="edit-panel__select-field" id="farmTimezoneField">
+                  <button type="button" class="edit-panel__select-btn"
+                    onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')"
+                    onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)"
+                    style="display:flex; align-items:center;">
+                    <span id="farmTimezoneLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">América/Sao_Paulo (GMT-03)</span>
+                    <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                  </button>
+                  <div class="edit-panel__select-menu">
+                    <button type="button" class="edit-panel__select-option" onclick="
+                      document.getElementById('farmEditTimezone').value = 'Africa/Abidjan';
+                      document.getElementById('farmTimezoneLabel').innerText = 'África/Abidjan (GMT+00)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">África/Abidjan (GMT+00)</button>
+                    <button type="button" class="edit-panel__select-option is-active" onclick="
+                      document.getElementById('farmEditTimezone').value = 'America/Sao_Paulo';
+                      document.getElementById('farmTimezoneLabel').innerText = 'América/Sao_Paulo (GMT-03)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">América/Sao_Paulo (GMT-03)</button>
+                    <button type="button" class="edit-panel__select-option" onclick="
+                      document.getElementById('farmEditTimezone').value = 'America/Cuiaba';
+                      document.getElementById('farmTimezoneLabel').innerText = 'América/Cuiabá (GMT-04)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">América/Cuiabá (GMT-04)</button>
+                    <button type="button" class="edit-panel__select-option" onclick="
+                      document.getElementById('farmEditTimezone').value = 'America/Manaus';
+                      document.getElementById('farmTimezoneLabel').innerText = 'América/Manaus (GMT-04)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">América/Manaus (GMT-04)</button>
+                    <button type="button" class="edit-panel__select-option" onclick="
+                      document.getElementById('farmEditTimezone').value = 'America/Rio_Branco';
+                      document.getElementById('farmTimezoneLabel').innerText = 'América/Rio Branco (GMT-05)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">América/Rio Branco (GMT-05)</button>
+                    <button type="button" class="edit-panel__select-option" onclick="
+                      document.getElementById('farmEditTimezone').value = 'UTC';
+                      document.getElementById('farmTimezoneLabel').innerText = 'UTC (GMT+00)';
+                      document.getElementById('farmTimezoneField').classList.remove('is-open');
+                      document.getElementById('farmTimezoneField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                      this.classList.add('is-active');
+                    ">UTC (GMT+00)</button>
+                  </div>
+                  <input type="hidden" id="farmEditTimezone" name="farm_timezone" value="America/Sao_Paulo">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditBilling">
+          <div class="edit-panel__section-head">
+            <h2>Faturamento</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Dados de faturamento da fazenda, incluindo documento, endereço de cobrança e histórico de faturas.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <!-- Informações de Faturamento -->
+            <div class="edit-panel__divider-label">Informações de Faturamento</div>
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <div class="edit-panel__field-label">Documento <span class="edit-panel__req">*</span></div>
+                <div class="edit-panel__input-group" style="width: 100%;">
+                  <div class="edit-panel__select-field" style="width: 145px; flex-shrink: 0;" id="billingDocTypeField">
+                    <button type="button" class="edit-panel__select-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')" onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)" style="display:flex; align-items:center;">
+                      <span id="farmDocTypeLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">CPF (Cadastro...</span>
+                      <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                    </button>
+                    <div class="edit-panel__select-menu" style="width: 320px;">
+                      <button type="button" class="edit-panel__select-option is-active" onclick="
+                        document.getElementById('farmEditBillingDocType').value = 'cpf';
+                        document.getElementById('farmEditBillingDocType').dispatchEvent(new Event('change', {bubbles: true}));
+                        document.getElementById('farmDocTypeLabel').innerText = 'CPF (Cadastro de Pessoa Física)';
+                        document.getElementById('billingDocTypeField').classList.remove('is-open');
+                        document.getElementById('billingDocTypeField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                      ">CPF (Cadastro de Pessoa Física)</button>
+                      <button type="button" class="edit-panel__select-option" onclick="
+                        document.getElementById('farmEditBillingDocType').value = 'cnpj';
+                        document.getElementById('farmEditBillingDocType').dispatchEvent(new Event('change', {bubbles: true}));
+                        document.getElementById('farmDocTypeLabel').innerText = 'CNPJ (Cadastro Nacional da Pessoa Jurídica)';
+                        document.getElementById('billingDocTypeField').classList.remove('is-open');
+                        document.getElementById('billingDocTypeField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                      ">CNPJ (Cadastro Nacional da Pessoa Jurídica)</button>
+                    </div>
+                    <input type="hidden" id="farmEditBillingDocType" value="cpf">
+                  </div>
+                  <input class="edit-panel__input" id="farmEditBillingDocNumber" type="text" placeholder="000.000.000-00" />
+                </div>
+              </div>
+              <div class="edit-panel__field" style="grid-column: span 2;">
+                <label for="farmEditBillingName">Nome completo / Razão social <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingName" type="text" placeholder="Nome completo ou Razão social" />
+              </div>
+            </div>
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="farmEditBillingPhone">Celular <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingPhone" type="tel" placeholder="(00) 00000-0000" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditBillingEmail">E-mail <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingEmail" type="email" placeholder="exemplo@mail.com.br" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditBillingEmailLanguage">Idioma para e-mails <span class="edit-panel__req">*</span></label>
+                <div class="edit-panel__select-field">
+                  <select class="edit-panel__input" id="farmEditBillingEmailLanguage">
+                    <option value="pt-BR">Português</option>
+                    <option value="en-US">Inglês</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Endereço de Faturamento -->
+            <div class="edit-panel__divider-label" style="margin-top: 8px;">Endereço de Faturamento</div>
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="farmEditBillingCountry">País <span class="edit-panel__req">*</span></label>
+                <div class="edit-panel__select-field">
+                  <select class="edit-panel__input" id="farmEditBillingCountry">
+                    <option value="">Selecione o país</option>
+                    <option value="BR">Brasil</option>
+                    <option value="US">Estados Unidos</option>
+                    <option value="DE">Alemanha</option>
+                    <option value="ZA">África do Sul</option>
+                  </select>
+                </div>
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditBillingPostal">CEP <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingPostal" type="text" placeholder="00000-000" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditBillingCity">Cidade <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingCity" type="text" placeholder="Ex: Goiânia" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditBillingRegion">Estado (UF) <span class="edit-panel__req">*</span></label>
+                <div class="edit-panel__select-field">
+                  <select class="edit-panel__input" id="farmEditBillingRegion">
+                    <option value="" disabled hidden selected>Selecione o estado</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                  </select>
+                </div>
+              </div>
+              <div class="edit-panel__field" style="grid-column: span 2;">
+                <label for="farmEditBillingAddress">Endereço <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="farmEditBillingAddress" type="text" placeholder="Ex: Av. Brasil, 120" />
+              </div>
+            </div>
+
+            <!-- Cobrança automática -->
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-top: 8px;">
+              <div class="farm-cobranca__header" style="margin-top: 0;">
+                <div class="farm-cobranca__title">
+                  <button type="button" class="farm-cobranca__expand-btn" id="farmEditCobrancaExpandBtn" aria-expanded="false" aria-controls="farmEditCobrancaContent" title="Expandir cobrança automática" onclick="
+                    const content = document.getElementById('farmEditCobrancaContent');
+                    const icon = this.querySelector('i');
+                    if (content.classList.contains('is-hidden')) {
+                      content.classList.remove('is-hidden');
+                      icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
+                      this.setAttribute('aria-expanded', 'true');
+                      content.setAttribute('aria-hidden', 'false');
+                    } else {
+                      content.classList.add('is-hidden');
+                      icon.classList.replace('fa-chevron-down', 'fa-chevron-right');
+                      this.setAttribute('aria-expanded', 'false');
+                      content.setAttribute('aria-hidden', 'true');
+                    }
+                  ">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                  <span class="farm-billing__section-title">Cobrança automática <img src="./assets/img/svg/info.svg" class="farm-cobranca__info-icon" alt=""></span>
+                </div>
+                <div class="farm-cobranca__actions">
+                  <label class="farm-cobranca__toggle">
+                    <input type="checkbox" id="farmEditAutoBilling" />
+                    <span class="farm-cobranca__toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="farm-cobranca__content is-hidden" id="farmEditCobrancaContent" aria-hidden="true" style="margin-top: 16px;">
+                <p class="farm-cobranca__desc">Adicione um cartão de crédito para habilitar o pagamento automático das anuidades. Essa opção é recomendada para evitar que você esqueça de realizar os pagamentos nas datas corretas, o que pode causar bloqueios no seu acesso à fazenda.</p>
+                <div class="farm-cobranca__alert">
+                  <span>Nenhuma forma de pagamento cadastrada.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Histórico de faturamento -->
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-top: 16px;">
+              <div class="farm-historico__header" style="margin-top: 0;">
+                <span class="farm-billing__section-title">Histórico de faturamento</span>
+                <div class="farm-historico__actions">
+                  <button type="button" class="farm-historico__icon-btn" title="Atualizar"><i class="fa-solid fa-rotate-right"></i></button>
+                  <button type="button" class="farm-historico__icon-btn" title="Exportar"><i class="fa-solid fa-up-right-from-square"></i></button>
+                  <button type="button" class="farm-historico__icon-btn" title="Configurar"><i class="fa-solid fa-gear"></i></button>
+                </div>
+              </div>
+              <table class="farm-historico__table">
+                <thead>
+                  <tr>
+                    <th>Vencimento</th>
+                    <th>Status <i class="fa-solid fa-filter farm-historico__filter-icon"></i></th>
+                    <th>Valor</th>
+                    <th>Link</th>
+                  </tr>
+                </thead>
+                <tbody id="farmEditHistoricoBody">
+                  <tr class="farm-historico__empty">
+                    <td colspan="4">Nenhum registro encontrado.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditLocation">
+          <div class="edit-panel__section-head">
+            <h2>Localização</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Localização de sua fazenda. É importante informar as coordenadas corretas do centro da fazenda para exibição no mapa.</p>
+          </div>
+
+          <div class="edit-panel__location">
+            <div class="edit-panel__location-left">
+              <div class="edit-panel__map" id="farmEditMap" aria-label="Mapa da fazenda" style="min-height: 560px;"></div>
+            </div>
+
+            <div class="edit-panel__location-form">
+
+              <!-- Localização da Sede -->
+              <div class="edit-panel__divider-label" style="border-top: none; padding-top: 0;">Localização da Sede</div>
+              <div class="edit-panel__field">
+                <label for="farmEditLatLng"><span class="edit-panel__req">*</span> Coordenadas</label>
+                <div style="display: flex; gap: 8px;">
+                  <input class="edit-panel__input" id="farmEditLatLng" type="text" placeholder="-21.836500, -46.947900" style="flex: 1;" />
+                  <button type="button" class="edit-panel__btn" id="farmEditPickLocationBtn" title="Obter Localização" style="white-space: nowrap;">
+                    <i class="fa-solid fa-location-dot" style="color: #16a34a;"></i>
+                    Obter localização
+                  </button>
+                </div>
+              </div>
+
+              <!-- Localização da Central de Rádio -->
+              <div class="edit-panel__divider-label" style="margin-top:20px;">Localização da Central de Rádio</div>
+              <div class="edit-panel__field">
+                <label for="farmEditCentralLatLng"><span class="edit-panel__req">*</span> Coordenadas</label>
+                <div style="display: flex; gap: 8px;">
+                  <input class="edit-panel__input" id="farmEditCentralLatLng" type="text" placeholder="-21.836500, -46.947900" style="flex: 1;" />
+                  <button type="button" class="edit-panel__btn" id="farmEditPickCentralBtn" title="Obter Localização" style="white-space: nowrap;">
+                    <i class="fa-solid fa-location-dot" style="color: #dc2626;"></i>
+                    Obter localização
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditContact">
+          <div class="edit-panel__section-head">
+            <h2>Contato</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Exibe as informações técnicas da fazenda, como endereço, cidade, estado, código postal e telefone para contato.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <div class="edit-panel__divider-label" style="border-top: none; padding-top: 0;">Informações do Endereço Técnico</div>
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="farmEditCountry"><span class="edit-panel__req">*</span> País</label>
+                <div class="edit-panel__select-field">
+                  <select class="edit-panel__input" id="farmEditCountry" name="farm_country">
+                    <option value="Brasil">Brasil</option>
+                    <option value="Estados Unidos">Estados Unidos</option>
+                    <option value="Alemanha">Alemanha</option>
+                    <option value="África do Sul">África do Sul</option>
+                  </select>
+                </div>
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditZipCode"><span class="edit-panel__req">*</span> Código Postal</label>
+                <input class="edit-panel__input" id="farmEditZipCode" name="farm_zip_code" type="text" placeholder="00000-000" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditState"><span class="edit-panel__req">*</span> Estado</label>
+                <div class="edit-panel__select-field">
+                  <select class="edit-panel__input" id="farmEditState" name="farm_state">
+                    <option value="" disabled hidden selected>Selecione o estado</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="farm-edit__loc-grid">
+              <div class="edit-panel__field">
+                <label for="farmEditAddress"><span class="edit-panel__req">*</span> Endereço</label>
+                <input class="edit-panel__input" id="farmEditAddress" name="farm_address" type="text" placeholder="Ex: Rodovia BR-050, Km 120" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="farmEditCity"><span class="edit-panel__req">*</span> Cidade</label>
+                <input class="edit-panel__input" id="farmEditCity" name="farm_city" type="text" placeholder="Ex: Uberlândia" />
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label" style="margin-top:8px;">Informações do Contato Técnico</div>
+
+            <div class="edit-panel__field" style="max-width:320px;">
+              <label for="farmEditContactPhone"><span class="edit-panel__req">*</span> Celular de contato</label>
+              <input class="edit-panel__input" id="farmEditContactPhone" name="farm_contact_phone" type="tel" placeholder="(99) 99999-9999" />
+            </div>
+
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditEnergy">
+          <div class="edit-panel__section-head">
+            <h2>Faixas de Energia</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Os tempos de pausa são intervalos nos quais o pivô não deve operar para evitar uso em momentos críticos, como horários de pico de energia.</p>
+          </div>
+
+          <div class="pivo-edit__segments-section pivo-edit-specifics" style="padding: 0 0 20px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+              <button type="button" class="energia-faixa__btn energia-faixa__btn--manual" id="farmEnergiaFaixaAddManual">
+                <i class="fa-solid fa-circle-plus"></i> Adicionar manualmente
+              </button>
+              <button type="button" class="energia-faixa__btn energia-faixa__btn--preset" onclick="window.IcOpenEnergyPresetModal()" id="farmEnergiaFaixaAddPreset">
+                <i class="fa-solid fa-circle-plus"></i> Adicionar pré-definidas
+              </button>
+            </div>
+
+            <style>
+              .energia-faixa__btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background .15s, border-color .15s, color .15s;
+              }
+              /* Adicionar manualmente — cinza e bloqueado (cursor de bloqueio no hover) */
+              .energia-faixa__btn--manual {
+                background: #f3f4f6;
+                border: 1px solid #d1d5db;
+                color: #9ca3af;
+                font-weight: 400;
+                cursor: not-allowed;
+              }
+              .energia-faixa__btn--manual i { color: #d1d5db; }
+              .energia-faixa__btn--manual:hover {
+                background: #f3f4f6;
+                border-color: #d1d5db;
+                color: #9ca3af;
+              }
+              /* Adicionar pré-definidas — fundo branco, borda e fonte verdes */
+              .energia-faixa__btn--preset {
+                background: #fff;
+                border: 1px solid #16a34a;
+                color: #16a34a;
+              }
+              .energia-faixa__btn--preset i { color: #16a34a; }
+              .energia-faixa__btn--preset:hover { background: #fff; }
+              [data-theme="dark"] .energia-faixa__btn--manual { background: #1e293b; border-color: rgba(255,255,255,.12); }
+              [data-theme="dark"] .energia-faixa__btn--preset { background: #0f172a; }
+            </style>
+            <input type="hidden" id="farmEnergiaFaixasData" value="[]" />
+            <div id="farmEnergiaFaixasList">
+              <div class="cadastros-empty-state">
+                <span class="cadastros-empty-state__icon"><i class="fa-regular fa-folder-open"></i></span>
+                <p>Não há dados</p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+        
+        <section class="edit-panel__section" id="farmEditEnergyGeneral">
+          <div class="edit-panel__section-head">
+            <h2>Energia Geral</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Informações gerais do contrato de energia, tarifas, limites e vínculos com pivôs e bombeamentos da fazenda.</p>
+          </div>
+          
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="energia_nome">Nome do Contrato <span class="edit-panel__req">*</span></label>
+                <input type="text" class="edit-panel__input" id="energia_nome" placeholder="Ex: Contrato Verde A3 - Fazenda Norte">
+              </div>
+
+              <div class="edit-panel__field">
+                <label for="energia_concessionaria">Concessionária <span class="edit-panel__req">*</span></label>
+                <input type="text" class="edit-panel__input" id="energia_concessionaria" placeholder="Ex: CPFL, Energisa, Celg">
+              </div>
+
+              <div class="edit-panel__field">
+                <div class="edit-panel__field-label">Aniversário da Conta</div>
+                <div class="edit-panel__select-field" id="energiaAniversarioField">
+                  <button type="button" class="edit-panel__select-btn"
+                    onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')"
+                    onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)"
+                    style="display:flex; align-items:center;">
+                    <span id="energiaAniversarioLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">-- Mês --</span>
+                    <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                  </button>
+                  <div class="edit-panel__select-menu">
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='1';document.getElementById('energiaAniversarioLabel').innerText='Janeiro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Janeiro</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='2';document.getElementById('energiaAniversarioLabel').innerText='Fevereiro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Fevereiro</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='3';document.getElementById('energiaAniversarioLabel').innerText='Março';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Março</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='4';document.getElementById('energiaAniversarioLabel').innerText='Abril';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Abril</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='5';document.getElementById('energiaAniversarioLabel').innerText='Maio';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Maio</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='6';document.getElementById('energiaAniversarioLabel').innerText='Junho';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Junho</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='7';document.getElementById('energiaAniversarioLabel').innerText='Julho';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Julho</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='8';document.getElementById('energiaAniversarioLabel').innerText='Agosto';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Agosto</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='9';document.getElementById('energiaAniversarioLabel').innerText='Setembro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Setembro</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='10';document.getElementById('energiaAniversarioLabel').innerText='Outubro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Outubro</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='11';document.getElementById('energiaAniversarioLabel').innerText='Novembro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Novembro</button>
+                    <button type="button" class="edit-panel__select-option" onclick="document.getElementById('energia_aniversario').value='12';document.getElementById('energiaAniversarioLabel').innerText='Dezembro';document.getElementById('energiaAniversarioField').classList.remove('is-open');document.getElementById('energiaAniversarioField').querySelectorAll('.edit-panel__select-option').forEach(b=>b.classList.remove('is-active'));this.classList.add('is-active');">Dezembro</button>
+                  </div>
+                  <input type="hidden" id="energia_aniversario" value="">
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__field">
+              <label for="energia_descricao">Descrição</label>
+              <textarea class="edit-panel__input" id="energia_descricao" rows="2" placeholder="Observações sobre o contrato"></textarea>
+            </div>
+
+            <div class="edit-panel__divider-label">Tarifas e Limites</div>
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="energia_demanda_kw">Demanda Contratada (kW)</label>
+                <input type="number" class="edit-panel__input" id="energia_demanda_kw" placeholder="Ex: 500" min="0" step="any">
+              </div>
+              <div class="edit-panel__field">
+                <label for="energia_reservado_pct">Meta Horario Reservado (%)</label>
+                <input type="number" class="edit-panel__input" id="energia_reservado_pct" placeholder="Ex: 60" min="0" max="100" step="0.01">
+              </div>
+              <div class="edit-panel__field">
+                <label for="energia_reativa_valor">Meta Energia Reativa (%)</label>
+                <input type="number" class="edit-panel__input" id="energia_reativa_valor" placeholder="Ex: 5" min="0" max="100" step="0.01">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Pivôs Vinculados</div>
+            <div class="edit-panel__field">
+              <input type="hidden" id="energia_pivo_ids" value="[]">
+              <div class="pivo-talhoes-multi" id="energiaPivoMulti">
+                <div class="farm-report__multi-control" data-energia-pivo-control="">
+                  <div class="farm-report__chips" data-energia-pivo-chips=""></div>
+                  <input class="farm-report__search" id="energiaPivoSearch" type="text" placeholder="Selecionar pivôs" data-energia-pivo-search="" readonly="">
+                  <span class="farm-report__chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+                </div>
+                <!-- Dropdown simulado (precisará de JS para popular) -->
+                <div class="farm-report__dropdown" data-energia-pivo-dropdown="" aria-hidden="true">
+                  <div class="farm-report__list" data-energia-pivo-list=""></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Bombeamentos Vinculados</div>
+            <div class="edit-panel__field">
+              <input type="hidden" id="energia_bomba_ids" value="[]">
+              <div class="pivo-talhoes-multi" id="energiaBombaMulti">
+                <div class="farm-report__multi-control" data-energia-bomba-control="">
+                  <div class="farm-report__chips" data-energia-bomba-chips=""></div>
+                  <input class="farm-report__search" id="energiaBombaSearch" type="text" placeholder="Selecionar bombas" data-energia-bomba-search="" readonly="">
+                  <span class="farm-report__chev" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+                </div>
+                <div class="farm-report__dropdown" data-energia-bomba-dropdown="" aria-hidden="true">
+                  <div class="farm-report__list" data-energia-bomba-list=""></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+        
+        <section class="edit-panel__section" id="farmEditEnergyBills">
+          <div class="edit-panel__section-head">
+            <h2>Faturas de Energia</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Registro mensal de fatura de energia elétrica, incluindo demanda, consumo, reativos, encargos e totais calculados.</p>
+          </div>
+          
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_mes_ano">Mês / Ano <span class="edit-panel__req">*</span></label>
+                <input type="month" class="edit-panel__input" id="fatura_mes_ano">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_concessionaria">Concessionária</label>
+                <input type="text" class="edit-panel__input" id="fatura_concessionaria" placeholder="Ex: CPFL">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_leitura_ant">Leitura Anterior</label>
+                <input type="date" class="edit-panel__input" id="fatura_leitura_ant">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_leitura_atu">Leitura Atual</label>
+                <input type="date" class="edit-panel__input" id="fatura_leitura_atu">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Demanda</div>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_dem_contratada">Demanda Contratada (kW)</label>
+                <input type="number" class="edit-panel__input" id="fatura_dem_contratada" placeholder="Ex: 500" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_dem_ativa_kw">Demanda Ativa (kW)</label>
+                <input type="number" class="edit-panel__input" id="fatura_dem_ativa_kw" placeholder="kW" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_dem_ativa_r">Demanda Ativa (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_dem_ativa_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_ultrap_kw">Ultrapassagem de Demanda (kW)</label>
+                <input type="number" class="edit-panel__input" id="fatura_ultrap_kw" placeholder="kW" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_ultrap_r">Ultrapassagem de Demanda (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_ultrap_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_compl_kw">Demanda Complementar (kW)</label>
+                <input type="number" class="edit-panel__input" id="fatura_compl_kw" placeholder="kW" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_compl_r">Demanda Complementar (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_compl_r" placeholder="R$" step="any" min="0">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Consumo</div>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_cons_hfp_kwh">Consumo Fora de Ponta (HFP) (kWh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_hfp_kwh" placeholder="kWh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_cons_hfp_r">Consumo Fora de Ponta (HFP) (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_hfp_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_cons_hp_kwh">Consumo Horário de Ponta (HP) (kWh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_hp_kwh" placeholder="kWh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_cons_hp_r">Consumo Horário de Ponta (HP) (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_hp_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_cons_res_kwh">Consumo Horário Reservado (kWh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_res_kwh" placeholder="kWh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_cons_res_r">Consumo Horário Reservado (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_cons_res_r" placeholder="R$" step="any" min="0">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Energia Reativa</div>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_reat_hfp_kwh">Reativo HFP (kvarh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_hfp_kwh" placeholder="kvarh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_reat_hfp_r">Reativo HFP (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_hfp_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_reat_hp_kwh">Reativo HP (kvarh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_hp_kwh" placeholder="kvarh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_reat_hp_r">Reativo HP (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_hp_r" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_reat_res_kwh">Reativo Reservado (kvarh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_res_kwh" placeholder="kvarh" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_reat_res_r">Reativo Reservado (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_reat_res_r" placeholder="R$" step="any" min="0">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Ajustes e Encargos</div>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_desc_gerais">Descontos Gerais (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_desc_gerais" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_desc_irrigante">Descontos Irrigante (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_desc_irrigante" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_custos_gerais">Custos Gerais (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_custos_gerais" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_impostos">Impostos (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_impostos" placeholder="R$" step="any" min="0">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_multas">Multas (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_multas" placeholder="R$" step="any" min="0">
+              </div>
+            </div>
+
+            <div class="edit-panel__divider-label">Totais (calculados ao salvar)</div>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="fatura_total_kwh">Consumo Total (kWh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_total_kwh" placeholder="Calculado" readonly style="background:#f8fafc;">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_total_r">Custo Total (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_total_r" placeholder="Calculado" readonly style="background:#f8fafc;">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_penalidades">Penalidades (R$)</label>
+                <input type="number" class="edit-panel__input" id="fatura_penalidades" placeholder="Calculado" readonly style="background:#f8fafc;">
+              </div>
+              <div class="edit-panel__field">
+                <label for="fatura_custo_kwh">Custo Elétrico (R$/kWh)</label>
+                <input type="number" class="edit-panel__input" id="fatura_custo_kwh" placeholder="Calculado" readonly style="background:#f8fafc;">
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditHolidays">
+          <div class="edit-panel__section-head">
+            <h2>Feriados</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Vincule feriados à sua fazenda para habilitar automações que ligam e desligam os equipamentos automaticamente, evitando tarifas de horário de ponta.</p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <button type="button" id="farmHolidayAddManual" style="display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid #d1d5db; background:#f3f4f6; color:#9ca3af; font-size:13px; font-weight:400; cursor:pointer;">
+              <i class="fa-solid fa-circle-plus" style="color:#d1d5db;"></i> Adicionar feriado
+            </button>
+            <div class="holiday-preset">
+              <button type="button" id="farmHolidayAddPreset" class="holiday-preset__btn">
+                <i class="fa-solid fa-download"></i> Importar feriados nacionais
+              </button>
+              <div class="holiday-preset__menu" id="farmHolidayPresetMenu">
+                <button type="button" class="holiday-preset__item" data-holiday-country="BR">Brasil</button>
+                <button type="button" class="holiday-preset__item" data-holiday-country="RU">Russia</button>
+              </div>
+            </div>
+          </div>
+
+          <style>
+            .holiday-preset {
+              position: relative;
+              display: inline-block;
+            }
+            .holiday-preset__btn {
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              padding: 8px 20px;
+              border-radius: 8px;
+              border: 1px solid #16a34a;
+              background: #fff;
+              color: #16a34a;
+              font-size: 13px;
+              font-weight: 500;
+              cursor: pointer;
+            }
+            .holiday-preset__btn i { color: #16a34a; }
+            .holiday-preset__menu {
+              position: absolute;
+              top: calc(100% + 6px);
+              left: 0;
+              min-width: 100%;
+              background: #fff;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              box-shadow: 0 8px 24px rgba(15, 23, 42, .12);
+              padding: 4px;
+              display: none;
+              flex-direction: column;
+              z-index: 40;
+            }
+            /* Ponte transparente que cobre o vão entre o botão e o menu,
+               evitando que o hover se perca ao mover o mouse para os itens. */
+            .holiday-preset__menu::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: -6px;
+              height: 6px;
+            }
+            .holiday-preset:hover .holiday-preset__menu,
+            .holiday-preset:focus-within .holiday-preset__menu,
+            .holiday-preset.is-open .holiday-preset__menu {
+              display: flex;
+            }
+            .holiday-preset__item {
+              text-align: left;
+              padding: 9px 12px;
+              border: none;
+              background: transparent;
+              border-radius: 6px;
+              font-size: 13px;
+              color: #334155;
+              cursor: pointer;
+            }
+            .holiday-preset__item:hover { background: #f1f5f9; color: #0f172a; }
+            [data-theme="dark"] .holiday-preset__btn { background: #0f172a; }
+            [data-theme="dark"] .holiday-preset__menu { background: #1e293b; border-color: rgba(255,255,255,.08); }
+            [data-theme="dark"] .holiday-preset__item { color: #cbd5e1; }
+            [data-theme="dark"] .holiday-preset__item:hover { background: #334155; }
+          </style>
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+            <button type="button" data-feriado-view="mes" style="padding:5px 14px; font-size:12px; font-weight:500; border:1px solid #d1d5db; border-radius:6px 0 0 6px; background:#fff; color:#374151; cursor:pointer;">Mês</button>
+            <button type="button" data-feriado-view="ano" style="padding:5px 14px; font-size:12px; font-weight:500; border:1px solid #16a34a; border-radius:0 6px 6px 0; background:#fff; color:#16a34a; font-weight:600; cursor:pointer;">Ano</button>
+          </div>
+
+          <div id="farmHolidayCalAno" style="border-top: 1px solid #e5e7eb;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid #e5e7eb;">
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Jan</span><div class="feriado-mes-dots" data-mes="Jan" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Fev</span><div class="feriado-mes-dots" data-mes="Fev" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Mar</span><div class="feriado-mes-dots" data-mes="Mar" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid #e5e7eb;">
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Abr</span><div class="feriado-mes-dots" data-mes="Abr" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Mai</span><div class="feriado-mes-dots" data-mes="Mai" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Jun</span><div class="feriado-mes-dots" data-mes="Jun" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid #e5e7eb;">
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Jul</span><div class="feriado-mes-dots" data-mes="Jul" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Ago</span><div class="feriado-mes-dots" data-mes="Ago" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Set</span><div class="feriado-mes-dots" data-mes="Set" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid #e5e7eb;">
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Out</span><div class="feriado-mes-dots" data-mes="Out" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Nov</span><div class="feriado-mes-dots" data-mes="Nov" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+              <div style="padding:10px 16px; min-height:110px; border-right:1px solid #f1f5f9;"><span style="font-size:13px; color:#64748b;">Dez</span><div class="feriado-mes-dots" data-mes="Dez" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;"></div></div>
+            </div>
+          </div>
+
+          <div id="farmHolidayCalMes" style="display:none;"></div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditUsers">
+          <div class="edit-panel__section-head">
+            <h2>Usuários</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Gerencie os usuários que tem acesso a essa fazenda. Lembre se de ler sobre as permissões para atribuir corretamente os acessos de cada usuário.</p>
+          </div>
+
+          <div class="user-page__bar">
+            <button class="btn-add-user" type="button">
+              <i class="fa-solid fa-circle-plus"></i>
+              Adicionar usuário
+            </button>
+            <a href="#" class="link-permissons">
+              <i class="fa-regular fa-circle-question"></i>
+              Sobre as permissões
+            </a>
+          </div>
+
+          <div class="user-page__resale-card">
+            <div class="resale-info">
+              <span class="resale-label">Revenda</span>
+              <div class="resale-grid">
+                <div class="resale-item">
+                  <span class="item-label">Nome:</span>
+                  <span class="item-value">Bauer Irricontrol</span>
+                </div>
+                <div class="resale-item">
+                  <span class="item-label">Email:</span>
+                  <span class="item-value">bauer@irricontrol.com</span>
+                </div>
+                <div class="resale-item">
+                  <span class="item-label">Telefone:</span>
+                  <span class="item-value">123456789</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-page__list"></div>
+        </section>
+
+        <section class="edit-panel__section edit-panel__section--fullmap" id="farmEditTalhoes">
+          <div class="edit-panel__section-head">
+            <h2>Talhões</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Gerencie os talhões da sua fazenda. Adicione-os manualmente desenhando no mapa ou use a funcionalidade de upload de arquivos shapefile. Essas informações são úteis para irrigação com carretel de mangueira, atribuição de dados e geração de relatórios.</p>
+          </div>
+          <div id="talhoesPanel" class="talhoes__embed">
+            <div class="talhoes__content">
+
+              <!-- Lista lateral -->
+              <aside class="talhoes__list card">
+                <div class="talhoes__list-head">
+                  <h2 class="talhoes__list-title">Talhões</h2>
+                  <div class="talhoes__list-actions">
+                    <button class="talhoes__icon-btn" type="button" aria-label="Upload de shapefile" title="Upload de shapefile">
+                      <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </button>
+                    <button class="talhoes__icon-btn talhoes__icon-btn--primary" type="button" id="talhoesAddBtn" aria-label="Adicionar talhão">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="talhoes__empty" id="talhoesEmpty" aria-live="polite">
+                  <div class="talhoes__empty-icon">
+                    <i class="fa-regular fa-folder-open"></i>
+                  </div>
+                  <span>Não há dados</span>
+                </div>
+                <div id="talhoesListItems"></div>
+              </aside>
+
+              <!-- Mapa com drawer sobreposto -->
+              <div class="talhoes__map card">
+                <div class="talhoes__map-canvas" id="talhoesMap" aria-label="Mapa de talhões"></div>
+
+                <!-- Botões flutuantes no canto direito -->
+                <div class="talhoes__map-tools">
+                  <button class="talhoes__map-tool" type="button" id="talhaoStartDrawBtn" aria-label="Desenhar talhão" title="Desenhar talhão" data-talhoes-tool="draw">
+                    <img src="assets/img/svg/waypoints.svg" alt="Desenhar" width="20" height="20">
+                  </button>
+                  <button class="talhoes__map-tool" type="button" id="talhaoClearDrawBtn" aria-label="Limpar desenho" title="Limpar desenho" data-talhoes-tool="delete">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                </div>
+
+                <!-- Drawer desliza a partir do topo do mapa -->
+                <aside class="talhoes__drawer" id="talhoesDrawer" aria-hidden="true">
+                  <div class="talhoes__drawer-inner">
+                    <div class="talhoes__drawer-fields">
+
+                      <div class="talhoes__field">
+                        <span><em>*</em> Nome</span>
+                        <input class="talhoes__input" id="talhao_name" type="text" placeholder="Ex: Talhão 01" autocomplete="off" />
+                      </div>
+
+                      <div class="talhoes__field">
+                        <span><em>*</em> Tipo de solo</span>
+                        <div class="talhoes__select">
+                          <select class="talhoes__input" id="talhao_soil">
+                            <option value="">Selecione</option>
+                            <option value="Areia">Areia</option>
+                            <option value="Argiloso">Argiloso</option>
+                            <option value="Franco">Franco</option>
+                          </select>
+                          <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                      </div>
+
+                      <div class="talhoes__field">
+                        <span><em>*</em> Plantio</span>
+                        <div class="talhoes__select">
+                          <select class="talhoes__input" id="talhao_crop">
+                            <option value="">Selecione</option>
+                            <option value="Soja">Soja</option>
+                            <option value="Milho">Milho</option>
+                            <option value="Algodão">Algodão</option>
+                          </select>
+                          <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                    <div class="talhoes__drawer-actions">
+                      <button type="button" class="talhoes__drawer-btn talhoes__drawer-btn--ghost" id="talhoesCancelBtn">
+                        <i class="fa-solid fa-xmark"></i> Cancelar
+                      </button>
+                      <button type="button" class="talhoes__drawer-btn talhoes__drawer-btn--primary" id="talhoesSaveBtn">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar
+                      </button>
+                    </div>
+                  </div>
+                </aside>
+
+              </div>
+
+            </div>
+
+            <section class="talhoes__details card" aria-label="Detalhes do talhão">
+              <div class="talhoes__details-empty" aria-live="polite">
+                <div class="talhoes__details-icon">
+                  <i class="fa-regular fa-file-lines"></i>
+                </div>
+                <span>Não há dados</span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="farmEditSignalStudy">
+          <div class="edit-panel__section-head">
+            <h2>Estudo de Sinal</h2>
+            <span></span>
+            <p class="pivo-edit__loc-desc">Upload do arquivo de estudo de sinal (KML/KMZ) para sobreposição no mapa técnico de conectividade.</p>
+          </div>
+
+          <div class="edit-panel__section-body">
+            <div class="edit-panel__section-body--stack">
+              <div class="edit-panel__field" style="margin-top: 20px;">
+                <div class="edit-panel__field-label">Arquivo do Estudo (KML ou KMZ)</div>
+                <label class="cadastros-upload-zone" id="farmEditSignalUploadZone" for="farmEditSignalFile" style="display: block; cursor: pointer;">
+                  <input type="file" id="farmEditSignalFile" accept=".kml,.kmz" style="display: none;">
+                  <div class="cadastros-upload-zone__content">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div class="cadastros-upload-zone__title">Clique ou arraste o arquivo aqui</div>
+                    <div class="cadastros-upload-zone__desc">Suporta formatos .KML ou .KMZ (Máx. 10MB)</div>
+                  </div>
+                </label>
+                
+                <div class="cadastros-upload-info is-hidden" id="farmEditSignalUploadInfo" style="margin-top: 15px;">
+                   <i class="fa-solid fa-file-code"></i>
+                   <span id="farmEditSignalFileName" style="flex: 1; font-weight: 500;">arquivo_selecionado.kml</span>
+                   <button type="button" class="btn-icon" title="Remover"><i class="fa-solid fa-trash-can" style="color: #ef4444;"></i></button>
+                </div>
+
+                <!-- Monitor de Status em tempo real -->
+                <div id="farmEditSignalStatus" style="margin-top: 10px; font-size: 11px; color: #64748b; font-family: monospace; min-height: 15px;"></div>
+              </div>
+
+              <div style="margin-top: 24px;">
+                <div class="cadastros-alert--info">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span>Este arquivo será utilizado para exibir as zonas de cobertura de rádio na aba de <strong>Conectividade</strong>.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>

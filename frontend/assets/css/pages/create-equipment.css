@@ -1,0 +1,5810 @@
+/* create-equipment.css — modal + wizard (Light) */
+
+/* ── Irripump / Medidor multi-select de pivôs ── */
+.ip-multiselect { position: relative; }
+
+.ip-multiselect__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ip-multiselect__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ip-multiselect__label--placeholder { color: #9ca3af; }
+
+.ip-multiselect__trigger .fa-chevron-down {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.ip-multiselect.is-open .ip-multiselect__trigger .fa-chevron-down { transform: rotate(180deg); }
+
+.ip-multiselect__dropdown {
+  position: fixed;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.ip-multiselect__search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ip-multiselect__search-icon { color: #9ca3af; font-size: 13px; }
+
+.ip-multiselect__search {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 13px;
+  background: transparent;
+  color: #111827;
+}
+
+.ip-multiselect__list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.ip-multiselect__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #111827;
+  text-align: left;
+  transition: background 0.15s;
+}
+.ip-multiselect__option:hover { background: #f3f4f6; }
+.ip-multiselect__option.is-selected { background: #f0fdf4; color: #15803d; }
+
+.ip-multiselect__check {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: transparent;
+  transition: all 0.15s;
+}
+.ip-multiselect__option.is-selected .ip-multiselect__check {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+.ip-multiselect__empty {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+:root {
+  --ce-green: #16a34a;
+  --ce-green-strong: #22c55e;
+  --ce-green-ink: #0f7a37;
+  --ce-ring: 0 0 0 4px rgba(22, 163, 74, .16);
+}
+
+/* =========================================================
+  MODAL (wrapper)
+   ========================================================= */
+.create-equip {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  z-index: 1200;
+  transition: all 0.2s ease;
+}
+
+.create-equip.is-open {
+  display: flex;
+}
+
+.create-equip__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 24, 39, 0.52);
+}
+
+.create-equip__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(800px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
+  margin: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e6ebf0;
+  box-shadow: 0 24px 48px rgba(6, 24, 39, 0.22);
+  padding: 22px 26px 20px;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-equip__dialog.create-equip__dialog--large {
+  width: 90vw;
+  max-width: 800px;
+  padding: 24px;
+}
+
+/* Otimização para telas com pouca altura (Notebooks 13"/14") */
+@media (max-height: 800px) {
+  .create-equip {
+    padding: 10px;
+  }
+
+  .create-equip__dialog {
+    max-height: calc(100vh - 20px);
+    padding: 16px 20px 14px;
+  }
+}
+
+/* =========================================================
+  HEADER
+   ========================================================= */
+.create-equip__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.create-equip__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.create-equip__close {
+  border: 0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.create-equip__close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.create-equip__close:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   STEPS (corrigido p/ 6 passos)
+   ========================================================= */
+.create-equip__steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  row-gap: 10px;
+  margin: 8px 0 18px;
+  padding-right: 0;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+@media (max-height: 800px) {
+  .create-equip__steps {
+    margin: 4px 0 12px;
+    gap: 8px;
+  }
+
+  .create-equip__header {
+    margin-bottom: 4px;
+  }
+}
+
+.create-equip__steps--single {
+  gap: 0;
+  margin: 6px 0 16px;
+  padding-right: 0;
+  flex-wrap: nowrap;
+}
+
+.create-equip__step {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* era 10px */
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 13px;
+  /* era 14px */
+  padding-right: 28px;
+  /* era 52px */
+  white-space: nowrap;
+}
+
+.create-equip__step::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 18px;
+  /* era 44px */
+  height: 1px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+}
+
+.create-equip__step:last-child {
+  padding-right: 0;
+}
+
+.create-equip__step:last-child::after {
+  display: none;
+}
+
+.create-equip__step--single {
+  padding-right: 0;
+}
+
+.create-equip__step--single::after {
+  display: none;
+}
+
+.create-equip__step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.create-equip__step--active {
+  color: #0f172a;
+}
+
+.create-equip__step--active .create-equip__step-num {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.create-equip__step--single .create-equip__step-num {
+  display: none;
+}
+
+.create-equip__step--single .create-equip__step-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Mobile: quando quebrar linha, some com os conectores pra não ficar "linha perdida" */
+@media (max-width: 860px) {
+  .create-equip__step {
+    padding-right: 0;
+  }
+
+  .create-equip__step::after {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   GRID + CARDS (Step 1)
+   ========================================================= */
+.create-equip__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 12px;
+  margin-top: 4px;
+  min-height: 480px;
+}
+
+@media (max-width: 960px) {
+  .create-equip__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-height: 800px) {
+  .create-equip__grid {
+    gap: 8px;
+  }
+}
+
+.create-equip__card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  align-items: center;
+  gap: 2px;
+  min-height: 120px;
+  text-align: left;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+@media (max-height: 800px) {
+  .create-equip__card {
+    min-height: 80px;
+    padding: 4px 10px;
+    grid-template-columns: 60px 1fr;
+  }
+}
+
+.create-equip__card:hover {
+  border-color: #16a34a;
+  background: #f9fefb;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.12);
+}
+
+.create-equip__card.is-selected {
+  border-color: #16a34a;
+  background: #f6fff8;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.18);
+}
+
+/* Cantinho verde no topo-direito do card selecionado */
+.create-equip__card.is-selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top: 22px solid #16a34a;
+  border-left: 22px solid transparent;
+  pointer-events: none;
+}
+
+.create-equip__card:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+.create-equip__img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: transparent;
+  margin: 0;
+  justify-self: start;
+}
+
+@media (max-height: 800px) {
+  .create-equip__img {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.create-equip__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.create-equip__card-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #0f172a;
+  margin: 0;
+}
+
+.create-equip__card-desc {
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+@media (max-height: 800px) {
+  .create-equip__card-title {
+    font-size: 14px;
+  }
+
+  .create-equip__card-desc {
+    font-size: 11.5px;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* =========================================================
+   FOOTER (base)
+   ========================================================= */
+.create-equip__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 48px;
+}
+
+.create-equip__footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.create-equip__btn--draft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+  border-color: #d1d5db;
+  font-size: 13px;
+  padding: 7px 14px;
+}
+.create-equip__btn--draft:hover { background: #f3f4f6; color: #374151; }
+
+/* Overlay de rascunho */
+.draft-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: background 0.25s, backdrop-filter 0.25s;
+  pointer-events: none;
+}
+.draft-overlay.is-visible {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: all;
+}
+
+.draft-overlay__card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.draft-overlay.is-visible .draft-overlay__card {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.draft-overlay__icon {
+  width: 52px;
+  height: 52px;
+  background: #fffbeb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 22px;
+  color: #d97706;
+}
+
+.draft-overlay__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.draft-overlay__sub {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.draft-overlay__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.draft-overlay__btn {
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+.draft-overlay__btn--resume { background: #16a34a; color: #fff; }
+.draft-overlay__btn--resume:hover { background: #15803d; }
+.draft-overlay__btn--discard { background: #f3f4f6; color: #6b7280; }
+.draft-overlay__btn--discard:hover { background: #e5e7eb; color: #374151; }
+
+/* Toast de confirmação */
+.draft-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: #1f1f1f;
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 99999;
+}
+.draft-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-height: 800px) {
+  .create-equip__footer {
+    margin-top: 14px;
+  }
+}
+
+.create-equip__btn {
+  border-color: var(--border-300);
+  padding: 8px 18px;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--ink-800);
+}
+
+.create-equip__btn:hover {
+  background: #f9fafb;
+}
+
+.create-equip__btn--ghost {
+  background: #ffffff;
+}
+
+.create-equip__btn--primary {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: #ffffff;
+}
+
+.create-equip__btn--primary:hover {
+  background: rgba(22, 163, 74, 0.08);
+}
+
+/* trava scroll no body quando modal abre */
+body.is-modal-open {
+  overflow: hidden;
+}
+
+/* =========================================================
+   STEP DINÂMICO / FORMS (Light)
+   ========================================================= */
+.create-equip__dynamic {
+  margin-top: 24px;
+}
+
+.create-equip__placeholder {
+  padding: 14px;
+  box-shadow: none;
+}
+
+.create-equip__placeholder-muted {
+  color: var(--muted-500);
+}
+
+/* (mantive seus estilos, só normalizei espaçamento) */
+.equip-wizard__head {
+  margin: 6px 0 14px;
+}
+
+.equip-wizard__title {
+  font-weight: 800;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.equip-wizard__subtitle {
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.equip-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.equip-form__row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+@media (max-width: 720px) {
+  .equip-form__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.equip-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.equip-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #111827;
+}
+
+.equip-check__input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+}
+
+.create-farm .create-equip__step-label,
+.create-farm .create-equip__step-num,
+.create-farm .create-equip__step--single .create-equip__step-label,
+.create-farm .equip-wizard__title,
+.create-farm .equip-label,
+.create-farm .create-equip__btn {
+  font-weight: 400;
+}
+
+.equip-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.equip-required {
+  color: #ef4444;
+  margin-right: 6px;
+}
+
+.equip-input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.equip-input:focus {
+  border-color: #16a34a;
+}
+
+.equip-field__hint {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.equip-field__hint code {
+  background: #f3f4f6;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.equip-btn {
+  border-color: var(--border-300);
+  padding: 10px 14px;
+  font-weight: 800;
+  background: var(--surface);
+}
+
+.equip-btn--primary {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.equip-btn--primary:hover {
+  background: rgba(22, 163, 74, .08);
+}
+
+.equip-map-placeholder {
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  background: #fafafa;
+}
+
+.equip-map-placeholder:hover {
+  background: #f7f7f7;
+}
+
+.equip-map-placeholder__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+.equip-map-placeholder__muted {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.equip-hint {
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.equip-alert {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.equip-alert--ok {
+  border-color: rgba(22, 163, 74, .35);
+  background: rgba(22, 163, 74, .06);
+}
+
+.equip-alert--warn {
+  border-color: rgba(245, 158, 11, .35);
+  background: rgba(245, 158, 11, .08);
+}
+
+/* =========================================================
+   FOOTER (split layout: esquerda | direita)
+   ========================================================= */
+.create-equip__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.create-equip__footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Footer split: esquerda (Anterior) | direita (Cancelar + Próximo) */
+#createEquipFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#createEquipFooter .create-equip__footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Step 1: sem Anterior => grupo da direita encosta na direita */
+#createEquipFooter.no-prev {
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   STEP 4 — FUNÇÕES (estilo do print)
+   ========================================================= */
+.mod-panel__head {
+  gap: 12px;
+}
+
+.mod-panel__module {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mod-panel__ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(22, 163, 74, .14);
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.mod-panel__module-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mod-panel__meta {
+  margin-left: 0;
+}
+
+.mod-panel__badge {
+  font-weight: 600;
+  color: #fff;
+  background: #64748b;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: none;
+  letter-spacing: 0;
+  margin-left: 6px;
+}
+
+.mod-panel__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(15, 23, 32, .08);
+  font-size: 12px;
+  color: #64748b;
+}
+
+.mod-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+}
+
+.mod-stat__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.mod-stat--warn .mod-stat__dot {
+  background: #f59e0b;
+}
+
+.func-list {
+  padding: 8px 10px 10px;
+}
+
+.func-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  background: #fff;
+}
+
+.func-row__head {
+  padding: 0;
+  background: transparent;
+}
+
+.func-row__body {
+  padding: 0;
+  border-top: none;
+}
+
+.func-row__check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.func-row__check input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.func-row__check input:checked {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.func-row__check input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, .18);
+}
+
+.func-row__check input:checked+.func-row__checkmark::after {
+  content: "";
+  width: 6px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-left: 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+
+.func-row__checkmark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.func-row__ico {
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.func-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.func-row__title {
+  font-weight: 400;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.func-row__sub {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.func-row__badge {
+  font-weight: 600;
+  color: #fff;
+  background: #d97706;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: none;
+  letter-spacing: 0;
+  margin-left: auto;
+}
+
+.func-row__select {
+  min-width: 160px;
+  padding: 6px 8px;
+}
+
+.func-row.is-active {
+  border-color: rgba(15, 23, 32, .10);
+  background: transparent;
+}
+
+.func-row.is-active .func-row__ico {
+  background: rgba(22, 163, 74, .16);
+  color: #16a34a;
+}
+
+.func-row.is-active .func-row__select {
+  border-color: rgba(15, 23, 32, .14);
+}
+
+.func-row.is-pending {
+  border-color: rgba(15, 23, 32, .10);
+  background: transparent;
+}
+
+.func-row.is-pending .func-row__ico {
+  background: rgba(22, 163, 74, .16);
+  color: #16a34a;
+}
+
+.func-row.is-pending .func-row__select {
+  border-color: rgba(15, 23, 32, .14);
+  box-shadow: none;
+}
+
+
+.func-row.is-inactive {
+  background: #ffffff;
+}
+
+.func-row.is-inactive .func-row__select {
+  background: #ffffff;
+  color: #94a3b8;
+  border-color: rgba(15, 23, 32, .08);
+}
+
+/* Modal “Adicionar Módulo” — ajustes finos */
+.ip-modal__body {
+  padding: 14px 16px 18px;
+}
+
+.ip-modal__body .equip-label {
+  display: block;
+  margin-bottom: 6px;
+  transform: translateY(-3px);
+  font-weight: 600;
+}
+
+.ip-modal__title {
+  font-weight: 600;
+}
+
+/* =========================================================
+   MINI MAP (Step 2 - Localização)
+   ========================================================= */
+/* Step de Localização do Cosmofield: campos em linha e mapa mais baixo,
+   pra tela inteira caber sem rolagem. */
+.equip-form__row--triple > .equip-field,
+.equip-form__row--quad > .equip-field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Mapa entre a coordenada e os campos derivados dela (endereço, país, fuso,
+   altitude): altura contida pra o step inteiro caber sem rolagem. */
+.equip-mini-map--compact {
+  height: 260px;
+  max-height: 30vh;
+  margin: 12px 0;
+}
+
+@media (max-height: 900px) {
+  .equip-mini-map--compact {
+    height: 200px;
+    max-height: 24vh;
+  }
+}
+
+@media (max-height: 760px) {
+  .equip-mini-map--compact {
+    height: 160px;
+    max-height: 20vh;
+  }
+}
+
+.equip-mini-map {
+  height: 520px;
+  max-height: 45vh;
+  /* Se adapta verticalmente */
+  border-radius: 0;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  background: #f8fafc;
+  margin-top: 16px;
+}
+
+@media (max-height: 800px) {
+  .equip-mini-map,
+  .rp-loc__map,
+  .sc-loc__map,
+  .st-loc__map {
+    height: 320px;
+  }
+
+  .equip-form {
+    gap: 10px;
+  }
+}
+
+/* Nome do pivô no centro do contorno, no mini-mapa de localização.
+   Os pivôs aqui são só demonstrativos: nenhuma interação, nenhum hover,
+   nenhum cursor — apenas referência visual pra localizar a sonda.
+   O centramento vem do iconAnchor do Leaflet, não de transform. */
+.cf-pivot-label {
+  background: transparent;
+  border: none;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cf-pivot-label span {
+  white-space: nowrap;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  user-select: none;
+}
+
+.equip-mini-map__hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* =========================================================
+   SMARTCONNECT — STEP 2 (LOCALIZAÇÃO)
+   ========================================================= */
+.sc-loc--vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sc-loc__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sc-loc__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sc-loc__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #111827;
+}
+
+.sc-loc__label .equip-required {
+  margin: 0;
+}
+
+.sc-loc__sector-group .sc-loc__field > .sc-loc__label {
+  white-space: nowrap;
+  font-size: 0;
+  gap: 4px;
+}
+
+.sc-loc__sector-group .sc-loc__field > .sc-loc__label .equip-required {
+  font-size: 13px;
+}
+
+.sc-loc__sector-group .sc-loc__field > .sc-loc__label::after {
+  content: "Qual \00E9 o \00E2ngulo m\00E1ximo de trabalho deste piv\00F4?";
+  font-size: 13px;
+  font-weight: 400;
+  color: #111827;
+}
+
+.sc-loc__sector-group #scMaxAngle + .edit-panel__input-suffix {
+  font-size: 0;
+}
+
+.sc-loc__sector-group #scMaxAngle + .edit-panel__input-suffix::after {
+  content: "\00B0";
+  font-size: 12px;
+}
+
+.sc-loc__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.sc-loc__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sc-loc__input-wrapper .equip-input {
+  padding: 0 10px;
+  height: 30px;
+  font-size: 13px;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.sc-loc__input-wrapper .equip-input:focus,
+.sc-loc__input-wrapper .equip-input:focus-visible {
+  border-color: rgba(22, 163, 74, .72);
+  box-shadow: none;
+}
+
+.sc-loc__btn {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 400;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sc-loc__btn.is-active {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
+}
+
+.sc-loc__btn--ref.is-active {
+  border-color: #ef4444;
+  background: #fef2f2;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.sc-loc__btn i {
+  font-size: 14px;
+}
+
+.sc-loc__btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.sc-loc__sector-group {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.sc-loc__field--small .equip-input {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.sc-angle-canvas {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  display: block;
+}
+
+.sc-loc__map-wrapper {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  margin-top: 16px;
+}
+
+.sc-loc__map {
+  width: 100%;
+  height: 520px;
+  max-height: 45vh;
+  background: #f1f5f9;
+}
+
+.pivot-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #16a34a;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.pivot-pin i {
+  font-size: 28px;
+}
+
+.pivot-pin--ref {
+  color: #ef4444;
+}
+
+.sc-loc__btn--center i {
+  color: #16a34a;
+}
+
+.sc-loc__btn--ref i {
+  color: #ef4444;
+}
+
+/* =========================================================
+   SMARTTOUCH — STEP 2 (LOCALIZAÇÃO)
+   ========================================================= */
+.st-loc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  --st-loc-btn-width: 150px;
+  --st-loc-gap: 8px;
+}
+
+.st-loc__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.st-loc__field--radius {
+  max-width: calc(100% - var(--st-loc-btn-width) - var(--st-loc-gap));
+}
+
+.st-loc__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--st-loc-gap);
+  align-items: center;
+}
+
+.st-loc__input {
+  position: relative;
+}
+
+.st-loc__input i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.st-loc__input .equip-input {
+  padding-left: 36px;
+}
+
+.st-loc__btn {
+  min-width: 170px;
+}
+
+.st-loc__btn i {
+  margin-right: 6px;
+  color: #16a34a;
+}
+
+.st-loc__map {
+  height: 520px;
+  max-height: 45vh;
+}
+
+.st-loc .equip-label {
+  font-weight: 400;
+}
+
+.st-loc .equip-input,
+.st-loc select.equip-input {
+  border-radius: var(--ce-control-radius);
+}
+
+.st-input-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: var(--ce-control-radius);
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.st-input-group:focus-within {
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.st-input-group .st-input {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.st-input-group .st-input:focus,
+.st-input-group .st-input:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.st-input-suffix {
+  border-left: 1px solid rgba(15, 23, 42, .12);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  min-width: 40px;
+  justify-content: center;
+}
+
+.st-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  color: #16a34a;
+  text-shadow: 0 4px 8px rgba(15, 23, 42, .22);
+  transform: translateY(-4px);
+}
+
+.st-pin i {
+  font-size: 24px;
+}
+
+.st-config .equip-field.is-error .equip-input {
+  border-color: #ef4444;
+}
+
+.st-error {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+.st-error.is-hidden {
+  display: none;
+}
+
+/* =========================================================
+   REPETIDORA — STEP 2 (LOCALIZAÇÃO)
+   ========================================================= */
+.rp-loc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rp-loc__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rp-loc__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.rp-loc__input {
+  position: relative;
+}
+
+.rp-loc__input i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.rp-loc__input .equip-input {
+  padding-left: 36px;
+}
+
+.rp-loc__btn {
+  min-width: 170px;
+}
+
+/* Variante compacta: botão só de ícone, usada quando o par input+botão
+   divide uma linha com outros campos (ex.: Altitude no Cosmofield). O
+   min-width de 170px do rp-loc__btn é dimensionado para o botão largo
+   "Obter Localização" e ali espremeria o input. */
+.rp-loc__row--compact .rp-loc__btn {
+  min-width: 0;
+  width: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rp-loc__row--compact .rp-loc__btn i {
+  margin-right: 0;
+}
+
+/* Sem ícone dentro do campo, o recuo à esquerda não se justifica. */
+.rp-loc__row--compact .rp-loc__input .equip-input {
+  padding-left: 12px;
+}
+
+.rp-loc__btn i {
+  margin-right: 6px;
+  color: #16a34a;
+}
+
+.rp-loc__map {
+  height: 520px;
+  max-height: 45vh;
+}
+
+.rp-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  color: #16a34a;
+  text-shadow: 0 4px 8px rgba(15, 23, 42, .22);
+  transform: translateY(-4px);
+}
+
+.rp-pin i {
+  font-size: 24px;
+}
+
+/* Pin verde padrão (mesmo usado nas etapas de localização dos equipamentos)
+   pro marcador da Central no step de Localização do criar fazenda. */
+.map-farm-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  color: #16a34a;
+  text-shadow: 0 4px 8px rgba(15, 23, 42, .22);
+  transform: translateY(-4px);
+}
+
+.map-farm-pin i {
+  font-size: 24px;
+}
+
+.rp-config .equip-field.is-error .equip-input,
+.rp-config .equip-field.is-error select {
+  border-color: #ef4444;
+}
+
+.rp-error {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+.rp-error.is-hidden {
+  display: none;
+}
+
+.rp-input-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.rp-input-group:focus-within {
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.rp-input-group .rp-input {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.rp-input-group .rp-input:focus,
+.rp-input-group .rp-input:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.rp-input-suffix {
+  border-left: 1px solid rgba(15, 23, 42, .12);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  min-width: 40px;
+  justify-content: center;
+}
+
+/* =========================================================
+   ESTAÇÃO METEOROLÓGICA — CONFIGURAÇÃO
+   ========================================================= */
+.ws-config {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ws-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ws-grid--top {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+
+
+.ws-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ws-field.is-error .equip-input,
+.ws-field.is-error select {
+  border-color: #ef4444;
+}
+
+.ws-error {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+.ws-error.is-hidden {
+  display: none;
+}
+
+/* Campo "Segredo de API": botão mostrar/ocultar dentro do input. */
+.ws-secret {
+  position: relative;
+}
+
+.ws-secret .equip-input {
+  width: 100%;
+  padding-right: 38px;
+}
+
+.ws-secret__toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.ws-secret__toggle:hover {
+  color: #64748b;
+}
+
+/* =========================================================
+   CUSTOM SELECT — CREATE EQUIPAMENTO
+   ========================================================= */
+.equip-select {
+  position: relative;
+  width: 100%;
+}
+
+.equip-select__native {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.equip-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  background: #ffffff;
+  padding: 10px 12px;
+  min-height: 40px;
+  color: #0f172a;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.equip-select__trigger:hover {
+  border-color: rgba(15, 23, 42, .18);
+}
+
+.equip-select__trigger:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.equip-select__value {
+  flex: 1;
+  text-align: left;
+  font-size: 13px;
+}
+
+.equip-select__value.is-placeholder {
+  color: #94a3b8;
+}
+
+.equip-select__trigger i {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.equip-select.is-open .equip-select__trigger {
+  border-color: rgba(22, 163, 74, .55);
+}
+
+.equip-select__list {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, .14);
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+  padding: 6px 0;
+  max-height: 240px;
+  overflow: auto;
+  display: none;
+  z-index: 2001;
+  /* Mesmo tratamento do .edit-panel__select-menu (tela de edição): usa o
+     scrollbar nativo do navegador em vez do ::-webkit-scrollbar custom —
+     ele só aparece quando o conteúdo realmente excede max-height, então
+     listas curtas (2-3 itens) continuam sem barra nenhuma. O reset global
+     (base.css, "* { scrollbar-width: none }") esconde scrollbar em todo o
+     site por padrão; sobrescrevemos só aqui para listas longas (Fabricante)
+     não cortarem itens sem dar nenhuma pista visual de que dá pra rolar. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, .4) transparent;
+}
+
+.equip-select.is-open .equip-select__list {
+  display: block;
+}
+
+.equip-select__option {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.equip-select__option:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.equip-select__option.is-selected {
+  background: #e2ffec;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.equip-select__option[disabled] {
+  color: #94a3b8;
+  cursor: not-allowed;
+  background: #ffffff;
+}
+
+.equip-select.is-disabled .equip-select__trigger {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: rgba(15, 23, 42, .10);
+}
+
+.equip-select.is-disabled .equip-select__trigger i {
+  color: #94a3b8;
+}
+
+@media (max-width: 860px) {
+  .ws-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .rp-loc__row {
+    grid-template-columns: 1fr;
+  }
+
+  .rp-loc__btn {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   CARRETEL (RAINSTAR) — CONFIGURAÇÃO
+   ========================================================= */
+.rs-config {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rs-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.rs-section__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.rs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 14px;
+}
+
+.rs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rs-field.is-error .equip-input,
+.rs-field.is-error select {
+  border-color: #ef4444;
+}
+
+.rs-error {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+#rsCreateZoneBtn:disabled,
+#rsCreateZoneBtn.is-disabled {
+  border-color: #d1d5db !important;
+  background: #f3f4f6 !important;
+  color: #b6bcc6 !important;
+  cursor: not-allowed;
+}
+
+#rsCreateZoneBtn:disabled i,
+#rsCreateZoneBtn.is-disabled i {
+  color: #c4c9d1 !important;
+}
+
+#rsCreateZoneBtn:not(:disabled):not(.is-disabled):hover {
+  border-color: #16a34a !important;
+  background: #fff !important;
+  color: #15803d !important;
+}
+
+#rsCreateZoneBtn:not(:disabled):not(.is-disabled):hover i {
+  color: #16a34a !important;
+}
+
+.rs-input-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.rs-input-group:focus-within {
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.rs-input-group .rs-input {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.rs-input-group .rs-input:focus,
+.rs-input-group .rs-input:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.rs-input-group--locked {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, .12);
+}
+
+.rs-input-group--locked:focus-within {
+  border-color: rgba(15, 23, 42, .12);
+  box-shadow: none;
+}
+
+.rs-input-group--locked .rs-input {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.rs-input-group--locked .rs-input:disabled {
+  -webkit-text-fill-color: #94a3b8;
+  opacity: 1;
+}
+
+.rs-input-suffix {
+  border-left: 1px solid rgba(15, 23, 42, .12);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  min-width: 46px;
+  justify-content: center;
+}
+
+.rs-input-group--locked .rs-input-suffix {
+  background: #f8fafc;
+  color: #64748b;
+  border-left-color: rgba(15, 23, 42, .12);
+}
+
+@media (max-width: 860px) {
+  .rs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .st-loc__row {
+    grid-template-columns: 1fr;
+  }
+
+  .st-loc__btn {
+    width: 100%;
+  }
+
+  .st-loc__field--radius {
+    max-width: 100%;
+  }
+}
+
+/* =========================================================
+   SMARTCONNECT — STEP 3 (CONFIGURAÇÃO)
+   ========================================================= */
+.sc-config {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sc-config .equip-label {
+  font-weight: 400;
+}
+
+.sc-config .equip-input,
+.sc-config select.equip-input {
+  border-radius: var(--ce-control-radius);
+}
+
+.sc-config__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 14px;
+}
+
+.sc-config__grid--power {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sc-field.is-hidden {
+  display: none;
+}
+
+.sc-field.is-error .equip-input,
+.sc-field.is-error select {
+  border-color: #ef4444;
+}
+
+.sc-error {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+.sc-error.is-hidden {
+  display: none;
+}
+
+.sc-field--check {
+  align-items: flex-start;
+}
+
+.sc-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.sc-check__input {
+  width: 14px;
+  height: 14px;
+  accent-color: #16a34a;
+}
+
+.sc-config__block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sc-radio-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.sc-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.sc-radio__input {
+  width: 14px;
+  height: 14px;
+  accent-color: #16a34a;
+}
+
+.sc-input-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: var(--ce-control-radius);
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.sc-input-group:focus-within {
+  border-color: rgba(22, 163, 74, .72);
+  box-shadow: none;
+}
+
+.sc-input-group .sc-input {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sc-input-group .sc-input:focus,
+.sc-input-group .sc-input:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.sc-input-group .sc-input:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.sc-input-suffix {
+  border-left: 1px solid rgba(15, 23, 42, .12);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  min-width: 46px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .sc-config__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sc-config__grid--power {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .sc-loc__row {
+    grid-template-columns: 1fr;
+  }
+
+  .sc-loc__btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 860px) {
+
+  .sc-loc__map,
+  .st-loc__map,
+  .rp-loc__map,
+  .equip-mini-map {
+    height: 320px;
+  }
+}
+
+/* =========================================================
+   IRRIPUMP — STEP 3: MÓDULOS
+   ========================================================= */
+.ip-page .equip-label,
+.ip-page .equip-btn,
+.ip-page .equip-hint {
+  font-weight: 400;
+}
+
+.ip-mod-form {
+  margin-bottom: 12px;
+}
+
+.ip-mod-form .equip-label,
+.ip-mod-form .equip-btn {
+  font-weight: 400;
+}
+
+.ip-step__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ip-step__row .equip-btn {
+  min-height: 28px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+@media (max-width: 720px) {
+  .ip-step__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.ip-step__title {
+  font-size: 18px;
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.ip-step__sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Área onde ficam os módulos */
+.ip-mod-zone {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px;
+  min-height: 200px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* Card do módulo */
+.ip-mod-card {
+  width: 260px;
+  padding: 12px;
+  position: relative;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, .06);
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ip-mod-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.ip-mod-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.ip-mod-title {
+  font-weight: 400;
+  font-size: 13.5px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ip-mod-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, .16);
+  flex: 0 0 auto;
+}
+
+.ip-mod-status.is-offline {
+  background: #f87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, .16);
+}
+
+.ip-mod-desc {
+  font-size: 12.5px;
+  color: #334155;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.ip-mod-meta {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.ip-mod-del {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
+.ip-mod-del:hover {
+  color: #b91c1c;
+}
+
+.ip-mod-badge {
+  font-weight: 800;
+  color: #16a34a;
+  background: rgba(22, 163, 74, .1);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: none;
+  letter-spacing: 0;
+}
+
+.ip-mod-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.ip-mod-serial {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Estado vazio */
+.ip-empty {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* =========================================================
+   MODAL — ADICIONAR MÓDULO MANUALMENTE
+   OBS: no teu CSS existiam duas versões (fixed e absolute).
+   A final (effective) é a de baixo: modal dentro do wizard/card.
+   ========================================================= */
+.ip-modal {
+  position: absolute;
+  /* (effective) */
+  inset: 0;
+  z-index: 2000;
+  display: none;
+}
+
+.ip-modal.is-open {
+  display: block;
+}
+
+.ip-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, .45);
+  border-radius: 12px;
+  /* acompanha o card */
+}
+
+.ip-modal__dialog {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 32px));
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+  overflow: hidden;
+}
+
+.ip-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ip-modal__title {
+  font-size: 15px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.ip-modal__x {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.ip-modal__x:hover {
+  color: #0f172a;
+}
+
+.ip-modal__body {
+  padding: 16px;
+}
+
+.ip-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* =========================================================
+   IRRIPUMP — STEP 4: FUNÇÕES
+   ========================================================= */
+.mod-panel {
+  border-radius: 14px;
+  overflow: visible;
+  border-color: rgba(15, 23, 32, .12);
+  box-shadow: none;
+}
+
+.mod-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(15, 23, 32, .08);
+}
+
+.mod-panel__title {
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.mod-panel__meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+/* Step 4: título "Configuração de Módulos e Funções" sem negrito */
+.equip-page:has(.mod-panel) .equip-page__title {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.equip-page:has(.mod-panel) .equip-page__sub {
+  font-size: 12px;
+}
+
+.mod-panel__danger {
+  border-color: rgba(239, 68, 68, .35);
+  color: #ef4444;
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.mod-panel__danger:hover {
+  background: rgba(239, 68, 68, .06);
+}
+
+.func-list {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.func-row {
+  border: 1px solid rgba(15, 23, 32, .10);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.func-row__head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  background: #f9fafb;
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.func-row__title {
+  font-weight: 400;
+}
+
+.func-row__body {
+  padding: 6px 8px;
+  border-top: 1px solid rgba(15, 23, 32, .08);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.func-row__body.is-disabled {
+  opacity: .55;
+}
+
+.func-row__label {
+  min-width: 200px;
+  font-size: 11.5px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.func-row__select {
+  flex: 1;
+  border: 1px solid rgba(15, 23, 32, .14);
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-height: 30px;
+  outline: none;
+  background: #fff;
+}
+
+.func-row__select:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, .12);
+}
+
+.func-row {
+  overflow: visible;
+}
+
+/* Custom select (Step 4) */
+.func-select {
+  position: relative;
+  min-width: 160px;
+}
+
+.func-select.is-open {
+  z-index: 60;
+}
+
+.func-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(15, 23, 32, .14);
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-height: 30px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.func-select__trigger:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, .12);
+}
+
+.func-select__chev {
+  color: #64748b;
+}
+
+.func-select__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 32, .14);
+  border-radius: 8px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+  padding: 6px 0;
+  display: none;
+  max-height: 220px;
+  overflow: auto;
+  z-index: 80;
+}
+
+.func-select.is-open .func-select__list {
+  display: block;
+}
+
+/* Últimos cards: abrir o select para cima para não ficar atrás do rodapé */
+.func-row:nth-last-child(-n+2) .func-select__list {
+  top: auto;
+  bottom: calc(100% + 4px);
+  margin-top: 0;
+}
+
+.func-select__option {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 0;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.func-select__option:hover {
+  background: #dcfce7;
+}
+
+.func-select__option.is-selected {
+  background: #ffffff;
+}
+
+.func-select.is-disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+.func-row__select option {
+  background: #ffffff;
+}
+
+.func-row__select option:hover {
+  background: #dcfce7;
+}
+
+.func-row__select option:checked {
+  background: #dcfce7;
+}
+
+/* =========================================================
+   STEP 5 — RESUMO (estruturado)
+   ========================================================= */
+.equip-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 2px 2px;
+}
+
+.equip-page__title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.equip-page__sub {
+  margin-top: -6px;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+/* Vincular equipamento: remove negrito */
+.equip-page--link,
+.equip-page--link * {
+  font-weight: 400;
+}
+
+.equip-summary {
+  margin-top: 2px;
+  --summary-strong: #0b0f19;
+  --summary-strong-weight: 400;
+}
+
+/* Step 6 (Resumo): remover negrito */
+.equip-summary,
+.equip-summary * {
+  font-weight: 400;
+}
+
+.summary-card {
+  border-radius: 14px;
+  padding: 14px 16px;
+  border-color: rgba(15, 23, 32, .08);
+  box-shadow: 0 8px 18px rgba(15, 23, 32, .06);
+  overflow: visible;
+}
+
+.summary-card__head {
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summary-card__sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.summary-grid2 {
+  display: grid;
+  grid-template-columns: 1.3fr .7fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 860px) {
+  .summary-grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-grid2--stack {
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+
+@media (max-width: 980px) {
+  .summary-grid2--stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  margin-top: 10px;
+}
+
+@media (max-width: 720px) {
+  .kv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kv {
+  border: 1px solid rgba(15, 23, 32, .08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.kv__k {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.kv__v {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--summary-strong);
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.summary-progress {
+  margin-top: 8px;
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  align-items: center;
+}
+
+.summary-progress__label {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.summary-progress__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+  position: relative;
+}
+
+.summary-progress__bar span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  border-radius: 999px;
+  transition: width .2s ease;
+}
+
+.summary-progress__meta {
+  font-size: 12px;
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+}
+
+.status-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(15, 23, 32, .08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.status-dot.is-ok {
+  background: #16a34a;
+}
+
+.status-dot.is-warn {
+  background: #f59e0b;
+}
+
+.status-label {
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+  font-size: 13px;
+}
+
+.status-val {
+  color: #6b7280;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.td-strong {
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+}
+
+.table-wrap {
+  margin-top: 10px;
+  border: 1px solid rgba(15, 23, 32, .08);
+  border-radius: 12px;
+  overflow: auto;
+  background: #fff;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tbl thead th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 900;
+  color: #0f172a;
+  background: #f8fafc;
+  border-bottom: 1px solid rgba(15, 23, 32, .08);
+  white-space: nowrap;
+}
+
+.tbl tbody td {
+  padding: 10px 12px;
+  border-top: 1px solid rgba(15, 23, 32, .06);
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.tbl tbody tr:first-child td {
+  border-top: none;
+}
+
+.tbl td {
+  vertical-align: top;
+}
+
+.tbl--modules th:nth-child(1) {
+  width: 42%;
+}
+
+.tbl--modules th:nth-child(2) {
+  width: 38%;
+}
+
+.tbl--modules th:nth-child(3) {
+  width: 20%;
+}
+
+.muted {
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.chip {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(22, 163, 74, .12);
+  color: #16a34a;
+  font-weight: 900;
+  font-size: 12px;
+  margin-right: 6px;
+  margin-top: 4px;
+}
+
+.params-list {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.params-list li {
+  margin: 2px 0;
+}
+
+.params-k {
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+}
+
+.params-v {
+  margin-left: 6px;
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.summary-funcs {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-func {
+  border: 1px solid rgba(15, 23, 32, .08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.summary-func.is-ok {
+  border-color: rgba(22, 163, 74, .35);
+  background: rgba(22, 163, 74, .06);
+}
+
+.summary-func.is-missing {
+  border-color: rgba(245, 158, 11, .45);
+  background: rgba(245, 158, 11, .10);
+}
+
+.summary-func__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.summary-func__title {
+  font-weight: var(--summary-strong-weight);
+  color: var(--summary-strong);
+  font-size: 13px;
+}
+
+.summary-func__badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 900;
+  background: #e5e7eb;
+  color: #475569;
+  border: none;
+  letter-spacing: 0;
+}
+
+.summary-func.is-ok .summary-func__badge {
+  background: rgba(22, 163, 74, .18);
+  color: #16a34a;
+}
+
+.summary-func.is-missing .summary-func__badge {
+  background: rgba(245, 158, 11, .22);
+  color: #b45309;
+}
+
+.summary-func__param {
+  margin-top: 6px;
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.summary-func__meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #b45309;
+  font-weight: 700;
+}
+
+/* =========================================================
+   WARNING BOX (Step 5)
+   ========================================================= */
+.equip-warn {
+  border: 1px solid rgba(245, 158, 11, .45);
+  background: rgba(245, 158, 11, .12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #92400e;
+}
+
+.equip-warn__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.equip-warn__chips {
+  margin-top: 8px;
+}
+
+.equip-warn__hint {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: .9;
+}
+
+.equip-warn i {
+  color: #f59e0b;
+}
+
+.warn-chip {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, .22);
+  color: #92400e;
+  font-weight: 900;
+  font-size: 12px;
+  margin-right: 6px;
+  margin-top: 6px;
+}
+
+/* =========================================================
+   ACTIONS (Step 5)
+   ========================================================= */
+.summary-actions {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .summary-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-btn {
+  border-color: var(--border-300);
+  padding: 10px 12px;
+  color: #1f2937;
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background .12s ease, border-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+
+.summary-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.summary-btn:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, .15);
+}
+
+.summary-btn--primary {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: rgba(22, 163, 74, .06);
+}
+
+.summary-btn--primary:hover {
+  background: rgba(22, 163, 74, .12);
+}
+
+/* Step 6 (Resumo): remover negrito (override final) */
+.equip-summary .equip-page__title,
+.equip-summary .equip-page__sub,
+.equip-summary .summary-card,
+.equip-summary .summary-card *,
+.equip-summary .summary-progress *,
+.equip-summary .summary-actions * {
+  font-weight: 400;
+}
+
+.equip-summary .summary-actions .fa-solid,
+.equip-summary .summary-actions i {
+  font-weight: 900;
+  font-family: "Font Awesome 6 Free";
+}
+
+/* =========================================================
+   MODERN OVERRIDES — CREATE EQUIPMENT MODAL
+   (cole este bloco no final do arquivo)
+   ========================================================= */
+
+/* 1) Modal + backdrop */
+.create-equip {
+  padding: 28px;
+}
+
+.create-equip__backdrop {
+  background: rgba(6, 16, 24, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.create-equip__dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(800px, calc(100vw - 80px));
+  /* Altura se adapta ao conteúdo de cada card (max-height só como teto de
+     segurança) — largura fica fixa/padrão pra todos os tipos. */
+  max-height: calc(100vh - 64px);
+  padding: 18px 22px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: #ffffff;
+  box-shadow:
+    0 24px 60px rgba(2, 8, 20, 0.22),
+    0 8px 24px rgba(15, 23, 42, 0.10);
+  overflow: hidden;
+  --ce-green: #16a34a;
+  --ce-green-strong: #22c55e;
+  --ce-green-ink: #0f7a37;
+  --ce-text: #0f172a;
+  --ce-muted: #64748b;
+  --ce-border: rgba(15, 23, 42, .10);
+  --ce-ring: 0 0 0 4px rgba(22, 163, 74, .16);
+}
+
+
+/* 2) Header */
+.create-equip__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -2px -22px 8px;
+  padding: 2px 22px 6px;
+  border-bottom: none;
+}
+
+.create-equip__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ce-text);
+  letter-spacing: .2px;
+}
+
+.create-equip__close {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.create-equip__close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, .08);
+}
+
+.create-equip__close:active {
+  transform: none;
+}
+
+.create-equip__close:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .45);
+}
+
+/* 3) Stepper */
+.create-equip__steps {
+  /* Mantém a barra de steps (e as bolinhas) acima do conteúdo do step,
+     que vem depois no DOM e pintava por cima onde havia sobreposição. */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  margin: 2px -22px 8px;
+  padding: 5px 22px 6px;
+  width: auto;
+  max-width: none;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  border-bottom: none;
+  --ce-step-line: 24px;
+}
+
+.create-equip__steps::-webkit-scrollbar {
+  display: none;
+}
+
+.create-equip__step {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ce-muted);
+  transition: color .18s ease;
+  flex: 1 1 0;
+  min-width: 80px;
+  text-align: center;
+}
+
+.create-equip__step::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  /* centro da bolinha (26px) */
+  left: calc(100% - (var(--ce-step-line) / 2));
+  width: var(--ce-step-line);
+  height: 2px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+}
+
+.create-equip__step:last-child {
+  padding-right: 0;
+}
+
+.create-equip__step:last-child::after {
+  display: none;
+}
+
+.create-equip__step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2f7;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid transparent;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .04);
+  transition: all .18s ease;
+  position: relative;
+}
+
+.create-equip__step-label {
+  color: inherit;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .1px;
+  text-align: center;
+  line-height: 1.25;
+  white-space: normal;
+  max-width: 100%;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ativo */
+.create-equip__step--active {
+  color: var(--ce-text);
+}
+
+.create-equip__step--active .create-equip__step-num {
+  background: var(--ce-green);
+  border-color: rgba(22, 163, 74, .85);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(22, 163, 74, .28);
+}
+
+/* Concluídos (CSS moderno com :has) */
+.create-equip__step:has(~ .create-equip__step--active) {
+  color: #0f5132;
+}
+
+.create-equip__step:has(~ .create-equip__step--active)::after {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.create-equip__step:has(~ .create-equip__step--active) .create-equip__step-num {
+  background: rgba(34, 197, 94, .16);
+  border-color: rgba(34, 197, 94, .40);
+  color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, .18);
+  position: relative;
+}
+
+.create-equip__step:has(~ .create-equip__step--active) .create-equip__step-num::before {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #16a34a;
+  font-size: 12px;
+  line-height: 1;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsivo: mantém 1 linha com scroll */
+@media (max-width: 860px) {
+  .create-equip__steps {
+    margin-left: -22px;
+    margin-right: -22px;
+    padding-left: 22px;
+    padding-right: 22px;
+    --ce-step-line: 14px;
+  }
+
+  .create-equip__step {
+    min-width: 110px;
+  }
+}
+
+/* 4) Campos e botões */
+.create-equip__dynamic {
+  margin-top: 24px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, .45) transparent;
+  /* Evita o "rasgado/picado" ao rolar: dica para o navegador otimizar a
+     rolagem (rasterizar/compor a área como um todo) em vez de repintar
+     borrado a cada quadro — bug de composição do Chrome quando o container
+     rolável fica recortado por um ancestral com border-radius + overflow:hidden.
+     Usa-se will-change:scroll-position (e NÃO transform) de propósito: transform
+     criaria um containing block e quebraria os dropdowns/tooltips position:fixed
+     posicionados via getBoundingClientRect (ver positionEquipSelectList). */
+  will-change: scroll-position;
+}
+
+/* Tooltips dentro do modal: o .create-equip__dynamic é rolável (overflow-y:auto),
+   então o balão posicionado ACIMA do ícone era cortado. Aqui ele vai PARA BAIXO
+   (e a setinha aponta pra cima), ficando dentro da área visível. */
+.create-equip__dynamic .edit-panel__tooltip-icon[data-tooltip]::before {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+
+.create-equip__dynamic .edit-panel__tooltip-icon[data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% + 3px);
+  border-top-color: transparent;
+  border-bottom-color: #1e293b;
+}
+
+/* Dentro do modal os tooltips usam um balão flutuante (.ce-tooltip,
+   position:fixed via JS), que não é cortado pela área rolável dos steps.
+   Por isso o balão CSS (::before/::after) é desativado aqui. */
+#createEquipmentModal .edit-panel__tooltip-icon[data-tooltip]::before,
+#createEquipmentModal .edit-panel__tooltip-icon[data-tooltip]::after {
+  display: none !important;
+}
+
+.ce-tooltip {
+  position: fixed;
+  z-index: 2147483600;
+  max-width: 260px;
+  background: #1f1f1f;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .28);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+
+.ce-tooltip.is-visible {
+  opacity: 1;
+}
+
+.ce-tooltip::after {
+  content: "";
+  position: absolute;
+  left: var(--ce-tip-arrow, 50%);
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+}
+
+.ce-tooltip[data-placement="top"]::after {
+  top: 100%;
+  border-top-color: #1e293b;
+}
+
+.ce-tooltip[data-placement="bottom"]::after {
+  bottom: 100%;
+  border-bottom-color: #1e293b;
+}
+
+/* =========================================================
+   STEP 7 (Bombeamento) — layout compacto p/ caber sem rolagem
+   ========================================================= */
+/* Nada de barra de rolagem interna neste step: o conteúdo é
+   enxugado para caber inteiro na área visível do modal. */
+.create-equip__dynamic:has(.sc-config--bomba) {
+  overflow: visible;
+}
+
+.sc-config--bomba {
+  gap: 14px;
+}
+
+.sc-config--bomba .sc-field {
+  gap: 3px;
+}
+
+.sc-config--bomba .sc-config__grid {
+  gap: 8px 14px;
+}
+
+/* Labels e inputs mais baixos para reduzir a altura total */
+.create-equip__dynamic .sc-config--bomba .sc-field > label,
+.create-equip__dynamic .sc-config--bomba .equip-label {
+  margin-bottom: 3px;
+}
+
+.sc-config--bomba .equip-input,
+.sc-config--bomba .equip-select__trigger {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.sc-config--bomba .sc-input-suffix {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+/* Tooltips da 3ª coluna ancoram à direita para não serem cortados
+   pela borda do modal (o balão cresce para a esquerda). */
+.sc-config--bomba .sc-config__grid .sc-field:nth-child(3n) .edit-panel__tooltip-icon[data-tooltip]::before {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.create-equip__dynamic::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Labels uniformes nos steps dinâmicos */
+.create-equip__dynamic .edit-panel__field-box > label,
+.create-equip__dynamic .pivo-edit__field > label,
+.create-equip__dynamic .sc-loc__field > label,
+.create-equip__dynamic .equip-field > label,
+.create-equip__dynamic .sc-field > label,
+.create-equip__dynamic .ws-field > label,
+.create-equip__dynamic .rs-field > label,
+.create-equip__dynamic .rp-loc__field > label,
+.create-equip__dynamic #stCardinalWrap > label {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.create-equip__dynamic::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.create-equip__dynamic::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, .40);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.create-equip__dynamic::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, .60);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.equip-form {
+  gap: 14px;
+}
+
+.equip-field {
+  gap: 7px;
+}
+
+.equip-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #121829;
+  letter-spacing: .2px;
+}
+
+.equip-required {
+  color: #f87171;
+  margin-right: 4px;
+}
+
+.equip-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  background: #ffffff;
+  padding: 10px 12px;
+  color: #0f172a;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.equip-input::placeholder {
+  color: #94a3b8;
+}
+
+.equip-input:hover {
+  border-color: rgba(15, 23, 42, .18);
+  background: #ffffff;
+}
+
+.equip-input:focus,
+.equip-input:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.equip-field__hint {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.equip-btn {
+  border-color: rgba(15, 23, 42, .14);
+  padding: 8px 8px;
+  font-weight: 400;
+  color: var(--ink-900);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.equip-btn:hover {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, .22);
+}
+
+.equip-btn:active {
+  transform: none;
+}
+
+.equip-btn:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .55);
+}
+
+.equip-btn--primary:hover {
+  background: var(--ce-green-strong);
+  border-color: var(--ce-green-strong);
+}
+
+.equip-btn--primary:focus-visible {
+  box-shadow: 0 14px 26px rgba(22, 163, 74, .24);
+}
+
+/* Botão “Tentar Conexão” com outline verde e ícone via CSS */
+.equip-btn[data-action="ip-test"],
+.equip-btn[data-action="md-test"],
+.equip-btn[data-action="pluv-test"] {
+  border-color: rgba(22, 163, 74, .55);
+  color: var(--ce-green-ink);
+  background: #ffffff;
+  transform: none;
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.equip-btn[data-action="ip-test"]:hover,
+.equip-btn[data-action="md-test"]:hover,
+.equip-btn[data-action="pluv-test"]:hover {
+  background: rgba(22, 163, 74, .08);
+  border-color: rgba(22, 163, 74, .75);
+  color: #0f7a37;
+  transform: none;
+}
+
+.equip-btn[data-action="ip-test"]:active,
+.equip-btn[data-action="md-test"]:active,
+.equip-btn[data-action="pluv-test"]:active,
+.equip-btn[data-action="ip-test"]:focus-visible,
+.equip-btn[data-action="md-test"]:focus-visible,
+.equip-btn[data-action="pluv-test"]:focus-visible {
+  transform: none;
+}
+
+.equip-btn[data-action="ip-test"]::before,
+.equip-btn[data-action="md-test"]::before,
+.equip-btn[data-action="pluv-test"]::before {
+  content: "\f1eb";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* "Tentar Conexão" (pluv-test): contorno, fonte e ícone pretos por padrão;
+   no hover ficam verdes, mantendo o fundo branco. */
+.equip-btn[data-action="pluv-test"] {
+  border-color: #e5e7eb;
+  color: #111827;
+  background: #ffffff;
+}
+
+.equip-btn[data-action="pluv-test"]:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: #ffffff;
+}
+
+/* 5) Footer fixo e elegante */
+#createEquipFooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 8;
+  margin: 14px -22px -14px;
+  padding: 10px 22px 12px;
+  border-top: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.create-equip__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.create-equip__footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  transform: translateY(10px);
+}
+
+.create-equip__btn {
+  border-color: rgba(15, 23, 42, .14);
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--ink-900);
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.create-equip__btn:hover {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, .22);
+}
+
+.create-equip__btn:active {
+  transform: none;
+}
+
+.create-equip__btn:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .55);
+}
+
+.create-equip__btn--ghost {
+  background: #ffffff;
+}
+
+.create-equip__btn--primary {
+  background: var(--ce-green);
+  border-color: var(--ce-green);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, .18);
+}
+
+.create-equip__btn--primary:hover {
+  background: var(--ce-green-strong);
+  border-color: var(--ce-green-strong);
+}
+
+#createEquipFooter.no-prev {
+  justify-content: flex-end;
+}
+
+/* FIX Step 4 — FUNÇÕES (remove faixa branca e unifica fundo) */
+.mod-panel {
+  border-color: rgba(15, 23, 32, .10);
+}
+
+.func-list {
+  background: transparent;
+}
+
+.func-row {
+  background: transparent;
+  /* <<< mata a faixa branca */
+  border-color: rgba(15, 23, 32, .10);
+}
+
+.func-row__head {
+  background: #ffffff;
+  border-bottom: none;
+}
+
+.func-row__body {
+  background: #ffffff;
+  border-top: none;
+}
+
+/* Ativo: não pinta a linha inteira (apenas o check mostra seleção) */
+.func-row.is-active .func-row__head,
+.func-row.is-active .func-row__body {
+  background: #ffffff;
+  border-color: rgba(15, 23, 32, .08);
+}
+
+.func-row.is-active .func-row__body {
+  border-top-color: transparent;
+}
+
+.func-row.is-active .func-row__select {
+  border-color: rgba(15, 23, 32, .14);
+  background: #ffffff;
+}
+
+.func-row.is-pending .func-row__head,
+.func-row.is-pending .func-row__body {
+  background: #ffffff;
+  border-color: rgba(15, 23, 32, .08);
+}
+
+.func-row.is-pending .func-row__select {
+  border-color: rgba(15, 23, 32, .14);
+  background: #ffffff;
+}
+
+/* =========================================================
+   CREATE FARM — STEP 2 (FATURAMENTO)
+   ========================================================= */
+.farm-billing {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.farm-billing__alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, .35);
+  background: rgba(245, 158, 11, .10);
+  color: #121829;
+  font-size: 13px;
+}
+
+.farm-billing__alert i {
+  color: #f59e0b;
+}
+
+.farm-billing__section {
+  border: 1px solid rgba(15, 23, 42, .10);
+  border-radius: 14px;
+  padding: 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.farm-billing__section-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.farm-billing__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+
+.farm-billing__grid--country {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.farm-billing:not(.is-country-selected) .farm-billing__grid--country {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.farm-billing:not(.is-country-selected) .farm-billing__grid--country .farm-billing__field {
+  grid-column: 1 / -1;
+}
+
+.farm-billing__grid--address {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.farm-billing__grid.is-hidden {
+  display: none;
+}
+
+.farm-billing__grid--docs {
+  grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr);
+}
+
+.farm-billing__grid--billing-top {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.farm-billing__grid--billing-bottom {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.farm-billing__field--full {
+  grid-column: 1 / -1;
+}
+
+.farm-billing__field--span-2 {
+  grid-column: span 2;
+}
+
+.farm-billing__field.is-hidden {
+  display: none;
+}
+
+.farm-billing__control.is-hidden {
+  display: none;
+}
+
+.farm-billing__doc {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: 8px;
+}
+
+.farm-billing__doc>* {
+  min-width: 0;
+}
+
+.farm-billing__doc select.equip-input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.farm-billing__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* padding lateral apenas antes de selecionar o país */
+.create-farm .farm-billing:not(.is-country-selected) .farm-billing__intro {
+  padding: 0 128px;
+}
+
+.create-farm .farm-billing:not(.is-country-selected) .farm-billing__section-head {
+  padding: 0 128px;
+}
+
+.create-farm .farm-billing:not(.is-country-selected) .farm-billing__grid--country {
+  padding: 0 128px;
+}
+
+.farm-billing__hint {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #121829;
+}
+
+.create-farm .farm-billing__intro {
+  margin-bottom: 6px;
+}
+
+.create-farm .farm-billing__section-title {
+  margin-top: 4px;
+}
+
+.create-farm .farm-billing__grid--country {
+  margin-top: 6px;
+}
+
+.farm-billing__details {
+  margin-top: 10px;
+}
+
+.farm-billing__details.is-hidden {
+  display: none;
+}
+
+.farm-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #111827;
+  position: relative;
+}
+
+.farm-switch__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.farm-switch__track {
+  width: 34px;
+  height: 18px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  position: relative;
+  transition: background .15s ease;
+  flex: 0 0 auto;
+}
+
+.farm-switch__track::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .18);
+  transition: transform .15s ease;
+}
+
+.farm-switch__input:checked+.farm-switch__track {
+  background: #16a34a;
+}
+
+.farm-switch__input:checked+.farm-switch__track::after {
+  transform: translateX(16px);
+}
+
+.farm-switch__label {
+  color: inherit;
+}
+
+.create-farm .farm-contact__toggle {
+  margin: 4px 0 2px;
+}
+
+@media (max-width: 860px) {
+  .farm-billing__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-billing__grid--country {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-billing__grid--docs {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-billing__doc {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   CREATE EQUIPAMENTO — INPUTS (smaller)
+   ========================================================= */
+.create-equip .equip-input {
+  padding: 4px 10px;
+  line-height: 1.2;
+  min-height: 32px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.create-equip select.equip-input {
+  height: 28px;
+  line-height: 1.2;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
+.create-equip .equip-select__trigger {
+  padding: 4px 10px;
+  min-height: 32px;
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
+
+.create-equip .equip-label {
+  font-size: 11.5px;
+}
+
+/* =========================================================
+   CREATE FARM — INPUTS + FOOTER BUTTONS (smaller)
+   ========================================================= */
+.create-farm .equip-input {
+  padding: 4px 10px;
+  line-height: 1.2;
+  min-height: 32px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.create-farm select.equip-input {
+  height: 28px;
+  line-height: 1.2;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
+.create-farm .equip-label {
+  font-size: 11.5px;
+}
+
+.create-farm .farm-select {
+  position: relative;
+  width: 100%;
+}
+
+.create-farm .farm-select.is-hidden {
+  display: none;
+}
+
+.create-farm .farm-select__native {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.create-farm .farm-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  background: #ffffff;
+  padding: 4px 10px;
+  min-height: 32px;
+  line-height: 1.2;
+  color: #0f172a;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  min-width: 0;
+}
+
+.create-farm .farm-select__trigger:hover {
+  border-color: rgba(15, 23, 42, .18);
+}
+
+.create-farm .farm-select__trigger:focus-visible {
+  outline: none;
+  border-color: rgba(22, 163, 74, .72);
+}
+
+.create-farm .farm-select__value {
+  flex: 1;
+  text-align: left;
+  font-size: 12.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.create-farm .farm-select__value.is-placeholder {
+  color: #94a3b8;
+}
+
+.create-farm .farm-select__trigger i {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.create-farm .farm-select.is-open .farm-select__trigger {
+  border-color: rgba(22, 163, 74, .55);
+}
+
+.create-farm .farm-select__list {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, .14);
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+  padding: 6px 0;
+  max-height: 220px;
+  overflow: auto;
+  display: none;
+  z-index: 2001;
+}
+
+.create-farm .farm-select.is-open .farm-select__list {
+  display: block;
+}
+
+.create-farm .farm-select__option {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: #0f172a;
+}
+
+.create-farm .farm-select__option:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.create-farm .farm-select__option.is-selected {
+  background: #e2ffec;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.create-farm .farm-select__option[disabled] {
+  color: #94a3b8;
+  cursor: not-allowed;
+  background: #ffffff;
+}
+
+.create-farm .farm-select.is-disabled .farm-select__trigger {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: rgba(15, 23, 42, .10);
+}
+
+.create-farm .farm-select.is-disabled .farm-select__trigger i {
+  color: #94a3b8;
+}
+
+.create-farm select.equip-input option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.create-farm select.equip-input option:hover,
+.create-farm select.equip-input option:checked,
+.create-farm select.equip-input option:focus {
+  background: #dcfce7;
+  color: #0f172a;
+}
+
+.create-farm .create-equip__btn {
+  padding: 5px 11px;
+}
+
+/* Compacta o Step 2 (Faturamento) para evitar scroll em BR */
+.create-farm .farm-billing {
+  gap: 8px;
+}
+
+.create-farm .farm-billing__alert {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.create-farm .farm-billing__section {
+  padding: 0;
+  gap: 8px;
+  border: none;
+  background: transparent;
+}
+
+.create-farm .farm-billing__section-title {
+  font-size: 12.5px;
+}
+
+.create-farm .farm-billing__grid {
+  gap: 8px 10px;
+}
+
+.create-farm .farm-billing__details {
+  margin-top: 8px;
+}
+
+.create-farm #createFarmFooter {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Alinha footer ao padding do modal para evitar scroll horizontal */
+.create-farm #createFarmFooter {
+  margin: 10px -18px -10px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.create-farm .create-equip__dialog {
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   CREATE FARM — STEP 4 (FAIXAS DE ENERGIA)
+   ========================================================= */
+.farm-energy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.farm-energy__note {
+  border: 1px solid rgba(59, 130, 246, .55);
+  background: rgba(59, 130, 246, .08);
+  color: #121829;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.farm-energy__lead {
+  margin: 0;
+  font-size: 12.5px;
+  color: #334155;
+}
+
+.farm-energy__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 240px));
+  gap: 12px;
+  justify-content: start;
+}
+
+.farm-energy__card {
+  border: 1px solid rgba(15, 23, 42, .14);
+  border-radius: 12px;
+  padding: 12px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  min-height: 110px;
+}
+
+.farm-energy__card:hover {
+  border-color: rgba(22, 163, 74, .55);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .10);
+}
+
+.farm-energy__card-title {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #0f172a;
+}
+
+.farm-energy__card-desc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.farm-energy__card.is-selected {
+  border-color: rgba(22, 163, 74, .75);
+  background: rgba(22, 163, 74, .10);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .12);
+  position: relative;
+}
+
+.farm-energy__card.is-selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top: 14px solid #16a34a;
+  border-left: 14px solid transparent;
+  border-top-right-radius: 10px;
+}
+
+@media (max-width: 860px) {
+  .farm-energy__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   CREATE FARM — STEP 5 (LOCALIZAÇÃO)
+   ========================================================= */
+.farm-location {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.farm-location__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.farm-location__input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.farm-location__input-field {
+  padding-left: 12px;
+}
+
+.farm-location__btn {
+  white-space: nowrap;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, .18);
+  color: #0f172a;
+  box-shadow: none;
+  font-weight: 400;
+  border-radius: 8px;
+}
+
+.farm-location__btn i {
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+.farm-location__btn:hover {
+  background: #ffffff;
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.farm-location__btn:hover i {
+  color: #16a34a;
+}
+
+.farm-location__radius .equip-input:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.farm-location__radius {
+  width: 210px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #ffffff;
+}
+
+.farm-location__radius-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.farm-location__radius-edit {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+}
+
+.farm-location__radius-edit:hover {
+  color: #0f172a;
+}
+
+.farm-location__map {
+  height: 360px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+@media (max-width: 860px) {
+  .farm-location__row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .farm-location__btn {
+    width: 100%;
+  }
+
+  .farm-location__radius {
+    width: 100%;
+  }
+}
+
+.create-farm .equip-field {
+  gap: 5px;
+}
+
+.create-farm .equip-label {
+  font-size: 11.5px;
+}
+
+.create-farm .create-equip__dialog {
+  padding: 14px 18px 20px;
+}
+
+/* Sobe o modal de criar fazenda para crescer para baixo */
+.create-farm.create-equip {
+  align-items: flex-start;
+}
+
+.create-farm .create-equip__dialog {
+  margin-top: 60px;
+}
+
+/* =========================================================
+   CREATE EQUIP/FARM — unified compact controls
+   ========================================================= */
+.create-equip {
+  --ce-control-radius: 8px;
+  --ce-control-height: 30px;
+  --ce-control-pad-y: 5px;
+  --ce-control-pad-x: 10px;
+}
+
+/* "Barras" (inputs/selects/containers) */
+.create-equip .equip-input,
+.create-equip select.equip-input,
+.create-equip .equip-select__trigger,
+.create-equip .farm-select__trigger,
+.create-equip .st-input-group,
+.create-equip .farm-location__radius {
+  border-radius: var(--ce-control-radius);
+}
+
+/* Buttons */
+.create-equip .equip-btn,
+.create-equip .create-equip__btn,
+.create-equip .summary-btn,
+.create-equip .sc-loc__btn,
+.create-equip .st-loc__btn,
+.create-equip .rp-loc__btn,
+.create-equip .farm-location__btn {
+  border-radius: var(--ce-control-radius);
+  padding: var(--ce-control-pad-y) var(--ce-control-pad-x);
+  min-height: var(--ce-control-height);
+}
+
+.create-equip .sc-loc__btn,
+.create-equip .st-loc__btn,
+.create-equip .rp-loc__btn,
+.create-equip .farm-location__btn {
+  font-weight: 400;
+}
+
+.create-equip .sc-loc__btn,
+.create-equip .st-loc__btn,
+.create-equip .rp-loc__btn {
+  min-width: var(--st-loc-btn-width, 150px);
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+}
+
+/* Variante compacta (botão só de ícone, ex.: Altitude): precisa da mesma
+   especificidade da regra acima, senão o min-width de 150px prevalece e
+   espreme o input ao lado. */
+.create-equip .rp-loc__row--compact .rp-loc__btn {
+  min-width: 34px;
+  width: 34px;
+  padding: 0;
+  flex: 0 0 34px;
+}
+
+.create-equip .rp-loc__row--compact .rp-loc__btn i {
+  margin-right: 0;
+  font-size: 12px;
+}
+
+.create-equip .sc-input-group,
+.create-equip .st-input-group,
+.create-equip .rp-input-group,
+.create-equip .rs-input-group {
+  border-radius: var(--ce-control-radius);
+}
+
+.create-equip .sc-input-suffix,
+.create-equip .st-input-suffix,
+.create-equip .rp-input-suffix,
+.create-equip .rs-input-suffix {
+  padding: 0 var(--ce-control-pad-x);
+  min-height: 28px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.create-equip .equip-btn[data-action="ip-test"],
+.create-equip .equip-btn[data-action="md-test"],
+.create-equip .equip-btn[data-action="pluv-test"] {
+  min-height: var(--ce-control-height);
+  padding: var(--ce-control-pad-y) var(--ce-control-pad-x);
+  font-size: 13px;
+}
+
+/* Split Layout for Parcelas and SmartConnect */
+.create-equip .st-loc--split,
+.create-equip .sc-loc--split {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 24px;
+  align-items: stretch;
+  min-height: 450px;
+  margin-top: 10px;
+}
+
+.create-equip .st-loc__sidebar,
+.create-equip .sc-loc__sidebar {
+  flex: 0 0 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 380px;
+}
+
+.create-equip .st-loc__main,
+.create-equip .sc-loc__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-equip .st-loc__map-wrapper,
+.create-equip .sc-loc__map-wrapper {
+  flex: 1;
+  min-height: 0;
+  max-height: 380px;
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  background: #f8fafc;
+}
+
+/* Mapa nos steps de segmentos — altura fixa para não expandir ao clicar */
+.create-equip #scSegMapSlot,
+.create-equip #stSegMapSlot {
+  flex: none;
+  height: 340px;
+  max-height: 340px;
+}
+
+.create-equip #scSegMapSlot .sc-loc__map,
+.create-equip #stSegMapSlot .sc-loc__map,
+.create-equip #scPivotMap,
+.create-equip #stPivotSegMap {
+  height: 100% !important;
+  max-height: 340px;
+}
+
+/* Step 3 do SmartTouch (Ângulo/Voltas): mapa um pouco mais baixo pra caber
+   sem precisar rolar o modal, já que este step tem mais campos acima. */
+.create-equip #stAngleMapSlot {
+  flex: none;
+  height: 330px;
+  max-height: 330px;
+}
+
+.create-equip #stAngleMapSlot #stMap {
+  height: 100% !important;
+  min-height: 0;
+  max-height: 330px;
+}
+
+#stMap,
+#stConfigMap,
+#scPivotMap {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  z-index: 1;
+}
+
+@media (max-width: 960px) {
+  .create-equip__dialog.create-equip__dialog--large {
+    width: min(720px, calc(100vw - 40px));
+  }
+
+  .create-equip .st-loc--split,
+  .create-equip .sc-loc--split {
+    flex-direction: column !important;
+  }
+
+  .create-equip .st-loc__sidebar,
+  .create-equip .sc-loc__sidebar {
+    flex: none;
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  .create-equip .st-loc__map-wrapper,
+  .create-equip .sc-loc__map-wrapper {
+    min-height: 350px;
+  }
+}
+
+/* Parcel List - Spreadsheet Style (Refined) */
+.st-parcel-list {
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.st-parcel-header {
+  display: grid;
+  grid-template-columns: 1fr 65px 85px 65px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.st-parcel-items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.st-parcel-item {
+  display: grid;
+  grid-template-columns: 1fr 65px 85px 65px;
+  align-items: center;
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+}
+
+.st-parcel-item:nth-child(even) {
+  background: #f0fdf4;
+  /* Light green tint like the image */
+}
+
+.st-parcel-item:hover {
+  background: #f1f5f9;
+}
+
+.st-parcel-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-parcel-date,
+.st-parcel-angles {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.st-parcel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.st-parcel-edit,
+.st-parcel-remove {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.st-parcel-edit {
+  color: #0f172a;
+  /* Black */
+}
+
+.st-parcel-remove {
+  color: #ef4444;
+  /* Red */
+}
+
+.st-parcel-edit:hover,
+.st-parcel-remove:hover {
+  transform: scale(1.15);
+  background: transparent;
+}
+
+.st-parcel-edit:hover {
+  color: #16a34a;
+  /* Green */
+}
+
+.st-parcel-remove:hover {
+  color: #dc2626;
+}
+
+/* --- COMPACT MOD-PANEL SYSTEM --- */
+.mod-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.mod-panel__head {
+  padding: 8px 12px !important;
+  gap: 8px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+}
+.mod-panel__module {
+  display: flex !important;
+  align-items: center;
+  gap: 10px !important;
+}
+.mod-panel__ico {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  background: rgba(22, 163, 74, .1);
+  color: #16a34a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mod-panel__title {
+  font-size: 14px !important;
+  font-weight: 700;
+  color: #0f172a;
+}
+.mod-panel__meta {
+  font-size: 11px !important;
+  color: #64748b;
+}
+.mod-panel__badge {
+  font-size: 10px !important;
+  padding: 1px 6px !important;
+}
+.mod-panel__danger {
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+  height: 28px !important;
+  font-weight: 600 !important;
+}
+.mod-panel__stats {
+  padding: 6px 12px !important;
+  font-size: 11px !important;
+  display: flex;
+  gap: 14px;
+  background: #fcfdfe;
+  border-bottom: 1px solid #f1f5f9;
+  color: #64748b;
+}
+.mod-stat__dot {
+  width: 6px !important;
+  height: 6px !important;
+}
+.func-list {
+  padding: 8px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 4px !important;
+}
+.func-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 12px !important;
+  min-height: 48px !important;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px !important;
+  background: #ffffff;
+  margin-bottom: 2px !important;
+}
+.func-row__head {
+  display: flex !important;
+  align-items: center;
+  gap: 12px !important;
+  cursor: pointer;
+  flex: 1;
+}
+.func-row__ico {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+}
+.func-row__title {
+  font-size: 12.5px !important;
+}
+.func-row__sub {
+  font-size: 10.5px !important;
+}
+.func-row__body {
+  width: 170px !important;
+  padding: 0 !important;
+}
+.func-select__trigger {
+  height: 28px !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+}
+.func-row.is-inactive {
+  opacity: 0.85;
+}
+.func-row.is-active {
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* Standard Square Checkbox */
+.func-row__check input {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  cursor: pointer !important;
+  position: relative !important;
+  display: block !important;
+  transition: all 0.2s ease;
+}
+.func-row__check input:checked {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+
+/* Botão A ativo: verde (herda .sc-loc__btn--center.is-active) */
+.ls-loc__btn--a.is-active {
+  border-color: #16a34a;
+  background: #ffffff;
+  color: #15803d;
+}
+
+/* Botão B ativo: vermelho (sobrescreve o verde do --ref) */
+.ls-loc__btn--b.is-active {
+  border-color: #dc2626 !important;
+  background: #ffffff;
+  color: #b91c1c !important;
+}
+
+.ls-loc__btn--w.is-active,
+.ls-loc__btn--w.is-active:hover,
+.ls-loc__btn--w.is-active:focus-visible {
+  border-color: #16a34a !important;
+  background: #ffffff !important;
+  color: #15803d !important;
+  box-shadow: none !important;
+}
+
+/* Barra de comprimento calculado */
+.ls-loc__distance-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: 10px;
+}
+
+.ls-loc__distance-icon {
+  color: #16a34a;
+  font-size: 14px;
+}
+
+.ls-loc__distance-label {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.ls-loc__distance-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 52px;
+}
+
+.ls-loc__distance-hint {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-left: auto;
+}
+
+/* Info: largura irrigada (metade por lado) */
+.ls-half-info {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ls-half-info:empty {
+  display: none;
+}
+
+.ls-half-info i {
+  color: #0f172a;
+  opacity: .75;
+}
+
+.ls-width-info {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ls-width-info:empty {
+  display: none;
+}
+
+.ls-width-info i {
+  color: #0f172a;
+  opacity: .75;
+}
+
+.ls-width-coords {
+  margin-top: 8px;
+}
+
+.ls-eg-info {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.ls-eg-info:empty {
+  display: none;
+}
+
+/* Cursor crosshair estilo CAD no mapa LineStar */
+.ls-map--crosshair,
+.ls-map--crosshair .leaflet-container,
+.ls-map--crosshair .leaflet-interactive,
+.ls-map--crosshair .leaflet-grab {
+  cursor: none !important;
+}
+
+.ls-loc__map-wrapper {
+  position: relative;
+}
+
+/* Crosshair CAD: seguido pelo mouse via JS */
+.ls-crosshair {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1001;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.ls-crosshair svg {
+  width: 36px;
+  height: 36px;
+  overflow: visible;
+}
+
+.ls-loc__map-wrapper:hover .ls-crosshair {
+  display: block;
+}
+
+.ls-track-badge-wrap {
+  background: transparent;
+  border: 0;
+}
+
+.ls-track-badge {
+  transform: translate(-50%, -50%) rotate(var(--ls-track-angle, 0deg));
+  transform-origin: center center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .95);
+  background: rgba(255, 255, 255, .96);
+  color: #7c2d12;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .18);
+}
+
+/* Step 4 (Traçado/Segmentos/Canhão) — corta overflow sem mexer no layout do
+   mapa. Escopado a .pivo-edit__segments-section (não só .pivo-edit-specifics)
+   pra não capturar outros steps que reaproveitam essa classe só pelo
+   espaçamento/divisórias (ex.: Ficha Técnica do Irripump), que precisam
+   continuar roláveis. */
+.create-equip__dynamic:has(.pivo-edit__segments-section.pivo-edit-specifics) {
+  overflow: hidden;
+}
+
+.create-equip .edit-panel__input {
+  height: 32px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.create-equip .edit-panel__input-suffix-wrap .edit-panel__input {
+  padding: 6px 40px 6px 10px;
+}
+
+/* Campo bloqueado: só o input fica cinza; o título continua preto. */
+.sc-field.is-disabled .equip-label {
+  color: #0f172a;
+}
+
+.sc-field.is-disabled .equip-input:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+@media (max-width: 860px) {
+  .ls-loc__distance-hint {
+    display: none;
+  }
+}
+
+/* =====================================================
+   Dark Mode — Create Equipment
+   ===================================================== */
+[data-theme="dark"] .create-equip__dialog {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .create-equip__title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .create-equip__close {
+    color: #475569;
+}
+
+[data-theme="dark"] .create-equip__close:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .create-equip__step {
+    color: #64748b;
+}
+
+[data-theme="dark"] .create-equip__step::after {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .create-equip__step-num {
+    background: #141414;
+    color: #64748b;
+}
+
+[data-theme="dark"] .create-equip__step--active {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .create-equip__step--active .create-equip__step-num {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .create-equip__step--single .create-equip__step-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .create-equip__card {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .create-equip__card:hover {
+    border-color: #16a34a;
+    background: rgba(22, 163, 74, 0.06);
+    box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.15);
+}
+
+[data-theme="dark"] .create-equip__card.is-selected {
+    border-color: #16a34a;
+    background: rgba(22, 163, 74, 0.08);
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .create-equip__card-title {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .create-equip__card-desc {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .create-equip__footer {
+    background: transparent;
+}
+
+[data-theme="dark"] .create-equip__btn {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .create-equip__btn:hover {
+    background: #1f1f1f;
+}
+
+[data-theme="dark"] .create-equip__btn--primary {
+    background: #141414;
+    border-color: #16a34a;
+    color: #4ade80;
+}
+
+[data-theme="dark"] .create-equip__btn--primary:hover {
+    background: rgba(22, 163, 74, 0.1);
+}
+
+[data-theme="dark"] .create-equip__btn--draft {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #64748b;
+}
+
+[data-theme="dark"] .create-equip__btn--draft:hover {
+    background: #1f1f1f;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .equip-wizard__title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-wizard__subtitle {
+    color: #64748b;
+}
+
+[data-theme="dark"] .equip-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-input {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+[data-theme="dark"] .equip-field__hint {
+    color: #64748b;
+}
+
+[data-theme="dark"] .equip-field__hint code {
+    background: #1f1f1f;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .equip-check {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-hint {
+    color: #64748b;
+}
+
+[data-theme="dark"] .equip-mini-map {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: #0f0f0f;
+}
+
+[data-theme="dark"] .equip-mini-map__hint {
+    color: #475569;
+}
+
+[data-theme="dark"] .sc-loc__label,
+[data-theme="dark"] .sc-loc__sector-group .sc-loc__field > .sc-loc__label::after,
+[data-theme="dark"] .sc-loc__field label,
+[data-theme="dark"] .pivo-edit__field label,
+[data-theme="dark"] #stCardinalWrap label {
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .sc-loc__input-wrapper .equip-input {
+    background: #141414;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .sc-loc__btn {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .sc-loc__btn:hover {
+    background: #1f1f1f;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .sc-loc__btn.is-active {
+    border-color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+[data-theme="dark"] .sc-loc__sector-group {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .sc-angle-canvas {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .sc-loc__map-wrapper {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .sc-loc__map {
+    background: #0f0f0f;
+}
+
+[data-theme="dark"] .st-input-group,
+[data-theme="dark"] .rp-input-group,
+[data-theme="dark"] .sc-input-group,
+[data-theme="dark"] .rs-input-group {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .st-input-suffix,
+[data-theme="dark"] .rp-input-suffix,
+[data-theme="dark"] .sc-input-suffix,
+[data-theme="dark"] .rs-input-suffix {
+    background: #1f1f1f;
+    border-left-color: rgba(255, 255, 255, 0.08);
+    color: #64748b;
+}
+
+[data-theme="dark"] .equip-select__trigger {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-select__list {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .equip-select__option {
+    background: #141414;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .equip-select__option:hover,
+[data-theme="dark"] .equip-select__option.is-selected {
+    background: rgba(22, 163, 74, 0.12);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .ip-multiselect__dropdown {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .ip-multiselect__search-wrap {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .ip-multiselect__search {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .ip-multiselect__option {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .ip-multiselect__option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ip-multiselect__option.is-selected {
+    background: rgba(22, 163, 74, 0.1);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .func-row {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .func-row__head {
+    background: #141414;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .func-row__body {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .func-row__label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .func-row__select {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .func-select__trigger {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .func-select__list {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .func-select__option {
+    background: #141414;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .func-select__option:hover {
+    background: rgba(22, 163, 74, 0.1);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .kv {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .kv__k {
+    color: #475569;
+}
+
+[data-theme="dark"] .kv__v {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .summary-card {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+}
+
+[data-theme="dark"] .summary-card__head {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .summary-card__sub {
+    color: #475569;
+}
+
+[data-theme="dark"] .status-item {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .status-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .status-val {
+    color: #64748b;
+}
+
+[data-theme="dark"] .table-wrap {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .tbl thead th {
+    background: #141414;
+    color: #94a3b8;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .tbl tbody td {
+    color: #cbd5e1;
+    border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ip-mod-zone {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .ip-mod-title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .ip-mod-desc {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .ip-mod-meta {
+    color: #64748b;
+}
+
+[data-theme="dark"] .ip-modal__dialog {
+    background: #141414;
+}
+
+[data-theme="dark"] .ip-modal__head {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .ip-modal__title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .ip-modal__x {
+    color: #475569;
+}
+
+[data-theme="dark"] .ip-modal__x:hover {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .ip-modal__foot {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .rs-section {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .rs-section__title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .equip-alert {
+    background: #141414;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .equip-alert--ok {
+    border-color: rgba(22, 163, 74, 0.3);
+    background: rgba(22, 163, 74, 0.06);
+}
+
+[data-theme="dark"] .equip-alert--warn {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.06);
+}
+
+[data-theme="dark"] .sc-radio,
+[data-theme="dark"] .sc-check {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .sc-field.is-disabled .equip-label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .sc-field.is-disabled .equip-input:disabled {
+    background: #141414;
+    color: #334155;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .sc-input-group .sc-input[readonly] {
+    background: #141414 !important;
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .sc-input-group .sc-input:disabled {
+    background: #141414;
+    color: #64748b;
+}
+
+[data-theme="dark"] .draft-overlay__card {
+    background: #141414;
+}
+
+[data-theme="dark"] .draft-overlay__title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .draft-overlay__sub {
+    color: #64748b;
+}
+
+[data-theme="dark"] .draft-overlay__btn--discard {
+    background: #141414;
+    color: #64748b;
+}
+
+[data-theme="dark"] .draft-overlay__btn--discard:hover {
+    background: #1f1f1f;
+    color: #94a3b8;
+}
+
+/* Campo "Número máximo de voltas" (SmartTouch create): input simples, sem setas de spinner */
+#stMaxLaps {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+#stMaxLaps::-webkit-outer-spin-button,
+#stMaxLaps::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Campo "Número máximo de voltas" (Nexus/SmartConnect create, oculto): mesmo tratamento do stMaxLaps */
+#scMaxLaps {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+#scMaxLaps::-webkit-outer-spin-button,
+#scMaxLaps::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Cosmofield: select sem escolha fica cinza como um placeholder, e preto
+   após a escolha. A classe é alternada em JS porque o CSS não consegue
+   distinguir "nada escolhido" de uma opção qualquer num <select> nativo. */
+.create-equip select.equip-input.is-placeholder {
+  color: #94a3b8;
+}
+
+.create-equip select.equip-input option {
+  color: #0f172a;
+}
+
+/* Cosmofield: aviso de que os valores de textura são referência e o ideal
+   é análise laboratorial. Some quando a definição é manual. */
+.create-equip .cf-soil-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  background: rgba(59, 130, 246, .08);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.create-equip .cf-soil-note i {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+.create-equip .cf-soil-note[hidden] {
+  display: none;
+}
+
+/* Referência bibliográfica: menor e mais discreta que o aviso. */
+.create-equip .cf-soil-note__src {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  font-style: normal;
+  color: #94a3b8;
+}
+
+.create-equip .cf-soil-note__src a {
+  display: block;
+  margin-top: 2px;
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.create-equip .cf-soil-note__src a:hover {
+  text-decoration: underline;
+}
+
+/* Cosmofield: sem o ícone de calendário nativo dentro dos campos de data. */
+.create-equip input[type="date"]::-webkit-calendar-picker-indicator,
+.create-equip input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+.create-equip input[type="date"],
+.create-equip input[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+/* Rainstar create flow: legacy platform uses one technical step. */
+#createEquipmentModal .rs-form--rainstar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+#createEquipmentModal .rs-form--rainstar .rs-grid {
+  width: 100%;
+  align-items: start;
+}
+#createEquipmentModal .rs-form--rainstar .rs-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+#createEquipmentModal .rs-form--rainstar .rs-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+#createEquipmentModal .rs-form--rainstar .rs-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 600;
+}
+#createEquipmentModal .rs-form--rainstar .rs-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+#createEquipmentModal .rs-form--rainstar .rs-help {
+  margin: -8px 0 2px;
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1.45;
+}
+#createEquipmentModal .rs-form--rainstar .rs-radio-row {
+  min-height: 34px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#createEquipmentModal .rs-form--rainstar .rs-radio-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+  white-space: nowrap;
+}
+@media (max-width: 860px) {
+  #createEquipmentModal .rs-form--rainstar .rs-grid--two,
+  #createEquipmentModal .rs-form--rainstar .rs-grid--three {
+    grid-template-columns: 1fr;
+  }
+}

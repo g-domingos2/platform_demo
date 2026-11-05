@@ -1,0 +1,802 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irricontrol · Fazenda Demo</title>
+  <link rel="icon" type="image/png" href="./assets/img/favicon/cat.png" />
+
+  <!-- Aplica tema antes do render para evitar flash -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('ic:theme');
+      if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+
+  <!-- Flag de dev features (Ctrl+D) lida cedo p/ decidir qual variante do
+       modal/programações carregar. A página sempre começa com os recursos em
+       desenvolvimento desligados: o estado não sobrevive ao reload, tem que
+       ser religado com Ctrl+D a cada sessão. Isso evita que alguém que testou
+       uma vez continue vendo a variante dev sem perceber. -->
+  <script>
+    (function(){
+      try { localStorage.removeItem('ic:devFeatures'); } catch (_) {}
+      window.__icDevFeaturesOn = false;
+    })();
+  </script>
+  <script src="./assets/js/core/op-router.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <link rel="stylesheet" href="./assets/css/pages/mapa.css">
+  <link rel="stylesheet" href="./assets/css/pages/simulation.css">
+  <link rel="stylesheet" href="./assets/css/pages/chuva-geo.css">
+  <link rel="stylesheet" href="./assets/css/pages/pluviometria.css">
+  <link rel="stylesheet" href="./assets/css/components/edit-panel.css">
+  <link rel="stylesheet" href="./assets/css/pages/fazenda-edit.css">
+  <link rel="stylesheet" href="./assets/css/pages/talhoes.css">
+  <link rel="stylesheet" href="./assets/css/pages/relatorios.css">
+  <link rel="stylesheet" href="./assets/css/pages/gestao.css">
+  <link rel="stylesheet" href="./assets/css/pages/create-equipment.css">
+  <link rel="stylesheet" href="./assets/css/pages/pivos.css">
+  <link rel="stylesheet" href="./assets/css/pages/pivo-edit.css">
+  <link rel="stylesheet" href="./assets/css/pages/monitoramento.css">
+  <link rel="stylesheet" href="./assets/css/pages/telemetria.css">
+  <link rel="stylesheet" href="./assets/css/pages/usuarios.css">
+  <link rel="stylesheet" href="./assets/css/pages/config.css">
+  <link rel="stylesheet" href="./assets/css/pages/notificacoes.css">
+  <link rel="stylesheet" href="./assets/css/pages/cosmofield.css">
+  <link rel="stylesheet" href="./assets/css/pages/cadastros.css">
+  <link rel="stylesheet" href="./assets/css/pages/faturamento.css">
+  <link rel="stylesheet" href="./assets/css/components/op-modal.legacy.css">
+  <link rel="stylesheet" href="./assets/css/components/op-modal.dev.css">
+  <link rel="stylesheet" href="./assets/css/components/op-programacoes.legacy.css">
+  <link rel="stylesheet" href="./assets/css/components/op-programacoes.dev.css">
+  <link rel="stylesheet" href="./assets/css/components/map-weather.css">
+  <link rel="stylesheet" href="./assets/css/components/toast.css">
+  <link rel="stylesheet" href="./assets/css/demo.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR (azul escuro) -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <button class="brand-btn" type="button" id="btnSidebarToggle" aria-label="Alternar menu">
+          <!-- logo grande (sidebar aberto) -->
+          <img class="brand__logo brand__logo--full" src="./assets/img/brand/IRRICONTROL_ONE_SECONDARY_4C_POSITIVE_cropped_white.png" alt="Irricontrol" />
+
+          <!-- logo pequena (sidebar fechado) -->
+          <img class="brand__logo brand__logo--mini" src="./assets/img/brand/IRRICONTROL_ONE_ICON_4C_cropped.png" alt="Irricontrol" />
+        </button>
+      </div>
+
+      <div class="sidebar__search farm-search" id="farmSearch">
+        <div class="farm-search__field">
+          <input class="input input--dark farm-search__input" id="farmSearchInput" type="text"
+            name="farm_search_runtime"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            data-lpignore="true"
+            placeholder="Buscar fazenda" />
+          <span class="farm-search__icon" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass icon-search"></i>
+            <i class="fa-solid fa-chevron-down icon-chevron"></i>
+          </span>
+        </div>
+        <div class="farm-search__panel" id="farmSearchPanel" aria-hidden="true">
+          <div class="farm-list" id="farmList" aria-label="Lista de fazendas"></div>
+        </div>
+      </div>
+      <div class="sidebar__create">
+        <button class="btn btn--primary sidebar__create-btn" type="button" id="btnCreateFarm">
+          <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+          Criar fazenda
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <!-- OPERAÇÃO -->
+        <div class="nav__section">
+          <div class="nav__items">
+            <a class="nav__item is-active" href="#" data-route="visao-geral">
+              <span class="nav__ico"><img src="./assets/img/svg/map-pin.svg" alt="visao-geral"></span>
+              <span class="nav__label">Visão Geral</span>
+            </a>
+            <a class="nav__item" href="#" data-route="pluviometria">
+              <span class="nav__ico"><img src="./assets/img/svg/cloud-rain.svg" alt="Pluviometria"></span>
+              <span class="nav__label">Pluviometria</span>
+            </a>
+            <a class="nav__item is-disabled" href="#" data-route="gestao" data-demo-locked aria-disabled="true" tabindex="-1">
+              <span class="nav__ico"><img src="./assets/img/svg/chart-no-axes-combined.svg" alt="Gestão"></span>
+              <span class="nav__label">Operações</span>
+              <span class="nav__badge nav__badge--soon">em breve</span>
+            </a>
+            <a class="nav__item" href="#" data-route="conectividade">
+              <span class="nav__ico"><img src="./assets/img/svg/wifi.svg" alt="Conectividade"></span>
+              <span class="nav__label">Conectividade</span>
+            </a>
+            <a class="nav__item" href="#" data-route="notificacoes">
+              <span class="nav__ico"><img src="./assets/img/svg/bell.svg" alt="Notificações"></span>
+              <span class="nav__label">Notificações</span>
+            </a>
+            <a class="nav__item" href="#" data-route="relatorios">
+              <span class="nav__ico"><img src="./assets/img/svg/report.svg" alt="Relatórios"></span>
+              <span class="nav__label">Relatórios da Fazenda</span>
+            </a>
+            <a class="nav__item is-disabled" href="#" data-route="telemetria" data-demo-locked aria-disabled="true" tabindex="-1">
+              <span class="nav__ico"><img src="./assets/img/svg/monitor-cog.svg" alt="Telemetria"></span>
+              <span class="nav__label">Telemetria</span>
+              <span class="nav__badge nav__badge--soon">em breve</span>
+            </a>
+            <a class="nav__item is-disabled" href="#" data-route="monitoramento" data-demo-locked aria-disabled="true" tabindex="-1">
+              <span class="nav__ico"><img src="./assets/img/svg/radar.svg" alt="Monitoramento"></span>
+              <span class="nav__label">Monitoramento</span>
+              <span class="nav__badge nav__badge--soon">em breve</span>
+            </a>
+            <a class="nav__item" href="#" data-route="fazenda" style="display:none;">
+              <span class="nav__ico"><img src="./assets/img/svg/tractor.svg" alt="Fazenda"></span>
+              <span class="nav__label">Fazenda</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__footer-row">
+          <button class="sidebar__footer-btn is-disabled" type="button" id="btnSettings" data-demo-locked disabled
+            aria-label="Configurações" data-tooltip="Configurações">
+            <span class="nav__ico nav__ico--expanded">
+              <i class="fa-solid fa-gear"></i>
+            </span>
+            <span class="nav__ico nav__ico--collapsed">
+              <img src="./assets/img/svg/ellipsis.svg" alt="" width="20" height="20">
+              
+            </span>
+          </button>
+          <button class="sidebar__footer-btn is-disabled" type="button" data-demo-locked disabled aria-label="Assinatura" data-tooltip="Assinatura">
+            <span class="nav__ico"><img src="./assets/img/svg/dollar.svg" alt="Assinatura" width="20" height="20"></span>
+          </button>
+          <button class="sidebar__footer-btn is-disabled" type="button" data-demo-locked disabled aria-label="Área do Parceiro" data-tooltip="Área do Parceiro">
+            <span class="nav__ico"><img src="./assets/img/svg/user-star.svg" alt="" width="20" height="20"></span>
+          </button>
+          <button class="sidebar__footer-btn" type="button" id="btnDemoReset" aria-label="Resetar demo" data-tooltip="Resetar demo">
+            <span class="nav__ico"><i class="fa-solid fa-rotate-left"></i></span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DO MAPA (tela toda fora do sidebar) -->
+    <main class="main main--map">
+      <div class="side-cards">
+      <aside class="map-card" id="mapCard" aria-label="Resumo da fazenda">
+        <header class="map-card__header">
+          <div class="map-card__title">
+            <h2>Fazenda Demo</h2>
+            <button class="map-card__edit" type="button" aria-label="Editar fazenda" onclick="document.querySelector('.nav__item[data-route=\'fazenda\']')?.click()">
+              <img src="./assets/img/svg/pencil.svg" alt="" width="16" height="16">
+            </button>
+          </div>
+        </header>
+
+        <div class="map-card__search">
+          <span class="map-card__search-ico">
+            <i class="fa-solid fa-wifi"></i>
+          </span>
+          <input class="map-card__input" id="mapSearchInput" name="map_search" type="text" placeholder="Ex: Pivo 1" />
+        </div>
+
+        <nav class="map-card__list" aria-label="Categorias de equipamentos">
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="pivos" aria-expanded="false">
+            <span>Pivôs</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="pivos" aria-hidden="true" data-equip-list="pivos"></div>
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="bombas" aria-expanded="false">
+            <span>Bombas</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="bombas" aria-hidden="true" data-equip-list="bombas"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="medidores"
+            aria-expanded="false">
+            <span>Medidores de Nível</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="medidores" aria-hidden="true" data-equip-list="medidores"></div>
+          
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="pluviometros"
+            aria-expanded="false">
+            <span>Pluviômetros</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="pluviometros" aria-hidden="true" data-equip-list="pluviometros"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="repetidoras"
+            aria-expanded="false">
+            <span>Repetidoras</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="repetidoras" aria-hidden="true" data-equip-list="repetidoras"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="carreteis"
+            aria-expanded="false">
+            <span>Carretéis</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="carreteis" aria-hidden="true" data-equip-list="carreteis"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="linestars"
+            aria-expanded="false" disabled style="display: none;">
+            <span>Linestar</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="linestars" aria-hidden="true" data-equip-list="linestars" style="display: none;"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="estacoes"
+            aria-expanded="false">
+            <span>Estações Meteorológicas</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="estacoes" aria-hidden="true" data-equip-list="estacoes"></div>
+
+          <button class="map-card__item map-card__item--toggle" type="button" data-panel="cosmofields"
+            aria-expanded="false">
+            <span>Cosmofield</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="map-card__panel" data-panel="cosmofields" aria-hidden="true" data-equip-list="cosmofields"></div>
+        </nav>
+
+        <div class="map-card__footer">
+          <button class="map-card__cta" type="button" id="btnCreateEquipment">
+            <span class="map-card__cta-ico"><i class="fa-solid fa-plus"></i></span>
+            Criar equipamento
+          </button>
+        </div>
+      </aside>
+
+      <aside class="weather-card is-ready" id="mapWeatherCard" aria-label="Dados meteorológicos">
+        <button class="weather-card__header is-open" id="weatherCardToggle" type="button" aria-expanded="true" aria-controls="weatherCardBody">
+          <span class="weather-card__title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+            Clima
+          </span>
+          <i class="weather-card__chevron fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="weather-card__body is-open" id="weatherCardBody" aria-hidden="false">
+          <div class="map-weather-card__days" id="mapWeatherGrid">
+            <div class="map-weather-card__days-grid" id="mwDays"></div>
+          </div>
+        </div>
+      </aside>
+      </div>
+
+      <div class="map-toast" id="farmApiToast" role="status" aria-live="polite" aria-hidden="true">
+        <span class="map-toast__icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></span>
+        <div class="map-toast__content">
+          <div class="map-toast__title">Servidor local offline</div>
+          <div class="map-toast__text" data-toast-text>Inicie o backend para salvar fazendas.</div>
+        </div>
+      </div>
+      <div id="map" class="map">
+        <div class="map-actions">
+
+          <div class="map-actions__col">
+          <button class="map-fullscreen-btn" id="btnMapFullscreen" type="button" title="Tela Cheia">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+          <div class="map-equip" id="mapEquip" aria-label="Equipamentos">
+            <button class="map-equip__bar" type="button" aria-expanded="false" aria-controls="mapEquipPanel" style="cursor: pointer;">
+              <span class="map-equip__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+              </span>
+              <span class="map-equip__label">Equipamentos</span>
+              <span class="map-equip__chev">
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </button>
+            
+            <div class="map-equip__panel" id="mapEquipPanel" role="region" aria-label="Filtros de equipamentos">
+            <div class="map-equip__row">
+              <label for="mapEquipFilterAll">Todos</label>
+              <input id="mapEquipFilterAll" name="mapEquipFilterAll" class="map-equip__switch" type="checkbox" checked data-filter="all">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterPivos">Pivôs</label>
+              <input id="mapEquipFilterPivos" name="mapEquipFilterPivos" class="map-equip__switch" type="checkbox" checked data-filter="pivos">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterPluviometros">Pluviômetros</label>
+              <input id="mapEquipFilterPluviometros" name="mapEquipFilterPluviometros" class="map-equip__switch" type="checkbox" checked data-filter="pluviometros">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterBombas">Bombas</label>
+              <input id="mapEquipFilterBombas" name="mapEquipFilterBombas" class="map-equip__switch" type="checkbox" checked data-filter="bombas">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterMedidores">Medidores de Nível</label>
+              <input id="mapEquipFilterMedidores" name="mapEquipFilterMedidores" class="map-equip__switch" type="checkbox" checked data-filter="medidores">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterRepetidoras">Repetidoras</label>
+              <input id="mapEquipFilterRepetidoras" name="mapEquipFilterRepetidoras" class="map-equip__switch" type="checkbox" checked data-filter="repetidoras">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterCarreteis">Carretéis</label>
+              <input id="mapEquipFilterCarreteis" name="mapEquipFilterCarreteis" class="map-equip__switch" type="checkbox" checked data-filter="carreteis">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterLinestars">Linestar</label>
+              <input id="mapEquipFilterLinestars" name="mapEquipFilterLinestars" class="map-equip__switch" type="checkbox" checked data-filter="linestars">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterTalhoes">Talhões</label>
+              <input id="mapEquipFilterTalhoes" name="mapEquipFilterTalhoes" class="map-equip__switch" type="checkbox" checked data-filter="talhoes">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterEstacoes">Estações Meteorológicas</label>
+              <input id="mapEquipFilterEstacoes" name="mapEquipFilterEstacoes" class="map-equip__switch" type="checkbox" checked data-filter="estacoes">
+            </div>
+            <div class="map-equip__row">
+              <label for="mapEquipFilterCosmofields">Cosmofield</label>
+              <input id="mapEquipFilterCosmofields" name="mapEquipFilterCosmofields" class="map-equip__switch" type="checkbox" checked data-filter="cosmofields">
+            </div>
+          </div>
+        </div>
+
+          <button class="map-equip__bar map-multi-schedule-btn is-hidden" id="btnWeeklySchedule" type="button" title="Programações Múltiplas">
+            <span class="map-equip__icon">
+              <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+            </span>
+            <span class="map-equip__label">Programações Múltiplas</span>
+            <span class="map-equip__chev">
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </span>
+          </button>
+          </div><!-- .map-actions__col -->
+
+          <!-- CONTROLES ESTUDO DE SINAL (PNG OVERLAYS) -->
+          <div class="map-signal-control is-hidden" id="mapSignalControl">
+            <button class="map-signal-btn" id="btnToggleSignal" type="button" title="Estudo de Sinal" style="outline-style: none; display: none;">
+              <i class="fa-solid fa-tower-broadcast"></i>
+              <span>Estudo de Sinal</span>
+            </button>
+
+            <div class="map-signal-panel" id="mapSignalPanel" aria-hidden="true">
+              <div class="map-signal-panel__head">
+                <div class="map-signal-panel__title">Estudo de Sinal</div>
+                <button type="button" class="map-signal-panel__close" id="btnCloseSignalPanel"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              
+              <div class="map-signal-panel__body">
+                <div class="map-signal-field">
+                  <span class="map-signal-field__label">Ativar Sobreposição</span>
+                  <label class="map-signal-switch">
+                    <input type="checkbox" id="chkEnableSignal">
+                    <span class="map-signal-switch__slider"></span>
+                  </label>
+                </div>
+
+
+                <div class="map-signal-field">
+                  <div class="map-signal-field__label-wrap">
+                    <span class="map-signal-field__label">Opacidade</span>
+                    <span class="map-signal-field__value" id="signalOpacityValue">70%</span>
+                  </div>
+                  <input type="range" class="map-signal-range" id="rangeSignalOpacity" min="0" max="100" value="70">
+                </div>
+              </div>
+
+              <div class="map-signal-panel__footer">
+                <div class="map-signal-info">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span>Imagens georreferenciadas via arquivos .png</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- .map-actions -->
+        <div class="pluv-mapbar" aria-label="Controles de pluviometria">
+          <div class="pluv-mapbar__period" role="group" aria-label="Periodo">
+            <span class="pluv-mapbar__label">Periodo</span>
+            <button class="pluv-mapbar__range" type="button" aria-label="Selecionar periodo">
+              <span class="pluv-mapbar__range-start">26/03/2026</span>
+              <span class="pluv-mapbar__sep">→</span>
+              <span class="pluv-mapbar__range-end">27/03/2026</span>
+              <i class="fa-regular fa-calendar"></i>
+            </button>
+          </div>
+          <button class="pluv-mapbar__report" type="button" aria-label="Relatório de pluviometria">
+            <i class="fa-regular fa-eye"></i>
+            <span>Relatório de pluviometria</span>
+          </button>
+        </div>
+        <div class="pluv-layer-slot" id="pluvLayerSlot" aria-live="polite"></div>
+  <!-- Botão modo simulação -->
+  <button id="btnSimMode" class="sim-trigger" title="Modo Simulação" type="button">
+    <i class="fa-solid fa-flask-vial"></i>
+  </button>
+
+  <!-- Barra de simulação -->
+  <div id="simBar" class="sim-bar" aria-hidden="true">
+    <div class="sim-bar__inner">
+
+      <div class="sim-bar__controls">
+        <button class="sim-bar__ctrl" id="simPlayPause" type="button" title="Play / Pausar">
+          <i class="fa-solid fa-play" id="simPlayPauseIcon"></i>
+        </button>
+        <button class="sim-bar__ctrl" id="simStop" type="button" title="Parar">
+          <i class="fa-solid fa-stop"></i>
+        </button>
+      </div>
+
+      <div class="sim-bar__sep"></div>
+
+      <div class="sim-bar__group sim-bar__group--status">
+        <div class="sim-bar__status-list" id="simStatusList"></div>
+      </div>
+
+      <div class="sim-bar__actions">
+        <button class="sim-bar__close" id="btnSimClose" type="button" title="Fechar simulação">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button class="sim-bar__close sim-bar__close--minimize" id="btnSimMinimize" type="button" title="Minimizar simulação">
+          <i class="fa-solid fa-window-minimize"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+      </div>
+      <div id="pageSlot" aria-live="polite"></div>
+    </main>
+
+  </div>
+
+  <div class="create-equip" id="createEquipmentModal" aria-hidden="true">
+    <div class="create-equip__backdrop"></div>
+    <section class="create-equip__dialog" role="dialog" aria-modal="true" aria-labelledby="createEquipTitle">
+      <header class="create-equip__header">
+        <h3 class="create-equip__title" id="createEquipTitle">Criar equipamento</h3>
+        <button class="create-equip__close" type="button" aria-label="Fechar" data-close-create>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="create-equip__steps" id="createEquipSteps" aria-hidden="true"></div>
+
+      <div class="create-equip__grid" role="list">
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="smart_connect">
+          <img class="create-equip__img" src="./assets/img/equipamentos/smart_connect.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">SmartConnect ou Nexus</div>
+            <div class="create-equip__card-desc">
+              Painéis de controle SmartConnect ou Nexus para controle e monitoramento de pivôs centrais.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="smarttouch">
+          <img class="create-equip__img" src="./assets/img/equipamentos/smarttouch.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">SmartTouch ou UniversalTouch</div>
+            <div class="create-equip__card-desc">
+              Painéis de controle SmartTouch ou UniversalTouch da Bauer para controle e monitoramento de pivôs centrais.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="medidor">
+          <img class="create-equip__img" src="./assets/img/equipamentos/medidor.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Medidor de Nível</div>
+            <div class="create-equip__card-desc">
+              Medidor de nível para monitoramento de poços, rios e reservatórios.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="irripump">
+          <img class="create-equip__img" src="./assets/img/equipamentos/irripump.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Irripump</div>
+            <div class="create-equip__card-desc">
+              Painel de controle de bombeamentos para a casa de bombas.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="repetidora">
+          <img class="create-equip__img" src="./assets/img/equipamentos/repetidora.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Repetidora</div>
+            <div class="create-equip__card-desc">
+              Repetidoras de sinal, solares ou bivolt, para a rede mesh Irricontrol.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="pluviometro">
+          <img class="create-equip__img" src="./assets/img/equipamentos/pluviometro.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Pluviômetro</div>
+            <div class="create-equip__card-desc">
+              Pluviômetro para monitoramento de chuva e precipitação.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="estacao_metereologica">
+          <img class="create-equip__img" src="./assets/img/equipamentos/estacao_metereologica.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Estação Meteorológica</div>
+            <div class="create-equip__card-desc">
+              Estações meteorológicas para monitoramento de microclima e acesso à previsão do tempo.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="cosmofield">
+          <img class="create-equip__img" src="./assets/img/equipamentos/cosmofield.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Cosmofield</div>
+            <div class="create-equip__card-desc">
+              Sonda de umidade do solo Cosmofield para monitoramento hídrico da lavoura.
+            </div>
+          </div>
+        </button>
+
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="rainstar">
+          <img class="create-equip__img" src="./assets/img/equipamentos/rainstar.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Carretel</div>
+            <div class="create-equip__card-desc">
+              Carretéis Bauer da série Rainstar com Ecostar embarcada.
+            </div>
+          </div>
+        </button>
+        <button class="create-equip__card card" type="button" role="listitem" data-equip="linestar">
+          <img class="create-equip__img" src="./assets/img/equipamentos/smart_connect.png" alt="" />
+          <div class="create-equip__card-body">
+            <div class="create-equip__card-title">Linestar</div>
+            <div class="create-equip__card-desc">
+              Irrigador linear móvel Bauer Linestar com Ecostar integrado.
+            </div>
+          </div>
+        </button>
+      </div>
+      <footer class="create-equip__footer" id="createEquipFooter">
+        <button class="create-equip__btn create-equip__btn--draft btn" type="button" id="btnSaveDraft" style="display:none;">
+          <i class="fa-regular fa-floppy-disk"></i> Salvar rascunho
+        </button>
+        <div class="create-equip__footer-right">
+          <button class="create-equip__btn btn" type="button" id="btnCreateEquipPrev">
+            Anterior
+          </button>
+
+          <button class="create-equip__btn create-equip__btn--primary btn" type="button" id="btnCreateEquipNext">
+            Próximo
+          </button>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <div class="create-equip create-farm" id="createFarmModal" aria-hidden="true">
+    <div class="create-equip__backdrop" data-close-farm></div>
+    <section class="create-equip__dialog" role="dialog" aria-modal="true" aria-labelledby="createFarmTitle">
+      <header class="create-equip__header">
+        <h3 class="create-equip__title" id="createFarmTitle">Criar fazenda</h3>
+        <button class="create-equip__close" type="button" aria-label="Fechar" data-close-farm>
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="create-equip__steps" id="createFarmSteps" aria-hidden="true"></div>
+
+      <div class="create-equip__dynamic" id="createFarmBody"></div>
+
+      <footer class="create-equip__footer" id="createFarmFooter">
+        <div class="create-equip__footer-right">
+          <button class="create-equip__btn btn" type="button" id="btnCreateFarmPrev">
+            Anterior
+          </button>
+
+          <button class="create-equip__btn create-equip__btn--primary btn" type="button" id="btnCreateFarmNext">
+            Próximo
+          </button>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="./assets/js/vendor/heatmap.min.js" defer></script>
+  <script src="./assets/js/vendor/leaflet-heatmap-adapter.js" defer></script>
+
+  <!-- i18n (tradutor runtime pt-BR/en/es) -->
+  <script src="./assets/js/i18n/core.js" defer></script>
+  <script src="./assets/js/i18n/dict.js" defer></script>
+  <script src="./assets/js/i18n/dict.es.js" defer></script>
+
+  <!-- Helper central: normaliza vírgula->ponto em todo input numérico -->
+  <script src="./assets/js/core/numeric-input.js" defer></script>
+  <!-- Helper central: escapeHtml/parseLatLng/formatLatLng compartilhados
+       pelas páginas de equipamento (window.IcGeo) -->
+  <script src="./assets/js/core/geo-utils.js" defer></script>
+  <script src="./assets/js/core/date-input.js" defer></script>
+  <!-- Helper central: getActiveFarmEquipments compartilhado entre
+       SmartConnect e SmartTouch (window.IcFarm) -->
+  <script src="./assets/js/core/farm-utils.js" defer></script>
+  <!-- Helper central: pinIcon/uid compartilhados entre medidor/irripump/
+       pluviometro (window.IcMapIcons) -->
+  <script src="./assets/js/core/map-icons.js" defer></script>
+  <!-- destinationPoint compartilhado entre linestar/smart-connect também
+       mora em geo-utils.js acima (mesmo script, sem tag extra) -->
+  <!-- Helper central: toNumber/parseLatLngText/hashStr/seededRandom/
+       formatLastUpdate/setText/formatLastComm compartilhados entre
+       bombas/medidores/estações/repetidoras (window.IcEquipUtils) -->
+  <script src="./assets/js/core/equip-utils.js" defer></script>
+  <!-- Helper central: positionOverlay compartilhado entre várias telas de
+       edição com overlay (window.IcOverlay) -->
+  <script src="./assets/js/core/overlay-utils.js" defer></script>
+
+  <!-- JS UI/MAP -->
+  <script src="./assets/js/ui/sidebar.js" defer></script>
+  <script src="./assets/js/pages/mapa.js" defer></script>
+  <script src="./assets/js/components/map-weather.js" defer></script>
+  <script src="./assets/js/components/toast.js" defer></script>
+  <script src="./assets/js/components/op-modal.legacy.js" defer></script>
+  <script src="./assets/js/components/op-modal.dev.js" defer></script>
+  <script src="./assets/js/components/op-programacoes.legacy.js" defer></script>
+  <script src="./assets/js/components/op-programacoes.dev.js" defer></script>
+
+  <!-- Equipamentos Config/Templates -->
+  <script src="./assets/js/pages/equipamentos/smart-connect.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/smarttouch.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/irripump.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/medidor.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/rainstar.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/linestar.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/repetidora.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/estacao-metereologica.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/pluviometro.js" defer></script>
+  <script src="./assets/js/pages/equipamentos/cosmofield.js" defer></script>
+
+  <!-- Pages & Core Logic -->
+  <script src="./assets/js/api-config.js" defer></script>
+  <script src="./assets/js/pages/create-equipment.js" defer></script>
+  
+  <!-- Create Farm -->
+  <script src="./assets/js/pages/create-farm/core.state.js" defer></script>
+  <script src="./assets/js/pages/create-farm/core.rules.js" defer></script>
+  <script src="./assets/js/pages/create-farm/view.map.js" defer></script>
+  <script src="./assets/js/pages/create-farm/view.render.js" defer></script>
+  <script src="./assets/js/pages/create-farm/feature.events.js" defer></script>
+  <script src="./assets/js/pages/create-farm/index.js" defer></script>
+
+  <!-- Pluviometria -->
+  <script src="./assets/js/pages/pluviometria/core.data.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/core.state.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/core.dom.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.periodPicker.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.cards.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.rain.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.events.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.maintenance.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/feature.reports.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/view.map.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/view.rainheatmap.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/view.data.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/view.edit.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/view.details.js" defer></script>
+  <script src="./assets/js/pages/pluviometria/index.js" defer></script>
+
+  <!-- Outros Equipamentos Details -->
+  <script src="./assets/js/pages/medidores/view.details.js" defer></script>
+  <script src="./assets/js/pages/medidores/view.edit.js" defer></script>
+  <script src="./assets/js/pages/medidores/index.js" defer></script>
+  <script src="./assets/js/pages/bombas/view.details.js" defer></script>
+  <script src="./assets/js/pages/bombas/view.edit.js" defer></script>
+  <script src="./assets/js/pages/bombas/view.edit.gh.js" defer></script>
+  <script src="./assets/js/pages/bombas/index.js" defer></script>
+  <script src="./assets/js/pages/estacoes/view.details.js" defer></script>
+  <script src="./assets/js/pages/estacoes/weatherstation-details.js" defer></script>
+  <script src="./assets/js/pages/estacoes/modal.js" defer></script>
+  <script src="./assets/js/pages/estacoes/index.js" defer></script>
+  <script src="./assets/js/pages/repetidoras/view.edit.js" defer></script>
+
+  <!-- Modulo Pivot -->
+  <script src="./assets/js/pages/pivos/index.js" defer></script>
+  <script src="./assets/js/pages/pivos/view.data.js" defer></script>
+  <script src="./assets/js/pages/pivos/view.charts.js" defer></script>
+  <script src="./assets/js/pages/pivos/view.details.js" defer></script>
+  <script src="./assets/js/pages/pivos/view.details.smarttouch.js" defer></script>
+  <script src="./assets/js/pages/pivos/linestar-details.js" defer></script>
+  <script src="./assets/js/pages/pivos/linestar-edit.js" defer></script>
+  <script src="./assets/js/pages/carreteis/index.js" defer></script>
+  <script src="./assets/js/pages/carreteis/edit.js" defer></script>
+  <script src="./assets/js/pages/pivos/view.edit.js" defer></script>
+
+  <!-- Chuva Geo -->
+  <script src="./assets/js/pages/chuva-geo/core.data.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/core.state.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/core.dom.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/layers.rain.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/layers.irrigation.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/ui.panel.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo/index.js" defer></script>
+  <script src="./assets/js/pages/chuva-geo.js" defer></script>
+
+  <!-- Outras Páginas -->
+  <script src="./assets/js/pages/fazenda-edit/index.js" defer></script>
+  <script src="./assets/js/pages/fazenda-edit/users.js" defer></script>
+  <script src="./assets/js/pages/talhoes/index.js" defer></script>
+  <script src="./assets/js/pages/relatorios/index.js" defer></script>
+  <script src="./assets/js/pages/gestao/index.js" defer></script>
+  <script src="./assets/js/pages/monitoramento/index.js" defer></script>
+  <script src="./assets/js/pages/telemetria/index.js" defer></script>
+
+  <!-- Cadastros -->
+  <script src="./assets/js/pages/cadastros/core.encoding.js" defer></script>
+  <script src="./assets/js/pages/cadastros/core.state.js" defer></script>
+  <script src="./assets/js/pages/cadastros/core.data.js" defer></script>
+  <script src="./assets/js/pages/cadastros/core.geo.js" defer></script>
+  <script src="./assets/js/pages/cadastros/ui.components.js" defer></script>
+  <script src="./assets/js/pages/cadastros/ui.toolbar.js" defer></script>
+  <script src="./assets/js/pages/cadastros/view.maps.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.fazendas.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.talhoes.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.equipamentos.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.energia.js" defer></script>
+  <script src="./assets/js/pages/cadastros/view.energia.js" defer></script>
+  <script src="./assets/js/pages/cadastros/view.pivos.js" defer></script>
+  <script src="./assets/js/pages/cadastros/view.pivos.map.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.pivos.render.js" defer></script>
+  <script src="./assets/js/pages/cadastros/view.sections.js" defer></script>
+  <script src="./assets/js/pages/cadastros/controller.cadastros.js" defer></script>
+  <script src="./assets/js/pages/cadastros/actions.save.js" defer></script>
+  <script src="./assets/js/pages/cadastros/actions.delete.js" defer></script>
+  <script src="./assets/js/core/equipment-delete-shortcut.js" defer></script>
+  <script src="./assets/js/pages/cadastros/index.js" defer></script>
+  <script src="./assets/js/pages/cadastros/form.pivos.js" defer></script>
+
+  <!-- Config & Sim -->
+  <script src="./assets/js/pages/config/index.js" defer></script>
+  <script src="./assets/js/pages/notificacoes/index.js" defer></script>
+  <script src="./assets/js/pages/cosmofield/chart.js" defer></script>
+  <script src="./assets/js/pages/cosmofield/index.js" defer></script>
+  <script src="./assets/js/pages/cosmofield/cosmofield-details.js" defer></script>
+  <script src="./assets/js/pages/cosmofield/modal.js" defer></script>
+  <script src="./assets/js/pages/faturamento/data.js" defer></script>
+  <script src="./assets/js/pages/faturamento/contract.js" defer></script>
+  <script src="./assets/js/pages/faturamento/history.js" defer></script>
+  <script src="./assets/js/pages/faturamento/api.js" defer></script>
+  <script src="./assets/js/pages/faturamento/index.js" defer></script>
+  <script src="./assets/js/demo-carretel-sim.js" defer></script>
+  <script src="./assets/js/simulation.js" defer></script>
+  <script src="./assets/js/app.js" defer></script>
+  <script src="./assets/js/demo.js" defer></script>
+  <script src="./assets/js/demo-quick-create.js" defer></script>
+
+</body>
+
+</html>

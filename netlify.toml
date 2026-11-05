@@ -1,0 +1,8 @@
+[build]
+  publish = "frontend"
+  command = "" # No build command needed for this static project
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

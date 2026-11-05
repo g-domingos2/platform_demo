@@ -1,0 +1,1600 @@
+/* Edit Pivot Specific Styles (built on top of edit-panel) */
+
+.sc-input-group input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+.edit-panel__grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.edit-panel__grid-4 .edit-panel__field-box:hover {
+  border-color: #e5e7eb !important;
+}
+
+.edit-panel__grid-4 .edit-panel__field-box label {
+  padding-bottom: 10px;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 10px;
+}
+
+.edit-panel__input.is-disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+body.is-pivo-edit {
+  overflow-y: auto !important;
+  height: auto !important;
+}
+
+.edit-panel__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.edit-panel__input-wrap .edit-panel__input {
+  padding-right: 60px;
+}
+
+.edit-panel__input-wrap .edit-panel__time-icon {
+  position: absolute;
+  right: 12px;
+  color: #94a3b8;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.edit-panel__input-actions {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-panel__input-actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.edit-panel__input-actions button:hover {
+  color: #0f172a;
+}
+
+/* Radio reload: loading state */
+.edit-panel__field-box.is-radio-loading input {
+  background: #e2e8f0 !important;
+  color: transparent !important;
+  pointer-events: none;
+}
+.edit-panel__field-box.is-radio-loading .edit-panel__input-actions > button {
+  display: none;
+}
+
+/* Radio reload: loading passivo (campo da central) */
+.edit-panel__field-box.is-radio-loading-passive input {
+  color: transparent !important;
+  pointer-events: none;
+}
+.edit-panel__field-box.is-radio-loading-passive .edit-panel__input-actions > button {
+  display: none;
+}
+
+/* Radio reload: success state */
+.edit-panel__field-box.is-radio-success input {
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
+  pointer-events: none;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.edit-panel__field-box.is-radio-success .edit-panel__input-actions > button {
+  display: none;
+}
+
+/* Radio reload: success passivo (campo da central) */
+.edit-panel__field-box.is-radio-passive input {
+  pointer-events: none;
+}
+.edit-panel__field-box.is-radio-passive .edit-panel__input-actions > button {
+  display: none;
+}
+
+.edit-panel__radio-spinner--passive {
+  border-color: #cbd5e1;
+  border-top-color: #94a3b8;
+}
+
+.edit-panel__radio-check--passive {
+  filter: invert(60%) sepia(0%) saturate(0%) brightness(80%);
+}
+
+/* Spinner / check indicator */
+.edit-panel__radio-status {
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.edit-panel__radio-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #64748b;
+  border-radius: 50%;
+  animation: radioFieldSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes radioFieldSpin {
+  to { transform: rotate(360deg); }
+}
+
+.edit-panel__radio-check {
+  width: 16px;
+  height: 16px;
+  filter: invert(52%) sepia(96%) saturate(410%) hue-rotate(95deg) brightness(94%) contrast(89%);
+  flex-shrink: 0;
+}
+
+.edit-panel__tooltip-icon {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-left: 4px;
+  cursor: help;
+  position: relative;
+}
+
+.edit-panel__tooltip-icon[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f1f1f;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: normal;
+  width: 240px;
+  max-width: 240px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 1100;
+  font-family: inherit;
+}
+
+.edit-panel__tooltip-icon[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1e293b;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 1100;
+}
+
+.edit-panel__tooltip-icon[data-tooltip]:hover::before,
+.edit-panel__tooltip-icon[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
+/* Variante para ícones perto da borda direita do painel: a caixa abre para a
+   esquerda em vez de centralizada, pra não vazar pra fora da tela. */
+.edit-panel__tooltip-icon--right[data-tooltip]::before {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+.edit-panel__tooltip-icon--right[data-tooltip]::after {
+  left: auto;
+  right: 8px;
+  transform: none;
+}
+
+.edit-panel__input-suffix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.edit-panel__input-suffix-wrap .edit-panel__input {
+  width: 100%;
+  min-width: 0;
+  padding-right: 48px;
+}
+
+.edit-panel__input-suffix-wrap .edit-panel__input-prefix {
+  position: absolute;
+  left: 12px;
+  color: #64748b;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.edit-panel__input-suffix {
+  position: absolute;
+  right: 12px;
+  color: #64748b;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.edit-panel__input[type="time"] {
+  cursor: pointer;
+  accent-color: #16a34a;
+}
+
+/* sc-input-group no contexto edit-panel */
+.edit-panel .sc-input-group {
+  border-radius: 8px;
+}
+
+.edit-panel .sc-input-group .equip-input {
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+.edit-panel .sc-input-group .equip-input:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.sc-input-prefix {
+  border-right: 1px solid rgba(15, 23, 42, .12);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.linestar-segment-toolbar {
+  display: grid;
+  grid-template-columns: minmax(320px, 450px) minmax(0, 1fr);
+  gap: 20px 24px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.linestar-segment-toolbar__left,
+.linestar-segment-toolbar__right {
+  min-width: 0;
+}
+
+.linestar-segment-toolbar__left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.linestar-segment-toolbar__right {
+  justify-self: stretch;
+}
+
+.linestar-segment-toolbar__title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linestar-segment-toolbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.linestar-segment-toolbar__segment-list {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.linestar-endgun-panel {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+}
+
+.linestar-endgun-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.linestar-endgun-panel__title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linestar-endgun-panel__hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.linestar-endgun-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.linestar-endgun-panel__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.linestar-endgun-panel__side {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 12px;
+}
+
+.linestar-endgun-panel__side-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.linestar-endgun-panel__side-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1d4ed8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linestar-endgun-panel__side-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.linestar-endgun-panel__side-list .pivo-seg-num-btn {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+}
+
+.linestar-endgun-panel__side .linestar-segment-toolbar__segment-list {
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-top: 8px;
+  overflow: visible;
+}
+
+.linestar-endgun-panel__side .linestar-segment-toolbar__segment-list .pivo-seg-num-btn,
+.linestar-endgun-panel__side .linestar-segment-toolbar__segment-list .pivo-seg-add-btn,
+.linestar-endgun-panel__side .linestar-segment-toolbar__segment-list .pivo-seg-del-btn {
+  width: 30px;
+  height: 30px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.linestar-endgun-panel__segment-btn {
+  background: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.24);
+}
+
+.linestar-endgun-panel__segment-btn.is-off {
+  background: #e2e8f0;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.linestar-endgun-panel__segment-btn.is-off.is-active {
+  box-shadow: 0 0 0 3px #cbd5e1, 0 1px 4px rgba(0,0,0,0.12);
+}
+
+@media (max-width: 1180px) {
+  .linestar-segment-toolbar {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+/* Ficha técnica grids — espaçamento e reset de field-box */
+.pivo-edit-specifics .edit-panel__grid-3 {
+  margin-top: 0px;
+  /* Distância vertical entre linhas dos blocos Geral e Bombeamento.
+     !important para vencer o margin-bottom: 12px inline dos grids do
+     Bombeamento e manter o mesmo ritmo nos dois blocos. */
+  margin-bottom: 8px !important;
+}
+
+.pivo-edit-specifics .edit-panel__grid-3 > .edit-panel__field-box {
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  /* Respiro das linhas do bloco Geral (reduzido a pedido). */
+  margin-bottom: 10px;
+}
+
+/* Blocos toggláveis (Pluviômetro, Autorreversão, Controlador de tensão) e
+   blocos da Ficha Técnica do SmartTouch/Centerstar (grids dentro de .equip-form):
+   o primeiro grid mantém o margin-top que o separa do toggle/título; do
+   segundo em diante, zera o margin-top inline para seguir o mesmo ritmo
+   das demais linhas da página. */
+.pivo-edit-specifics [id$="Fields"] > .edit-panel__grid-3:not(:first-child),
+.pivo-edit-specifics .equip-form > .edit-panel__grid-3:not(:first-child) {
+  margin-top: 0 !important;
+}
+
+.pivo-edit-specifics .edit-panel__select-field {
+  width: 100%;
+}
+
+.edit-panel__select-field.is-open {
+  z-index: 1000;
+}
+
+.edit-panel__select-field.is-open .edit-panel__select-menu {
+  display: block;
+}
+
+#pivoSegNameList {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.edit-panel__input-actions button i {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+/* Override properties for field boxes in Pivo Edit */
+.is-pivo-edit .edit-panel__field-box {
+  border-radius: 8px; /* Less rounded corners */
+  transition: box-shadow 0.2s, border-color 0.2s; 
+}
+
+.is-pivo-edit .edit-panel__field-box:hover {
+  transform: none; /* Remove "going up" effect */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Same as default state, no elevation */
+  border-color: #16a34a; /* Borda verde no hover do bloco do campo */
+}
+
+.is-pivo-edit .edit-panel__input:not(:disabled):hover,
+.is-pivo-edit .edit-panel__select-btn:not(:disabled):hover {
+  border-color: #16a34a;
+}
+
+.is-pivo-edit .edit-panel__select-btn {
+  border-radius: 8px;
+}
+
+/* Adjust all inputs and buttons height to make them compact and visually aligned */
+.is-pivo-edit .edit-panel__input,
+.is-pivo-edit .edit-panel__select-btn,
+.is-pivo-edit .edit-panel__btn {
+  height: 35px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+#crtEditCreateZoneBtn {
+  width: 100%;
+  min-height: 36px;
+  justify-content: center;
+  border-style: dashed;
+  border-color: #cbd5e1;
+  background: #fff;
+  color: #64748b;
+}
+
+#crtEditCreateZoneBtn i {
+  color: #94a3b8;
+}
+
+#crtEditCreateZoneBtn:disabled,
+#crtEditCreateZoneBtn.is-disabled {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  color: #b6bcc6;
+  cursor: not-allowed;
+}
+
+#crtEditCreateZoneBtn:disabled i,
+#crtEditCreateZoneBtn.is-disabled i {
+  color: #c4c9d1;
+}
+
+#crtEditCreateZoneBtn:not(:disabled):not(.is-disabled):hover {
+  border-color: #16a34a;
+  background: #fff;
+  color: #15803d;
+}
+
+#crtEditCreateZoneBtn:not(:disabled):not(.is-disabled):hover i {
+  color: #16a34a;
+}
+
+/* Campo "Tipo de comunicação" (equip-select customizado): mesmo tamanho do
+.is-pivo-edit #pivoEditCommType__list,
+.is-pivo-edit .equip-select__trigger[aria-controls="pivoEditCommType__list"] {
+  border-radius: 8px;
+}
+.is-pivo-edit .equip-select__trigger[aria-controls="pivoEditCommType__list"] {
+  height: 35px;
+  min-height: 35px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 13px;
+}
+
+/* Location section typography */
+.pivo-edit__loc-map {
+  border: 1px solid #e5e7eb;
+}
+
+.pivo-edit__loc-heading {
+  font-size: 16px;
+  margin: 0 0 8px;
+  color: #0f172a;
+}
+
+.pivo-edit__loc-desc {
+  font-size: 13px;
+  color: rgba(0,0,0,0.88);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Relógio do equipamento (GH + bomba normal): no modo automático os campos
+   de data/hora ficam desabilitados (cinza); no modo manual voltam ao normal,
+   editáveis, e abrem o picker custom (.seg-datepicker) verde ao clicar. */
+.gh-clock-value:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.gh-clock-value:not(:disabled) {
+  cursor: pointer;
+}
+
+[data-theme="dark"] .gh-clock-value:disabled {
+  background: #141414;
+  color: #64748b;
+}
+
+.gh-clock-btn {
+  color: #64748b;
+  transition: color .15s ease, background-color .15s ease;
+}
+
+.gh-clock-btn:hover {
+  color: #16a34a;
+  background: #f0fdf4;
+}
+
+.gh-clock-btn:disabled {
+  cursor: not-allowed;
+  color: #cbd5e1;
+  background: transparent;
+}
+
+[data-theme="dark"] .gh-clock-btn:hover {
+  color: #4ade80;
+  background: rgba(74, 222, 128, .12);
+}
+
+[data-theme="dark"] .gh-clock-btn:disabled {
+  color: #475569;
+}
+
+.pivo-edit__cardinal-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+/* Botões cardeais travados (ângulo máximo < 360°): visíveis mas sem interação. */
+.pivo-cardinal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pivo-edit__canhao-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.pivo-edit__check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.pivo-edit__check-label {
+  cursor: pointer;
+  margin: 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+.pivo-edit__switch-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pivo-edit__switch-heading {
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pivo-edit__days-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.pivo-edit__day-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pivo-edit__canhao-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.pivo-edit__input-hint {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.pivo-edit__subsection-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+/* Naked form field wrapper (no borders / padding like field-box) */
+.pivo-edit__field {
+  margin-bottom: 16px;
+}
+
+/* Bombeamento: mesmo respiro reduzido das linhas do bloco Geral. */
+.pivo-edit-specifics .edit-panel__grid-3 > .pivo-edit__field {
+  margin-bottom: 10px;
+}
+
+.pivo-edit__field.is-disabled,
+.edit-panel__field-box.is-disabled {
+  cursor: not-allowed;
+}
+/* Campo bloqueado: só o input fica cinza; o título mantém a cor normal. */
+.edit-panel__field-box.is-disabled > label {
+  cursor: not-allowed;
+}
+.edit-panel__field-box.is-disabled .sc-input-group {
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #f8fafc;
+}
+.edit-panel__field-box.is-disabled .equip-input {
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+.edit-panel__field-box.is-disabled .sc-input-suffix {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: #94a3b8;
+}
+.pivo-edit__field.is-disabled > label {
+  cursor: not-allowed;
+}
+.pivo-edit__field.is-disabled .edit-panel__input,
+.pivo-edit__field.is-disabled .edit-panel__select-btn,
+.pivo-edit__field.is-disabled .sc-input-group,
+.pivo-edit__field.is-disabled .equip-input,
+.pivo-edit__field.is-disabled .sc-input-suffix {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pivo-edit__field.is-disabled .edit-panel__input-suffix {
+  color: #94a3b8;
+}
+
+#pivoEditVoltageFields.is-disabled .sc-input-suffix {
+  color: #94a3b8;
+}
+#pivoEditVoltageFields.is-disabled .sc-input-group {
+  pointer-events: none;
+}
+
+#pico1Container.is-disabled .sc-input-group,
+#pico2Container.is-disabled .sc-input-group {
+  pointer-events: none;
+}
+/* Horário de Pico: título cinza quando desabilitado, preto quando habilitado. */
+#pico1Container.is-disabled .pivo-edit__field > label,
+#pico2Container.is-disabled .pivo-edit__field > label {
+  color: #94a3b8;
+}
+#pico1Container.is-disabled .sc-input-suffix,
+#pico2Container.is-disabled .sc-input-suffix,
+#bmbPeak1Container.is-disabled .sc-input-suffix,
+#bmbPeak2Container.is-disabled .sc-input-suffix {
+  color: #94a3b8;
+}
+
+#bmbPeak1Container.is-disabled .sc-input-group,
+#bmbPeak2Container.is-disabled .sc-input-group {
+  pointer-events: none;
+}
+#bmbPeak1Container.is-disabled .pivo-edit__field > label,
+#bmbPeak2Container.is-disabled .pivo-edit__field > label {
+  color: #94a3b8;
+}
+
+.pivo-edit__field > label,
+.pivo-edit__field > .pivo-edit__field-label {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.js-linestar-hose-side:hover,
+.js-linestar-hose-side.is-active {
+  border-color: #16a34a;
+  background: #fff;
+  color: #16a34a;
+}
+
+.js-linestar-hose-side:hover i,
+.js-linestar-hose-side.is-active i {
+  color: #16a34a;
+}
+
+.pivo-edit__field label.pivo-edit__peak-section.is-disabled {
+  color: #94a3b8;
+}
+
+/* Toggle Switch */
+.pivo-edit__switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.pivo-edit__switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.pivo-edit__switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #dde2e8;
+  transition: .4s;
+  border-radius: 20px;
+}
+
+.pivo-edit__switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .pivo-edit__switch-slider {
+  background-color: #16a34a;
+}
+
+input:checked + .pivo-edit__switch-slider:before {
+  transform: translateX(16px);
+}
+
+/* Segmented Control */
+.pivo-edit__segmented-control {
+  display: inline-flex;
+  overflow: hidden;
+  width: auto;
+}
+
+.pivo-edit__segmented-control button {
+  padding: 7px 16px;
+  border: none;
+  background-color: #f8fafc;
+  cursor: pointer;
+  font-size: 13px;
+  color: #6b7280;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Sem divisor entre os botões (a borda verde do selecionado já separa). */
+.pivo-edit__segmented-control button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.pivo-edit__segmented-control button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.pivo-edit__segmented-control button.is-active {
+  background-color: #fff;
+  color: #10b981;
+  font-weight: 600;
+  /* Borda verde do selecionado (os botões não têm borda própria; o inset
+     desenha o contorno por dentro, igual ao efeito do .op-form__seg-btn). */
+  box-shadow: inset 0 0 0 1px #10b981;
+}
+
+.pivo-edit__segmented-control button:hover:not(.is-active) {
+  background-color: #e5e7eb;
+}
+
+.pivo-edit__segmented-control button:disabled {
+  background-color: #e5e7eb;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* ── Section head ──────────────────────────────────────────── */
+.edit-panel__section-head h2 {
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 600;
+  font-size: 30px;
+  margin: 0;
+}
+
+.edit-panel__section-head > span {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.edit-panel__section-head .edit-panel__btn {
+  width: fit-content;
+  margin-top: 20px;
+}
+
+/* ── Days row checkboxes ───────────────────────────────────── */
+.pivo-edit__day-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #16a34a;
+  cursor: pointer;
+}
+
+/* ── Peak sections ─────────────────────────────────────────── */
+.pivo-edit__peak-section .pivo-edit__switch-row {
+  margin-bottom: 12px;
+}
+
+.pivo-edit__peak-section + .pivo-edit__peak-section {
+  margin-top: 24px;
+}
+
+/* ── Section title margins ─────────────────────────────────── */
+/* Linha divisória cinza entre as subseções do edit do Nexus
+   (Conectividade, Ficha Técnica, Pluviômetro, etc.). O .pref-divider não
+   tinha estilo, então ficava invisível — aqui ele recebe a mesma linha de
+   1px usada no SmartTouch (.edit-panel__section-divider). Escopado ao edit
+   do pivô (e da repetidora, mesmo problema) para não afetar config/faturamento. */
+.pivo-edit-specifics .pref-divider,
+#repEditPanel .pref-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 20px 0 4px;
+}
+
+[data-theme="dark"] .pivo-edit-specifics .pref-divider,
+[data-theme="dark"] #repEditPanel .pref-divider {
+  background: rgba(255, 255, 255, .08);
+}
+
+/* Seção Segmentos: título, parágrafo e subtítulos usam cor inline (fora do
+   fluxo de tema), então precisam de !important para virar claros no dark. */
+[data-theme="dark"] .pivo-edit__segments-section .edit-panel__divider-label {
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .pivo-edit__segments-section > p {
+  color: #94a3b8 !important;
+}
+
+#pivoEditHorarios .pref-section-title {
+  margin-bottom: 12px;
+}
+
+.pivo-edit__subsection-block .pref-section-title {
+  margin-bottom: 16px;
+}
+
+/* =====================================================
+   Dark Mode — Editar Pivô specific classes
+   ===================================================== */
+[data-theme="dark"] .pivo-edit__field > label,
+[data-theme="dark"] .pivo-edit__field > .pivo-edit__field-label {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .pivo-edit__switch-slider {
+  background-color: #2a2a2a;
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control {
+  border-color: rgba(255,255,255,.12);
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control button {
+  background-color: #141414;
+  color: #64748b;
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control button:not(:last-child) {
+  border-right-color: rgba(255,255,255,.12);
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control button.is-active {
+  background-color: #2a2a2a;
+  color: #e2e8f0;
+  font-weight: 400;
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control button:hover:not(.is-active) {
+  background-color: #141414;
+}
+
+[data-theme="dark"] .pivo-edit__segmented-control button:disabled {
+  background-color: #141414;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .linestar-endgun-panel {
+  background: linear-gradient(180deg, #121212 0%, #0d0d0d 100%);
+  border-color: rgba(59,130,246,.25);
+}
+
+[data-theme="dark"] .linestar-endgun-panel__title {
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .linestar-endgun-panel__hint {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .linestar-endgun-panel__side {
+  background: rgba(15,20,30,0.72);
+  border-color: rgba(255,255,255,.12);
+}
+
+[data-theme="dark"] .linestar-endgun-panel__side-title {
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .linestar-endgun-panel__segment-btn.is-off {
+  background: #2a2a2a;
+  color: #64748b;
+}
+
+[data-theme="dark"] .linestar-segment-toolbar__title {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .js-linestar-hose-side:hover,
+[data-theme="dark"] .js-linestar-hose-side.is-active {
+  background: #141414;
+}
+
+[data-theme="dark"] .js-linestar-hose-side:disabled {
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .edit-panel__input-actions button {
+  color: #64748b;
+}
+
+[data-theme="dark"] .edit-panel__input-actions button:hover {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .is-pivo-edit .edit-panel__field-box:hover {
+  border-color: #4ade80;
+}
+
+[data-theme="dark"] .edit-panel__grid-4 .edit-panel__field-box,
+[data-theme="dark"] .edit-panel__grid-4 .edit-panel__field-box:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .edit-panel__grid-4 .edit-panel__field-box label {
+  border-bottom-color: rgba(255, 255, 255, .06);
+}
+
+/* h2/span/p do section-head levam cor inline no HTML (fora do fluxo de
+   tema), por isso precisam de !important para virar claros no dark. */
+[data-theme="dark"] .edit-panel__section-head h2 {
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .edit-panel__section-head > span {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+[data-theme="dark"] .edit-panel__section-head p {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .edit-panel__field-box.is-disabled .sc-input-group,
+[data-theme="dark"] .pivo-edit__field.is-disabled .sc-input-group,
+[data-theme="dark"] .pivo-edit__field.is-disabled .edit-panel__input,
+[data-theme="dark"] .pivo-edit__field.is-disabled .edit-panel__select-btn {
+  background: #141414;
+}
+
+[data-theme="dark"] .edit-panel__field-box.is-disabled .equip-input,
+[data-theme="dark"] .pivo-edit__field.is-disabled .equip-input {
+  background: #141414;
+  color: #64748b;
+}
+
+[data-theme="dark"] .edit-panel__field-box.is-disabled .sc-input-suffix,
+[data-theme="dark"] .pivo-edit__field.is-disabled .sc-input-suffix,
+[data-theme="dark"] .pivo-edit__field.is-disabled .edit-panel__input-suffix {
+  background: #141414;
+  color: #64748b;
+}
+
+/* ── Seg date picker ───────────────────────────────────────── */
+.seg-datepicker {
+  position: absolute;
+  z-index: 9999;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 12px;
+  width: 260px;
+  user-select: none;
+}
+
+.seg-datepicker__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.seg-datepicker__nav button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.seg-datepicker__nav button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.seg-datepicker__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.seg-datepicker__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.seg-datepicker__weekdays span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 2px 0;
+}
+
+.seg-datepicker__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.seg-datepicker__day {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #0f172a;
+  padding: 5px 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.seg-datepicker__day:hover {
+  background: #f8fafc;
+}
+
+.seg-datepicker__day.is-today {
+  border: 1.5px solid #16a34a;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.seg-datepicker__day.is-selected {
+  background: #16a34a;
+  color: #fff;
+  font-weight: 600;
+}
+
+.seg-datepicker__day.is-muted {
+  color: #cbd5e1;
+  cursor: default;
+}
+
+.seg-datepicker__day.is-muted:hover {
+  background: transparent;
+}
+
+.seg-datepicker__footer {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.seg-datepicker__today-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+.seg-datepicker__today-btn:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .seg-datepicker {
+  background: #141414;
+  border-color: rgba(255,255,255,.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+[data-theme="dark"] .seg-datepicker__title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .seg-datepicker__nav button {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .seg-datepicker__nav button:hover {
+  background: rgba(255,255,255,.08);
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .seg-datepicker__day {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .seg-datepicker__day:hover {
+  background: rgba(255,255,255,.08);
+}
+
+[data-theme="dark"] .seg-datepicker__day.is-muted {
+  color: #334155;
+}
+
+[data-theme="dark"] .seg-datepicker__day.is-muted:hover {
+  background: transparent;
+}
+
+/* ── Relógio do equipamento (GH): picker de data + hora ───────
+   Reaproveita o .seg-datepicker (calendário) e acrescenta as colunas
+   de hora/minuto ao lado, no mesmo verde padrão do sistema. */
+.gh-clock-picker {
+  width: auto;
+}
+
+.seg-datepicker__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.seg-datepicker__time {
+  display: flex;
+  gap: 4px;
+  padding-left: 10px;
+  border-left: 1px solid #e5e7eb;
+}
+
+.seg-datepicker__time-col {
+  width: 34px;
+  max-height: 190px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, .4) transparent;
+}
+
+.seg-datepicker__time-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #0f172a;
+  padding: 5px 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.seg-datepicker__time-item:hover {
+  background: #f8fafc;
+}
+
+.seg-datepicker__time-item.is-selected {
+  background: #16a34a;
+  color: #fff;
+  font-weight: 600;
+}
+
+.seg-datepicker__footer--split {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.seg-datepicker__ok-btn {
+  background: #16a34a;
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.seg-datepicker__ok-btn:hover {
+  background: #15803d;
+}
+
+[data-theme="dark"] .seg-datepicker__time {
+  border-left-color: rgba(255,255,255,.1);
+}
+
+[data-theme="dark"] .seg-datepicker__time-item {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .seg-datepicker__time-item:hover {
+  background: rgba(255,255,255,.08);
+}
+
+/* ── Seg name dropdown ─────────────────────────────────────── */
+.pivo-seg-name-wrap {
+  position: relative;
+}
+
+.pivo-seg-name-input,
+.pivo-select-custom {
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.pivo-select-custom {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.pivo-seg-name-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.pivo-seg-name-list {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 9999;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.pivo-seg-name-list button {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #1e293b;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.pivo-seg-name-list button:hover,
+.pivo-seg-name-list button.is-active {
+  background: #f1f5f9;
+}
+
+[data-theme="dark"] .pivo-seg-name-list {
+  background: #141414;
+  border-color: rgba(255,255,255,.1);
+  box-shadow: 0 -4px 16px rgba(0,0,0,.3);
+}
+
+[data-theme="dark"] .pivo-seg-name-list button {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .pivo-seg-name-list button:hover,
+[data-theme="dark"] .pivo-seg-name-list button.is-active {
+  background: rgba(255,255,255,.08);
+}
+
+[data-theme="dark"] .pivo-edit__loc-map {
+  border-color: rgba(255,255,255,.08);
+}
+
+[data-theme="dark"] .pivo-edit__loc-heading {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .pivo-edit__loc-desc {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-edit__cardinal-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-edit__subsection-title {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-edit__canhao-heading {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .pivo-edit__input-hint {
+  color: #64748b;
+}
+
+[data-theme="dark"] .pivo-edit__check-row {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-edit__check-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivo-edit__switch-heading {
+  color: #f1f5f9;
+}
+
+/* Padrão dark aprovado: gradiente com neblina branca no topo no fundo do
+   painel (fora do card); o card (.edit-panel__body/__content) segue #141414
+   via regras genéricas do config.css. Id no seletor vence a regra genérica
+   [data-theme="dark"] .edit-panel (preto sólido) do config.css.
+   Stops em vh: o painel rola e é mais alto que a tela. */
+[data-theme="dark"] #pivoEditOverlay .edit-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0, rgba(255, 255, 255, 0) 20vh), linear-gradient(180deg, #0a0a0a 0, #141414 100vh);
+}
+
+/* Card do edit de pivô no tom cinza padrão (#141414), como na config page.
+   Id no seletor garante vitória sobre regras genéricas de outras páginas. */
+[data-theme="dark"] #pivoEditOverlay .edit-panel__body,
+[data-theme="dark"] #pivoEditOverlay .edit-panel__content,
+[data-theme="dark"] #pivoEditOverlay .edit-panel__nav {
+  background: #141414;
+}
+
+/* Bordas arredondadas do card, igual à config page: o overlay força
+   overflow visible no body (quebra o clipping do radius), então os
+   cantos externos vão direto no nav (esquerda) e no content (direita). */
+#pivoEditOverlay .edit-panel__body {
+  border-radius: 28px;
+}
+
+#pivoEditOverlay .edit-panel__nav {
+  border-top-left-radius: 28px;
+  border-bottom-left-radius: 28px;
+}
+
+#pivoEditOverlay .edit-panel__content {
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+/* ── Carretel Edit Overlay (mesmo padrão do pivô) ───────────────────── */
+/* Padrão dark aprovado: gradiente com neblina branca no topo no fundo do
+   painel (fora do card); o card (.edit-panel__body/__content) segue #141414
+   via regras genéricas do config.css. Id no seletor vence a regra genérica
+   [data-theme="dark"] .edit-panel (preto sólido) do config.css.
+   Stops em vh: o painel rola e é mais alto que a tela. */
+[data-theme="dark"] #crtEditOverlay .edit-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0, rgba(255, 255, 255, 0) 20vh), linear-gradient(180deg, #0a0a0a 0, #141414 100vh);
+}
+
+/* Card do edit de carretel no tom cinza padrão (#141414), como na config page. */
+[data-theme="dark"] #crtEditOverlay .edit-panel__body,
+[data-theme="dark"] #crtEditOverlay .edit-panel__content,
+[data-theme="dark"] #crtEditOverlay .edit-panel__nav {
+  background: #141414;
+}
+
+/* Bordas arredondadas do card, igual à config page: o overlay força
+   overflow visible no body (quebra o clipping do radius), então os
+   cantos externos vão direto no nav (esquerda) e no content (direita). */
+#crtEditOverlay .edit-panel__body {
+  border-radius: 28px;
+}
+
+#crtEditOverlay .edit-panel__nav {
+  border-top-left-radius: 28px;
+  border-bottom-left-radius: 28px;
+}
+
+#crtEditOverlay .edit-panel__content {
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+/* ── Weather Station Edit Overlay (mesmo padrão do pivô/carretel) ───────────────────── */
+/* Padrão dark aprovado: gradiente com neblina branca no topo no fundo do
+   painel (fora do card); o card (.edit-panel__body/__content) segue #141414
+   via regras genéricas do config.css. Id no seletor vence a regra genérica
+   [data-theme="dark"] .edit-panel (preto sólido) do config.css.
+   Stops em vh: o painel rola e é mais alto que a tela. */
+[data-theme="dark"] #estdEditOverlay .edit-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04) 0, rgba(255, 255, 255, 0) 20vh), linear-gradient(180deg, #0a0a0a 0, #141414 100vh);
+}
+
+/* Card do edit da weather station no tom cinza padrão (#141414), como na config page. */
+[data-theme="dark"] #estdEditOverlay .edit-panel__body,
+[data-theme="dark"] #estdEditOverlay .edit-panel__content,
+[data-theme="dark"] #estdEditOverlay .edit-panel__nav {
+  background: #141414;
+}
+
+/* Bordas arredondadas do card, igual à config page: o overlay força
+   overflow visible no body (quebra o clipping do radius), então os
+   cantos externos vão direto no nav (esquerda) e no content (direita). */
+#estdEditOverlay .edit-panel__body {
+  border-radius: 28px;
+}
+
+#estdEditOverlay .edit-panel__nav {
+  border-top-left-radius: 28px;
+  border-bottom-left-radius: 28px;
+}
+
+#estdEditOverlay .edit-panel__content {
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+/* Campo "Número máximo de voltas": input simples, sem setas de spinner */
+#pivoEditMaxLaps {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+#pivoEditMaxLaps::-webkit-outer-spin-button,
+#pivoEditMaxLaps::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

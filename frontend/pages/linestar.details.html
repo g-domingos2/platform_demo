@@ -1,0 +1,1154 @@
+<section class="pivos-view" id="linestarPanel" aria-label="LineStar Details">
+  <div class="pivo-card-container" id="linestarCards" aria-label="LineStar Details">
+    <div class="pivo-right-column">
+      <article class="pincard">
+        <!-- Minimap (left) -->
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-details-back">
+            <i class="fa-solid fa-chevron-left"></i> Voltar
+          </button>
+          <div class="pincard__map" id="linestarMinimap"></div>
+        </div>
+
+        <!-- Content (right) -->
+        <div class="pincard__body">
+          <!-- Info (left of body) -->
+          <div class="pincard__info">
+            <!-- Status Badge -->
+            <div class="pincard__status-row">
+              <div class="pincard__status-bar is-energized" id="linestarStatus">
+                <span class="pincard__status-dot--white"></span>
+                <span class="pincard__status-text">PAINEL ENERGIZADO</span>
+              </div>
+              <span class="pincard__status-power" id="linestarStatusPower" data-tooltip="Central Online">
+                <img src="./assets/img/svg/power.svg" alt="Central Online">
+              </span>
+            </div>
+
+            <!-- Title + Selector -->
+            <div class="pincard__title-group" style="position: relative;">
+              <button type="button" class="pincard__title-btn" id="linestarSelectBtn" aria-label="Select another equipment">
+                <h2 class="pincard__title" id="linestarTitleLabel">LineStar 01</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="pivo-selector" id="linestarSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <!-- Inline KPIs -->
+            <div class="pincard__kpis" style="position: relative; top: -30px;">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <i class="fa-solid fa-arrows-left-right" style="color: #64748b;"></i>
+                </div>
+                <div class="pincard__kpi-val" id="kpiLinPosVal">45%</div>
+                <div class="pincard__kpi-lbl">Posição</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/gauge.svg" alt="Pressure" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="kpiLinPressaoVal">3.8 bar</div>
+                <div class="pincard__kpi-lbl">Pressão</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/clock.svg" alt="Hours" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="kpiLinHorasVal">420h</div>
+                <div class="pincard__kpi-lbl">Horas</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #64748b; width: 14px; height: 14px;" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>
+                </div>
+                <div class="pincard__kpi-val" id="kpiLinVelVal">1.2 m/h</div>
+                <div class="pincard__kpi-lbl">Velocidade</div>
+              </div>
+            </div>
+
+            <!-- Last communication -->
+            <footer class="pincard__footer" id="linestarLastUpdate" style="margin-top: 10px;">
+              <span class="comm-label">Última comunicação:</span> 29 mar 2026 14:30
+            </footer>
+          </div>
+
+          <!-- Side (right of body): actions on top, buttons below -->
+          <div class="pincard__side" style="padding-top: 24px;">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__icon-btn" aria-label="Weather"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg></button>
+              <button type="button" class="pincard__btn-text" id="linestarEditBtn"><i class="fa-solid fa-pen"></i> Editar</button>
+            </div>
+            <div class="pincard__controls">
+              <button type="button" class="pincard__control-btn is-start" id="linestarStartBtn">
+                <i class="fa-regular fa-circle-play"></i> Iniciar
+              </button>
+              <button type="button" class="pincard__control-btn is-stop" id="linestarStopBtn">
+                <i class="fa-regular fa-square"></i> Parar
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Timeline Card — HIDDEN, uncomment to reactivate
+      <article class="pivo-data-card pivo-timeline">
+        <header class="pivo-data-card__header is-flex pivo-timeline__header">
+          <h3 class="pivo-data-card__title">Operational Timeline</h3>
+          <span class="pivo-timeline__status-text green">58% in operation</span>
+        </header>
+        <div class="pivo-timeline__content">
+          <div class="pivo-timeline__labels">
+            <span>00:00</span>
+            <span>06:00</span>
+            <span>12:00</span>
+            <span>18:00</span>
+            <span>24:00</span>
+          </div>
+          <div class="pivo-timeline__bar">
+            <div class="pivo-timeline__segment green" style="flex: 25%"></div>
+            <div class="pivo-timeline__segment gray" style="flex: 10%"></div>
+            <div class="pivo-timeline__segment green" style="flex: 15%"></div>
+            <div class="pivo-timeline__segment yellow" style="flex: 8%"></div>
+            <div class="pivo-timeline__segment green" style="flex: 12%"></div>
+            <div class="pivo-timeline__segment red" style="flex: 6%" data-tooltip="11:24 – 12:50&#10;Power outage"></div>
+            <div class="pivo-timeline__segment gray" style="flex: 8%"></div>
+            <div class="pivo-timeline__segment green" style="flex: 10%"></div>
+            <div class="pivo-timeline__segment yellow" style="flex: 7%"></div>
+            <div class="pivo-timeline__segment green" style="flex: 12%"></div>
+            <div class="pivo-timeline__segment red" style="flex: 4%" data-tooltip="19:10 – 20:06&#10;Pressure failure"></div>
+            <div class="pivo-timeline__segment gray" style="flex: 7%"></div>
+            <div class="pivo-timeline__segment green" style="flex: 16%"></div>
+          </div>
+          <div class="pivo-timeline__legend">
+            <div class="pivo-timeline__legend-item">
+              <span class="dot green"></span>
+              <span>Operating: <strong>14h 00m</strong></span>
+            </div>
+            <div class="pivo-timeline__legend-item">
+              <span class="dot yellow"></span>
+              <span>Maintenance: <strong>2h 00m</strong></span>
+            </div>
+            <div class="pivo-timeline__legend-item">
+              <span class="dot red"></span>
+              <span>Unexpected Stops: <strong>1h 30m</strong></span>
+            </div>
+            <div class="pivo-timeline__legend-item">
+              <span class="dot gray"></span>
+              <span>Stopped: <strong>2h 30m</strong></span>
+            </div>
+          </div>
+        </div>
+      </article>
+      -->
+
+      <!-- Agenda Card -->
+      <article class="pivo-agenda">
+        <header class="pivo-agenda__header">
+          <span class="pivo-agenda__title">Período</span>
+          <button type="button" class="pivo-agenda__period-btn js-period-trigger">
+            <span class="pivo-agenda__period-label">Últimas 24h</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+        <div class="pivo-agenda__content">
+          <!-- Espaço futuro para listagem de agendamentos, fertirrigação, etc. -->
+        </div>
+      </article>
+
+      <!-- Faults / KPIs -->
+      <article class="pivo-faults">
+        <button type="button" class="pivo-faults__item js-fault-item" data-fault="pressure">
+          <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+          <span class="pivo-faults__label">Falha de Pressão</span>
+          <strong class="pivo-faults__value">2</strong>
+        </button>
+        <button type="button" class="pivo-faults__item js-fault-item" data-fault="misalignment">
+          <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+          <span class="pivo-faults__label">Desalinhamento</span>
+          <strong class="pivo-faults__value">1</strong>
+        </button>
+        <button type="button" class="pivo-faults__item js-fault-item" data-fault="voltage_low">
+          <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+          <span class="pivo-faults__label">Tensão Baixa</span>
+          <strong class="pivo-faults__value">1</strong>
+        </button>
+        <button type="button" class="pivo-faults__item js-fault-item" data-fault="voltage_peak">
+          <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+          <span class="pivo-faults__label">Pico de Tensão</span>
+          <strong class="pivo-faults__value">0</strong>
+        </button>
+        <button type="button" class="pivo-faults__item js-fault-item" data-fault="irrigation_accumulated">
+          <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+          <span class="pivo-faults__label">Acumulado de Irrigação</span>
+          <strong class="pivo-faults__value">98 mm</strong>
+        </button>
+      </article>
+
+      <!-- History Section -->
+      <div class="pivo-bottom-row">
+
+        <!-- Coluna Esquerda -->
+        <div class="pivo-bottom-col">
+
+        <!-- Eventos / Operações -->
+          <article class="pivo-data-card pivo-history pivo-history--compact">
+            <div class="pivo-history__header" style="padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between;">
+              <h2 style="font-size: 24px; font-weight: 600; color: rgba(0,0,0,0.88); margin: 0;">Histórico</h2>
+              <div class="pivo-history__actions" style="display: flex; gap: 4px; align-items: center; position: relative;">
+                <button type="button" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><img src="./assets/img/svg/funnel.svg" alt="Filtrar" style="width:16px; height:16px;"></button>
+                <div class="pivo-filter">
+                  <button type="button" class="pivo-filter__btn" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path></svg></button>
+                  <div class="pivo-filter__panel">
+                    <div class="pivo-filter__title">Modos de irrigação</div>
+                    <label class="pivo-filter__row"><span>Seco</span><input type="checkbox" name="linestarModeSeco" class="pivo-filter__switch" checked></label>
+                    <label class="pivo-filter__row"><span>Molhado</span><input type="checkbox" name="linestarModeMolhado" class="pivo-filter__switch" checked></label>
+                    <label class="pivo-filter__row"><span>Ferti Irrigação</span><input type="checkbox" name="linestarModeFerti" class="pivo-filter__switch" checked></label>
+                  </div>
+                </div>
+                <button type="button" aria-label="Atualizar" style="margin-right: 0; padding: 6px 8px;"><i class="fa-solid fa-rotate-right"></i></button>
+              </div>
+            </div>
+            <div class="pivo-history__tabs">
+              <button type="button" class="is-active js-linestar-history-tab" data-tab="eventos">Eventos</button>
+              <button type="button" class="js-linestar-history-tab" data-tab="operacoes">Operações</button>
+            </div>
+
+            <!-- Tabela: Eventos -->
+            <div id="linestarTabEventos" class="pivo-history__table-wrapper">
+              <table class="pivo-history__table">
+                <thead id="linestarHistoryTableHead">
+                  <tr>
+                    <th></th>
+                    <th>Ocorrência</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="linestarHistoryBody">
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>13 abr 2026 15:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B)</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="4">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid">
+                          <div>Criado: 13 abr 2026 15:30</div>
+                          <div>Atualizado: 13 abr 2026 15:30</div>
+                          <div>Recebido: 13 abr 2026 15:30</div>
+                          <div>Posição atual: 45%</div>
+                          <div>Pressão: 3.8 bar</div>
+                          <div>Horímetro molhado: 420h</div>
+                          <div>Horímetro total: 435h</div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>13 abr 2026 08:15</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>12 abr 2026 22:47</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>12 abr 2026 14:10</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | MOLHADO | 72%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>12 abr 2026 07:03</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>11 abr 2026 18:55</td>
+                    <td>Alerta</td>
+                    <td>FALHA DE PRESSÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>11 abr 2026 10:22</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | MOLHADO | 38%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>10 abr 2026 08:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MANUTENÇÃO CONCLUÍDA</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>09 abr 2026 14:20</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (RETORNO B→A)</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>09 abr 2026 06:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>08 abr 2026 22:15</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>08 abr 2026 12:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | SECO | 55%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>07 abr 2026 20:45</td>
+                    <td>Alerta</td>
+                    <td>TENSÃO BAIXA</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>07 abr 2026 08:10</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>06 abr 2026 16:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>PARAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>06 abr 2026 09:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B) | MOLHADO | 30%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>05 abr 2026 22:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>05 abr 2026 14:15</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | SECO | 62%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>04 abr 2026 19:40</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | RETORNO B→A | MOLHADO | 88%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>04 abr 2026 11:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>03 abr 2026 23:50</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>03 abr 2026 15:20</td>
+                    <td>Alerta</td>
+                    <td>DESALINHAMENTO DETECTADO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>03 abr 2026 07:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B) | SECO | 15%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>02 abr 2026 21:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>02 abr 2026 13:45</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>02 abr 2026 05:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | RETORNO B→A | MOLHADO | 48%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>01 abr 2026 18:20</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>01 abr 2026 10:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MANUTENÇÃO CONCLUÍDA</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>31 mar 2026 22:10</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B) | SECO | 75%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>31 mar 2026 14:00</td>
+                    <td>Alerta</td>
+                    <td>FALHA DE PRESSÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>31 mar 2026 06:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>30 mar 2026 20:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>30 mar 2026 10:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | RETORNO B→A | MOLHADO | 22%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mar 2026 16:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>29 mar 2026 08:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | SECO | 92%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mar 2026 19:30</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B) | MOLHADO | 65%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mar 2026 11:00</td>
+                    <td>Alerta</td>
+                    <td>TENSÃO BAIXA</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>27 mar 2026 23:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>27 mar 2026 15:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>27 mar 2026 07:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | SECO | 40%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>26 mar 2026 21:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>26 mar 2026 13:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>25 mar 2026 19:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | MOLHADO | 80%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>25 mar 2026 11:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>PARAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>24 mar 2026 17:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (RETORNO B→A) | SECO | 12%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>24 mar 2026 09:00</td>
+                    <td>Alerta</td>
+                    <td>DESALINHAMENTO DETECTADO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>23 mar 2026 20:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | MOLHADO | 58%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>23 mar 2026 12:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>23 mar 2026 04:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>22 mar 2026 18:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>22 mar 2026 10:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (RETORNO B→A) | SECO | 35%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>21 mar 2026 22:00</td>
+                    <td>Alerta</td>
+                    <td>FALHA DE PRESSÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>21 mar 2026 14:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | MOLHADO | 70%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>21 mar 2026 06:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>20 mar 2026 20:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>20 mar 2026 12:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | SECO | 20%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>19 mar 2026 18:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>19 mar 2026 10:00</td>
+                    <td>Alerta</td>
+                    <td>TENSÃO BAIXA</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>18 mar 2026 22:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>18 mar 2026 14:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | MOLHADO | 85%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>18 mar 2026 06:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>17 mar 2026 20:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | RETORNO B→A | SECO | 50%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>17 mar 2026 12:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>AGUARDANDO PRESSURIZAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>17 mar 2026 04:00</td>
+                    <td>Alerta</td>
+                    <td>DESALINHAMENTO DETECTADO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 mar 2026 18:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 mar 2026 10:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>INICIAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>15 mar 2026 22:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>IRRIGANDO (AVANÇO A→B) | MOLHADO | 33%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>15 mar 2026 14:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>PARADO PELO OPERADOR</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>15 mar 2026 06:00</td>
+                    <td>Confirmação <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>RETORNO À OPERAÇÃO | SECO | 95%</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>14 mar 2026 20:00</td>
+                    <td>Comando <img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt=""></td>
+                    <td>PARAR IRRIGAÇÃO</td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>14 mar 2026 12:00</td>
+                    <td>Atualização <img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt=""></td>
+                    <td>MOVENDO | AVANÇO A→B | MOLHADO | 10%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Tabela: Operações -->
+            <div id="linestarTabOperacoes" class="pivo-history__table-wrapper" style="display: none;">
+              <table class="pivo-history__table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Lâmina</th>
+                    <th>Modo</th>
+                    <th>Pos. início</th>
+                    <th>Pos. fim</th>
+                    <th>Passagens</th>
+                  </tr>
+                </thead>
+                <tbody id="linestarOperacoesBody">
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>05 abr 2026 21:07</td>
+                    <td>06 abr 2026 06:46</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>18%</td>
+                    <td>85%</td>
+                    <td>0.47</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">70,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,60</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>04 abr 2026 21:19</td>
+                    <td>05 abr 2026 06:54</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>0%</td>
+                    <td>68%</td>
+                    <td>0.47</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Chuva</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">12,50</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>02 abr 2026 21:22</td>
+                    <td>03 abr 2026 03:25</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>52%</td>
+                    <td>100%</td>
+                    <td>0.30</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">70,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,60</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>01 abr 2026 16:36</td>
+                    <td>02 abr 2026 06:57</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>0%</td>
+                    <td>72%</td>
+                    <td>0.71</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">70,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,60</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>30 mar 2026 22:31</td>
+                    <td>31 mar 2026 06:42</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>0%</td>
+                    <td>45%</td>
+                    <td>0.40</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Chuva</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">5,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>28 mar 2026 12:23</td>
+                    <td>28 mar 2026 13:01</td>
+                    <td>100%</td>
+                    <td>Molhado</td>
+                    <td>5%</td>
+                    <td>100%</td>
+                    <td>0.08</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">70,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,60</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>26 mar 2026 04:45</td>
+                    <td>26 mar 2026 11:18</td>
+                    <td>36%</td>
+                    <td>Molhado</td>
+                    <td>12%</td>
+                    <td>62%</td>
+                    <td>0.29</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">70,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,60</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>24 mar 2026 22:08</td>
+                    <td>25 mar 2026 05:56</td>
+                    <td>41%</td>
+                    <td>Seco</td>
+                    <td>38%</td>
+                    <td>91%</td>
+                    <td>0.37</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Chuva</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">8,40</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">-</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>22 mar 2026 06:14</td>
+                    <td>22 mar 2026 12:44</td>
+                    <td>28%</td>
+                    <td>Molhado</td>
+                    <td>8%</td>
+                    <td>42%</td>
+                    <td>0.26</td>
+                  </tr>
+                  <tr class="pivo-history__row-details" style="display: none;">
+                    <td colspan="8">
+                      <div class="pivo-history__details">
+                        <h4>Descrição</h4>
+                        <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tipo:</span>
+                            <strong class="pivo-history__detail-value">Irrigação</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Lâmina (mm):</span>
+                            <strong class="pivo-history__detail-value">7,57</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Velocidade (%):</span>
+                            <strong class="pivo-history__detail-value">68,00</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Tempo de Operação (h):</span>
+                            <strong class="pivo-history__detail-value">6,35</strong>
+                          </div>
+                          <div class="pivo-history__detail-item">
+                            <span class="pivo-history__detail-label">Usuário:</span>
+                            <strong class="pivo-history__detail-value">Bauer Irricontrol</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pivo-history__pagination" aria-label="History pagination">
+              <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+              <button type="button" class="btn-page is-active" aria-current="page">1</button>
+              <button type="button" class="btn-page">2</button>
+              <button type="button" class="btn-page">3</button>
+              <button type="button" class="btn-page">4</button>
+              <button type="button" class="btn-page">5</button>
+              <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+              <button type="button" class="btn-page">24</button>
+              <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </article>
+
+          <!-- Depth x Position -->
+          <article class="pivo-data-card pivo-lamina">
+            <header class="pivo-data-card__header">
+              <h3 class="pivo-data-card__title">Lâmina x Posição</h3>
+            </header>
+            <div class="pivo-pressao__content" style="padding-top: 40px; border-top: 1px solid var(--border-100)">
+              <div class="pivo-chart-container pivo-chart-container--line-large pivo-chart-container--lamina" id="linestarChartLamina">
+                <div class="y-axis-labels">
+                  <span>10.0 mm</span>
+                  <span>8.0 mm</span>
+                  <span>6.0 mm</span>
+                  <span>4.0 mm</span>
+                  <span>2.0 mm</span>
+                  <span>0.0 mm</span>
+                </div>
+                <div class="x-axis-labels">
+                  <span>A (0%)</span>
+                  <span>25%</span>
+                  <span>50%</span>
+                  <span>75%</span>
+                  <span>B (100%)</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Coluna Direita -->
+        <div class="pivo-bottom-col">
+
+          <!-- Water Consumption -->
+          <article class="pivo-data-card pivo-water-consumption">
+            <header class="pivo-data-card__header">
+              <h3 class="pivo-data-card__title">Consumo de Água</h3>
+            </header>
+            <div class="pivo-pressao__content">
+              <!-- Barras do Gráfico — geradas via JS (view.charts.js), reagem ao popover de
+                   período; rolagem horizontal automática quando o período tem muitos dias
+                   (mesmo padrão .bmbd-consumo-chart__* do gráfico de Consumo das bombas) -->
+              <div class="bmbd-consumo-chart" id="pivoChartWaterST">
+                <div class="bmbd-consumo-chart__y" id="pivoWaterY"></div>
+                <div class="bmbd-consumo-chart__plot-wrap">
+                  <div class="bmbd-consumo-chart__plot">
+                    <div class="bmbd-consumo-chart__grid"></div>
+                    <div class="bmbd-consumo-chart__bars" id="pivoWaterBars"></div>
+                    <div class="bmbd-consumo-chart__tooltip" id="pivoWaterTooltip">
+                      <div class="bmbd-consumo-chart__tooltip-date"></div>
+                      <div class="bmbd-consumo-chart__tooltip-row"><i class="is-water"></i><span>Volume Total:</span><strong></strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Current Pressure -->
+          <article class="pivo-data-card pivo-pressao">
+            <header class="pivo-data-card__header">
+              <h3 class="pivo-data-card__title" data-pressure-title="Comparativo de Pressão (bar)" data-i18n-skip="">Comparativo de Pressão (bar)
+                <button type="button" class="pivo-data-card__info" aria-label="Info">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span class="pivo-data-card__info-pop">"Pressão" valores relativos ao intervalo de tempo definido pelo relatório. "Pressão de Comparação" valores relativos ao intervalo de tempo selecionado neste gráfico. Use os dados de "Pressão de Comparação" para comparar as leituras de pressão para cada posição irrigada entre diferentes períodos.</span>
+                </button>
+              </h3>
+            </header>
+            <div class="pivo-pressao__content">
+              <div class="pivo-chart-container pivo-chart-container--line-large" id="linestarChartPressao" data-i18n-skip="">
+                <div class="y-axis-labels">
+                  <span>5</span>
+                  <span>4</span>
+                  <span>3</span>
+                  <span>2</span>
+                  <span>1</span>
+                  <span>0</span>
+                </div>
+                <div class="x-axis-labels">
+                  <span>A (0%)</span>
+                  <span>25%</span>
+                  <span>50%</span>
+                  <span>75%</span>
+                  <span>B (100%)</span>
+                </div>
+              </div>
+              <div class="pivo-pressao__subtitles" data-i18n-skip="">
+                <span>Passagem atual: 05 abr 2026 21:07 → 06 abr 2026 06:46</span>
+                <span>Comparação: passagem anterior de 04 abr 2026 21:19 → 05 abr 2026 06:54</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

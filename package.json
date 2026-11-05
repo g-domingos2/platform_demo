@@ -1,0 +1,15 @@
+{
+  "name": "irricontrol-fazenda-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "install-server": "cd server && npm install",
+    "build": "npm run check:encoding && echo \"No build step\"",
+    "check:encoding": "node scripts/check-encoding.js",
+    "setup": "npm install && cd server && npm install"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

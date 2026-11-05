@@ -1,0 +1,304 @@
+<section class="pluvd-view" id="pluvdPanel" aria-label="Detalhes do Pluviômetro">
+  <div class="pivo-card-container" id="pluvdCards" aria-label="Detalhes do pluviômetro">
+    <div class="pivo-right-column">
+      <article class="pincard">
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-details-back">
+            <i class="fa-solid fa-chevron-left"></i> Voltar
+          </button>
+          <div class="pincard__map" id="pluvdMinimap"></div>
+        </div>
+
+        <div class="pincard__body">
+          <div class="pincard__info">
+            <div class="pincard__status-bar is-running" id="pluvdStatusBar">
+              <span class="pincard__status-dot--white"></span>
+              <span class="pincard__status-text" id="pluvdStatusText">ONLINE</span>
+            </div>
+
+            <div class="pincard__title-group" style="position: relative;">
+              <button type="button" class="pincard__title-btn" id="pluvdSelectBtn" aria-label="Selecionar outro pluviômetro">
+                <h2 class="pincard__title" id="pluvdTitleLabel">Pluviômetro</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="pivo-selector" id="pluvdSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <footer class="pincard__footer">
+              <span id="pluvdLastUpdate"><span class="comm-label">Última comunicação:</span> —</span>
+            </footer>
+
+            <div class="pincard__kpis pluvd-kpis">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/droplets.svg" alt="Chuva" style="filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(196deg) brightness(90%) contrast(110%);">
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiMm">--</div>
+                <div class="pincard__kpi-lbl">Acum. 24h (mm)</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/calendar-1.svg" alt="Mês" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiMonth">--</div>
+                <div class="pincard__kpi-lbl">Acum. Mês (mm)</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <img src="./assets/img/svg/calendar-days.svg" alt="Ano" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiYear">--</div>
+                <div class="pincard__kpi-lbl">Acum. Ano (mm)</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <span style="--battery-level: 76%; position: relative; display: inline-flex; align-items: center; width: 18px; height: 9px; padding: 1px; border: 1.5px solid #94a3b8; border-radius: 2px; background: #fff; box-sizing: border-box;" title="Bateria 76%">
+                    <span style="position: absolute; left: 1px; top: 1px; bottom: 1px; width: calc(76% - 2px); border-radius: 1px; background: #22c55e;"></span>
+                    <span style="position: absolute; right: -3px; top: 50%; transform: translateY(-50%); width: 2px; height: 4px; border-radius: 0 1px 1px 0; background: #94a3b8;"></span>
+                  </span>
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiPower">76%</div>
+                <div class="pincard__kpi-lbl">Nível de Bateria</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <i class="fa-solid fa-wifi pluvd-wifi is-online" style="font-size: 15px;"></i>
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiNet">--</div>
+                <div class="pincard__kpi-lbl">Rede</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="#475569" d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+                    <path stroke="#3b82f6" d="M16 14v2"/>
+                    <path stroke="#3b82f6" d="M8 14v2"/>
+                    <path stroke="#3b82f6" d="M16 20h.01"/>
+                    <path stroke="#3b82f6" d="M8 20h.01"/>
+                    <path stroke="#3b82f6" d="M12 16v2"/>
+                    <path stroke="#3b82f6" d="M12 22h.01"/>
+                  </svg>
+                </div>
+                <div class="pincard__kpi-val" id="pluvdKpiStatus">--</div>
+                <div class="pincard__kpi-lbl">Status Atual</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pincard__side">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__btn-text" aria-label="Editar pluviômetro" id="pluvdEditBtn">
+                <i class="fa-solid fa-pen"></i>
+                Editar
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="pivo-agenda">
+        <header class="pivo-agenda__header">
+          <span class="pivo-agenda__title">Período</span>
+          <button type="button" class="pivo-agenda__period-btn js-period-trigger">
+            <span class="pivo-agenda__period-label" id="pluvdPeriodLabel">Últimas 24h</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+      </article>
+
+      <article class="pivo-faults pluvd-summary-kpis">
+        <div class="pivo-faults__item">
+          <span class="pivo-faults__label">Eventos de Chuva</span>
+          <strong class="pivo-faults__value" id="pluvdKpiEvents">3</strong>
+          <span class="pivo-faults__trend">Último mês <i class="fa-solid fa-arrow-trend-up is-up"></i> 2</span>
+        </div>
+        <div class="pivo-faults__item">
+          <span class="pivo-faults__label">Intensidade Máx.</span>
+          <strong class="pivo-faults__value" id="pluvdKpiMaxIntensity">8,2 mm/h</strong>
+          <span class="pivo-faults__trend">no período</span>
+        </div>
+        <div class="pivo-faults__item">
+          <span class="pivo-faults__label">Dias com Chuva</span>
+          <strong class="pivo-faults__value" id="pluvdKpiRainDays">5</strong>
+          <span class="pivo-faults__trend">no período</span>
+        </div>
+        <div class="pivo-faults__item">
+          <span class="pivo-faults__label">Acumulado Total</span>
+          <strong class="pivo-faults__value" id="pluvdKpiTotal">42,5 mm</strong>
+          <span class="pivo-faults__trend">no período</span>
+        </div>
+        <div class="pivo-faults__item" style="border-right: none;">
+          <span class="pivo-faults__label">Maior Evento</span>
+          <strong class="pivo-faults__value" id="pluvdKpiBigEvent">18,3 mm</strong>
+          <span class="pivo-faults__trend">no período</span>
+        </div>
+      </article>
+
+      <div class="pivo-bottom-row pluvd-bottom-row">
+
+        <article class="pivo-data-card pivo-history pivo-history--compact">
+          <header class="pivo-data-card__header is-flex">
+            <h3 class="pivo-data-card__title">Eventos</h3>
+            <div class="pivo-history__actions" style="margin-left: auto; display: flex; gap: 4px; align-items: center;">
+              <button type="button" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg></button>
+              <button type="button" aria-label="Atualizar" style="margin-right: 0; padding: 6px 8px;"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+          </header>
+
+          <div>
+            <div class="pivo-history__table-wrapper">
+              <table class="pivo-history__table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px;"></th>
+                    <th style="width: 150px;">Data/Hora</th>
+                    <th>Evento</th>
+                    <th>Duração</th>
+                    <th>Acumulado</th>
+                    <th>Intensidade</th>
+                  </tr>
+                </thead>
+                <tbody id="pluvdHistoryBody">
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>17 mar 2026 03:41</td><td><span class="pluvd-event-badge pluvd-event-badge--offline">Sem comunicacao</span></td><td>1h 22min</td><td>--</td><td>--</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 03:41</div><div>Retorno: 05:03</div><div>Causa provavel: Interferencia de sinal</div><div>Acumulado no periodo: --</div><div>Intensidade maxima: --</div><div>Status do modem: Reconectado</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>13 mar 2026 10:22</td><td><span class="pluvd-event-badge pluvd-event-badge--rain">Chuva</span></td><td>02h 15min</td><td>12,5 mm</td><td>6,2 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 10:22</div><div>Fim: 12:37</div><div>Acumulado: 12,5 mm</div><div>Intensidade media: 5,4 mm/h</div><div>Intensidade maxima: 6,2 mm/h</div><div>Observacao: chuva constante no setor norte</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>11 mar 2026 18:45</td><td><span class="pluvd-event-badge pluvd-event-badge--rain">Chuva</span></td><td>01h 40min</td><td>8,3 mm</td><td>4,1 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 18:45</div><div>Fim: 20:25</div><div>Acumulado: 8,3 mm</div><div>Intensidade media: 3,6 mm/h</div><div>Intensidade maxima: 4,1 mm/h</div><div>Observacao: chuva moderada no final da tarde</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>10 mar 2026 22:15</td><td><span class="pluvd-event-badge pluvd-event-badge--offline">Sem comunicacao</span></td><td>3h 08min</td><td>--</td><td>--</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 22:15</div><div>Retorno: 01:23</div><div>Causa provavel: Queda de energia</div><div>Acumulado no periodo: --</div><div>Intensidade maxima: --</div><div>Status da bateria: Recuperada apos retorno</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>08 mar 2026 07:30</td><td><span class="pluvd-event-badge pluvd-event-badge--heavy">Chuva Forte</span></td><td>03h 52min</td><td>18,3 mm</td><td>9,8 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 07:30</div><div>Fim: 11:22</div><div>Acumulado: 18,3 mm</div><div>Intensidade media: 7,9 mm/h</div><div>Intensidade maxima: 9,8 mm/h</div><div>Limiar de alerta: 20 mm em 6h</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>05 mar 2026 14:10</td><td><span class="pluvd-event-badge pluvd-event-badge--offline">Sem comunicacao</span></td><td>42min</td><td>--</td><td>--</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 14:10</div><div>Retorno: 14:52</div><div>Causa provavel: Oscilacao de rede 4G</div><div>Acumulado no periodo: --</div><div>Intensidade maxima: --</div><div>Acao tomada: reconexao automatica</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>02 mar 2026 21:05</td><td><span class="pluvd-event-badge pluvd-event-badge--rain">Chuva</span></td><td>00h 58min</td><td>3,4 mm</td><td>1,7 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 21:05</div><div>Fim: 22:03</div><div>Acumulado: 3,4 mm</div><div>Intensidade media: 1,3 mm/h</div><div>Intensidade maxima: 1,7 mm/h</div><div>Observacao: garoa persistente</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>28 fev 2026 16:40</td><td><span class="pluvd-event-badge pluvd-event-badge--rain">Chuva</span></td><td>01h 12min</td><td>5,9 mm</td><td>2,8 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 16:40</div><div>Fim: 17:52</div><div>Acumulado: 5,9 mm</div><div>Intensidade media: 2,4 mm/h</div><div>Intensidade maxima: 2,8 mm/h</div><div>Observacao: chuva localizada no leste</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>26 fev 2026 04:18</td><td><span class="pluvd-event-badge pluvd-event-badge--heavy">Chuva Forte</span></td><td>02h 48min</td><td>14,7 mm</td><td>7,1 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 04:18</div><div>Fim: 07:06</div><div>Acumulado: 14,7 mm</div><div>Intensidade media: 5,9 mm/h</div><div>Intensidade maxima: 7,1 mm/h</div><div>Observacao: pico durante a madrugada</div></div></div></td></tr>
+                  <tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>23 fev 2026 19:55</td><td><span class="pluvd-event-badge pluvd-event-badge--rain">Chuva</span></td><td>00h 44min</td><td>2,1 mm</td><td>1,1 mm/h</td></tr>
+                  <tr class="pivo-history__row-details" style="display: none;"><td colspan="6"><div class="pivo-history__details"><h4>Detalhes do Evento</h4><div class="pivo-history__details-grid"><div>Inicio: 19:55</div><div>Fim: 20:39</div><div>Acumulado: 2,1 mm</div><div>Intensidade media: 0,9 mm/h</div><div>Intensidade maxima: 1,1 mm/h</div><div>Observacao: chuva fraca e curta</div></div></div></td></tr>
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="pivo-history__pagination" aria-label="Paginação de eventos do pluviômetro">
+            <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="btn-page is-active" aria-current="page">1</button>
+            <button type="button" class="btn-page">2</button>
+            <button type="button" class="btn-page">3</button>
+            <button type="button" class="btn-page">4</button>
+            <button type="button" class="btn-page">5</button>
+            <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+            <button type="button" class="btn-page">24</button>
+            <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </article>
+
+        <article class="pivo-data-card pivo-history pivo-history--compact pluv-maint-card">
+          <header class="pivo-data-card__header is-flex">
+            <h3 class="pivo-data-card__title" style="font-size: 13px; font-weight: 500;">Manutenção</h3>
+            <div class="pivo-history__actions" style="display: flex; gap: 4px; align-items: center;">
+              <button type="button" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px; font-size: 13px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg></button>
+              <button type="button" aria-label="Atualizar" style="margin-right: 0; padding: 6px 8px; font-size: 13px;"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+          </header>
+
+          <div data-maint-tab="pendentes">
+            <div class="pivo-history__table-wrapper">
+              <table class="pivo-history__table">
+                <thead>
+                  <tr>
+                    <th class="pivo-history__col-btn"></th>
+                    <th>Equipamento</th>
+                    <th>Status</th>
+                    <th>Prazo/Data</th>
+                    <th>Responsável</th>
+                  </tr>
+                </thead>
+                <tbody id="pluvMaintBody"></tbody>
+              </table>
+              <datalist id="pluvMaintResponsibleOptions"></datalist>
+            </div>
+          </div>
+          <div class="pivo-history__pagination" aria-label="Paginação de manutenção do pluviômetro">
+            <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="btn-page is-active" aria-current="page">1</button>
+            <button type="button" class="btn-page">2</button>
+            <button type="button" class="btn-page">3</button>
+            <button type="button" class="btn-page">4</button>
+            <button type="button" class="btn-page">5</button>
+            <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+            <button type="button" class="btn-page">24</button>
+            <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </article>
+
+      </div>
+
+      <article class="pivo-data-card pluvd-chart-card">
+        <header class="pivo-data-card__header is-flex">
+          <h3 class="pivo-data-card__title">Precipitação</h3>
+          <div class="pluvd-chart-controls">
+            <div class="pluvd-chart-tabs" id="pluvdChartTabs">
+              <button type="button" class="pluvd-chart-tab is-active" data-period="24h">24h</button>
+              <button type="button" class="pluvd-chart-tab" data-period="7d">7 dias</button>
+              <button type="button" class="pluvd-chart-tab" data-period="30d">30 dias</button>
+            </div>
+            <div class="pluvd-view-tabs" id="pluvdViewTabs">
+              <button type="button" class="pluvd-view-tab is-active" data-view="chart">Gráfico</button>
+              <button type="button" class="pluvd-view-tab" data-view="calendar">Calendário</button>
+            </div>
+          </div>
+        </header>
+
+        <div class="pluvd-chart-area" id="pluvdChartArea">
+          <div class="pluvd-chart-panel" id="pluvdChartPanel">
+            <div class="pluvd-chart-inner">
+              <div class="pluvd-y-axis" id="pluvdYAxis">
+                <span>16 mm</span>
+                <span>12 mm</span>
+                <span>8 mm</span>
+                <span>4 mm</span>
+                <span>0 mm</span>
+              </div>
+              <div class="pluvd-bars-wrap">
+                <div class="pluvd-bars" id="pluvdBars"></div>
+                <div class="pluvd-x-axis" id="pluvdXAxis"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pluvd-calendar-panel rain-cal is-hidden" id="pluvdCalendarPanel" aria-label="Calendário mensal de precipitação">
+            <div id="pluvdCalMonthLabel" style="display:none;">—</div>
+            <div class="rain-cal__dow" aria-hidden="true">
+              <span>DOM</span>
+              <span>SEG</span>
+              <span>TER</span>
+              <span>QUA</span>
+              <span>QUI</span>
+              <span>SEX</span>
+              <span>SÁB</span>
+            </div>
+            <div class="rain-cal__grid" id="pluvdCalGrid"></div>
+            <div class="rain-cal__legend">
+              <span><i class="rain-cal__legend-dot rain-cal__legend-dot--weak"></i> Chuva fraca (&lt;5mm)</span>
+              <span><i class="rain-cal__legend-dot rain-cal__legend-dot--mid"></i> Chuva moderada (5-15mm)</span>
+              <span><i class="rain-cal__legend-dot rain-cal__legend-dot--strong"></i> Chuva forte (&gt;15mm)</span>
+            </div>
+          </div>
+
+          <div class="pluvd-chart-footer">
+            <span class="pluvd-chart-total-label">Total no período:</span>
+            <span class="pluvd-chart-total-val" id="pluvdChartTotal">-- mm</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+</section>

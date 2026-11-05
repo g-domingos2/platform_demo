@@ -1,0 +1,463 @@
+<section class="edit-panel" id="mdnEditPanel" aria-label="Editar medidor de nível">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="mdnEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Medidor de Nível</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select>
+          <button class="edit-panel__select-btn" type="button" id="mdnEditSelectBtn" aria-expanded="false" aria-label="Selecionar medidor">—</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="mdnEditSelectMenu"></div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button" id="mdnEditSaveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ CONFIGURAÇÕES ══════════════════════════════════════════════════ -->
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#mdnEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#mdnEditLocation">Localização</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#mdnEditNivel">Nível</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#mdnEditBombas">Bombas Vinculadas</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── GERAL ──────────────────────────────────────────────────── -->
+        <section class="edit-panel__section is-active" id="mdnEditGeneral">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Geral</h2>
+              <span class="edit-panel__last-comm" id="mdnEditLastComm" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <!-- Conectividade -->
+            <h3 class="pref-section-title" style="margin-top:0;">Conectividade</h3>
+
+            <!-- Rádios -->
+            <div class="edit-panel__grid-4" style="margin-bottom:16px; grid-template-columns: repeat(3, 1fr);">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio da central</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="mdnEditRadioCentral" type="text" value="—" readonly />
+                    <div class="farm-radio-actions">
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio do Medidor de Nível</span>
+                  <button type="button" class="farm-radio-field__edit" id="mdnEditRadioReload" title="Sincronizar rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="mdnEditRadio" type="text" placeholder="0013A20011D5F4EE" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check gh-edit__radio-dot" id="mdnEditRadioDot" style="color:#9ca3af;font-size:11px;"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field" style="border:none; background:transparent; box-shadow:none;"></div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <h3 class="pref-section-title">Ficha Técnica</h3>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr;">
+
+                <div class="pivo-edit__field">
+                  <label for="mdnEditName"><span class="edit-panel__req">*</span> Equipment name</label>
+                  <div class="edit-panel__input-wrap">
+                    <input class="edit-panel__input" id="mdnEditName" type="text" placeholder="Ex: MDN Barragem" />
+                    <div class="edit-panel__input-actions">
+                      <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pivo-edit__field">
+                  <div class="pivo-edit__field-label"><span class="edit-panel__req">*</span> Versão</div>
+                  <div class="edit-panel__select-field" style="width:100%;">
+                    <button class="edit-panel__select-btn" type="button" id="mdnEditVersaoBtn" aria-expanded="false" disabled>5.2</button>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                  <input type="hidden" id="mdnEditVersao" value="5.2" />
+                </div>
+
+              </div>
+
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr; margin-top:16px;">
+
+                <div class="pivo-edit__field">
+                  <label for="mdnEditSensor"><span class="edit-panel__req">*</span> Sensor</label>
+                  <div class="edit-panel__select-field" style="width:100%;">
+                    <button class="edit-panel__select-btn" type="button" id="mdnEditSensorBtn" data-edit-select="sensor" aria-expanded="false">Selecione...</button>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <div class="edit-panel__select-menu" role="listbox" data-edit-menu="sensor">
+                      <button class="edit-panel__select-option" type="button" data-value="5MCA - Novus">5MCA - Novus</button>
+                      <button class="edit-panel__select-option" type="button" data-value="5MCA">5MCA</button>
+                      <button class="edit-panel__select-option" type="button" data-value="30MCA">30MCA</button>
+                      <button class="edit-panel__select-option" type="button" data-value="20MCA">20MCA</button>
+                      <button class="edit-panel__select-option" type="button" data-value="15MCA">15MCA</button>
+                      <button class="edit-panel__select-option" type="button" data-value="10MCA">10MCA</button>
+                      <button class="edit-panel__select-option" type="button" data-value="100MCA">100MCA</button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="mdnEditSensor" value="" />
+                </div>
+
+              </div>
+
+            <!-- Vazão Residual -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <h3 class="pref-section-title" style="font-size:14px;margin:0;">
+                Vazão Residual
+                <span class="edit-panel__tooltip-icon" data-tooltip="Quando o medidor de nível é instalado em um rio, a plataforma Irricontrol fornece a opção de você adicionar as constantes da curva chave, obtida através de medidas. Através da equação da curva chave e pelo valor de nível medido, a plataforma calcula a vazão residual e a exibe nos relatórios e na tela do respectivo dispositivo."><i class="fa-regular fa-circle-question"></i></span>
+              </h3>
+              <label class="pivo-edit__switch">
+                <input id="mdnEditVazaoEnabled" type="checkbox">
+                <span class="pivo-edit__switch-slider"></span>
+              </label>
+            </div>
+            <div id="mdnEditVazaoFields" class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+
+                <div class="pivo-edit__field">
+                  <label for="mdnEditCoefA">A</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="mdnEditCoefA" type="number" step="any" placeholder="0" />
+                    <span class="sc-input-suffix">x²</span>
+                  </div>
+                </div>
+
+                <div class="pivo-edit__field">
+                  <label for="mdnEditCoefB">B</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="mdnEditCoefB" type="number" step="any" placeholder="0" />
+                    <span class="sc-input-suffix">x</span>
+                  </div>
+                </div>
+
+                <div class="pivo-edit__field">
+                  <label for="mdnEditCoefC">C</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="mdnEditCoefC" type="number" step="any" placeholder="0" />
+                  </div>
+                </div>
+
+              </div>
+
+          </div>
+        </section>
+
+        <!-- ── LOCALIZAÇÃO ────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="mdnEditLocation">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização</h2>
+            <span class="mdn-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+          </div>
+          <div class="pivo-edit__loc-split" style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+            <div class="pivo-edit__loc-map" style="position:relative; border-radius:0; overflow:hidden; border:1px solid #e5e7eb; min-height:400px;">
+              <div id="mdnEditLocationMap" style="width:100%; height:100%; position:absolute; inset:0;"></div>
+            </div>
+            <div class="pivo-edit__loc-form pivo-edit-specifics" style="margin-top: -30px;">
+              <h3 class="pref-section-title">Localização</h3>
+              <p class="pivo-edit__loc-desc">
+                A localização em campo do dispositivo é essencial para mostrar geograficamente no mapa a posição do equipamento.
+              </p>
+              <div class="pivo-edit__field">
+                <label for="mdnEditLocCoords"><span class="edit-panel__req">*</span> Localização do equipamento</label>
+                <div class="edit-panel__input-wrap" style="display:flex; gap:8px;">
+                  <input class="edit-panel__input" id="mdnEditLocCoords" type="text" placeholder="-18.846005, -48.386471" style="flex:1;" />
+                  <button type="button" class="edit-panel__btn" style="white-space:nowrap;" id="mdnEditLocGpsBtn">
+                    <i class="fa-solid fa-location-dot"></i> Obter Localização
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── NÍVEL ──────────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="mdnEditNivel">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Nível</h2>
+              <span class="mdn-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <h3 class="pref-section-title" style="margin-top:0;">Informações do Sensor</h3>
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="mdnEditMaxLevel"><span class="edit-panel__req">*</span> Nível máximo do reservatório <span class="edit-panel__tooltip-icon" data-tooltip="Nível máximo de água que o reservatório foi projetado para suportar."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="mdnEditMaxLevel" type="number" min="0" step="0.01" placeholder="0" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="mdnEditOffset"><span class="edit-panel__req">*</span> Offset de medição <span class="edit-panel__tooltip-icon" data-tooltip="Valor de ajuste para medições de nível, caso a sonda não chegue até o fundo do reservatório. A quantos metros acima do fundo do reservatório o sensor está instalado?"><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="mdnEditOffset" type="number" step="0.01" placeholder="0" />
+                  <span class="sc-input-suffix">m</span>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="pref-section-title">Configurações de Gráfico</h3>
+            <div style="display: flex; align-items: center; gap: 8px; background: #e6f4ff; border: 1px solid #91caff; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: rgba(0,0,0,0.88); margin-bottom: 16px;">
+              <i class="fa-solid fa-circle-info" style="color: #1677ff;"></i>
+              <span>Esses valores servem para inserir linhas de referência aos gráficos de medição de nível. Na versão 5.3 (GH), o valor máximo também pode ser usado para desligar automaticamente as bombas GH vinculadas.</span>
+            </div>
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="mdnEditMinVal"><span class="edit-panel__req">*</span> Valor mínimo <span class="edit-panel__tooltip-icon" data-tooltip="Valor mínimo percentual desejado do nível máximo do reservatório, para referência visual das medições."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="mdnEditMinVal" type="number" min="0" max="100" step="1" placeholder="0" />
+                  <span class="sc-input-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="mdnEditMaxVal"><span class="edit-panel__req">*</span> Valor máximo <span class="edit-panel__tooltip-icon" data-tooltip="Valor máximo percentual desejado do nível máximo do reservatório. Uma vez atingido esse valor, o Medidor de nível desligará as bombas associadas."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="mdnEditMaxVal" type="number" min="0" max="100" step="1" placeholder="100" />
+                  <span class="sc-input-suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── BOMBAS VINCULADAS ──────────────────────────────────────── -->
+        <section class="edit-panel__section" id="mdnEditBombas">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Bombas Vinculadas</h2>
+              <span class="mdn-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: #e6f4ff; border: 1px solid #91caff; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: rgba(0,0,0,0.88); margin-bottom: 16px;">
+              <i class="fa-solid fa-circle-info" style="color: #1677ff;"></i>
+              <span>Nesta aba você pode vincular o Medidor de Nível à até 10 bombas para que ele possa automaticamente interromper os bombeamentos ativos caso atinja os níveis configurados.</span>
+            </div>
+
+            <div class="pivo-edit__field">
+              <div class="pivo-edit__field-label">Bombas vinculadas</div>
+              <div class="edit-panel__select-field" style="width:100%;">
+                <button class="edit-panel__select-btn" type="button" id="mdnEditAddBombaBtn" data-edit-select="add-bomba" aria-expanded="false">Por favor selecione</button>
+                <i class="fa-solid fa-chevron-down"></i>
+                <div class="edit-panel__select-menu" role="listbox" data-edit-menu="add-bomba" id="mdnEditBombaMenu">
+                  <button class="edit-panel__select-option" type="button" data-value="">Nenhuma disponível</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="mdnEditLinkedBombasList" style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: rgba(0,0,0,0.88); margin-top: 8px;">
+              <i class="fa-solid fa-circle-exclamation" style="color: #faad14;"></i>
+              <span>Ao salvar, este dispositivo e as bombas vinculadas terão suas configurações atualizadas conforme as novas relações no sistema.</span>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div><!-- config tab body -->
+
+  <!-- ══ HISTÓRICO ══════════════════════════════════════════════════════ -->
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#mdnEditHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#mdnEditHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- History List -->
+        <section class="edit-panel__section is-active" id="mdnEditHistoryList">
+          <div class="edit-panel__history">
+
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Medição</th>
+                    <th style="width:100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <!-- Row 1 (expanded by default) -->
+                  <tr class="edit-panel__history-row" data-row-id="m1">
+                    <td>
+                      <button class="edit-panel__history-expand-btn" type="button" data-toggle-details="m1">
+                        <i class="fa-solid fa-minus"></i>
+                      </button>
+                    </td>
+                    <td>19 set 2025 14:54</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td>
+                      <div class="table-actions">
+                        <i class="fa-solid fa-star" title="Favoritar" style="color:#f59e0b;"></i>
+                        <i class="fa-solid fa-download" title="Baixar"></i>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-m1" style="display:table-row;">
+                    <td colspan="5">
+                      <div class="edit-panel__history-details">
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Geral</h4>
+                          <div class="edit-panel__history-details-grid">
+
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>MDN Barragem</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Sensor:</span><span>30MCA</span></div>
+                            <div class="edit-panel__history-details-item" style="grid-column:span 2;">
+                              <div style="display:flex;gap:24px;">
+                                <span><span class="edit-panel__history-details-key">A:</span> 0 x²</span>
+                                <span><span class="edit-panel__history-details-key">B:</span> 0 x</span>
+                                <span><span class="edit-panel__history-details-key">C:</span> 0</span>
+                              </div>
+                            </div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Relógio do equipamento:</span><span>19 set 2025 14:54</span></div>
+                          </div>
+                        </div>
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Localização</h4>
+                          <div class="edit-panel__history-details-grid" style="grid-template-columns:1fr;">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Localização do equipamento:</span><span>-16.241966, -47.365799</span></div>
+                          </div>
+                        </div>
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Nível</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nível máximo do reservatório:</span><span>7m</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Offset de medição:</span><span>0.5m</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Valor mínimo:</span><span>20%</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Valor máximo:</span><span>100%</span></div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Rows 2–3 -->
+                  <tr class="edit-panel__history-row" data-row-id="m2">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="m2"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>19 set 2025 14:53</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-m2" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="m3">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="m3"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>19 set 2025 14:27</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-m3" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                </tbody>
+              </table>
+
+              <div class="edit-panel__pagination">
+                <span>1-10 de 3 itens</span>
+                <div class="edit-panel__pagination-pages">
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <select class="edit-panel__pagination-select" id="mdnEditHistoryPageSize" aria-label="Itens por página">
+                  <option>10 / página</option>
+                  <option>20 / página</option>
+                  <option>50 / página</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Favoritos -->
+        <section class="edit-panel__section" id="mdnEditHistoryFavs">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+              <div class="edit-panel__history-no-data" style="padding:40px; text-align:center; color:#94a3b8; font-size:13px;">
+                Nenhuma configuração favoritada.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div><!-- history tab body -->
+
+</section>

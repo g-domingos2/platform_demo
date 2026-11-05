@@ -1,0 +1,831 @@
+/* =========================================================
+  Talhões
+   ========================================================= */
+
+body.is-talhoes {
+  background: #ffffff;
+}
+
+body.is-talhoes #map,
+body.is-talhoes .map {
+  display: none;
+}
+
+body.is-talhoes #pageSlot {
+  display: block;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+body.is-talhoes .main--map {
+  background: #ffffff;
+  height: auto;
+  min-height: 100vh;
+}
+
+body.is-talhoes .main {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body.is-talhoes .map-card {
+  display: none;
+}
+
+.talhoes {
+  padding: 20px 28px 0;
+  /*  Bottom 0 to flush */
+  background: #ffffff;
+  height: 100vh;
+  /* Fixed height for viewport */
+  overflow: hidden;
+  /* No scroll on main body */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* Unite everything */
+}
+
+.talhoes__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  /* Header doesn't shrink */
+  margin-bottom: 12px;
+  /* Separate header from united content */
+}
+
+.talhoes__heading {
+  max-width: 980px;
+}
+
+.talhoes__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.talhoes__subtitle {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.talhoes__save {
+  flex-shrink: 0;
+}
+
+.talhoes__content {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  flex: 1;
+  /* Grow to fill space */
+  min-height: 0;
+  /*  Allow shrinking to fit content if needed, but flex:1 makes it grow */
+  /* min-height clamp removed to allow full expansion */
+}
+
+/* Connect List/Map to Details (Remove bottom radius) */
+.talhoes__list.card,
+.talhoes__map.card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.talhoes__list {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  /* Allow scrolling */
+}
+
+.talhoes__list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.talhoes__list-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.talhoes__list-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.talhoes__icon-btn {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.talhoes__icon-btn--primary {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.talhoes__empty {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.talhoes__empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px dashed #e2e8f0;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.talhoes__map {
+  padding: 0;
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+  --talhoes-topbar-h: 72px;
+  z-index: 0;
+  border-radius: 0;
+
+  /* altura aproximada da barra (padding + botões) */
+  --talhoes-bottombar-h: 60px;
+}
+
+.talhoes__map-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  z-index: 0;
+  border-radius: 0;
+}
+
+.talhoes__map-canvas .leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.talhoes__details {
+  padding: 12px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Remove top radius to connect */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  /* Merge borders (assuming 1px border) */
+  margin-top: -1px;
+  z-index: 1;
+  /* Ensure overlap covers properly */
+  position: relative;
+}
+
+.talhoes__details-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.talhoes__details-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  border: 1px dashed #e2e8f0;
+  background: #f8fafc;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+
+.talhoes__map-tools {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1201;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.talhoes__map.is-drawer-open .talhoes__map-tools {
+  top: calc(12px + var(--talhoes-topbar-h));
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.talhoes__map-tool {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, .12);
+}
+
+.talhoes__map-tool i {
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.talhoes__map-tool.is-active {
+  border-color: #16a34a;
+  color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .18), 0 6px 14px rgba(15, 23, 42, .12);
+}
+
+.talhoes__map-tool.is-active i {
+  color: #16a34a;
+}
+
+.talhoes__map-tool:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.talhoes__map-tool:disabled i {
+  color: #94a3b8;
+}
+
+.talhoes__map.is-drawing .leaflet-container {
+  cursor: crosshair;
+}
+
+.talhoes-vertex {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #16a34a;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, .25);
+}
+
+.talhoes-midpoint {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #64748b;
+  opacity: 0.6;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, .15);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.talhoes-midpoint:hover {
+  opacity: 1;
+  transform: scale(1.2);
+  border-color: #16a34a;
+}
+
+.talhoes__drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  background: #ffffff;
+  border-radius: 0;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: none;
+  padding: 10px 14px;
+  /* Reduced padding */
+  display: none;
+  z-index: 1202;
+}
+
+.talhoes__drawer.is-open {
+  display: block;
+}
+
+.talhoes__drawer-head {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  margin: 0;
+  z-index: 10;
+}
+
+/* Hide Title as requested */
+.talhoes__drawer-head strong {
+  display: none;
+}
+
+.talhoes__drawer-close {
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+
+.talhoes__field {
+  display: grid;
+  gap: 6px;
+}
+
+.talhoes__field span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.talhoes__field span em {
+  color: #ef4444;
+  font-style: normal;
+}
+
+.talhoes__input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #0f172a;
+  background: #ffffff;
+  width: 100%;
+}
+
+.talhoes__input::placeholder {
+  color: #94a3b8;
+}
+
+.talhoes__input:focus,
+.talhoes__input:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .12);
+}
+
+.talhoes__select {
+  position: relative;
+}
+
+.talhoes__select i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.talhoes__select:focus-within .talhoes__input {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .12);
+}
+
+.talhoes__select:focus-within i {
+  color: #16a34a;
+}
+
+.talhoes__select select {
+  appearance: none;
+  background: #ffffff;
+}
+
+.talhoes__select select option {
+  background: #ffffff;
+}
+
+.talhoes__select select option:checked,
+.talhoes__select select option:hover {
+  background: #dcfce7;
+  color: #0f172a;
+}
+
+.talhoes__select .talhoes__input {
+  padding-right: 30px;
+}
+
+@media (max-width: 900px) {
+  .talhoes__drawer-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1100px) {
+  .talhoes__content {
+    grid-template-columns: 1fr;
+  }
+
+  .talhoes__list,
+  .talhoes__map,
+  .talhoes__map-canvas {
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 720px) {
+  .talhoes {
+    padding: 16px 18px 24px;
+  }
+
+  .talhoes__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.talhoes__bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  box-shadow: 0 -4px 12px rgba(15, 23, 42, .08);
+  border-top: 1px solid #e2e8f0;
+  z-index: 1205;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.talhoes__bottom-bar .btn {
+  height: 32px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+.talhoes__bottom-bar.is-visible {
+  transform: translateY(0);
+}
+
+/* quando a barra aparece, sobe os controles do Leaflet */
+.talhoes__map.has-bottom-bar .leaflet-control-container .leaflet-bottom {
+  bottom: var(--talhoes-bottombar-h);
+}
+
+/* Sidebar List Items */
+.talhoes__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.talhoes__item:hover {
+  background-color: #f8fafc;
+}
+
+.talhoes__item-name {
+  font-weight: 500;
+  color: #0f172a;
+  /* Black/Dark by default */
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.talhoes__item:hover .talhoes__item-name,
+.talhoes__item.is-selected .talhoes__item-name {
+  color: #16a34a;
+  /* Green on hover or selected */
+}
+
+.talhoes__item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.talhoes__item:hover .talhoes__item-actions {
+  opacity: 1;
+}
+
+.talhoes__btn-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #64748b;
+  transition: color 0.2s;
+}
+
+.talhoes__btn-action:hover {
+  color: #0f172a;
+}
+
+.talhoes__btn-action.text-red:hover {
+  color: #ef4444;
+}
+
+/* =========================================================
+   Detalhes do Talhão (igual ao print)
+   ========================================================= */
+
+.talhoes__detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  column-gap: 90px;
+  /* distância entre os blocos */
+  row-gap: 14px;
+  /* distância entre linhas */
+  padding: 10px 14px;
+  width: 100%;
+}
+
+.talhoes__detail-header {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+/* “Nome: Teste1” juntinho, sem space-between */
+.talhoes__detail-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  /* distância entre label e valor */
+  min-width: 0;
+}
+
+.talhoes__detail-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.talhoes__detail-value {
+  font-size: 11px;
+  color: #0f172a;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Responsivo: cai para 2 colunas e depois 1 */
+@media (max-width: 1100px) {
+  .talhoes__detail-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    column-gap: 48px;
+  }
+}
+
+@media (max-width: 720px) {
+  .talhoes__detail-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 12px;
+  }
+}
+
+/* Custom Popup */
+.talhoes-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.talhoes-popup .leaflet-popup-content {
+  margin: 0;
+  padding: 16px;
+  min-width: 200px;
+}
+
+.talhoes-popup-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.talhoes-popup-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+
+.talhoes-popup-row:last-child {
+  margin-bottom: 0;
+}
+
+.talhoes-popup-label {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-right: 8px;
+}
+
+.talhoes-popup-value {
+  color: #334155;
+  font-weight: 500;
+}
+
+/* =========================================================
+   Talhões embedded inside fazenda-edit
+   ========================================================= */
+
+/* Drawer: label e input na mesma linha, inputs mais largos */
+.talhoes__drawer .talhoes__drawer-fields {
+  align-items: center;
+}
+
+.talhoes__drawer .talhoes__field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.talhoes__drawer .talhoes__field span {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: #0f172a;
+}
+
+.talhoes__drawer .talhoes__input {
+  min-width: 160px;
+  padding: 4px 9px;
+}
+
+.talhoes__drawer .talhoes__select {
+  min-width: 160px;
+}
+
+/* Botões flutuantes só aparecem quando o drawer está aberto */
+.talhoes__embed .talhoes__map.is-drawer-open .talhoes__map-tools {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  top: calc(var(--talhoes-topbar-h, 72px) + 12px);
+}
+
+/* Hint sem label acima */
+.talhoes__field--hint {
+  align-self: flex-end;
+}
+
+/* Drawer redesenhado: painel horizontal sobre o mapa */
+.talhoes__drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, .10);
+  z-index: 1202;
+  display: none;
+  border-radius: 0;
+}
+
+.talhoes__drawer.is-open {
+  display: block;
+}
+
+.talhoes__drawer-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+}
+
+.talhoes__drawer-fields {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.talhoes__field--draw {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.talhoes__draw-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.talhoes__drawer-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.talhoes__drawer-btn {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.talhoes__drawer-btn--ghost {
+  background: transparent;
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+.talhoes__drawer-btn--ghost:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.talhoes__drawer-btn--primary {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.talhoes__drawer-btn--primary:hover {
+  background: #15803d;
+}
+
+.edit-panel__section--fullmap {
+  padding: 0;
+  overflow: hidden;
+}
+
+.edit-panel__section--fullmap.is-active {
+  display: flex;
+  flex-direction: column;
+}
+
+.talhoes__embed {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.talhoes__embed .talhoes__content {
+  flex: 1;
+  min-height: 0;
+}
+
+.talhoes__embed .talhoes__details {
+  flex-shrink: 0;
+}

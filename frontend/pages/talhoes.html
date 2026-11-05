@@ -1,0 +1,114 @@
+<section class="talhoes" id="talhoesPanel" aria-label="Talhões">
+  <div class="talhoes__header">
+    <div class="talhoes__heading">
+      <button class="edit-panel__back" type="button" aria-label="Voltar" onclick="document.querySelector('.nav__item[data-route=\'dashboard\']').click()">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span>Talhões</span>
+      </button>
+      <p class="talhoes__subtitle">
+        Gerencie os talhões da sua fazenda. Adicione-os manualmente desenhando no mapa ou use a
+        funcionalidade de upload de arquivos shapefile. Essas informações são úteis para irrigação,
+        atribuição de dados e geração de relatórios.
+      </p>
+    </div>
+
+    <button class="edit-panel__save talhoes__save" type="button">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Salvar
+    </button>
+  </div>
+
+  <div class="talhoes__content">
+    <aside class="talhoes__list card">
+      <div class="talhoes__list-head">
+        <h2 class="talhoes__list-title">Talhões</h2>
+        <div class="talhoes__list-actions">
+          <button class="talhoes__icon-btn" type="button" aria-label="Upload de shapefile">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </button>
+          <button class="talhoes__icon-btn talhoes__icon-btn--primary" type="button" aria-label="Adicionar talhão"
+            data-talhoes-open>
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="talhoes__empty" aria-live="polite">
+        <div class="talhoes__empty-icon">
+          <i class="fa-regular fa-folder-open"></i>
+        </div>
+        <span>Não há dados</span>
+      </div>
+    </aside>
+
+    <div class="talhoes__map card">
+      <div class="talhoes__map-canvas" id="talhoesMap" aria-label="Mapa de talhões"></div>
+
+      <div class="talhoes__map-tools" aria-label="Ferramentas do mapa">
+
+        <button class="talhoes__map-tool" type="button" aria-label="Criar novo talhao" title="Criar novo talhao"
+          data-talhoes-tool="draw">
+          <img src="assets/img/svg/waypoints.svg" alt="Criar novo talhao" width="20" height="20">
+        </button>
+        <button class="talhoes__map-tool" type="button" aria-label="Excluir talhao" title="Excluir talhao"
+          data-talhoes-tool="delete">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
+      </div>
+
+      <div class="talhoes__bottom-bar" id="talhoesBottomBar" aria-hidden="true">
+        <button class="btn btn--text" type="button" data-talhoes-action="cancel">Fechar</button>
+        <button class="btn btn--primary" type="button" data-talhoes-action="save">Salvar</button>
+      </div>
+
+      <aside class="talhoes__drawer" data-talhoes-drawer aria-label="Novo talhão">
+        <header class="talhoes__drawer-head">
+          <strong>Novo Talhão</strong>
+          <button class="talhoes__drawer-close" type="button" aria-label="Fechar" data-talhoes-close>
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </header>
+
+        <div class="talhoes__drawer-fields">
+          <label class="talhoes__field">
+            <span><em>*</em> Nome</span>
+            <input class="talhoes__input" id="talhoesName" name="talhoes_name" type="text" placeholder="Meu talhão" />
+          </label>
+
+          <label class="talhoes__field">
+            <span><em>*</em> Tipo de solo</span>
+            <div class="talhoes__select talhoes__select--search">
+              <select class="talhoes__input" id="talhoesSoil" name="talhoes_soil">
+                <option>Areia</option>
+                <option>Argiloso</option>
+                <option>Franco</option>
+              </select>
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+          </label>
+
+          <label class="talhoes__field">
+            <span><em>*</em> Plantio</span>
+            <div class="talhoes__select">
+              <select class="talhoes__input" id="talhoesCrop" name="talhoes_crop">
+                <option>Soja</option>
+                <option>Milho</option>
+                <option>Algodão</option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </label>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section class="talhoes__details card" aria-label="Detalhes do talhão">
+    <div class="talhoes__details-empty" aria-live="polite">
+      <div class="talhoes__details-icon">
+        <i class="fa-regular fa-file-lines"></i>
+      </div>
+      <span>Não há dados</span>
+    </div>
+  </section>
+</section>

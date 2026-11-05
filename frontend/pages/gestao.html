@@ -1,0 +1,509 @@
+<head>
+    <meta charset="UTF-8" />
+    <title>Operações</title>
+</head>
+
+<section class="gestao-op" aria-label="Gestão Operacional">
+
+    <header class="gestao-op__header">
+        <button class="edit-panel__back" type="button" aria-label="Voltar" onclick="if(window.IcNavigate){window.IcNavigate('dashboard')}else{document.querySelector('.nav__item[data-route=\'visao-geral\']')?.click()}">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Operações</span>
+        </button>
+        <button class="gestao-op__expand-btn js-focus-toggle" type="button" title="Modo Foco">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+    </header>
+
+    <!-- Filtros -->
+    <div class="gestao-op__filters">
+        <div class="gestao-op__filters-main">
+            <div class="gestao-op__filters-row">
+                <!-- Filtro Fazendas -->
+                <div class="gestao-op__filter-group">
+                    <label class="gestao-op__filter-label" for="gestaoFarmSearch">Fazendas selecionadas</label>
+                    <div class="gestao-op__multi" data-gestao-farm-multi>
+                        <div class="gestao-op__multi-control" data-gestao-farm-control>
+                            <div class="gestao-op__chips" data-gestao-farm-chips></div>
+                            <input class="gestao-op__search" id="gestaoFarmSearch" type="text" placeholder="Selecione as fazendas"
+                                data-gestao-farm-search />
+                            <span class="gestao-op__chev" aria-hidden="true">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="gestao-op__dropdown" data-gestao-farm-dropdown aria-hidden="true">
+                            <div class="gestao-op__list" data-gestao-farm-list></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro Status -->
+                <div class="gestao-op__filter-group">
+                    <div class="gestao-op__filter-label">Tipos de status</div>
+                    <div class="gestao-op__select">
+                        <span class="gestao-op__select-text gestao-op__select-text--placeholder">Crítico, Normal</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Filtro Equipamento -->
+                <div class="gestao-op__filter-group">
+                    <div class="gestao-op__filter-label">Tipo de Equipamento</div>
+                    <div class="gestao-op__multi" data-gestao-type-select>
+                        <div class="gestao-op__multi-control" data-gestao-type-btn>
+                            <span class="gestao-op__select-text" data-gestao-type-text>Todos</span>
+                            <span class="gestao-op__chev" aria-hidden="true">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="gestao-op__dropdown" data-gestao-type-dropdown aria-hidden="true">
+                            <div class="gestao-op__list" data-gestao-type-list></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gestao-op__filters-side">
+            <div class="gestao-op__filters-row">
+                <!-- Filtro Ordenação -->
+                <div class="gestao-op__filter-group">
+                    <div class="gestao-op__filter-label">Ordenar por</div>
+                    <div class="gestao-op__multi" data-gestao-sort-select>
+                        <div class="gestao-op__multi-control" data-gestao-sort-btn>
+                            <span class="gestao-op__select-text" data-gestao-sort-text>Status positivos primeiro</span>
+                            <span class="gestao-op__chev" aria-hidden="true">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="gestao-op__dropdown" data-gestao-sort-dropdown aria-hidden="true">
+                            <div class="gestao-op__list" data-gestao-sort-list></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gestao-op__content">
+        <!-- Coluna Esquerda: Dispositivos -->
+        <div class="gestao-op__devices">
+            <h3 class="gestao-op__devices-title">Controladores</h3>
+            <div id="gestaoDevicesContainer" class="gestao-op__devices-list">
+                <div id="gestaoPivosContainer" class="gestao-op__col-list gestao-op__col-list--devices">
+                    <!-- Pivôs e Bombas via JS -->
+                </div>
+                <div id="gestaoBombasContainer" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Timeline + Programações -->
+        <div class="gestao-op__side-content">
+            <div class="gestao-op__timeline">
+                <button class="gestao-op__expand-btn gestao-op__expand-btn--timeline js-focus-toggle" type="button" title="Modo Foco">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <div class="gestao-op__timeline-split">
+                    <div class="gestao-op__timeline-col gestao-op__timeline-col--events">
+                        <h4 class="gestao-op__timeline-col-title">Linha do Tempo</h4>
+                        <div id="gestaoTimelineContainer" class="gestao-op__timeline-list">
+                            <!-- Timeline via JS -->
+                        </div>
+                    </div>
+                    <div class="gestao-op__timeline-col gestao-op__timeline-col--alerts">
+                        <h4 class="gestao-op__timeline-col-title">Alertas</h4>
+                        <div id="gestaoAlertsContainer" class="gestao-op__timeline-list gestao-op__alerts-list">
+                            <!-- Alertas via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé: Pluviômetros -->
+    <footer class="gestao-op__footer">
+            <section class="gestao-op__footer-pane gestao-op__footer-pane--pluv">
+                <h3 class="gestao-op__footer-title">Pluviometria</h3>
+                <div class="pluv-group__list">
+
+            <article class="pluv-card card pluv-card--rain" data-pluv-card="" data-id="norte-a" aria-expanded="false">
+                <div class="pluv-card__row">
+                    <div class="pluv-card__main">
+                        <div class="pluv-card__title">
+                            <span class="pluv-card__name">Pluviômetro Norte A</span>
+                        </div>
+                        <div class="pluv-card__rain-context">Chuva moderada desde 07h</div>
+                    </div>
+                    <div class="pluv-card__right">
+                        <div class="pluv-card__mm-block">
+                            <span class="pluv-card__mm-ico">
+                                <svg class="pluv-mm-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                                    <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                                </svg>
+                            </span>
+                            <div class="pluv-card__mm-text">
+                                <div class="pluv-card__mm">
+                                    <span class="pluv-card__mm-val">12.5</span>
+                                    <span class="pluv-card__mm-unit">mm</span>
+                                </div>
+                                <div class="pluv-card__duration">em 45 min</div>
+                            </div>
+                        </div>
+                        <button class="pluv-card__toggle" type="button" data-card-toggle="" aria-label="Mostrar detalhes" aria-expanded="false" aria-controls="pluv-card-expand-norte-a">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="pluv-card__pill">Chovendo agora</span>
+                <div class="pluv-card__footline">
+                    <div class="pluv-card__updated">
+                        <i class="fa-solid fa-clock pluv-card__clock" aria-hidden="true"></i>
+                        <span>Atualizado há 32 min</span>
+                    </div>
+                    <div class="pluv-card__telemetry">
+                        <span class="pluv-card__signal is-on" title="4G">
+                            <i class="fa-solid fa-wifi"></i>
+                        </span>
+                        <span class="pluv-card__battery is-high is-charging" style="--battery-level: 92%;" title="Bateria 92% (carregando)" aria-label="Bateria 92% carregando">
+                            <span class="pluv-card__battery-fill"></span>
+                            <i class="fa-solid fa-bolt pluv-card__battery-charge" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="pluv-card__expand" id="pluv-card-expand-norte-a">
+                    <div class="pluv-card__divider"></div>
+                    <div class="pluv-card__context">
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>Talhão Norte</span>
+                        </div>
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>Impacta: Pivô 1, Pivô 2</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pluv-card card pluv-card--rain" data-pluv-card="" data-id="norte-b" aria-expanded="false">
+                <div class="pluv-card__row">
+                    <div class="pluv-card__main">
+                        <div class="pluv-card__title">
+                            <span class="pluv-card__name">Pluviômetro Norte B</span>
+                        </div>
+                        <div class="pluv-card__rain-context">Chuva moderada desde 18:14</div>
+                    </div>
+                    <div class="pluv-card__right">
+                        <div class="pluv-card__mm-block">
+                            <span class="pluv-card__mm-ico">
+                                <svg class="pluv-mm-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                                    <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                                </svg>
+                            </span>
+                            <div class="pluv-card__mm-text">
+                                <div class="pluv-card__mm">
+                                    <span class="pluv-card__mm-val">10.8</span>
+                                    <span class="pluv-card__mm-unit">mm</span>
+                                </div>
+                                <div class="pluv-card__duration">em 12 min</div>
+                            </div>
+                        </div>
+                        <button class="pluv-card__toggle" type="button" data-card-toggle="" aria-label="Mostrar detalhes" aria-expanded="false" aria-controls="pluv-card-expand-norte-b">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="pluv-card__pill">Chovendo agora</span>
+                <div class="pluv-card__footline">
+                    <div class="pluv-card__updated">
+                        <i class="fa-solid fa-clock pluv-card__clock" aria-hidden="true"></i>
+                        <span>Atualizado há 2 min</span>
+                    </div>
+                    <div class="pluv-card__telemetry">
+                        <span class="pluv-card__signal is-on" title="RADIO">
+                            <i class="fa-solid fa-wifi"></i>
+                        </span>
+                        <span class="pluv-card__battery is-high" style="--battery-level: 76%;" title="Bateria 76%" aria-label="Bateria 76%">
+                            <span class="pluv-card__battery-fill"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="pluv-card__expand" id="pluv-card-expand-norte-b">
+                    <div class="pluv-card__divider"></div>
+                    <div class="pluv-card__context">
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>Talhão Norte</span>
+                        </div>
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>Impacta: Pivô 3, Pivô 4</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pluv-card card pluv-card--alert" data-pluv-card="" data-id="sul" aria-expanded="false">
+                <div class="pluv-card__row">
+                    <div class="pluv-card__main">
+                        <div class="pluv-card__title">
+                            <span class="pluv-card__name">Pluviômetro Sul</span>
+                        </div>
+                        <div class="pluv-card__rain-context">Sem comunicação há 1 dia</div>
+                    </div>
+                    <div class="pluv-card__right">
+                        <div class="pluv-card__mm-block">
+                            <span class="pluv-card__mm-ico">
+                                <svg class="pluv-mm-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                                    <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                                </svg>
+                            </span>
+                            <div class="pluv-card__mm-text">
+                                <div class="pluv-card__mm">
+                                    <span class="pluv-card__mm-val">0.0</span>
+                                    <span class="pluv-card__mm-unit">mm</span>
+                                </div>
+                                <div class="pluv-card__duration">em 6h</div>
+                            </div>
+                        </div>
+                        <button class="pluv-card__toggle" type="button" data-card-toggle="" aria-label="Mostrar detalhes" aria-expanded="false" aria-controls="pluv-card-expand-sul">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="pluv-card__pill pluv-card__pill--alert">Sem comunicação</span>
+                <div class="pluv-card__footline">
+                    <div class="pluv-card__updated">
+                        <i class="fa-solid fa-clock pluv-card__clock" aria-hidden="true"></i>
+                        <span>Offline há 1 dia</span>
+                    </div>
+                    <div class="pluv-card__telemetry">
+                        <span class="pluv-card__signal is-off" title="Sem comunicação">
+                            <i class="fa-solid fa-wifi"></i>
+                        </span>
+                        <span class="pluv-card__battery is-low" style="--battery-level: 14%;" title="Bateria 14%" aria-label="Bateria 14%">
+                            <span class="pluv-card__battery-fill"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="pluv-card__expand" id="pluv-card-expand-sul">
+                    <div class="pluv-card__divider"></div>
+                    <div class="pluv-card__context">
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>Talhão Sul</span>
+                        </div>
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>Impacta: Pivô 5</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pluv-card card" data-pluv-card="" data-id="leste" aria-expanded="false">
+                <div class="pluv-card__row">
+                    <div class="pluv-card__main">
+                        <div class="pluv-card__title">
+                            <span class="pluv-card__name">Pluviômetro Leste</span>
+                        </div>
+                        <div class="pluv-card__rain-context">Última chuva às 6h</div>
+                    </div>
+                    <div class="pluv-card__right">
+                        <div class="pluv-card__mm-block">
+                            <span class="pluv-card__mm-ico">
+                                <svg class="pluv-mm-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                                    <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                                </svg>
+                            </span>
+                            <div class="pluv-card__mm-text">
+                                <div class="pluv-card__mm">
+                                    <span class="pluv-card__mm-val">5.7</span>
+                                    <span class="pluv-card__mm-unit">mm</span>
+                                </div>
+                                <div class="pluv-card__duration">em 6h</div>
+                            </div>
+                        </div>
+                        <button class="pluv-card__toggle" type="button" data-card-toggle="" aria-label="Mostrar detalhes" aria-expanded="false" aria-controls="pluv-card-expand-leste">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="pluv-card__pill pluv-card__pill--ghost">&nbsp;</span>
+                <div class="pluv-card__footline">
+                    <div class="pluv-card__updated">
+                        <i class="fa-solid fa-clock pluv-card__clock" aria-hidden="true"></i>
+                        <span>Atualizado há 29 min</span>
+                    </div>
+                    <div class="pluv-card__telemetry">
+                        <span class="pluv-card__signal is-on" title="4G">
+                            <i class="fa-solid fa-wifi"></i>
+                        </span>
+                        <span class="pluv-card__battery is-mid" style="--battery-level: 58%;" title="Bateria 58%" aria-label="Bateria 58%">
+                            <span class="pluv-card__battery-fill"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="pluv-card__expand" id="pluv-card-expand-leste">
+                    <div class="pluv-card__divider"></div>
+                    <div class="pluv-card__context">
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>Talhão Leste</span>
+                        </div>
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>Impacta: Pivô 6</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="pluv-card card pluv-card--dry" data-pluv-card="" data-id="oeste" aria-expanded="false">
+                <div class="pluv-card__row">
+                    <div class="pluv-card__main">
+                        <div class="pluv-card__title">
+                            <span class="pluv-card__name">Pluviômetro Oeste</span>
+                        </div>
+                        <div class="pluv-card__rain-context">Última chuva às 3h</div>
+                    </div>
+                    <div class="pluv-card__right">
+                        <div class="pluv-card__mm-block">
+                            <span class="pluv-card__mm-ico">
+                                <svg class="pluv-mm-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
+                                    <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                                </svg>
+                            </span>
+                            <div class="pluv-card__mm-text">
+                                <div class="pluv-card__mm">
+                                    <span class="pluv-card__mm-val">3.4</span>
+                                    <span class="pluv-card__mm-unit">mm</span>
+                                </div>
+                                <div class="pluv-card__duration">em 3h</div>
+                            </div>
+                        </div>
+                        <button class="pluv-card__toggle" type="button" data-card-toggle="" aria-label="Mostrar detalhes" aria-expanded="false" aria-controls="pluv-card-expand-oeste">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <span class="pluv-card__pill pluv-card__pill--ghost">&nbsp;</span>
+                <div class="pluv-card__footline">
+                    <div class="pluv-card__updated">
+                        <i class="fa-solid fa-clock pluv-card__clock" aria-hidden="true"></i>
+                        <span>Atualizado há 18 min</span>
+                    </div>
+                    <div class="pluv-card__telemetry">
+                        <span class="pluv-card__signal is-on" title="4G">
+                            <i class="fa-solid fa-wifi"></i>
+                        </span>
+                        <span class="pluv-card__battery is-mid" style="--battery-level: 45%;" title="Bateria 45%" aria-label="Bateria 45%">
+                            <span class="pluv-card__battery-fill"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="pluv-card__expand" id="pluv-card-expand-oeste">
+                    <div class="pluv-card__divider"></div>
+                    <div class="pluv-card__context">
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <span>Talhão Oeste</span>
+                        </div>
+                        <div class="pluv-card__context-line">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                            <span>Impacta: Pivô 7</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+                </div>
+            </section>
+
+            <section class="gestao-op__footer-pane gestao-op__footer-pane--level" aria-label="Medidor de Nível">
+                <h3 class="gestao-op__footer-title">Medidor de Nível</h3>
+                <div class="gestao-op__level-list">
+                    <article class="gestao-level-card card" style="--level: 78%; --level-color: #22c55e;">
+                        <div class="gestao-level-card__head">
+                            <span class="gestao-level-card__name">Poço Norte</span>
+                        </div>
+                        <div class="gestao-level-card__body">
+                            <div class="gestao-level-card__meta">
+                                <div class="gestao-level-card__line">Leitura: <strong>14.2 m</strong></div>
+                                <div class="gestao-level-card__line">Bomba: <strong>Bomba Norte</strong></div>
+                            </div>
+                            <div class="gestao-level-gauge-block">
+                                <div class="gestao-level-gauge" aria-hidden="true">
+                                    <span class="gestao-level-gauge__fill"></span>
+                                </div>
+                                <span class="gestao-level-gauge__wifi gestao-level-card__signal is-on" title="4G">
+                                    <i class="fa-solid fa-wifi"></i>
+                                </span>
+                                <div class="gestao-level-gauge__value">78%</div>
+                            </div>
+                        </div>
+                        <div class="gestao-level-card__foot">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Atualizado há 8 min</span>
+                        </div>
+                    </article>
+
+                    <article class="gestao-level-card card" style="--level: 42%; --level-color: #f59e0b;">
+                        <div class="gestao-level-card__head">
+                            <span class="gestao-level-card__name">Poço Sul</span>
+                        </div>
+                        <div class="gestao-level-card__body">
+                            <div class="gestao-level-card__meta">
+                                <div class="gestao-level-card__line">Leitura: <strong>8.1 m</strong></div>
+                                <div class="gestao-level-card__line">Bomba: <strong>Bomba Sul</strong></div>
+                            </div>
+                            <div class="gestao-level-gauge-block">
+                                <div class="gestao-level-gauge" aria-hidden="true">
+                                    <span class="gestao-level-gauge__fill"></span>
+                                </div>
+                                <span class="gestao-level-gauge__wifi gestao-level-card__signal is-on" title="4G">
+                                    <i class="fa-solid fa-wifi"></i>
+                                </span>
+                                <div class="gestao-level-gauge__value">42%</div>
+                            </div>
+                        </div>
+                        <div class="gestao-level-card__foot">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Atualizado há 22 min</span>
+                        </div>
+                    </article>
+
+                    <article class="gestao-level-card card" style="--level: 23%; --level-color: #ef4444;">
+                        <div class="gestao-level-card__head">
+                            <span class="gestao-level-card__name">Poço Leste</span>
+                        </div>
+                        <div class="gestao-level-card__body">
+                            <div class="gestao-level-card__meta">
+                                <div class="gestao-level-card__line">Leitura: <strong>4.6 m</strong></div>
+                                <div class="gestao-level-card__line">Bomba: <strong>Bomba Leste</strong></div>
+                            </div>
+                            <div class="gestao-level-gauge-block">
+                                <div class="gestao-level-gauge" aria-hidden="true">
+                                    <span class="gestao-level-gauge__fill"></span>
+                                </div>
+                                <span class="gestao-level-gauge__wifi gestao-level-card__signal is-on" title="4G">
+                                    <i class="fa-solid fa-wifi"></i>
+                                </span>
+                                <div class="gestao-level-gauge__value">23%</div>
+                            </div>
+                        </div>
+                        <div class="gestao-level-card__foot">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Atualizado há 1 h</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+    </footer>
+</section>

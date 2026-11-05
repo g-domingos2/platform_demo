@@ -1,0 +1,669 @@
+<section class="cadastros-page" id="cadastrosPanel" aria-label="Cadastros">
+  <div class="cadastros-menu" role="navigation" aria-label="Seções de cadastros">
+    <button
+      class="cadastros-menu__back"
+      type="button"
+      aria-label="Voltar"
+      onclick="if (window.IcNavigate) { window.IcNavigate('dashboard'); } else { document.querySelector('.nav__item[data-route=\'visao-geral\']')?.click(); }"
+    >
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Cadastros</span>
+    </button>
+    <span class="cadastros-menu__sep" aria-hidden="true">-</span>
+    <div class="cadastros-menu__items">
+      <button class="cadastros-menu__item is-active" type="button" data-section="fazendas">Fazenda</button>
+      <button class="cadastros-menu__item" type="button" data-section="talhoes">Talhões</button>
+      <button class="cadastros-menu__item" type="button" data-section="estudo-sinal">Estudo de Sinal</button>
+      <button class="cadastros-menu__item" type="button" data-section="sistemas-irrigacao">Pivôs</button>
+      <button class="cadastros-menu__item" type="button" data-section="equipamentos">Equipamentos</button>
+
+      <button class="cadastros-menu__item" type="button" data-section="energia">Energia</button>
+      <button class="cadastros-menu__item" type="button" data-section="faturas">Faturas de Energia</button>
+      <button class="cadastros-menu__item" type="button" data-section="usuarios">Usuários</button>
+    </div>
+    <div class="cadastros-menu__actions" id="cadastrosMenuActions"></div>
+  </div>
+
+  <div class="cad-tab-body is-active">
+    <div class="cad-content">
+
+      <section class="cad-section is-active" id="section-fazendas">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Fazendas</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive cadastros-fazendas-table-wrap">
+                  <table class="cadastros-table cadastros-table--fazendas">
+                    <thead>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Proprietário</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--fazendas">
+                <div class="cadastros-map-card__canvas-wrap">
+                  <div class="cadastros-map-card__canvas" id="cadastrosFazendasMap" aria-label="Mapa das fazendas"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-talhoes" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Talhões</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Talhão</th>
+                        <th>Crop</th>
+                        <th>Área</th>
+                        <th>Tipo de Solo</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="5">Nenhum talhão cadastrado.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--section">
+                <div class="cadastros-map-card__canvas-wrap">
+                  <div class="cadastros-map-card__canvas" id="cadastrosTalhoesMap" aria-label="Mapa de talhões"></div>
+                </div>
+              </div>
+              <div class="cq-map-actions cadastros-map-overlay cadastros-map-overlay--talhoes" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-estudo-sinal" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-card">
+                <div class="cadastros-form-topbar">
+                  <div class="cadastros-form-topbar__text">Upload de Estudo de Sinal</div>
+                </div>
+                <div class="cadastros-form-content">
+                  <div class="cadastros-form-section is-active">
+                    <div class="cadastros-form-grid">
+                      <div class="equip-field col-span-2">
+                        <label class="equip-label" for="signal_farm_select">Fazenda</label>
+                        <select class="equip-input" id="signal_farm_select">
+                           <option value="">Selecione a fazenda...</option>
+                        </select>
+                      </div>
+                      
+                      <div class="equip-field col-span-2">
+                        <label class="equip-label" for="signalStudyFile">Arquivo do Estudo (KML ou KMZ)</label>
+                        <div class="cadastros-upload-zone" id="signalUploadZone">
+                          <input type="file" id="signalStudyFile" accept=".kml,.kmz" style="display: none;">
+                          <div class="cadastros-upload-zone__content">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <div class="cadastros-upload-zone__title">Clique ou arraste o arquivo aqui</div>
+                            <div class="cadastros-upload-zone__desc">Suporta formatos .KML ou .KMZ (Máx. 10MB)</div>
+                          </div>
+                          <button type="button" class="btn btn--primary" onclick="document.getElementById('signalStudyFile').click()">Selecionar arquivo</button>
+                        </div>
+                        <div class="cadastros-upload-info is-hidden" id="signalUploadInfo">
+                           <i class="fa-solid fa-file-code"></i>
+                           <span id="signalFileName">arquivo_estudo_sinal.kml</span>
+                           <button type="button" class="btn-icon" title="Remover"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                      
+                      <div class="col-span-2">
+                        <div class="cadastros-alert--info">
+                          <i class="fa-solid fa-circle-info"></i>
+                          <span>O arquivo será sobreposto ao mapa na aba de <strong>Conectividade</strong> para auxiliar no diagnóstico técnico de cobertura de rádio.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="cadastros-form-footer">
+                  <button type="button" class="cad-form-action-btn cad-form-action-btn--primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Salvar Estudo
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--section">
+                <div class="cadastros-map-card__canvas" id="cadastrosSignalMap" aria-label="Preview do estudo de sinal"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-sistemas-irrigacao" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Pivôs</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Pivô</th>
+                        <th>Área</th>
+                        <th>Parcelas</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="3">Nenhum pivô central cadastrado.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--section">
+                <div class="cadastros-map-card__canvas-wrap">
+                  <div class="cadastros-map-card__canvas" id="cadastrosSistemasMap" aria-label="Mapa de sistemas de irrigacao"></div>
+                </div>
+              </div>
+              <div class="cq-map-actions cadastros-map-overlay cadastros-map-overlay--pivos" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-parcelas" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Parcelas</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Geral</th>
+                        <th>Pivô Vinculado</th>
+                        <th>Ângulo Inicial</th>
+                        <th>Ângulo Final</th>
+                        <th>Plantio</th>
+                        <th>Colheita</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="7">Nenhuma parcela cadastrada.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--section">
+                <div class="cadastros-map-card__canvas" id="cadastrosParcelasMap" aria-label="Mapa de parcelas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-equipamentos" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-quadrant-grid">
+            <div class="cq-left">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Equipamentos</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Tipo</th>
+                        <th>Nome</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="3">Nenhum equipamento cadastrado.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="cq-right">
+              <div class="cadastros-map-card cadastros-map-card--section">
+                <div class="cadastros-map-card__canvas" id="cadastrosEquipamentosMap" aria-label="Mapa de equipamentos"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-energia" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-full-grid">
+            <div class="cf-main">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Contratos de Energia</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Aniversário da Conta</th>
+                        <th>Faixas de Energia</th>
+                        <th>Feriados</th>
+                        <th>Nº de Leituras</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="7">Nenhum contrato de energia cadastrado.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-faturas" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-full-grid">
+            <div class="cf-main">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Faturas de Energia</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Ano</th>
+                        <th>Mês</th>
+                        <th>Nº de Contas</th>
+                        <th>Valor Total</th>
+                        <th>Consumo Total</th>
+                        <th>Penalidades</th>
+                        <th>Demanda Contratada</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="8">Nenhuma fatura cadastrada.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-feriados" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-full-grid">
+            <div class="cf-main">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Feriados</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive">
+                  <table class="cadastros-table">
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="2">Nenhum feriado cadastrado.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cad-section" id="section-usuarios" style="display: none;">
+        <div class="cad-section-body">
+          <div class="cadastros-full-grid cadastros-full-grid--usuarios">
+            <div class="cf-main">
+              <div class="cadastros-form-host" style="display: none;"></div>
+              <div class="cad-table-panel">
+                <div class="cad-table-toolbar">
+                  <span class="cad-table-toolbar__title">Usuários</span>
+                  <div class="cad-table-toolbar__actions"></div>
+                </div>
+                <div class="table-responsive cadastros-usuarios-wrap">
+                  <div class="user-page cadastros-usuarios-content">
+          <div class="user-page__resale-card">
+            <div class="resale-info">
+              <span class="resale-label">Revenda</span>
+              <div class="resale-grid">
+                <div class="resale-item">
+                  <span class="item-label">Nome:</span>
+                  <span class="item-value">Bauer Irricontrol</span>
+                </div>
+                <div class="resale-item">
+                  <span class="item-label">Email:</span>
+                  <span class="item-value">bauer@irricontrol.com</span>
+                </div>
+                <div class="resale-item">
+                  <span class="item-label">Telefone:</span>
+                  <span class="item-value">123456789</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-page__bar user-page__bar--compact">
+            <a href="#" class="link-permissons">
+              <i class="fa-regular fa-circle-question"></i>
+              Sobre as permissões
+            </a>
+          </div>
+
+          <div class="user-page__list">
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+01@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+02@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+03@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+04@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+05@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+06@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+07@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+08@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+09@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+10@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+11@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+12@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+13@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+14@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+15@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="user-item">
+              <div class="user-item__main">
+                <div class="user-item__info">
+                  <div class="user-item__id">
+                    <span class="user-email">bauer+16@irricontrol.com</span>
+                    <span class="badge badge--admin">Administrador</span>
+                  </div>
+                  <div class="user-name">Bauer Irricontrol</div>
+                </div>
+                <div class="user-item__actions">
+                  <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-icon btn-icon--delete" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+

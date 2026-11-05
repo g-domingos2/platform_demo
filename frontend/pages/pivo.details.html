@@ -1,0 +1,557 @@
+<section class="pivos-view" id="pivosPanel" aria-label="Detalhes de Pivôs">
+  <div class="pivo-card-container" id="pivosCards" aria-label="Detalhes do pivô">
+        <div class="pivo-right-column">
+        <article class="pincard">
+            <!-- Minimapa (esquerda) -->
+            <div class="pincard__map-wrap">
+                <button type="button" class="minimap-back-btn js-details-back">
+                    <i class="fa-solid fa-chevron-left"></i> Voltar
+                </button>
+                <div class="pincard__map" id="pivoMinimap"></div>
+            </div>
+
+            <!-- Conteúdo (direita) -->
+            <div class="pincard__body">
+
+                <!-- Info (esquerda do body) -->
+                <div class="pincard__info">
+                    <!-- Badge de Status -->
+                    <div class="pincard__status-row">
+                        <div class="pincard__status-bar is-energized">
+                            <span class="pincard__status-dot--white"></span>
+                            <span class="pincard__status-text">PAINEL ENERGIZADO</span>
+                        </div>
+                        <span class="pincard__status-power" id="pivoStatusPower" data-tooltip="Central Online">
+                            <img src="./assets/img/svg/power.svg" alt="Central Online">
+                        </span>
+                    </div>
+
+                    <!-- Título + Seletor -->
+                    <div class="pincard__title-group" style="position: relative;">
+                        <button type="button" class="pincard__title-btn" id="pivoSelectBtn"
+                            aria-label="Selecionar outro pivô">
+                            <h2 class="pincard__title" id="pivoTitleLabel">Pivô 002</h2>
+                            <i class="fa-solid fa-caret-down"></i>
+                        </button>
+                        <!-- Dropdown de seleção de pivôs -->
+                        <div class="pivo-selector" id="pivoSelectorMenu" style="display: none;"></div>
+                    </div>
+
+                    <!-- KPIs inline -->
+                    <div class="pincard__kpis" style="position: relative; top: -30px;">
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/circle-gauge.svg" alt="Ângulo" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiAnguloVal">127°</div>
+                            <div class="pincard__kpi-lbl">Ângulo</div>
+                        </div>
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/gauge.svg" alt="Pressão Centro" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiPressaoCentroVal">4.2 bar</div>
+                            <div class="pincard__kpi-lbl">Pressão Centro</div>
+                        </div>
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/clock.svg" alt="Horas" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiHorasVal">186h</div>
+                            <div class="pincard__kpi-lbl">Horas</div>
+                        </div>
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/cloud-rain.svg" alt="Pluviômetro" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiPluviometroVal">12.5 mm</div>
+                            <div class="pincard__kpi-lbl">Pluviômetro</div>
+                        </div>
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/gauge.svg" alt="Pressão Última Torre" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiPressaoTorreVal">2.8 bar</div>
+                            <div class="pincard__kpi-lbl">Pressão Última Torre</div>
+                        </div>
+                        <div class="pincard__kpi">
+                            <div class="pincard__kpi-icon">
+                                <img src="./assets/img/svg/zap.svg" alt="Tensão" style="filter: invert(33%) sepia(14%) saturate(620%) hue-rotate(175deg) brightness(80%) contrast(90%);">
+                            </div>
+                            <div class="pincard__kpi-val" id="kpiVoltagemVal">220 V</div>
+                            <div class="pincard__kpi-lbl">Tensão</div>
+                        </div>
+                    </div>
+
+                    <!-- Última comunicação -->
+                    <footer class="pincard__footer" style="margin-top: 10px;">
+                        <span class="comm-label">Última comunicação:</span> 29 mar 2026 14:30
+                    </footer>
+                </div>
+
+                <!-- Side (direita do body): ações em cima, botões embaixo -->
+                <div class="pincard__side">
+                    <div class="pincard__actions">
+                        <button type="button" class="pincard__icon-btn" aria-label="Manutenção"><i class="fa-solid fa-lock"></i></button>
+                        <button type="button" class="pincard__icon-btn" aria-label="Folha" style="display: none;"><i class="fa-solid fa-leaf"></i></button>
+                        <button type="button" class="pincard__icon-btn" aria-label="Clima"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg></button>
+                        <button type="button" class="pincard__btn-text" aria-label="Editar"><i class="fa-solid fa-pen"></i> Editar</button>
+                    </div>
+                    <div class="pincard__controls">
+                        <div class="pincard__start-choice" id="pivoStartChoice">
+                            <button type="button" class="pincard__control-btn is-start">
+                                <i class="fa-regular fa-circle-play"></i> Iniciar Pivô
+                            </button>
+                        </div>
+                        <button type="button" class="pincard__control-btn is-stop">
+                            <i class="fa-regular fa-square"></i> Parar Pivô
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </article>
+
+            <!-- Agenda Card -->
+            <article class="pivo-agenda">
+                <header class="pivo-agenda__header">
+                    <span class="pivo-agenda__title">Período</span>
+                    <button type="button" class="pivo-agenda__period-btn js-period-trigger">
+                        <span class="pivo-agenda__period-label">Últimas 24h</span>
+                        <i class="fa-regular fa-calendar"></i>
+                    </button>
+                </header>
+
+                <div class="pivo-agenda__content">
+                    <!-- Espaço futuro para listagem de agendamentos, fertirrigação, etc. -->
+                </div>
+            </article>
+
+            <article class="pivo-faults" id="pivoFaultsCard" hidden>
+                <button type="button" class="pivo-faults__item js-fault-item" data-fault="pressure">
+                    <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+                    <span class="pivo-faults__label">Falha de Press&atilde;o</span>
+                    <strong class="pivo-faults__value">2</strong>
+                </button>
+                <button type="button" class="pivo-faults__item js-fault-item" data-fault="misalignment">
+                    <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+                    <span class="pivo-faults__label">Desalinhamento</span>
+                    <strong class="pivo-faults__value">1</strong>
+                </button>
+                <button type="button" class="pivo-faults__item js-fault-item" data-fault="voltage_low">
+                    <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+                    <span class="pivo-faults__label">Tens&atilde;o Baixa</span>
+                    <strong class="pivo-faults__value">1</strong>
+                </button>
+                <button type="button" class="pivo-faults__item js-fault-item" data-fault="voltage_peak">
+                    <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+                    <span class="pivo-faults__label">Pico de Tens&atilde;o</span>
+                    <strong class="pivo-faults__value">0</strong>
+                </button>
+                <button type="button" class="pivo-faults__item js-fault-item" data-fault="irrigation_accumulated">
+                    <i class="fa-solid fa-up-right-from-square pivo-faults__expand-icon"></i>
+                    <span class="pivo-faults__label pivo-faults__label--stacked"><span>Acumulado</span><span class="pivo-faults__sublabel">Irrigação | Precipitação</span></span>
+                    <strong class="pivo-faults__value pivo-faults__value--pair">98,00<small>mm</small><span class="pivo-faults__sep">|</span>23,00<small>mm</small></strong>
+                </button>
+            </article>
+
+
+            <!-- Linha do Tempo Operacional Card — HIDDEN, descomente para reativar
+            <article class="pivo-data-card pivo-timeline">
+                <header class="pivo-data-card__header is-flex pivo-timeline__header">
+                    <h3 class="pivo-data-card__title">Linha do Tempo Operacional</h3>
+                    <span class="pivo-timeline__status-text green">58% em operação</span>
+                </header>
+
+                <div class="pivo-timeline__content">
+                    <div class="pivo-timeline__labels">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>24:00</span>
+                    </div>
+
+                    <div class="pivo-timeline__bar">
+                        <div class="pivo-timeline__segment green" style="flex: 25%"></div>
+                        <div class="pivo-timeline__segment gray" style="flex: 10%"></div>
+                        <div class="pivo-timeline__segment green" style="flex: 15%"></div>
+                        <div class="pivo-timeline__segment yellow" style="flex: 8%"></div>
+                        <div class="pivo-timeline__segment green" style="flex: 12%"></div>
+                        <div class="pivo-timeline__segment red" style="flex: 6%" data-tooltip="11:24 – 12:50&#10;Queda de energia"></div>
+                        <div class="pivo-timeline__segment gray" style="flex: 8%"></div>
+                        <div class="pivo-timeline__segment green" style="flex: 10%"></div>
+                        <div class="pivo-timeline__segment yellow" style="flex: 7%"></div>
+                        <div class="pivo-timeline__segment green" style="flex: 12%"></div>
+                        <div class="pivo-timeline__segment red" style="flex: 4%" data-tooltip="19:10 – 20:06&#10;Falha de pressão"></div>
+                        <div class="pivo-timeline__segment gray" style="flex: 7%"></div>
+                        <div class="pivo-timeline__segment green" style="flex: 16%"></div>
+                    </div>
+
+                    <div class="pivo-timeline__legend">
+                        <div class="pivo-timeline__legend-item">
+                            <span class="dot green"></span>
+                            <span>Operando: <strong>14h 00m</strong></span>
+                        </div>
+                        <div class="pivo-timeline__legend-item">
+                            <span class="dot yellow"></span>
+                            <span>Manutenção: <strong>2h 00m</strong></span>
+                        </div>
+                        <div class="pivo-timeline__legend-item">
+                            <span class="dot red"></span>
+                            <span>Paradas Inesperadas: <strong>1h 30m</strong></span>
+                        </div>
+                        <div class="pivo-timeline__legend-item">
+                            <span class="dot gray"></span>
+                            <span>Parado: <strong>2h 30m</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            -->
+
+            <!-- Linha Inferior com novos cards (Agora dentro de pivo-right-column) -->
+            <div class="pivo-bottom-row">
+                <!-- Histórico Card -->
+                <article class="pivo-data-card pivo-history pivo-history--compact">
+                    <div class="pivo-history__header" style="padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <h2 style="font-size: 24px; font-weight: 600; color: rgba(0,0,0,0.88); margin: 0;">Histórico</h2>
+                        <div class="pivo-history__actions" style="display: flex; gap: 4px; align-items: center;">
+                            <button type="button" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg></button>
+                            <div class="pivo-filter">
+                                <button type="button" class="pivo-filter__btn" aria-label="Filtrar" style="margin-right: 0; padding: 6px 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path></svg></button>
+                                <div class="pivo-filter__panel">
+                                    <label class="pivo-filter__row"><span>Central</span><input type="checkbox" name="pivoHistoryCentral" class="pivo-filter__switch" data-history-filter="central"></label>
+                                    <label class="pivo-filter__row"><span>GPS</span><input type="checkbox" name="pivoHistoryGps" class="pivo-filter__switch" data-history-filter="gps"></label>
+                                </div>
+                            </div>
+                            <button type="button" aria-label="Atualizar" style="margin-right: 0; padding: 6px 8px;"><i class="fa-solid fa-rotate-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="pivo-history__tabs">
+                        <button type="button" class="is-active js-history-tab" data-tab="eventos">Eventos</button>
+                        <button type="button" class="js-history-tab" data-tab="operacoes">Operações</button>
+                    </div>
+
+                    <div class="pivo-history__table-wrapper">
+                        <table class="pivo-history__table">
+                            <thead id="pivoHistoryTableHead">
+                                <tr>
+                                    <th></th>
+                                    <th style="width: 160px;">Ocorrência</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pivoHistoryTableBody">
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>19 fev 2026 10:38</td>
+                                    <td><span class="history-type"><span>Atualização</span><span class="history-type__icon history-type__icon--confirmed" aria-hidden="true"></span></span></td>
+                                    <td>IRRIGAÇÃO FINALIZADA</td>
+                                </tr>
+                                <tr class="pivo-history__row-details" style="display: none;">
+                                    <td colspan="4">
+                                        <div class="pivo-history__details">
+                                            <h4>Descrição</h4>
+                                            <div class="pivo-history__details-grid">
+                                                <div>Criado: 19 fev 2026 10:38</div>
+                                                <div>Atualizado: 19 fev 2026 10:38</div>
+                                                <div>Recebido: 19 fev 2026 10:38</div>
+                                                <div>Ângulo atual: 350°</div>
+                                                <div>Pressão na última torre: 0 bar</div>
+                                                <div>Horímetro molhado: 2162h32min</div>
+                                                <div>Horímetro total: 2213h31min</div>
+                                                <div>Ângulo de parada: 350°</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>06 mar 2026 06:48</td>
+                                    <td><span class="history-type"><span>Atualização</span><span class="history-type__icon history-type__icon--confirmed" aria-hidden="true"></span></span></td>
+                                    <td>PARADO PELA INTERNET</td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>06 mar 2026 06:48</td>
+                                    <td><span class="history-type"><span>Comando</span><span class="history-type__icon history-type__icon--sent" aria-hidden="true"></span></span></td>
+                                    <td>PARAR PIVÔ</td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>05 mar 2026 21:07</td>
+                                    <td><span class="history-type"><span>Atualização</span><span class="history-type__icon history-type__icon--confirmed" aria-hidden="true"></span></span></td>
+                                    <td>MOVENDO | AVANÇO | MOLHADO | 41%</td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>05 mar 2026 21:03</td>
+                                    <td><span class="history-type"><span>Atualização</span><span class="history-type__icon history-type__icon--confirmed" aria-hidden="true"></span></span></td>
+                                    <td>ESPERANDO TEMPO DE RETARDO</td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>05 mar 2026 21:03</td>
+                                    <td><span class="history-type"><span>Atualização</span><span class="history-type__icon history-type__icon--confirmed" aria-hidden="true"></span></span></td>
+                                    <td>ESPERANDO PRESSURIZAÇÃO</td>
+                                </tr>
+                                <tr class="pivo-history__row">
+                                    <td class="pivo-history__col-btn"><button class="expand-btn"><i
+                                                class="fa-solid fa-plus"></i></button></td>
+                                    <td>05 mar 2026 21:03</td>
+                                    <td><span class="history-type"><span>Comando</span><span class="history-type__icon history-type__icon--sent" aria-hidden="true"></span></span></td>
+                                    <td>PARAR PIVÔ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pivo-history__pagination" aria-label="Paginação de histórico">
+                        <button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button type="button" class="btn-page is-active" aria-current="page">1</button>
+                        <button type="button" class="btn-page">2</button>
+                        <button type="button" class="btn-page">3</button>
+                        <button type="button" class="btn-page">4</button>
+                        <button type="button" class="btn-page">5</button>
+                        <button type="button" class="btn-page is-static" tabindex="-1" aria-hidden="true">...</button>
+                        <button type="button" class="btn-page">24</button>
+                        <button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
+                </article>
+
+                <!-- Pressão + Lâmina lado a lado (ambos por ângulo do pivô) -->
+                <div class="pivo-angle-charts">
+                <article class="pivo-data-card pivo-pressao">
+                    <header class="pivo-data-card__header">
+                        <h3 class="pivo-data-card__title">Pressão</h3>
+                    </header>
+
+                    <div class="pivo-pressao__content">
+                        <div class="pivo-chart-container pivo-chart-container--line-large" id="pivoChartPressao">
+                            <div class="y-axis-labels">
+                                <span>5.0 bar</span>
+                                <span>4.0 bar</span>
+                                <span>3.0 bar</span>
+                                <span>2.0 bar</span>
+                                <span>1.0 bar</span>
+                                <span>0.0 bar</span>
+                            </div>
+                            <div class="x-axis-labels">
+                                <span>0º</span>
+                                <span>90º</span>
+                                <span>180º</span>
+                                <span>270º</span>
+                                <span>359º</span>
+                            </div>
+
+                            <!-- Linhas Falsas do Gráfico -->
+                            <svg class="mock-svg-lines" viewBox="0 0 1000 250" preserveAspectRatio="none">
+                                <!-- Blue line -->
+                                <path d="M0,60 Q100,20 200,30 T400,40 T500,70 T600,100 T700,90 T800,100 T1000,40"
+                                    fill="none" stroke="#60a5fa" stroke-width="2" />
+                                <!-- Green spiky line -->
+                                <path
+                                    d="M0,250 L10,50 L20,250 L30,40 L40,250 L50,55 L60,250 L70,45 L80,250 L90,60 L100,250 L110,40 L120,250 L130,50 L140,250 L150,45 L160,250 L170,55 L180,250 L190,40 L200,250 L210,60 L220,250 L230,45 L240,250 L250,50 L260,250 L270,55 L280,250 L290,40 L300,250 L310,60 L320,250 L330,45 L340,250 L350,50 L360,250 L370,55 L380,250 L390,40 L400,250 L410,60 L420,250 L430,45 L440,250 L450,50 L460,250 L470,55 L480,250 L490,40 L500,250 L510,70 L520,250 L530,80 L540,250 L550,90 L560,250 L570,100 L580,250 L590,120 L600,250 L610,130 L620,250 L630,250 L640,250 L650,250 L660,250 L670,250 L680,250 L690,150 L700,250 L710,140 L720,250 L730,130 L740,250 L750,120 L760,250 L770,110 L780,250 L790,100 L800,250 L810,90 L820,250 L830,80 L840,250 L850,70 L860,250 L870,60 L880,250 L890,50 L900,250 L910,40 L920,250 L930,50 L940,250 L950,45 L960,250 L970,55 L980,250 L990,40 L1000,250"
+                                    fill="none" stroke="#6ae3a9" stroke-width="1.5" stroke-linejoin="round" />
+                            </svg>
+
+                            <!-- Balão / Ponto de Hover (Fictício) -->
+                            <div class="mock-hover-indicator">
+                                <div class="mock-hover-line"></div>
+                                <div class="mock-hover-dot blue"></div>
+                                <div class="mock-hover-dot green"></div>
+
+                                <div class="mock-tooltip">
+                                    <strong>222º</strong>
+                                    <div class="mock-tooltip-row">
+                                        <span class="dot blue"></span> Comparação de Pressão: <span>2.96 bar</span>
+                                    </div>
+                                    <div class="mock-tooltip-row">
+                                        <span class="dot green"></span> Pressão: <span>0.00 bar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pivo-pressao__subtitles">
+                            <span>Dados de pressão gerado entre 05 Ago 2026 18:32 e 05 Set 2026 18:32</span>
+                            <span>Dados de comparação gerado entre 05 Jul 2026 18:32 e 05 Ago 2026 18:32</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Lâmina x Ângulo Card -->
+                <article class="pivo-data-card pivo-lamina">
+                    <header class="pivo-data-card__header">
+                        <h3 class="pivo-data-card__title">Lâmina x Ângulo</h3>
+                    </header>
+
+                    <div class="pivo-pressao__content">
+                        <div class="pivo-chart-container pivo-chart-container--line-large pivo-chart-container--lamina"
+                            id="pivoChartLamina">
+                            <div class="y-axis-labels">
+                                <span>80.0 mm</span>
+                                <span>60.0 mm</span>
+                                <span>40.0 mm</span>
+                                <span>20.0 mm</span>
+                                <span>0.0 mm</span>
+                            </div>
+                            <div class="x-axis-labels">
+                                <span>1º</span>
+                                <span>90º</span>
+                                <span>180º</span>
+                                <span>270º</span>
+                                <span>360º</span>
+                            </div>
+
+                            <!-- Linhas Falsas do Gráfico -->
+                            <svg class="mock-svg-lines" viewBox="0 0 1000 250" preserveAspectRatio="none">
+                                <!-- Blue line -->
+                                <path d="M0,20 L300,20 L300,250 L320,250 L320,20 L990,20 L990,250" fill="none"
+                                    stroke="#60a5fa" stroke-width="2" />
+                            </svg>
+
+                            <!-- Balão / Ponto de Hover (Fictício) -->
+                            <div class="mock-hover-indicator" style="left: 60%;">
+                                <div class="mock-hover-line"></div>
+                                <div class="mock-hover-dot blue single-dot" style="top: -2px;"></div>
+
+                                <div class="mock-tooltip" style="left: 8px; top: 0px">
+                                    <strong>202º</strong>
+                                    <div class="mock-tooltip-row">
+                                        <span class="dot blue"></span> Lâmina: <span>7.95 mm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                </div>
+
+                <article class="pivo-data-card pivo-consumo-card">
+                    <header class="pivo-data-card__header">
+                        <h3 class="pivo-data-card__title">Consumo</h3>
+                    </header>
+
+                    <div class="pivo-consumo__grid">
+                        <div class="pivo-consumo__kpi border-right border-bottom">
+                            <span id="pivoConsumptionVolumeTotalLabel">Volume Total</span>
+                            <strong id="pivoConsumptionVolumeTotal">0,00 m<sup>3</sup></strong>
+                        </div>
+                        <div class="pivo-consumo__kpi border-bottom">
+                            <span id="pivoConsumptionVolumeMonthLabel">Volume Total no Último Mês</span>
+                            <strong id="pivoConsumptionVolumeMonth">0,00 m<sup>3</sup></strong>
+                        </div>
+                        <div class="pivo-consumo__kpi border-right">
+                            <span id="pivoConsumptionHoursTotalLabel">Horas Totais de Trabalho</span>
+                            <strong id="pivoConsumptionHoursTotal">0,00 h</strong>
+                        </div>
+                        <div class="pivo-consumo__kpi">
+                            <span id="pivoConsumptionHoursMonthLabel">Horas Totais de Trabalho no Último Mês</span>
+                            <strong id="pivoConsumptionHoursMonth">0,00 h</strong>
+                        </div>
+                    </div>
+
+                    <div class="pivo-consumo__pies">
+                        <div class="pivo-consumo__chart">
+                            <h4>Horas de Trabalho - Molhado</h4>
+                            <div class="pivo-chart-container" id="pivoChartConsumo"></div>
+                            <div class="pivo-chart-legend" id="pivoConsumptionLegend">
+                                <span><span class="legend-dot" style="background:#f87171"></span>Horário de Pico</span>
+                                <span><span class="legend-dot" style="background:#93c5fd"></span>Fora do Horário de Pico</span>
+                                <span><span class="legend-dot" style="background:#86efac"></span>Reduzido</span>
+                            </div>
+                        </div>
+
+                        <div class="pivo-consumo__chart pivo-consumo__chart--energy">
+                            <h4>Custos em Energia</h4>
+                            <div class="pivo-chart-container" id="pivoChartCustos"></div>
+                            <div class="pivo-chart-legend" id="pivoCostsLegend">
+                                <span><span class="legend-dot" style="background:#f87171"></span>Horário de Pico</span>
+                                <span><span class="legend-dot" style="background:#93c5fd"></span>Fora do Horário de Pico</span>
+                                <span><span class="legend-dot" style="background:#86efac"></span>Reduzido</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+
+                <!-- Tensão + Pluviometria lado a lado -->
+                <div class="pivo-timeseries-row">
+                <article class="pivo-data-card pivo-tensao-card">
+                    <header class="pivo-data-card__header">
+                        <h3 class="pivo-data-card__title">Tensões do Pivô (V)</h3>
+                    </header>
+
+                    <div class="pivo-pressao__content">
+                        <div class="pivo-energy__bottom">
+                            <div class="pivo-energy__timeseries">
+                                <div class="pivo-chart-container pivo-chart-container--line-large pivo-chart-container--tensao"
+                                    id="pivoChartTensoes">
+                                    <div class="y-axis-labels">
+                                        <span>600V</span>
+                                        <span>500V</span>
+                                        <span>400V</span>
+                                        <span>300V</span>
+                                        <span>200V</span>
+                                        <span>100V</span>
+                                        <span>0V</span>
+                                    </div>
+                                    <div class="x-axis-labels x-axis-labels--dates">
+                                        <span>03 mai 2026 13:08</span>
+                                        <span>11 mai 2026 11:42</span>
+                                        <span>18 mai 2026 12:31</span>
+                                        <span>28 mai 2026 13:06</span>
+                                        <span>30 mai 2026 10:50</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pivo-energy__kpis">
+                                <div class="pivo-energy__kpi">
+                                    <span>Mínimo</span>
+                                    <strong>488 V</strong>
+                                </div>
+                                <div class="pivo-energy__kpi">
+                                    <span>Média</span>
+                                    <strong>504.5 V</strong>
+                                </div>
+                                <div class="pivo-energy__kpi">
+                                    <span>Máximo</span>
+                                    <strong>523.33 V</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pivo-data-card pivo-pluviometria">
+                    <header class="pivo-data-card__header">
+                        <h3 class="pivo-data-card__title">Pluviometria</h3>
+                    </header>
+
+                    <div class="pivo-pressao__content">
+                        <div class="bmbd-consumo-chart pivo-pluv-chart" id="pivoPluviometriaChart">
+                            <span class="pivo-pluv-axis-title pivo-pluv-axis-title--y">Precipitação (mm)</span>
+                            <div class="bmbd-consumo-chart__y" id="pivoPluvY"></div>
+                            <div class="bmbd-consumo-chart__plot-wrap">
+                                <div class="bmbd-consumo-chart__plot">
+                                    <div class="bmbd-consumo-chart__grid"></div>
+                                    <div class="bmbd-consumo-chart__bars" id="pivoPluvBars"></div>
+                                </div>
+                            </div>
+                            <span class="pivo-pluv-axis-title pivo-pluv-axis-title--x">Dia</span>
+                        </div>
+                    </div>
+                </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

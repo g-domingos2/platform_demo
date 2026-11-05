@@ -1,0 +1,15 @@
+{
+  "energia": {
+    "contratos": [],
+    "energia_mensal": [],
+    "feriados": []
+  },
+  "talhoesByFarm": {},
+  "pluviosByFarm": {
+    "farm_demo_001": []
+  },
+  "operacao": {
+    "activitiesByFarm": {},
+    "completionCounter": 0
+  }
+}

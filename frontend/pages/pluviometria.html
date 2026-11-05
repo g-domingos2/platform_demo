@@ -1,0 +1,145 @@
+<div class="pluv" id="pluvPanel">
+
+  <div class="pluv__topbar">
+    <div class="pluv__topbar-left">
+      <div class="pluv__title"><i class="fa-solid fa-cloud-rain"></i> Pluviometria <span class="pluv__crumb" id="pluvCrumb">• Destaques</span></div>
+    </div>
+    <div class="pluv__actions">
+      <div class="pluv-filters" role="tablist" aria-label="Filtrar pluviômetros">
+        <button class="pluv-filter is-active" type="button" data-filter="highlights" role="tab" aria-selected="true">Destaques</button>
+        <button class="pluv-filter" type="button" data-filter="rain" role="tab" aria-selected="false">Chovendo <span class="pluv-filter__count" data-count="rain">0</span></button>
+        <button class="pluv-filter" type="button" data-filter="offline" role="tab" aria-selected="false">Offline <span class="pluv-filter__count" data-count="offline">0</span></button>
+        <button class="pluv-filter" type="button" data-filter="all" role="tab" aria-selected="false">Todos <span class="pluv-filter__count" data-count="all">0</span></button>
+      </div>
+      <label class="pluv-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="pluvSearchInput" placeholder="Buscar pluviômetro...">
+      </label>
+    </div>
+  </div>
+
+  <div class="pluv__highlights" id="pluvHighlights">
+    <span class="pluv-badge pluv-badge--rain" id="pluvHighlightRain">0 chovendo agora</span>
+    <span class="pluv-badge pluv-badge--alert" id="pluvHighlightOffline">0 sem comunicação</span>
+  </div>
+
+  <div class="pluv-cards" id="pluvCards"></div>
+
+  <div class="pluv-data">
+    <div class="pluv-data__head">
+      <h3 class="pluv-data__title" id="pluvDataTitle">Dados — Todos os pluviômetros</h3>
+      <span class="pluv-data__hint" id="pluvDataHint">Sem seleção: mostrando dados agregados.</span>
+    </div>
+    <div class="pluv-kpis" id="pluvKpis"></div>
+  </div>
+
+  <div class="rain">
+    <div class="rain__head">
+      <div class="rain__left">
+        <span class="rain__title"><i class="fa-solid fa-chart-column"></i> Impacto: Chuva</span>
+      </div>
+      <div class="rain__right">
+        <button class="rain__period-btn pluv-period-trigger js-period-trigger" type="button">
+          <i class="fa-regular fa-calendar"></i> <span class="rain__period-label">Período: —</span>
+        </button>
+        <button class="rain__view-btn" type="button" id="rainBtnMonthlyView">
+          <i class="fa-solid fa-calendar-days"></i> Ver calendário mensal
+        </button>
+      </div>
+    </div>
+
+    <div class="rain__meta">
+      <span class="rain__chip" id="rainScopeChip">Todos os pluviômetros</span>
+      <span class="rain__chip rain__chip--muted" id="rainDateChip">Período: últimas 24h</span>
+    </div>
+    <p class="rain__note" id="rainPeriodNote"></p>
+
+    <div class="rain__chart-view" id="rainChartView">
+      <div class="rain__kpis">
+        <div class="rain-kpi card">
+          <div class="rain-kpi__t"><i class="fa-solid fa-cloud-rain"></i> Total no período</div>
+          <div class="rain-kpi__v"><span id="rainTotal">0.0</span> <small>mm</small></div>
+        </div>
+        <div class="rain-kpi card">
+          <div class="rain-kpi__t"><i class="fa-solid fa-sun"></i> Hoje</div>
+          <div class="rain-kpi__v"><span id="rainToday">0.0</span> <small>mm</small></div>
+        </div>
+        <div class="rain-kpi card">
+          <div class="rain-kpi__t"><i class="fa-regular fa-calendar"></i> Mês</div>
+          <div class="rain-kpi__v"><span id="rainMonthTotal">0.0</span> <small>mm</small></div>
+        </div>
+        <div class="rain-kpi card">
+          <div class="rain-kpi__t"><i class="fa-solid fa-calendar-days"></i> Ano</div>
+          <div class="rain-kpi__v"><span id="rainYearTotal">0.0</span> <small>mm</small></div>
+        </div>
+      </div>
+
+      <div class="rain-chart card">
+        <div class="rain-chart__legend">
+          <span class="legend-dot"></span> Precipitação (mm)
+        </div>
+        <div class="rain-chart__body">
+          <div class="rain-chart__y" id="rainYAxis">
+            <span>16</span><span>12</span><span>8</span><span>4</span><span>0</span>
+          </div>
+          <div class="rain-chart__plot" id="rainBars"></div>
+        </div>
+        <div class="rain-chart__x" id="rainXAxis"></div>
+      </div>
+    </div>
+
+    <div class="rain-cal is-hidden" id="rainMonthlyPanel">
+      <div class="rain-cal__top">
+        <button class="rain-cal__btn rain-cal__btn--back" type="button" id="rainBtnChartView">
+          <i class="fa-solid fa-arrow-left"></i> Voltar ao gráfico
+        </button>
+      </div>
+      <div class="rain-cal__nav">
+        <button class="rain-cal__nav-btn" type="button" data-rain-cal-nav="-1" aria-label="Mês anterior"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="rain-cal__month" id="rainCalMonthLabel">—</span>
+        <button class="rain-cal__nav-btn" type="button" data-rain-cal-nav="1" aria-label="Próximo mês"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div class="rain-cal__dow">
+        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+      </div>
+      <div class="rain-cal__grid" id="rainCalGrid"></div>
+      <div class="rain-cal__legend">
+        <span><span class="rain-cal__legend-dot rain-cal__legend-dot--weak"></span> Fraca</span>
+        <span><span class="rain-cal__legend-dot rain-cal__legend-dot--mid"></span> Moderada</span>
+        <span><span class="rain-cal__legend-dot rain-cal__legend-dot--strong"></span> Forte</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pluv-panels">
+    <section class="pluv-panel card" aria-labelledby="pluvEventsTitle">
+      <div class="pluv-panel__head">
+        <div class="pluv-panel__title-row">
+          <i class="fa-regular fa-bell"></i>
+          <span class="pluv-panel__title" id="pluvEventsTitle">Eventos</span>
+        </div>
+        <p class="pluv-panel__subtitle">Últimos eventos registrados nos pluviômetros</p>
+      </div>
+      <div class="pluv-scroll pluv-events" id="pluvEventsList">
+        <div class="pluv-empty">Nenhum evento recente.</div>
+      </div>
+    </section>
+
+    <section class="pluv-panel card" aria-labelledby="pluvMaintTitle">
+      <div class="pluv-panel__head">
+        <div class="pluv-panel__title-row">
+          <i class="fa-regular fa-calendar-check"></i>
+          <span class="pluv-panel__title" id="pluvMaintTitle">Manutenção dos Pluviômetros</span>
+        </div>
+        <p class="pluv-panel__subtitle">Acompanhe o status de manutenção de cada equipamento</p>
+        <div class="pluv-panel__badges">
+          <button class="pluv-panel__badge pill pill--info" type="button" data-maint-filter="scheduled">0 programadas</button>
+          <button class="pluv-panel__badge pill pill--danger" type="button" data-maint-filter="overdue">0 atrasadas</button>
+          <button class="pluv-panel__badge pill pill--ok" type="button" data-maint-filter="concluded">0 concluídas</button>
+        </div>
+      </div>
+      <div class="pluv-scroll pluv-maint" data-maint-list></div>
+    </section>
+  </div>
+
+</div>

@@ -1,0 +1,156 @@
+<section class="pivos-view weatherstation-view" id="weatherstationPanel" aria-label="Detalhes da Estação Meteorológica">
+  <div class="weatherstation-card-container" id="weatherstationCards">
+    <div class="weatherstation-right-column">
+      <article class="pincard">
+        <div class="pincard__map-wrap">
+          <button type="button" class="minimap-back-btn js-weatherstation-back" aria-label="Voltar">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Voltar</span>
+          </button>
+          <div class="pincard__map" id="weatherstationMinimap"></div>
+        </div>
+
+        <div class="pincard__body">
+          <div class="pincard__info">
+            <div class="pincard__status-row">
+              <div class="pincard__status-bar is-info" id="weatherstationStatusBar">
+                <span class="pincard__status-dot--white" aria-hidden="true"></span>
+                <span class="pincard__status-text" id="weatherstationStatusText">MONITORANDO</span>
+              </div>
+            </div>
+
+            <div class="pincard__title-group" style="position: relative;">
+              <button type="button" class="pincard__title-btn" id="weatherstationSelectBtn" aria-label="Selecionar outra estação">
+                <h2 class="pincard__title" id="weatherstationTitleLabel">Estação Meteorológica</h2>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <div class="weatherstation-selector" id="weatherstationSelectorMenu" style="display: none;"></div>
+            </div>
+
+            <div class="pincard__kpis" id="weatherstationMetrics" style="position: relative; top: -30px;">
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-temperature-half" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiTemp">—</div>
+                <div class="pincard__kpi-lbl">Temperatura</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-droplet" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiHumidity">—</div>
+                <div class="pincard__kpi-lbl">Umidade</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-wind" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiWind">—</div>
+                <div class="pincard__kpi-lbl">Vento</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-sun" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiRadiation">—</div>
+                <div class="pincard__kpi-lbl">Radiação</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-seedling" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiEto">—</div>
+                <div class="pincard__kpi-lbl">ETo</div>
+              </div>
+              <div class="pincard__kpi">
+                <div class="pincard__kpi-icon"><i class="fa-solid fa-cloud-rain" style="color:#64748b;"></i></div>
+                <div class="pincard__kpi-val" id="weatherstationKpiRainDay">—</div>
+                <div class="pincard__kpi-lbl">Chuva</div>
+              </div>
+            </div>
+            <footer class="pincard__footer" id="weatherstationLastUpdate" style="position: relative; top: 10px;"><span class="comm-label">Última comunicação:</span> —</footer>
+          </div>
+
+          <div class="pincard__side">
+            <div class="pincard__actions">
+              <button type="button" class="pincard__btn-text" id="weatherstationEditBtn"><i class="fa-solid fa-pen"></i> Editar</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="weatherstation-agenda">
+        <header class="weatherstation-agenda__header">
+          <span class="weatherstation-agenda__title">Período</span>
+          <button type="button" class="weatherstation-agenda__period-btn js-period-trigger" id="weatherstationPeriodBtn">
+            <span class="weatherstation-agenda__period-label">Últimos 7 dias</span>
+            <i class="fa-regular fa-calendar"></i>
+          </button>
+        </header>
+      </article>
+
+      <article class="weatherstation-stats" id="weatherstationTechCards">
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodTemp">—</div>
+          <div class="weatherstation-stats__subvalue" id="weatherstationPeriodTempRange"></div>
+          <div class="weatherstation-stats__label">Temperatura (média)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodHumidity">—</div>
+          <div class="weatherstation-stats__label">Umidade (última leitura)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodWind">—</div>
+          <div class="weatherstation-stats__label">Vento (última leitura)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodRadiation">—</div>
+          <div class="weatherstation-stats__label">Radiação (última leitura)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodEto">—</div>
+          <div class="weatherstation-stats__label">ETo (acumulado)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationPeriodRain">—</div>
+          <div class="weatherstation-stats__label">Chuva (acumulado)</div>
+        </div>
+        <div class="weatherstation-stats__item">
+          <div class="weatherstation-stats__value" id="weatherstationKpiComm">—</div>
+          <div class="weatherstation-stats__label">Última transmissão</div>
+        </div>
+      </article>
+
+      <div class="weatherstation-bottom-row">
+        <article class="weatherstation-data-card weatherstation-history">
+          <header class="weatherstation-data-card__header is-flex">
+            <h3 class="weatherstation-data-card__title">Leituras</h3>
+            <button type="button" class="weatherstation-history__export-btn" id="weatherstationExportCsvBtn"><i class="fa-solid fa-file-csv"></i> Exportar CSV</button>
+          </header>
+          <div class="weatherstation-history__table-wrapper">
+            <table class="weatherstation-history__table weatherstation-history__table--dense">
+              <thead>
+                <tr>
+                  <th>Data e hora</th>
+                  <th>Temp. (°C)</th>
+                  <th>Umidade (%)</th>
+                  <th>Vento (m/s)</th>
+                  <th>Radiação (W/m²)</th>
+                  <th>Chuva (mm)</th>
+                  <th>ETo (mm)</th>
+                  <th>Bateria (V)</th>
+                </tr>
+              </thead>
+              <tbody id="weatherstationReadingsBody"></tbody>
+            </table>
+          </div>
+          <div class="weatherstation-history__foot">
+            <span class="weatherstation-history__count" id="weatherstationReadingsCount"></span>
+            <div class="weatherstation-history__pagination" id="weatherstationReadingsPagination" aria-label="Paginação das leituras"></div>
+          </div>
+        </article>
+
+        <article class="weatherstation-data-card weatherstation-mini-chart">
+          <header class="weatherstation-data-card__header weatherstation-mini-chart-header">
+            <h3 class="weatherstation-data-card__title">Gráfico de Clima</h3>
+          </header>
+          <div class="weatherstation-mini-chart-body">
+            <svg viewBox="0 0 460 220" class="weatherstation-axis-svg" id="weatherstationChartSvg"></svg>
+            <div class="weatherstation-legend" id="weatherstationChartLegend"></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

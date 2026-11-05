@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sync LocalStorage → Servidor</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; background: #0f172a; color: #e2e8f0; }
+    button { padding: .6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; }
+    .btn-primary { background: #22c55e; color: #fff; }
+    .btn-primary:hover { background: #16a34a; }
+    pre { background: #1e293b; padding: 1rem; border-radius: 8px; overflow: auto; max-height: 300px; }
+    .log { margin-top: .5rem; font-family: monospace; font-size: .9rem; }
+    .ok { color: #4ade80; }
+    .err { color: #f87171; }
+  </style>
+</head>
+<body>
+  <h1>Sync LocalStorage → Arquivos JSON</h1>
+  <p>Clique no botão para exportar os dados do navegador (pivôs, carretéis, etc.) para os arquivos JSON do projeto.</p>
+  <button class="btn-primary" id="btnSync">📤 Exportar dados do LocalStorage</button>
+  <div id="logs"></div>
+
+  <script>
+    const logs = document.getElementById('logs');
+    function log(msg, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'log ' + (isError ? 'err' : 'ok');
+      div.textContent = msg;
+      logs.appendChild(div);
+    }
+
+    document.getElementById('btnSync').addEventListener('click', async () => {
+      logs.innerHTML = '';
+      try {
+        // 1. Farms (ic_farms)
+        const farmsRaw = localStorage.getItem('ic_farms');
+        if (!farmsRaw) {
+          log('⚠️ Nenhuma fazenda encontrada no localStorage. Crie equipamentos primeiro.', true);
+          return;
+        }
+        const farms = JSON.parse(farmsRaw);
+        log(`📦 Encontradas ${farms.length} fazenda(s) no localStorage.`);
+
+        const totalEquip = farms.reduce((sum, f) => sum + (Array.isArray(f.equipments) ? f.equipments.length : 0), 0);
+        log(`🔧 Total de equipamentos: ${totalEquip}`);
+
+        // PUT /api/farms
+        const resFarms = await fetch('/api/farms', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(farms),
+        });
+        if (!resFarms.ok) throw new Error('Falha ao salvar farms: ' + resFarms.status);
+        log('✅ Farms salvas no servidor.');
+
+        // 2. App State
+        const appStateRaw = localStorage.getItem('ic_app_state');
+        if (appStateRaw) {
+          const appState = JSON.parse(appStateRaw);
+          const resState = await fetch('/api/app-state', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(appState),
+          });
+          if (!resState.ok) throw new Error('Falha ao salvar app-state: ' + resState.status);
+          log('✅ App State salvo no servidor.');
+        }
+
+        // 3. Talhões
+        const talhoesRaw = localStorage.getItem('ic_talhoes');
+        if (talhoesRaw) {
+          // talhões são salvos dentro do app-state no backend, mas no frontend estão separados
+          // vamos atualizar o app-state com os talhões
+          log('ℹ️ Talhões encontrados no localStorage.');
+        }
+
+        // 4. Pluvios
+        const pluviosRaw = localStorage.getItem('ic_pluvios');
+        if (pluviosRaw) {
+          log('ℹ️ Pluvios encontrados no localStorage.');
+        }
+
+        // Mostrar preview
+        log('');
+        log('📋 Preview das fazendas exportadas:');
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(farms, null, 2);
+        logs.appendChild(pre);
+
+        log('');
+        log('🎉 Pronto! Agora faça commit e push no repositório Git para subir para o GitHub Pages.');
+
+      } catch (e) {
+        log('❌ Erro: ' + e.message, true);
+        console.error(e);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<section class="edit-panel farm-edit config-page" id="faturamentoPanel" aria-label="Faturamento">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="faturamentoBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Assinatura</span>
+    </button>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="general" aria-selected="true">Geral</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <button class="edit-panel__save btn-save-pref" type="button">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Salvar
+    </button>
+  </div>
+
+  <div class="edit-panel__tab-body is-active" data-tab-body="general">
+    <div class="edit-panel__body">
+
+      <aside class="edit-panel__nav" aria-label="Seções de faturamento">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#contratacaoSection">Assinatura</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#faturamentoSection">Faturamento</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#planoItensSection">Detalhes da Anuidade</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#apiSection">API</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <!-- ============ CONTRATAÇÃO (renderizado por faturamento/contract.js) ============ -->
+        <section class="edit-panel__section is-active" id="contratacaoSection">
+          <div class="edit-panel__section-head">
+            <h2>Assinatura</h2>
+            <p>Escolha quais equipamentos estão inscritos em cada item. O valor proporcional ao período restante do ciclo é calculado automaticamente e entra na próxima fatura.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack" id="fbillContract"></div>
+        </section>
+
+        <section class="edit-panel__section" id="faturamentoSection">
+          <div class="edit-panel__section-head">
+            <h2>Faturamento</h2>
+            <p>Encontre as informações relacionadas à emissão de faturas e notas fiscais, histórico de pagamentos e cobrança automática.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack">
+
+            <!-- ============ PRÓXIMA COBRANÇA (renderizado por faturamento/index.js) ============ -->
+            <div class="fbill-next" id="fbillNext"></div>
+
+            <!-- ============ ENDEREÇO DE FATURAMENTO ============ -->
+            <div class="fbill-card fbill-card--flat">
+              <div class="fbill-card__head">
+                <h3 class="fbill-card__title">Endereço de Faturamento</h3>
+              </div>
+
+              <div class="edit-panel__section-body--grid">
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingCountry"><span class="edit-panel__req">*</span> País</label>
+                  <div class="edit-panel__select-field" id="billingCountryField">
+                    <button type="button" class="edit-panel__select-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')" onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)" style="display:flex; align-items:center;">
+                      <span id="billingCountryLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">Selecione o país</span>
+                      <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                    </button>
+                    <div class="edit-panel__select-menu" id="billingCountryMenu"></div>
+                    <input type="hidden" id="farmEditBillingCountry" value="">
+                  </div>
+                </div>
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingPostal"><span class="edit-panel__req">*</span> CEP</label>
+                  <input class="edit-panel__input" id="farmEditBillingPostal" type="text" placeholder="00000-000">
+                </div>
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingCity"><span class="edit-panel__req">*</span> Cidade</label>
+                  <input class="edit-panel__input" id="farmEditBillingCity" type="text" placeholder="Ex: Goiânia">
+                </div>
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingRegion"><span class="edit-panel__req">*</span> Estado (UF)</label>
+                  <div class="edit-panel__select-field" id="farmRegionField">
+                    <button type="button" class="edit-panel__select-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')" onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)" style="display:flex; align-items:center;">
+                      <span id="farmRegionLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px; color:#94a3b8;">Selecione o estado</span>
+                      <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                    </button>
+                    <div class="edit-panel__select-menu" id="farmRegionMenu"></div>
+                    <input type="hidden" id="farmEditBillingRegion" value="">
+                  </div>
+                </div>
+                <div class="edit-panel__field" style="grid-column: span 2;">
+                  <label for="farmEditBillingAddress"><span class="edit-panel__req">*</span> Endereço</label>
+                  <input class="edit-panel__input" id="farmEditBillingAddress" type="text" placeholder="Ex: Av. Brasil, 120">
+                </div>
+              </div>
+            </div>
+
+            <!-- ============ INFORMAÇÕES DE FATURAMENTO ============ -->
+            <div class="fbill-card fbill-card--flat">
+              <div class="fbill-card__head">
+                <h3 class="fbill-card__title">Informações de Faturamento</h3>
+              </div>
+
+              <div class="edit-panel__section-body--grid">
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingDocNumber"><span class="edit-panel__req">*</span> Documento</label>
+                  <div class="edit-panel__input-group" style="width: 100%;">
+                    <div class="edit-panel__select-field" style="width: 145px; flex-shrink: 0;" id="billingDocTypeField">
+                      <button type="button" class="edit-panel__select-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')" onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)" style="display:flex; align-items:center;">
+                        <span id="farmDocTypeLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">CPF (Cadastro...</span>
+                        <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                      </button>
+                      <div class="edit-panel__select-menu" style="width: 320px;"></div>
+                      <input type="hidden" id="farmEditBillingDocType" value="cpf">
+                    </div>
+                    <input class="edit-panel__input" id="farmEditBillingDocNumber" type="text" placeholder="000.000.000-00">
+                  </div>
+                </div>
+                <div class="edit-panel__field" style="grid-column: span 2;">
+                  <label for="farmEditBillingName"><span class="edit-panel__req">*</span> Nome completo / Razão social</label>
+                  <input class="edit-panel__input" id="farmEditBillingName" type="text" placeholder="Nome completo ou Razão social">
+                </div>
+              </div>
+
+              <div class="edit-panel__section-body--grid" style="margin-top: 14px;">
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingPhone">Celular</label>
+                  <input class="edit-panel__input" id="farmEditBillingPhone" type="tel" placeholder="(00) 00000-0000">
+                </div>
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingEmail"><span class="edit-panel__req">*</span> E-mail</label>
+                  <input class="edit-panel__input" id="farmEditBillingEmail" type="email" placeholder="exemplo@mail.com.br">
+                </div>
+                <div class="edit-panel__field">
+                  <label for="farmEditBillingEmailLanguage"><span class="edit-panel__req">*</span> Idioma para e-mails <span class="edit-panel__tooltip-icon" data-tooltip="O &quot;Idioma para e-mails&quot; determina em qual idioma você receberá as comunicações por e-mail sobre pagamentos e detalhes de faturas na Plataforma Irricontrol. A seleção dessa linguagem não altera a linguagem da interface na Plataforma."><i class="fa-regular fa-circle-question"></i></span></label>
+                  <div class="edit-panel__select-field" id="billingLangField">
+                    <button type="button" class="edit-panel__select-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('is-open')" onblur="setTimeout(() => this.parentElement.classList.remove('is-open'), 200)" style="display:flex; align-items:center;">
+                      <span id="billingLangLabel" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; padding-right:12px;">Português</span>
+                      <i class="fa-solid fa-chevron-down" style="position:absolute; right:10px;"></i>
+                    </button>
+                    <div class="edit-panel__select-menu">
+                      <button type="button" class="edit-panel__select-option is-active" onclick="
+                        document.getElementById('farmEditBillingEmailLanguage').value = 'pt-BR';
+                        document.getElementById('billingLangLabel').innerText = 'Português';
+                        document.getElementById('billingLangField').classList.remove('is-open');
+                        document.getElementById('billingLangField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                      ">Português</button>
+                      <button type="button" class="edit-panel__select-option" onclick="
+                        document.getElementById('farmEditBillingEmailLanguage').value = 'en-US';
+                        document.getElementById('billingLangLabel').innerText = 'Inglês';
+                        document.getElementById('billingLangField').classList.remove('is-open');
+                        document.getElementById('billingLangField').querySelectorAll('.edit-panel__select-option').forEach(b => b.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                      ">Inglês</button>
+                    </div>
+                    <input type="hidden" id="farmEditBillingEmailLanguage" value="pt-BR">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ============ MÉTODO DE PAGAMENTO ============ -->
+            <div class="fbill-card">
+              <div class="fbill-card__head">
+                <h3 class="fbill-card__title">Método de Pagamento</h3>
+              </div>
+
+              <div class="fbill-method-tabs" id="fbillMethodTabs" role="tablist" aria-label="Métodos de pagamento"></div>
+
+              <div class="fbill-alert fbill-alert--ok" id="farmEditAutopayAlert" style="display:none;">
+                <i class="fa-solid fa-circle-check fbill-alert__icon"></i>
+                <div class="fbill-alert__body">
+                  <div class="fbill-alert__text">Pagamento automático habilitado.</div>
+                </div>
+              </div>
+
+              <!-- Painel: Cartão -->
+              <div class="fbill-pm-panel" data-panel="card">
+                <div class="fbill-pay-methods" id="farmEditPayMethods" style="display:none;">
+                </div>
+
+                <div class="fbill-empty" id="farmEditPayEmpty">
+                  <i class="fa-regular fa-credit-card"></i>
+                  <div class="fbill-empty__text">Nenhum cartão cadastrado.</div>
+                </div>
+
+                <div class="fbill-actions">
+                  <button type="button" class="fbill-btn fbill-btn--outline-primary" id="farmEditAddCard" onclick="window.IcFaturamentoCards.openModal();">
+                    Adicionar cartão
+                  </button>
+                </div>
+              </div>
+
+              <!-- Painel: Boleto -->
+              <div class="fbill-pm-panel" data-panel="boleto" hidden>
+                <div class="fbill-boleto-info">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <div class="fbill-boleto-info__text">No boleto o pagamento é <strong>manual</strong> — não há débito automático. A cada vencimento geramos um novo boleto para você pagar.</div>
+                </div>
+
+                <ul class="fbill-list">
+                  <li><i class="fa-solid fa-envelope"></i> O boleto é enviado por e-mail e fica disponível aqui a cada vencimento.</li>
+                  <li><i class="fa-solid fa-clock"></i> Compensação em até 1 a 3 dias úteis após o pagamento.</li>
+                  <li><i class="fa-solid fa-arrows-rotate"></i> O status atualiza sozinho quando o banco confirmar.</li>
+                  <li><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Sem cobrança automática — fique atento à data de vencimento para evitar bloqueio de acesso à fazenda.</li>
+                </ul>
+
+                <div class="fbill-actions">
+                  <button type="button" class="fbill-btn fbill-btn--primary" id="farmEditGenBoleto" onclick="window.IcFaturamentoInvoices.openReceipt('Boleto')">
+                    <i class="fa-solid fa-barcode"></i> Gerar boleto do vencimento atual
+                  </button>
+                </div>
+              </div>
+
+              <!-- Painel: PIX -->
+              <div class="fbill-pm-panel" data-panel="pix" hidden>
+                <div class="fbill-boleto-info">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <div class="fbill-boleto-info__text">No PIX o pagamento é <strong>manual</strong> e a confirmação é <strong>imediata</strong>. A cada vencimento geramos um novo código para você pagar.</div>
+                </div>
+
+                <ul class="fbill-list">
+                  <li><i class="fa-solid fa-qrcode"></i> Pague escaneando o QR Code ou usando o PIX copia e cola.</li>
+                  <li><i class="fa-solid fa-bolt"></i> O status atualiza em segundos após o pagamento.</li>
+                  <li><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Sem cobrança automática — fique atento à data de vencimento para evitar bloqueio de acesso à fazenda.</li>
+                </ul>
+
+                <div class="fbill-actions">
+                  <button type="button" class="fbill-btn fbill-btn--primary" id="farmEditGenPix" onclick="window.IcFaturamentoPayment.showPix()">
+                    <i class="fa-brands fa-pix"></i> Gerar PIX do vencimento atual
+                  </button>
+                </div>
+
+                <div class="fbill-pix" id="fbillPixBox" hidden></div>
+              </div>
+
+            </div>
+
+            <!-- ============ HISTÓRICO ============ -->
+            <div class="fbill-card">
+              <div class="farm-historico__header" style="margin-top: 0;">
+                <span class="farm-billing__section-title">Histórico de faturamento</span>
+                <div class="farm-historico__actions">
+                  <button type="button" class="farm-historico__icon-btn" title="Atualizar" onclick="window.IcFaturamentoInvoices.renderHistory()"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+              </div>
+              <table class="farm-historico__table">
+                <thead>
+                  <tr>
+                    <th>Vencimento</th>
+                    <th>
+                      <div class="fbill-th-status">
+                        <span>Status</span>
+                        <div class="fbill-filter" id="farmEditStatusFilter">
+                          <button type="button" class="fbill-filter__btn" onclick="event.stopPropagation(); document.getElementById('farmEditStatusFilter').classList.toggle('is-open')">
+                            <i class="fa-solid fa-filter"></i>
+                          </button>
+                          <div class="fbill-filter__menu" onclick="event.stopPropagation()">
+                            <label class="fbill-filter__option">
+                              <input type="checkbox" name="fbillStatusFilter" value="Pendente" checked>
+                              <span class="fbill-filter__box"><i class="fa-solid fa-check"></i></span>
+                              Em aberto
+                            </label>
+                            <label class="fbill-filter__option">
+                              <input type="checkbox" name="fbillStatusFilter" value="Pago" checked>
+                              <span class="fbill-filter__box"><i class="fa-solid fa-check"></i></span>
+                              Pago
+                            </label>
+                            <label class="fbill-filter__option">
+                              <input type="checkbox" name="fbillStatusFilter" value="Vencido" checked>
+                              <span class="fbill-filter__box"><i class="fa-solid fa-check"></i></span>
+                              Vencido
+                            </label>
+                            <div class="fbill-filter__actions">
+                              <button type="button" class="fbill-filter__reset" onclick="window.IcFaturamentoHistorico.resetFilter()">Resetar</button>
+                              <button type="button" class="fbill-filter__ok" onclick="window.IcFaturamentoHistorico.applyFilter()">OK</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </th>
+                    <th>Valor</th>
+                    <th>Link</th>
+                    <th>Fatura</th>
+                  </tr>
+                </thead>
+                <tbody id="farmEditHistoricoBody"></tbody>
+              </table>
+
+              <div class="farm-historico__pagination">
+                <span class="farm-historico__pagination-count" id="farmEditHistoricoCount"></span>
+                <div class="farm-historico__pagination-nav">
+                  <button type="button" class="farm-historico__pagination-arrow" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                  <span class="farm-historico__pagination-page is-active">1</span>
+                  <button type="button" class="farm-historico__pagination-arrow" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============ DETALHES DA ANUIDADE (renderizado por faturamento/index.js) ============ -->
+        <section class="edit-panel__section" id="planoItensSection">
+          <div class="edit-panel__section-head">
+            <h2>Detalhes da Anuidade</h2>
+            <p>Detalhamento completo do que está sendo cobrado: equipamentos, quantidades e valores unitários.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack" id="fbillAnnuity"></div>
+        </section>
+
+        <!-- ============ API (renderizado por faturamento/api.js) ============ -->
+        <section class="edit-panel__section" id="apiSection">
+          <div class="edit-panel__section-head">
+            <h2>API</h2>
+            <p>Use a chave para acessar os dados da fazenda pela API Irricontrol One.</p>
+          </div>
+
+          <div class="edit-panel__section-body edit-panel__section-body--stack" id="fbillApi"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HISTÓRICO (renderizado por faturamento/history.js) ══ -->
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#fbillHistorySection">Histórico de alterações</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="fbillHistorySection">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de alterações</h2>
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar" data-fbill-history-refresh></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Alterações</th>
+                  </tr>
+                </thead>
+                <tbody id="fbillHistoryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+</section>

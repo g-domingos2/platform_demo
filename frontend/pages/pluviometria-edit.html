@@ -1,0 +1,334 @@
+<section class="edit-panel" id="pluvEditPanel" aria-label="Editar pluviômetro">
+
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="pluvEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Pluviômetro</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select>
+          <button class="edit-panel__select-btn" type="button" id="pluvEditSelectBtn" data-pluv-select-trigger
+            aria-expanded="false" aria-label="Selecionar pluviômetro"></button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="pluvEditSelectMenu" data-pluv-menu="pluvio"></div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#pluvEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditLocation">Localização</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditAssociation">Associação</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditMaintenance">Manutenção</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditSensors">Sensores</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditRedundancy">Redundância</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#pluvEditFirmware">Firmware (OTA)</button>
+      </aside>
+
+      <div class="edit-panel__content">
+        <section class="edit-panel__section is-active" id="pluvEditGeneral">
+          <div class="edit-panel__section-head">
+            <div class="edit-panel__section-head-row">
+              <h2>Geral</h2>
+            </div>
+            <p id="pluvEditLastUpdate"><span class="comm-label">Última comunicação:</span> —</p>
+          </div>
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <h3 class="pref-section-title" style="margin-top:0;">Conectividade</h3>
+            <div class="edit-panel__grid-3" style="margin-bottom:16px;">
+              <div class="edit-panel__field-box">
+                <label for="pluvEditRadioCentral">Rádio da central</label>
+                <input class="edit-panel__input" id="pluvEditRadioCentral" type="text" value="" />
+              </div>
+              <div class="edit-panel__field-box">
+                <label for="pluvEditRadioControl">Rádio do controlador <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="pluvEditRadioControl" type="text" value="" />
+              </div>
+              <div class="edit-panel__field-box">
+                <label for="pluvEditRadioGps">Rádio do GPS <span class="edit-panel__req">*</span></label>
+                <input class="edit-panel__input" id="pluvEditRadioGps" type="text" value="" />
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <h3 class="pref-section-title" style="margin-top:0;">Ficha Técnica</h3>
+            <div class="edit-panel__section-body--grid">
+              <div class="edit-panel__field">
+                <label for="pluvEditName">Nome do equipamento</label>
+                <input class="edit-panel__input" id="pluvEditName" type="text" value="" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="pluvEditPlot">Talhão</label>
+                <input class="edit-panel__input" id="pluvEditPlot" type="text" value="" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="pluvEditModel">Modelo</label>
+                <input class="edit-panel__input" id="pluvEditModel" type="text" value="" />
+              </div>
+              <div class="edit-panel__field">
+                <label for="pluvEditNetwork">Rede</label>
+                <input class="edit-panel__input" id="pluvEditNetwork" type="text" value="" />
+              </div>
+              <div class="edit-panel__field">
+                <div class="edit-panel__field-label">Tipo de pluviômetro</div>
+                <div class="edit-panel__select-field">
+                  <button class="edit-panel__select-btn" type="button" data-edit-select="type"
+                    aria-expanded="false"></button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="type"></div>
+                </div>
+              </div>
+              <div class="edit-panel__field">
+                <div class="edit-panel__field-label">Alimentação</div>
+                <div class="edit-panel__select-field">
+                  <button class="edit-panel__select-btn" type="button" data-edit-select="power"
+                    aria-expanded="false"></button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="power"></div>
+                </div>
+                <span class="edit-panel__field-hint" id="pluvEditPowerState">Estado: —</span>
+              </div>
+              <div class="edit-panel__field edit-panel__field--span">
+                <div class="edit-panel__field-label">Uso na plataforma</div>
+                <div class="edit-panel__checks">
+                  <label class="edit-panel__check">
+                    <input type="checkbox" id="pluvEditUseIrrigation" />
+                    Irrigação
+                  </label>
+                  <label class="edit-panel__check">
+                    <input type="checkbox" id="pluvEditUseAlerts" />
+                    Alertas
+                  </label>
+                  <label class="edit-panel__check">
+                    <input type="checkbox" id="pluvEditUseReports" />
+                    Relatórios
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditLocation">
+          <div class="edit-panel__section-title">Localização</div>
+          <div class="edit-panel__location">
+            <div class="edit-panel__location-left">
+              <div class="edit-panel__map" id="pluvEditMap" aria-label="Mapa de localização"></div>
+            </div>
+
+            <div class="edit-panel__location-form pivo-edit-specifics">
+              <div class="edit-panel__location-block">
+                <h3 class="pref-section-title" style="margin-top:0;">Localização</h3>
+                <p class="pivo-edit__loc-desc">A localização em campo do pluviômetro é essencial para mostrar geograficamente no mapa a posição do
+                  equipamento.</p>
+              </div>
+
+              <div class="edit-panel__field">
+                <label for="pluvEditCenter">Centro</label>
+                <div class="edit-panel__location-row">
+                  <input class="edit-panel__input" id="pluvEditCenter" type="text" value="" readonly />
+                  <button class="edit-panel__btn" type="button" id="pluvEditCenterBtn">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Obter localização
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditAssociation">
+          <div class="edit-panel__section-title">Associação</div>
+          <p class="edit-panel__section-head-p pivo-edit__loc-desc">
+            Gerencie a associação entre pluviômetros e talhões. Selecione os pluviômetros na lista para visualizar e
+            vincular.
+          </p>
+
+          <div class="pluv-assoc-layout">
+            <aside class="pluv-assoc__sidebar pluv-assoc__sidebar--left">
+              <div class="pluv-assoc__ctx">
+                <div class="pluv-assoc__ctx-head">
+                  <span class="pluv-assoc__ctx-title">Talhões</span>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <button type="button" id="btnAutoAssoc" class="edit-panel__btn"
+                      style="padding:4px 8px; font-size:11px;" title="Associar Automaticamente">
+                      <i class="fa-solid fa-wand-magic-sparkles"></i> Auto
+                    </button>
+                    <span class="pluv-assoc__ctx-badge" id="pluvTalhoesCount">0</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pluv-assoc__list" id="pluvTalhoesList">
+                <div class="pluv-assoc__empty">Carregando...</div>
+              </div>
+            </aside>
+
+            <div class="pluv-assoc__map-wrapper">
+              <div id="pluvAssocMap" class="pluv-assoc__map"></div>
+            </div>
+
+            <aside class="pluv-assoc__sidebar">
+              <div class="pluv-assoc__ctx">
+                <div class="pluv-assoc__ctx-head">
+                  <span class="pluv-assoc__ctx-title">Pluviômetros</span>
+                  <span class="pluv-assoc__ctx-badge" id="pluvAssocCount">0</span>
+                </div>
+                <div class="pluv-assoc__search">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" placeholder="Buscar pluviômetro..." id="pluvAssocSearch">
+                </div>
+              </div>
+
+              <div class="pluv-assoc__list" id="pluvAssocList">
+                <!-- Mock Items for Visual -->
+                <div class="pluv-assoc__item">
+                  <div class="pluv-assoc__item-row">
+                    <span class="pluv-assoc__item-name">Norte A</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                  </div>
+                  <div class="pluv-assoc__item-meta">Sem associação</div>
+                </div>
+                <!-- List will be populated by JS later -->
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditMaintenance">
+          <div class="edit-panel__section-title">Manutenção</div>
+          <div class="edit-panel__section-body" data-section-body="maintenance"></div>
+
+          <div class="edit-panel__maintenance-history-card">
+            <div class="edit-panel__maintenance-history-head">
+              <p>ðŸ“œ Histórico de manutenções</p>
+              <button class="edit-panel__history-cta" type="button">
+                <span></span>
+                <span>Ver histórico completo</span>
+              </button>
+            </div>
+
+            <ul class="edit-panel__maintenance-history-list">
+              <li class="edit-panel__maintenance-history-item">
+                <div class="edit-panel__history-top">
+                  <span class="edit-panel__history-date">08/01/2026</span>
+                  <span class="pluv-pill pluv-pill--ok edit-panel__history-pill edit-panel__history-pill--ok">âœ…
+                    Confirmado no dispositivo</span>
+                </div>
+                <div class="edit-panel__history-meta">
+                  <span>Tipo realizado: Verificação periódica</span>
+                  <span>Responsável: Bauer Irricontrol</span>
+                </div>
+              </li>
+
+              <li class="edit-panel__maintenance-history-item">
+                <div class="edit-panel__history-top">
+                  <span class="edit-panel__history-date">26/12/2025</span>
+                  <span class="pluv-pill pluv-pill--warn edit-panel__history-pill edit-panel__history-pill--warn">⚠️
+                    Corretiva fora do ciclo</span>
+                </div>
+                <div class="edit-panel__history-meta">
+                  <span>Tipo realizado: Troca de sensor</span>
+                  <span>Responsável: Bauer Irricontrol</span>
+                </div>
+              </li>
+
+              <li class="edit-panel__maintenance-history-item">
+                <div class="edit-panel__history-top">
+                  <span class="edit-panel__history-date">14/11/2025</span>
+                  <span class="pluv-pill pluv-pill--ok edit-panel__history-pill edit-panel__history-pill--ok">âœ…
+                    Confirmado no dispositivo</span>
+                </div>
+                <div class="edit-panel__history-meta">
+                  <span>Tipo realizado: Calibração de leitura</span>
+                  <span>Responsável: Bauer Irricontrol</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditSensors">
+          <div class="edit-panel__section-title">Sensores</div>
+          <div class="edit-panel__section-body" data-section-body="sensors"></div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditRedundancy">
+          <div class="edit-panel__section-title">Redundância</div>
+          <div class="edit-panel__section-body" data-section-body="redundancy"></div>
+        </section>
+
+        <section class="edit-panel__section" id="pluvEditFirmware">
+          <div class="edit-panel__section-title">Firmware (OTA)</div>
+          <div class="edit-panel__section-body pivo-edit-specifics">
+            <div class="pluv-fw">
+              <div class="pluv-fw__header">
+                <div class="pluv-fw__title">
+                  <span class="pluv-fw__icon">
+                    <i class="fa-solid fa-download"></i>
+                  </span>
+                  <div class="pluv-fw__title-text">
+                    <span class="pluv-fw__name">Firmware (OTA)</span>
+                    <span class="pluv-fw__sub">Atualização remota com rastreabilidade do ciclo OTA</span>
+                  </div>
+                </div>
+                <button class="pluv-fw__toggle" type="button" aria-label="Recolher">
+                  <i class="fa-solid fa-chevron-up"></i>
+                </button>
+              </div>
+              <div class="pluv-fw__body">
+                <div class="pluv-fw__version-row">
+                  <div class="pluv-fw__version">
+                    <span class="pluv-fw__label">Versão atual</span>
+                    <strong class="pluv-fw__value">2.4.1</strong>
+                  </div>
+                  <div class="pluv-fw__version pluv-fw__version--right">
+                    <span class="pluv-fw__pill">Nova versão disponível</span>
+                    <strong class="pluv-fw__value">2.5.0</strong>
+                  </div>
+                </div>
+                <button class="pluv-fw__cta" type="button">
+                  <i class="fa-solid fa-arrow-down-to-line"></i>
+                  Atualizar para 2.5.0
+                </button>
+                <div class="pluv-fw__last">
+                  <span class="pluv-fw__last-label">Última tentativa</span>
+                  <div class="pluv-fw__last-row">
+                    <span class="pluv-fw__badge">
+                      <i class="fa-solid fa-circle-check"></i>
+                      Sucesso
+                    </span>
+                    <span class="pluv-fw__date">07/02/2026</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__history">
+      <div class="edit-panel__empty">Histórico em construção.</div>
+    </div>
+  </div>
+</section>

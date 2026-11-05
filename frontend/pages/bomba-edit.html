@@ -1,0 +1,762 @@
+<section class="edit-panel" id="bmbEditPanel" aria-label="Editar bomba">
+  <div class="edit-panel__titlebar">
+    <button class="edit-panel__back" type="button" id="bmbEditBack" aria-label="Voltar">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Editar Bomba</span>
+    </button>
+
+    <div class="edit-panel__actions"></div>
+  </div>
+
+  <div class="edit-panel__tabs" role="tablist" aria-label="Seções" style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="edit-panel__tab is-active" type="button" data-tab="config" aria-selected="true">Configurações</button>
+      <button class="edit-panel__tab" type="button" data-tab="history" aria-selected="false">Histórico</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="edit-panel__select-wrap">
+        <div class="edit-panel__select-field" data-pluv-select>
+          <button class="edit-panel__select-btn" type="button" id="bmbEditSelectBtn" aria-expanded="false" aria-label="Selecionar bomba">—</button>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="edit-panel__select-menu" role="listbox" id="bmbEditSelectMenu"></div>
+        </div>
+      </div>
+      <button class="edit-panel__save" type="button" id="bmbEditSaveBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="edit-panel__tab-body is-active" data-tab-body="config">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Atalhos">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#bmbEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#bmbEditLocation">Localização</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#bmbEditHorarios">Horários de Pico</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── GERAL ─────────────────────────────────────────────────── -->
+        <section class="edit-panel__section is-active" id="bmbEditGeneral">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Geral</h2>
+              <span class="edit-panel__last-comm" id="bmbEditLastComm" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> 28 mai 2026 11:22</span>
+            </div>
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Conectividade</h3>
+
+            <!-- Tipo de comunicação (oculto por enquanto — 4G ainda não implementado) -->
+            <div class="edit-panel__grid-3" style="display:none; margin-bottom: 16px; grid-template-columns: minmax(0, 280px);">
+              <div class="pivo-edit__field">
+                <label for="bmbEditCommType"><span class="edit-panel__req">*</span> Tipo de comunicação</label>
+                <div class="edit-panel__select-field" style="width:100%;">
+                  <button class="edit-panel__select-btn" type="button" id="bmbEditCommTypeBtn" data-edit-select="commtype" aria-expanded="false" disabled>Rádio</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="commtype" id="bmbEditCommTypeMenu">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="XBEE">Rádio</button>
+                    <button class="edit-panel__select-option" type="button" data-value="4G">4G</button>
+                  </div>
+                </div>
+                <input type="hidden" id="bmbEditCommType" value="XBEE" />
+              </div>
+            </div>
+
+            <!-- ID do equipamento (visível apenas no modo 4G) -->
+            <div id="bmbEditGatewayField" class="edit-panel__grid-3" style="display:none; margin-bottom: 16px;">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> ID do equipamento</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="bmbEditGateway" type="text" placeholder="10000000351D266D" />
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rádios (visível apenas no modo Rádio/XBEE) -->
+            <div id="bmbEditRadioGrid" class="edit-panel__grid-4" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio da central</span>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="bmbEditRadioCentral" type="text" value="—" readonly>
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field">
+                <div class="farm-radio-field__header">
+                  <span class="farm-radio-field__label"><span class="edit-panel__req">*</span> Rádio da bomba</span>
+                  <button type="button" class="farm-radio-field__edit" id="bmbEditRadioReload" title="Sincronizar rádio"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                </div>
+                <div class="farm-radio-field__value">
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input farm-radio-input" id="bmbEditRadioBomba" type="text" value="0000000000000000" readonly>
+                    <div class="farm-radio-actions">
+                      <button type="button" class="farm-radio-clear" title="Limpar"><i class="fa-solid fa-xmark"></i></button>
+                      <span class="farm-radio-status"><i class="fa-solid fa-check bmb-edit__radio-dot" id="bmbEditRadioDot" style="color:#9ca3af;font-size:11px;"></i></span>
+                    </div>
+                    <button type="button" class="farm-radio-qr" title="Escanear QR Code"><i class="fa-solid fa-qrcode"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="farm-radio-field" style="border:none; background:transparent; box-shadow:none;"></div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <h3 class="pref-section-title" style="margin-top: 0;">Ficha Técnica</h3>
+
+            <!-- Nome / Tempo de energia / Versão -->
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="bmbEditName"><span class="edit-panel__req">*</span> Nome do equipamento</label>
+                <div class="edit-panel__input-wrap">
+                  <input class="edit-panel__input" id="bmbEditName" type="text" placeholder="Ex: Bomba Principal" />
+                  <div class="edit-panel__input-actions">
+                    <button type="button" aria-label="Limpar campo"><i class="fa-solid fa-xmark" style="color:#cbd5e1; font-size:12px;"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pivo-edit__field">
+                <label for="bmbEditEnergyTime">
+                  <span class="edit-panel__req">*</span> Tempo de energia
+                  <span class="edit-panel__tooltip-icon" data-tooltip="Tempo de espera antes de retomar a operação após uma queda de energia."><i class="fa-regular fa-circle-question"></i></span>
+                </label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="bmbEditEnergyTime" type="number" min="0" step="1" placeholder="0" />
+                  <span class="sc-input-suffix">min</span>
+                </div>
+              </div>
+
+              <!-- Versão do hardware (travada — só definida na criação do equipamento) -->
+              <div class="pivo-edit__field">
+                <label for="bmbEditVersao"><span class="edit-panel__req">*</span> Versão</label>
+                <div class="edit-panel__select-field" style="width:100%;">
+                  <button class="edit-panel__select-btn" type="button" id="bmbEditVersaoBtn" aria-expanded="false" disabled>5.1</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <input type="hidden" id="bmbEditVersao" value="5.1" />
+              </div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="bmbEditPower"><span class="edit-panel__req">*</span> Potência elétrica <span class="edit-panel__tooltip-icon" data-tooltip="Potência real (absorvida): energia efetivamente absorvida da rede elétrica para operar o equipamento no ponto de trabalho atual, considerando o rendimento e a conversão para o sistema internacional de unidades."><i class="fa-regular fa-circle-question"></i></span></label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="bmbEditPower" type="number" min="0" step="0.01" placeholder="0" />
+                  <span class="sc-input-suffix">kW</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vazão / Escala sensor / Volume por pulso -->
+            <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="bmbEditFlow"><span class="edit-panel__req">*</span> Vazão</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="bmbEditFlow" type="number" min="0" step="0.1" placeholder="0" />
+                  <span class="sc-input-suffix">m³/h</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <!-- Limite de consumo -->
+            <div style="margin-top:16px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="bmbEditEnableConsumptionLimit" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Habilitar limite de consumo de água</label>
+                <label class="pivo-edit__switch">
+                  <input id="bmbEditEnableConsumptionLimit" type="checkbox" checked />
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 2fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditConsumptionLimit">Limite de consumo mensal</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditConsumptionLimit" type="number" min="0" step="1" placeholder="0" value="5500" />
+                    <span class="sc-input-suffix">m³</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pref-divider"></div>
+
+            <!-- Sensor de escala -->
+            <div style="margin-top:16px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="bmbEditEnableSensorScale" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Habilitar sensor de pressão</label>
+                <label class="pivo-edit__switch">
+                  <input id="bmbEditEnableSensorScale" type="checkbox">
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 2fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditSensorScaleLimit">Escala do sensor de pressão</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditSensorScaleLimit" type="number" min="0" step="0.1" placeholder="0" disabled>
+                    <span class="sc-input-suffix">bar</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── LOCALIZAÇÃO ───────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="bmbEditLocation">
+          <div class="edit-panel__section-head">
+            <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização</h2>
+            <span class="bmb-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+          </div>
+          <div class="pivo-edit__loc-split" style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+            <div class="pivo-edit__loc-map" style="position:relative; border-radius:0; overflow:hidden; border:1px solid #e5e7eb; min-height:400px;">
+              <div id="bmbEditLocationMap" style="width:100%; height:100%; position:absolute; inset:0;"></div>
+            </div>
+
+            <div class="pivo-edit__loc-form pivo-edit-specifics" style="margin-top: -30px;">
+              <h3 class="pref-section-title">Localização</h3>
+              <p class="pivo-edit__loc-desc">
+                A localização em campo do dispositivo é essencial para mostrar geograficamente no mapa a posição do equipamento.
+              </p>
+
+              <div class="pivo-edit__field">
+                <label for="bmbEditLocCoords"><span class="edit-panel__req">*</span> Localização do equipamento</label>
+                <div class="edit-panel__input-wrap" style="display:flex; gap:8px;">
+                  <input class="edit-panel__input" id="bmbEditLocCoords" type="text" placeholder="-18.846005, -48.386471" style="flex:1;" />
+                  <button type="button" class="edit-panel__btn" style="white-space:nowrap;" id="bmbEditLocGpsBtn">
+                    <i class="fa-solid fa-location-dot"></i> Obter Localização
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── HORÁRIOS DE PICO ──────────────────────────────────────── -->
+        <section class="edit-panel__section" id="bmbEditHorarios">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Horários de Pico</h2>
+              <span class="bmb-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+              <p style="font-size: 13px; color: rgba(0,0,0,0.88); line-height: 1.5;">As faixas de energia podem ser utilizadas para parar o seu equipamento automaticamente caso ele esteja em operação durante horários de pico, quando a energia elétrica é mais cara.</p>
+            </div>
+            <button type="button" class="edit-panel__btn" style="margin-bottom:24px; width:fit-content;">Ver Faixas de Energia</button>
+
+            <h3 class="pref-section-title">Dias da semana</h3>
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDayDom" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDayDom" style="font-size:13px; color:#334155; cursor:pointer;">Domingo</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDaySeg" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDaySeg" style="font-size:13px; color:#334155; cursor:pointer;">Segunda</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDayTer" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDayTer" style="font-size:13px; color:#334155; cursor:pointer;">Terça</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDayQua" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDayQua" style="font-size:13px; color:#334155; cursor:pointer;">Quarta</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDayQui" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDayQui" style="font-size:13px; color:#334155; cursor:pointer;">Quinta</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDaySex" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDaySex" style="font-size:13px; color:#334155; cursor:pointer;">Sexta</label>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="bmbEditDaySab" style="width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
+                <label for="bmbEditDaySab" style="font-size:13px; color:#334155; cursor:pointer;">Sábado</label>
+              </div>
+            </div>
+
+            <div class="pivo-edit__peak-section" id="bmbPeak1Container">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="bmbEditPeak1Enabled" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Horário de Pico 1</label>
+                <label class="pivo-edit__switch">
+                  <input id="bmbEditPeak1Enabled" type="checkbox">
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPeak1Start"><span class="edit-panel__req">*</span> Horário de início</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPeak1Start" type="time" value="00:00">
+                    <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPeak1End"><span class="edit-panel__req">*</span> Horário de término</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPeak1End" type="time" value="00:00">
+                    <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pivo-edit__peak-section" id="bmbPeak2Container" style="margin-top:24px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <label for="bmbEditPeak2Enabled" style="font-size:13px; color:#0f172a; font-weight:600; cursor:pointer;">Horário de Pico 2</label>
+                <label class="pivo-edit__switch">
+                  <input id="bmbEditPeak2Enabled" type="checkbox">
+                  <span class="pivo-edit__switch-slider"></span>
+                </label>
+              </div>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPeak2Start"><span class="edit-panel__req">*</span> Horário de início</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPeak2Start" type="time" value="00:00">
+                    <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPeak2End"><span class="edit-panel__req">*</span> Horário de término</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPeak2End" type="time" value="00:00">
+                    <span class="sc-input-suffix"><i class="fa-regular fa-clock"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preços por Faixa -->
+            <div class="pivo-edit__subsection-block" style="margin-top: 24px;">
+              <h3 class="pref-section-title">Preços por Faixa</h3>
+              <div class="edit-panel__grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPricePeak"><span class="edit-panel__req">*</span> Pico (Ponta)</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPricePeak" type="number" value="1.00">
+                    <span class="sc-input-suffix">R$/kWh</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPriceOffPeak"><span class="edit-panel__req">*</span> Fora de pico (Fora de ponta)</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPriceOffPeak" type="number" value="1.00">
+                    <span class="sc-input-suffix">R$/kWh</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="bmbEditPriceReduced"><span class="edit-panel__req">*</span> Reduzido</label>
+                  <div class="sc-input-group">
+                    <input class="equip-input sc-input" id="bmbEditPriceReduced" type="number" value="1.00">
+                    <span class="sc-input-suffix">R$/kWh</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── MEDIDOR DE NÍVEL ──────────────────────────────────────── -->
+        <section class="edit-panel__section" id="bmbEditMedidor">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Medidor de nível vinculado</h2>
+              <span class="bmb-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+              <p style="font-size:12px; color:rgba(0,0,0,0.88); line-height:1.4;">
+                Vincule um medidor de nível para que a bomba possa ser controlada automaticamente de acordo com o nível da água.
+              </p>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="bmbEditMedidorId">Medidor vinculado</label>
+                <div class="edit-panel__select-field" style="width:100%;">
+                  <button class="edit-panel__select-btn" type="button" id="bmbEditMedidorBtn" data-edit-select="medidor" aria-expanded="false">Nenhum</button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="edit-panel__select-menu" role="listbox" data-edit-menu="medidor" id="bmbEditMedidorMenu">
+                    <button class="edit-panel__select-option is-active" type="button" data-value="">Nenhum</button>
+                  </div>
+                </div>
+                <input type="hidden" id="bmbEditMedidorId" value="" />
+              </div>
+            </div>
+
+            <div id="bmbEditMedidorThresholds" style="display:none; margin-top:20px;">
+              <h4 style="font-size:13px; margin:0 0 12px; color:#0f172a; font-weight:600;">Limites de acionamento</h4>
+              <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr;">
+                <div class="pivo-edit__field">
+                  <label for="bmbEditLevelOn">Ligar bomba quando nível abaixar de</label>
+                  <div class="edit-panel__input-suffix-wrap">
+                    <input class="edit-panel__input" id="bmbEditLevelOn" type="number" min="0" max="100" step="1" placeholder="0" />
+                    <span class="edit-panel__input-suffix">%</span>
+                  </div>
+                </div>
+                <div class="pivo-edit__field">
+                  <label for="bmbEditLevelOff">Desligar bomba quando nível atingir</label>
+                  <div class="edit-panel__input-suffix-wrap">
+                    <input class="edit-panel__input" id="bmbEditLevelOff" type="number" min="0" max="100" step="1" placeholder="100" />
+                    <span class="edit-panel__input-suffix">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div><!-- /.edit-panel__tab-body config -->
+
+  <div class="edit-panel__tab-body" data-tab-body="history">
+    <div class="edit-panel__body">
+      <aside class="edit-panel__nav" aria-label="Histórico">
+        <button class="edit-panel__nav-item is-active" type="button" data-target="#bmbEditHistoryList">Histórico de Configurações</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#bmbEditHistoryFavs">Favoritos</button>
+      </aside>
+
+      <div class="edit-panel__content">
+
+        <!-- ── HISTÓRICO DE CONFIGURAÇÕES ─────────────────────────────── -->
+        <section class="edit-panel__section is-active" id="bmbEditHistoryList">
+          <div class="edit-panel__history">
+
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+
+              <table class="edit-panel__history-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"></th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Bomba</th>
+                    <th style="width:100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <!-- Row 1 -->
+                  <tr class="edit-panel__history-row" data-row-id="h1">
+                    <td>
+                      <button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h1">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </td>
+                    <td>30 mar 2026 21:43</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td>
+                      <div class="table-actions">
+                        <i class="fa-regular fa-star" title="Favoritar"></i>
+                        <i class="fa-solid fa-download" title="Baixar"></i>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h1" style="display:none;">
+                    <td colspan="5">
+                      <div class="edit-panel__history-details">
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Geral</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Nome do equipamento:</span>
+                              <span>Bomb Divisa</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Limite de consumo mensal:</span>
+                              <span>Desativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Potência da bomba:</span>
+                              <span>1kW</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Escala do sensor:</span>
+                              <span>Desativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Relógio do equipamento:</span>
+                              <span>30 mar 2026 21:43</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Tempo de energia:</span>
+                              <span>60 min</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Vazão:</span>
+                              <span>100m³/h</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Sensor de pressão:</span>
+                              <span>Desativado</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Localização</h4>
+                          <div class="edit-panel__history-details-grid" style="grid-template-columns:1fr;">
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Localização do equipamento:</span>
+                              <span>-16.239893, -47.401901</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="edit-panel__history-details-section">
+                          <h4>Horários de Pico</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Pico (Ponta):</span>
+                              <span>$ 1.00</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Fora de pico (Fora de ponta):</span>
+                              <span>$ 1.00</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Reduzido:</span>
+                              <span>$ 1.00</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Domingo:</span>
+                              <span>Desativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Segunda:</span>
+                              <span>Ativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Terça:</span>
+                              <span>Ativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Quarta:</span>
+                              <span>Ativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Quinta:</span>
+                              <span>Ativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Sexta:</span>
+                              <span>Ativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Sábado:</span>
+                              <span>Desativado</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">1. Início do horário de pico:</span>
+                              <span>17:46</span>
+                            </div>
+                            <div class="edit-panel__history-details-item">
+                              <span class="edit-panel__history-details-key">Fim do horário de pico:</span>
+                              <span>21:04</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2 -->
+                  <tr class="edit-panel__history-row" data-row-id="h2">
+                    <td>
+                      <button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h2">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </td>
+                    <td>30 mar 2026 21:42</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td>
+                      <div class="table-actions">
+                        <i class="fa-regular fa-star" title="Favoritar"></i>
+                        <i class="fa-solid fa-download" title="Baixar"></i>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h2" style="display:none;">
+                    <td colspan="5">
+                      <div class="edit-panel__history-details">
+                        <div class="edit-panel__history-details-section">
+                          <h4>Geral</h4>
+                          <div class="edit-panel__history-details-grid">
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Nome do equipamento:</span><span>Bomb Divisa</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Potência da bomba:</span><span>1kW</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Vazão:</span><span>100m³/h</span></div>
+                            <div class="edit-panel__history-details-item"><span class="edit-panel__history-details-key">Tempo de energia:</span><span>60 min</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Rows 3–10 (collapsed only) -->
+                  <tr class="edit-panel__history-row" data-row-id="h3">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h3"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 mar 2026 16:38</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h3" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h4">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h4"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 mar 2026 15:38</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h4" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h5">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h5"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 mar 2026 14:53</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-received"></span> Recebido</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h5" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h6">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h6"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>10 fev 2026 10:03</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h6" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h7">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h7"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>06 fev 2026 08:17</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h7" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h8">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h8"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>16 jan 2026 19:51</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h8" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h9">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h9"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>13 jan 2026 16:09</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h9" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                  <tr class="edit-panel__history-row" data-row-id="h10">
+                    <td><button class="edit-panel__history-expand-btn" type="button" data-toggle-details="h10"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>09 jan 2026 15:58</td>
+                    <td>bauer@irricontrol.com</td>
+                    <td><span class="status-dot dot-waiting"></span> Aguardando confirmação</td>
+                    <td><div class="table-actions"><i class="fa-regular fa-star"></i><i class="fa-solid fa-download"></i></div></td>
+                  </tr>
+                  <tr class="edit-panel__history-details-row" id="details-h10" style="display:none;"><td colspan="5"><div class="edit-panel__history-details edit-panel__history-no-data">Sem detalhes.</div></td></tr>
+
+                </tbody>
+              </table>
+
+              <div class="edit-panel__pagination">
+                <span>1-10 de 82 itens</span>
+                <div class="edit-panel__pagination-pages">
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                  <button class="edit-panel__pagination-btn is-active" type="button">1</button>
+                  <button class="edit-panel__pagination-btn" type="button">2</button>
+                  <button class="edit-panel__pagination-btn" type="button">3</button>
+                  <button class="edit-panel__pagination-btn" type="button">4</button>
+                  <button class="edit-panel__pagination-btn" type="button">5</button>
+                  <span style="margin:0 4px;">...</span>
+                  <button class="edit-panel__pagination-btn" type="button">9</button>
+                  <button class="edit-panel__pagination-btn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <select class="edit-panel__pagination-select" id="bmbEditHistoryPageSize" aria-label="Itens por página">
+                  <option>10 / página</option>
+                  <option>20 / página</option>
+                  <option>50 / página</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── FAVORITOS ──────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="bmbEditHistoryFavs">
+          <div class="edit-panel__history">
+            <div class="edit-panel__history-header">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin: 0 0 16px; line-height: 1.2666666666666666;">Histórico de Configurações</h2>
+            </div>
+            <div class="edit-panel__history-table-container">
+              <div class="edit-panel__history-table-toolbar">
+                <h3>Lista</h3>
+                <div class="edit-panel__history-table-actions">
+                  <i class="fa-solid fa-rotate-right" title="Atualizar"></i>
+                  <i class="fa-solid fa-circle-info" title="Informações"></i>
+                  <i class="fa-solid fa-gear" title="Configurações"></i>
+                </div>
+              </div>
+              <div class="edit-panel__history-no-data" style="padding:40px; text-align:center; color:#94a3b8; font-size:13px;">
+                Nenhuma configuração favoritada.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.edit-panel__content -->
+    </div><!-- /.edit-panel__body -->
+  </div>
+</section>

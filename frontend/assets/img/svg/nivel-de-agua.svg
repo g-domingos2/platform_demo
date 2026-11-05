@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+  <defs>
+    <style>
+      .beaker-liquid { fill: #81b3e5; stroke: #000000; stroke-width: 4px; stroke-linejoin: round; }
+      .beaker-glass { fill: none; stroke: #000000; stroke-width: 4px; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  
+  <path class="beaker-liquid" d="M10,100 a10,10 0 0 0 10,10 h60 a10,10 0 0 0 10,-10 v-40 c-20,-5 -20,5 -40,0 c-20,-5 -20,5 -40,0 Z" />
+  
+  <path class="beaker-glass" d="M10,10 v90 a10,10 0 0 0 10,10 h60 a10,10 0 0 0 10,-10 v-90" />
+  
+  <line class="beaker-glass" x1="10" y1="15" x2="22" y2="15" />
+  <line class="beaker-glass" x1="10" y1="30" x2="30" y2="30" />
+  <line class="beaker-glass" x1="10" y1="45" x2="22" y2="45" />
+  <line class="beaker-glass" x1="10" y1="60" x2="30" y2="60" />
+  <line class="beaker-glass" x1="10" y1="75" x2="22" y2="75" />
+</svg>
