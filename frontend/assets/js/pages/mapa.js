@@ -832,7 +832,8 @@
     const border = Math.max(2, Math.round(3 * factor));
     const ring = Math.max(1, Math.round(3 * factor));
     const font = Math.max(10, Math.round(12 * factor));
-    return { size, border, ring, font };
+    const gap = Math.max(1, Math.round(2 * factor));
+    return { size, border, ring, font, gap };
   };
 
   const getLineStarVisuals = (equip) => {
@@ -1132,20 +1133,20 @@
     const data = equip?.data || {};
     const statusText = String(data.status || "").toLowerCase();
     if (data.semComunicacao === true || statusText === "offline" || statusText.includes("sem comunica")) {
-      return { key: "offline", label: "Sem comunicação", badgeClass: "map-card__equip-badge--danger", color: "#dc2626" };
+      return { key: "offline", label: "Sem comunicação", badgeClass: "map-card__equip-badge--danger", color: "#DA1D29" };
     }
     const percent = toNumber(data.levelPercent ?? data.percent ?? data.nivelPercent ?? data.current?.percent);
     const min = toNumber(data.nivelValMin);
     const max = toNumber(data.nivelValMax);
     if (Number.isFinite(percent)) {
       if (Number.isFinite(max) && percent >= max) {
-        return { key: "high", label: "Nível cheio", badgeClass: "map-card__equip-badge--info", color: "#3b82f6" };
+        return { key: "high", label: "Nível cheio", badgeClass: "map-card__equip-badge--info", color: "#6699ff" };
       }
       if (Number.isFinite(min) && percent <= min) {
-        return { key: "low", label: "Nível baixo", badgeClass: "map-card__equip-badge--warn", color: "#dac422" };
+        return { key: "low", label: "Nível baixo", badgeClass: "map-card__equip-badge--warn", color: "#DAC422" };
       }
     }
-    return { key: "normal", label: "Nível normal", badgeClass: "map-card__equip-badge--success", color: "#16a34a" };
+    return { key: "normal", label: "Nível normal", badgeClass: "map-card__equip-badge--success", color: "#6699ff" };
   };
   window.IcResolveMdnStatus = resolveMdnStatus;
 
@@ -2517,7 +2518,7 @@
     const icon = L.divIcon({
       className: "",
       html: `
-        <div class="map-mdn-marker is-${status.key} ${val === 0 || mdn.offline ? 'is-empty' : ''}" style="--level:${Math.round(val)}%;--mdn-color:${status.color};--mdn-size:${visual.size}px;--mdn-border:${visual.border}px;--mdn-ring:${visual.ring}px;--mdn-font:${visual.font}px;">
+        <div class="map-mdn-marker is-${status.key} ${val === 0 || mdn.offline ? 'is-empty' : ''}" style="--level:${Math.round(val)}%;--mdn-color:${status.color};--mdn-size:${visual.size}px;--mdn-border:${visual.border}px;--mdn-ring:${visual.ring}px;--mdn-font:${visual.font}px;--mdn-gap:${visual.gap}px;">
           <div class="mdn-water"></div>
           <span class="map-mdn-marker__value">${label}</span>
         </div>`,
