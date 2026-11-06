@@ -600,7 +600,6 @@
         app.classList.remove("is-collapsed");
         localStorage.setItem("ic_sidebar_collapsed", "0");
         window.dispatchEvent(new CustomEvent("ic:layout-change", { detail: { sidebarCollapsed: false } }));
-        return;
       }
 
       go(route);
@@ -612,7 +611,7 @@
 
   // Garante que itens "em breve" iniciam desativados, exceto se dev features já estiver ligado (persistido via Ctrl+D)
   document.querySelectorAll(".nav__item .nav__badge--soon").forEach(function(badge) {
-    var navItem = badge.closest(".nav__item"); navItem.classList.toggle("is-disabled", !window.__icDevFeaturesOn || navItem.hasAttribute("data-demo-locked"));
+        var navItem = badge.closest(".nav__item"); navItem.classList.toggle("is-disabled", !window.__icDevFeaturesOn);
   });
   var btnWeeklyScheduleInit = document.getElementById("btnWeeklySchedule");
   if (btnWeeklyScheduleInit) btnWeeklyScheduleInit.classList.toggle("is-hidden", !window.__icDevFeaturesOn);
@@ -637,7 +636,7 @@
       window.IcOpRouter.setActive(next);
       window.__icDevFeaturesOn = next === "dev";
       document.querySelectorAll(".nav__item .nav__badge--soon").forEach(function(badge) {
-        var navItem = badge.closest(".nav__item"); navItem.classList.toggle("is-disabled", !window.__icDevFeaturesOn || navItem.hasAttribute("data-demo-locked"));
+    var navItem = badge.closest(".nav__item"); navItem.classList.toggle("is-disabled", !window.__icDevFeaturesOn);
       });
       var btnWeekly = document.getElementById("btnWeeklySchedule");
       if (btnWeekly) btnWeekly.classList.toggle("is-hidden", !window.__icDevFeaturesOn);
