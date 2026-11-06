@@ -378,7 +378,7 @@ body:not(.is-visao-geral) .map-simbar {
   box-sizing: border-box;
   border-radius: 50%;
   border: var(--mdn-border, 3px) solid var(--mdn-color, #6699ff);
-  background: transparent;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
