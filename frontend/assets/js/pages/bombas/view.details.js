@@ -95,6 +95,7 @@
 
     const statusRaw = String(data.status || "");
     const offline = data.semComunicacao === true || statusRaw.toLowerCase() === "offline";
+    const running = window.IcResolveBombaRunning ? window.IcResolveBombaRunning(equip) : false;
 
     const updated = data.updated || equip?.updatedAt || equip?.createdAt || "";
 
@@ -113,6 +114,7 @@
       autonomy,
       trend,
       offline,
+      running,
       updated,
       hours: hoursBase,
       energy: energyBase,
@@ -822,6 +824,15 @@
     document.addEventListener("click", onDocClickDetails);
   }
 
+  function getPumpIcon(color) {
+    return L.divIcon({
+      className: "map-pump-marker",
+      html: `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 40 32" fill="${color}" stroke="#111827" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h10v5h3a3 3 0 0 1 3 3v2h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-5v2a3 3 0 0 1-3 3h1l2.5 5h-21l2.5-5h1a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3h3V2z"/></svg>`,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
+    });
+  }
+
   function initDetailsMinimap() {
     const container = $("bmbdMinimap");
     if (!container || !window.L) return;
@@ -857,11 +868,8 @@
     ).addTo(minimapInstance);
 
     if (hasCoords) {
-      const pumpIcon = L.icon({
-        iconUrl: "./assets/img/svg/pump.svg",
-        iconSize: [34, 34],
-        iconAnchor: [17, 17],
-      });
+      const pumpColor = d.offline ? "#DA1D29" : (d.running ? "#4679ed" : "#DAC422");
+      const pumpIcon = getPumpIcon(pumpColor);
       minimapMarker = L.marker([Number(d.center.lat), Number(d.center.lng)], { icon: pumpIcon }).addTo(minimapInstance);
     }
 
@@ -880,11 +888,8 @@
     if (minimapMarker) {
       minimapMarker.setLatLng(ll);
     } else {
-      const pumpIcon = L.icon({
-        iconUrl: "./assets/img/svg/pump.svg",
-        iconSize: [34, 34],
-        iconAnchor: [17, 17],
-      });
+      const pumpColor = d.offline ? "#DA1D29" : (d.running ? "#4679ed" : "#DAC422");
+      const pumpIcon = getPumpIcon(pumpColor);
       minimapMarker = L.marker(ll, { icon: pumpIcon }).addTo(minimapInstance);
     }
 

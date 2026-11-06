@@ -55,12 +55,12 @@
       statusClass: "is-info",
       badgeClass: "map-card__equip-badge--info",
       visual: {
-        fill: "#4f7cff",
-        stroke: "#1d4ed8",
-        outline: "#1e40af",
-        outerFill: "#1d4ed8",
-        fillOpacity: 0.82,
-        outerFillOpacity: 0.98
+        fill: "#4679ed",      // oficial: preenchimento e borda da mesma cor
+        stroke: "#4679ed",
+        outline: "#4679ed",
+        outerFill: "#2520ca", // oficial: #2218cb a 70% sobre o azul = #2520ca sólido
+        fillOpacity: 0.8,
+        outerFillOpacity: 1
       }
     },
     movendo_a_seco: {
@@ -87,12 +87,12 @@
       statusClass: "is-complete",
       badgeClass: "map-card__equip-badge--complete",
       visual: {
-        fill: "#eab308",
-        stroke: "#1d4ed8",
-        outline: "#1e40af",
-        outerFill: "#1d4ed8",
-        fillOpacity: 0.82,
-        outerFillOpacity: 0.98
+        fill: "#DAC422",
+        stroke: "#DAC422",
+        outline: "#DAC422",
+        outerFill: "#3026bc", // anel como aparece na oficial sobre o amarelo (sólido, sem emenda)
+        fillOpacity: 0.8,
+        outerFillOpacity: 1
       }
     },
     painel_desligado: {
@@ -151,9 +151,9 @@
       statusClass: "is-neutral",
       badgeClass: "map-card__equip-badge--neutral",
       visual: {
-        fill: "#6c6c6c",
-        stroke: "#6c6c6c",
-        outline: "#6c6c6c",
+        fill: "#6c706d",
+        stroke: "#7a7a7a",
+        outline: "#7a7a7a",
         outerFill: "",
         fillOpacity: 0.84,
         outerFillOpacity: 0

@@ -622,11 +622,12 @@
   };
 
   const PIVOT_COLORS = Object.freeze({
-    outline: "#edb320",
-    stroke: "#edb320",
-    fill: "#bcac24",
+    // Valores exatos da plataforma oficial (capturados do Google Maps dela).
+    outline: "#DAC422",
+    stroke: "#DAC422",
+    fill: "#DAC422",
     // Campo mandante da opacidade base dos pivôs na visão geral.
-    fillOpacity: 0.82,
+    fillOpacity: 0.8,
     parcelStroke: "#f7e0b2",
     parcelFillOpacity: 0.88,
     ref: "#ffffff",
@@ -637,9 +638,9 @@
 
   const PIVOT_SIM_STATUS_VISUALS = Object.freeze({
     irrigating: {
-      fill: "#4f7cff",
-      stroke: "#315dd7",
-      outline: "#4757aa",
+      fill: "#4679ed",
+      stroke: "#4679ed",
+      outline: "#4679ed",
       statusText: "IRRIGANDO",
       statusClass: "is-info"
     },
@@ -1888,12 +1889,12 @@
     if (midPoint && width > 0 && progressRatio > 0) {
       const sL = offsetPerp(midPoint, widthA, -1), sR = offsetPerp(midPoint, widthB, 1);
       L.polyline([[sL.lat, sL.lng], [sR.lat, sR.lng]], {
-        color: "#22c55e", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
+        color: "#26DB23", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
       }).addTo(linestarLayer);
 
       const eL = offsetPerp(ptB, widthA, -1), eR = offsetPerp(ptB, widthB, 1);
       L.polyline([[eL.lat, eL.lng], [eR.lat, eR.lng]], {
-        color: "#ef4444", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
+        color: "#E92400", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
       }).addTo(linestarLayer);
     }
 
@@ -2244,15 +2245,15 @@
 
       L.polygon(points, {
         color: pivotColors.outline,
-        weight: 2.5,
-        opacity: 0.85,
+        weight: 3,
+        opacity: 1,
         fillOpacity: 0,
         interactive: false,
       }).addTo(targetLayer);
  
       layer = L.polygon(points, {
         color: pivotColors.stroke,
-        weight: 2,
+        weight: 3,
         fillColor: pivotColors.fill,
         fillOpacity: shapeFillOpacity,
       }).addTo(targetLayer);
@@ -2261,15 +2262,15 @@
       L.circle([pivot.center.lat, pivot.center.lng], {
         radius: pivot.radius,
         color: pivotColors.outline,
-        weight: 2.5,
-        opacity: 0.85,
+        weight: 3,
+        opacity: 1,
         fillOpacity: 0,
         interactive: false,
       }).addTo(targetLayer);
       layer = L.circle([pivot.center.lat, pivot.center.lng], {
         radius: pivot.radius,
         color: pivotColors.stroke,
-        weight: 2,
+        weight: 3,
         fillColor: pivotColors.fill,
         fillOpacity: shapeFillOpacity,
       }).addTo(targetLayer);
@@ -2387,7 +2388,11 @@
       ? (pivotColors.outerFillOpacity ?? 0.98)
       : (useOuterBand ? Math.min(pivotColors.fillOpacity, 0.82) : 0);
     const bandProgress = Math.max(0, Math.min(100, Number(pivotColors.bandProgress) || 0));
-    const bandStyle = { ...opts, color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity };
+    // Onde a faixa de progresso já pintou, ela cobre também a borda clara do pivô
+    // (traço da mesma cor e da mesma grossura da borda), igual à plataforma oficial.
+    const bandStyle = hasStatusBand
+      ? { ...opts, color: bandFillColor, weight: 3, opacity: bandFillOpacity, lineJoin: "miter", fillColor: bandFillColor, fillOpacity: bandFillOpacity }
+      : { ...opts, color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity };
     const isSector = pivot.isSector && pivot.startAngle !== undefined && pivot.endAngle !== undefined && pivot.ref;
 
     if (isSector) {
@@ -2442,19 +2447,13 @@
     }
 
     const lineEnd = destinationPoint(pivot.center, pivot.radius, lineAng);
+    // Braço igual à plataforma oficial: branco sólido, sem sombra preta.
     L2.polyline(
       [
         [pivot.center.lat, pivot.center.lng],
         [lineEnd.lat, lineEnd.lng],
       ],
-      { color: "rgba(0,0,0,0.7)", weight: 3.5, opacity: 1 }
-    ).addTo(targetLayer);
-    L2.polyline(
-      [
-        [pivot.center.lat, pivot.center.lng],
-        [lineEnd.lat, lineEnd.lng],
-      ],
-      { color: pivotColors.ref, weight: 2.5, opacity: 0.95 }
+      { color: pivotColors.ref, weight: 3, opacity: 1 }
     ).addTo(targetLayer);
 
     const wedgeAngle = (5 * Math.PI) / 180;
@@ -2478,14 +2477,14 @@
       const startAng = refRad + (pivotColors.opStartAngleDeg * Math.PI / 180);
       const startEnd = destinationPoint(pivot.center, pivot.radius, startAng);
       L2.polyline([[pivot.center.lat, pivot.center.lng], [startEnd.lat, startEnd.lng]], {
-        color: "#22c55e", weight: 1.5, dashArray: "4, 4", opacity: 0.9, interactive: false
+        color: "#26DB23", weight: 1.5, dashArray: "4, 4", opacity: 0.9, interactive: false
       }).addTo(targetLayer);
 
       if (Number.isFinite(pivotColors.opStopAngleDeg)) {
         const endAng = refRad + (pivotColors.opStopAngleDeg * Math.PI / 180);
         const endPos = destinationPoint(pivot.center, pivot.radius, endAng);
         L2.polyline([[pivot.center.lat, pivot.center.lng], [endPos.lat, endPos.lng]], {
-          color: "#ef4444", weight: 1.5, dashArray: "4, 4", opacity: 0.9, interactive: false
+          color: "#E92400", weight: 1.5, dashArray: "4, 4", opacity: 0.9, interactive: false
         }).addTo(targetLayer);
       }
     } else if (pivotColors.lineProgress > 0) {
@@ -2493,14 +2492,14 @@
       const startAng = bearingRad(pivot.center, pivot.ref) + (pivotColors.bandStartAngle * Math.PI / 180);
       const startEnd = destinationPoint(pivot.center, pivot.radius, startAng);
       L2.polyline([[pivot.center.lat, pivot.center.lng], [startEnd.lat, startEnd.lng]], {
-        color: "#22c55e", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
+        color: "#26DB23", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
       }).addTo(targetLayer);
 
       const span = pivot.isSector ? normalizeAngleSpan(pivot.startAngle, pivot.endAngle) : 360;
       const endAng = startAng + (span * Math.PI / 180);
       const endPos = destinationPoint(pivot.center, pivot.radius, endAng);
       L2.polyline([[pivot.center.lat, pivot.center.lng], [endPos.lat, endPos.lng]], {
-        color: "#ef4444", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
+        color: "#E92400", weight: 1.5, dashArray: "4, 4", opacity: 0.8, interactive: false
       }).addTo(targetLayer);
     }
   };
@@ -3041,7 +3040,7 @@
     // Silhueta simples da bomba (só o contorno, sem detalhes internos), com
     // traço preto e preenchimento conforme o status — mesmas cores do card
     // de equipamentos: azul = ligada, amarelo = desligada, vermelho = alerta.
-    const pumpColor = pump.offline ? "#dc2626" : (pump.running ? "#3b82f6" : "#dac422");
+    const pumpColor = pump.offline ? "#DA1D29" : (pump.running ? "#4679ed" : "#DAC422");
     const icon = L.divIcon({
       className: "map-pump-marker",
       html: `
