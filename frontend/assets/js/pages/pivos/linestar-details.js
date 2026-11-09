@@ -204,6 +204,8 @@
     function hydrateLinestarOperationDetails() {
         const operacoesBody = document.getElementById("linestarOperacoesBody");
         if (!operacoesBody) return;
+        // Com o histórico do motor, cada operação já traz o próprio detalhe
+        if (window.IcDemoHistory?.findEquipment(selectedId)) return;
 
         const detailsRows = operacoesBody.querySelectorAll("tr.pivo-history__row-details");
         detailsRows.forEach((detailsRow, index) => {
@@ -446,6 +448,13 @@
 
     // ─── End Fault Modal ─────────────────────────────────────────────────────────
 
+    // Troca de período: remonta a tela (histórico, KPIs e gráficos no novo período)
+    document.addEventListener("pluv:periodChanged", () => {
+        if (document.getElementById("linestarHistoryBody") && selectedId) {
+            window.IcLineStar?.open?.({ linestarId: selectedId });
+        }
+    });
+
     window.IcLineStar = {
         async open(options = {}) {
             selectedId = options.linestarId || options.pivotId;
@@ -553,6 +562,61 @@
                     }
                 });
             }
+
+            // Histórico/Operações gerados pelo motor único (demo-history.js),
+            // no lugar das linhas fixas de "abr 2026" do HTML.
+            (function fillLinestarFromEngine() {
+                const DH = window.IcDemoHistory;
+                if (!DH || !selectedId || !DH.findEquipment(selectedId)) return;
+                const range = DH.periodFrom(window.Plv?.state?.period, 7);
+                const ops = DH.pivot.ops(selectedId, range.start, range.end);
+                const pos = (ang) => `${Math.round((ang / 360) * 100)}%`;
+                const dir = (op) => (op.direction === "Avanço" ? "AVANÇO A→B" : "REVERSO B→A");
+                const CHECK2 = '<img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt="">';
+                const CHECK1 = '<img src="./assets/img/svg/check.svg" style="width:16px;height:16px;vertical-align:middle;opacity:0.5;" alt="">';
+                const events = [];
+                ops.forEach((op) => {
+                    const det = (when, at) => `<tr class="pivo-history__row-details" style="display: none;"><td colspan="4"><div class="pivo-history__details"><h4>Descrição</h4><div class="pivo-history__details-grid">
+                        <div>Criado: ${DH.fmt.dateTime(when)}</div><div>Recebido: ${DH.fmt.dateTime(when)}</div>
+                        <div>Posição atual: ${pos(at)}</div><div>Pressão: ${DH.fmt.n(op.pressureCenter, 1)} bar</div>
+                        <div>Horímetro molhado: ${DH.fmt.hm(op.wetStart)}</div><div>Horímetro total: ${DH.fmt.hm(op.hourStart)}</div></div></div></td></tr>`;
+                    const row = (when, type, icon, status, at) => ({ when, html: `<tr class="pivo-history__row"><td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td><td>${DH.fmt.dateTime(when)}</td><td>${type} ${icon}</td><td>${status}</td></tr>${det(when, at)}` });
+                    if (op.start >= range.start) {
+                        events.push(row(op.start, "Comando", CHECK1, "INICIAR IRRIGAÇÃO", op.angStart));
+                        events.push(row(new Date(op.start.getTime() + 3 * 60000), "Atualização", CHECK2, `${op.wet ? "IRRIGANDO" : "MOVENDO A SECO"} (${dir(op)})`, op.angStart));
+                    }
+                    if (op.end <= range.end) {
+                        events.push(op.fault
+                            ? row(op.end, "Alerta", "", DH.pivot.FAULT_LABEL[op.fault], op.angEnd)
+                            : row(op.end, "Atualização", CHECK2, "PARADO - FIM DO PERCURSO", op.angEnd));
+                    }
+                });
+                events.sort((x, y) => y.when - x.when);
+                const hb = $("linestarHistoryBody");
+                if (hb) hb.innerHTML = events.length ? events.map((e) => e.html).join("") : '<tr class="pivo-history__row"><td colspan="4" style="text-align:center;padding:28px 12px;color:#64748b;">Nenhum evento no período selecionado.</td></tr>';
+                const ob = document.getElementById("linestarOperacoesBody");
+                if (ob) ob.innerHTML = ops.length ? ops.map((op) => `<tr class="pivo-history__row">
+                    <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+                    <td>${DH.fmt.dateTime(op.start)}</td><td>${DH.fmt.dateTime(op.end)}</td><td>${op.percent}%</td><td>${op.mode}</td>
+                    <td>${pos(op.angStart)}</td><td>${pos(op.angEnd)}</td><td>${DH.fmt.n(op.lap, 2)}</td></tr>
+                    <tr class="pivo-history__row-details" style="display: none;"><td colspan="8"><div class="pivo-history__details"><h4>Descrição</h4>
+                    <div class="pivo-history__details-grid pivo-history__details-grid--operations">
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Tipo:</span> <strong class="pivo-history__detail-value">${op.wet ? "Irrigação" : "Deslocamento a seco"}</strong></div>
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Lâmina (mm):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.laminaMm, 2)}</strong></div>
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Velocidade (%):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.percent, 2)}</strong></div>
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Tempo de Operação (h):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.durH, 2)}</strong></div>
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Usuário:</span> <strong class="pivo-history__detail-value">${op.scheduled ? "Agendamento" : op.user}</strong></div>
+                    </div></div></td></tr>`).join("") : '<tr class="pivo-history__row"><td colspan="8" style="text-align:center;padding:28px 12px;color:#64748b;">Nenhuma operação no período selecionado.</td></tr>';
+                const pager = document.querySelector("#linestarPanel .pivo-history__pagination");
+                if (pager) {
+                    const total = Math.max(1, Math.ceil(events.length / 10));
+                    const btns = ['<button type="button" class="btn-page" aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>'];
+                    for (let i = 1; i <= Math.min(total, 9); i++) btns.push(`<button type="button" class="btn-page${i === 1 ? " is-active" : ""}">${i}</button>`);
+                    btns.push('<button type="button" class="btn-page" aria-label="Próxima página"><i class="fa-solid fa-chevron-right"></i></button>');
+                    pager.innerHTML = btns.join("");
+                    pager.style.display = total > 1 ? "" : "none";
+                }
+            })();
 
             // Expand/collapse rows no histórico
             const historyBody = $("linestarHistoryBody");
@@ -865,8 +929,10 @@
                 }
                 if (statusText) {
                     const _stEn = {"PAINEL ENERGIZADO":"ENERGIZED PANEL","IRRIGANDO":"IRRIGATING","MOVENDO A SECO":"DRY MOVING","IRRIGACAO FINALIZADA":"IRRIGATION COMPLETE","PAINEL DESLIGADO":"PANEL OFF","PREPARANDO PARA RELIGAR":"PREPARING TO RESTART","ALERTA":"PIVOT ALERT","PIVO DESLIGADO / SEM INTERNET":"PIVOT OFF / NO INTERNET","FERTI IRRIGANDO":"FERTIGATING"};
-                    const raw = resolvedStatus?.statusText || "ENERGIZED PANEL";
-                    statusText.textContent = _stEn[String(raw).trim().toUpperCase()] || raw;
+                    const raw = resolvedStatus?.statusText || "PAINEL ENERGIZADO";
+                    // Só traduz quando o idioma ativo é inglês (antes aparecia "ENERGIZED PANEL" em pt-BR)
+                    const isEn = !!window.IcI18n?.isEnglish?.();
+                    statusText.textContent = isEn ? (_stEn[String(raw).trim().toUpperCase()] || raw) : raw;
                 }
 
                 // Ícone "Central Online" some quando o LineStar está sem internet
@@ -877,6 +943,32 @@
             window.Pivos?.views?.charts?.renderLinearCharts(selectedId);
             window.Pivos?.views?.charts?.renderWaterChart(selectedId);
             window.Plv?.period?.syncUI?.();
+            this.renderEngineKpis();
+        },
+
+        // KPIs e card de falhas a partir do histórico fictício único
+        renderEngineKpis() {
+            const DH = window.IcDemoHistory;
+            if (!DH || !selectedId || !DH.findEquipment(selectedId)) return;
+            const cur = DH.pivot.current(selectedId);
+            const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+            const simPos = window.IcPivotSimulationRuntime?.states?.[selectedId]?.progress;
+            set("kpiLinPosVal", `${Math.round(Number.isFinite(simPos) ? simPos : (cur.angle / 360) * 100)}%`);
+            set("kpiLinPressaoVal", `${cur.pressureCenter.toFixed(1)} bar`);
+            set("kpiLinHorasVal", `${Math.round(cur.hours)}h`);
+            const last = cur.lastOp;
+            const speed = last ? (cur.model.length * last.lap) / Math.max(0.1, last.durH) : 0;
+            set("kpiLinVelVal", `${speed.toFixed(1)} m/h`);
+            const footer = $("linestarLastUpdate");
+            if (footer) footer.innerHTML = `<span class="comm-label">Última comunicação:</span> ${DH.fmt.dateTime(cur.lastCommunication)}`;
+            const range = DH.periodFrom(window.Plv?.state?.period, 7);
+            const sum = DH.pivot.summary(selectedId, range.start, range.end);
+            const fv = (k, v) => { const el = document.querySelector(`#linestarPanel .pivo-faults [data-fault="${k}"] .pivo-faults__value`); if (el) el.textContent = v; };
+            fv("pressure", String(sum.faults.pressure));
+            fv("misalignment", String(sum.faults.misalignment));
+            fv("voltage_low", String(sum.faults.lowVoltage));
+            fv("voltage_peak", String(sum.faults.peakVoltage));
+            fv("irrigation_accumulated", `${Math.round(sum.relLaminaMm)} mm`);
         },
 
         drawPivotMinimap(equip, map, bounds, isCurrent) {

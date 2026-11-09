@@ -445,8 +445,13 @@
             let levelPercent = helpers.toNumber(md.levelPercent) ?? helpers.toNumber(md.percent) ?? helpers.toNumber(md.nivelPercent);
             const nivelMax = helpers.toNumber(md.nivelMax) ?? helpers.toNumber(md.nivelMaximo) ?? helpers.toNumber(md.maxLevel);
             if (!Number.isFinite(levelPercent) || levelPercent <= 0) {
-              const seed = String(item.id || item.name || "").split("").reduce((s, ch) => s + ch.charCodeAt(0), 0);
-              levelPercent = 55 + (seed % 40); // 55–94%
+              // Mesma leitura do histórico fictício (detalhes/gráfico/mapa)
+              const now = window.IcDemoHistory?.meter.current(item);
+              if (now) levelPercent = now.pct;
+              else {
+                const seed = String(item.id || item.name || "").split("").reduce((s, ch) => s + ch.charCodeAt(0), 0);
+                levelPercent = 55 + (seed % 40); // 55–94%
+              }
             }
             let levelMeters = helpers.toNumber(md.levelMeters) ?? helpers.toNumber(md.meters) ?? helpers.toNumber(md.nivelMeters);
             if (!Number.isFinite(levelMeters) || levelMeters <= 0) {

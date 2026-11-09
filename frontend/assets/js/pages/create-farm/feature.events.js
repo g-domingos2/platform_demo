@@ -1177,6 +1177,8 @@
       uso: { irrigacao: false, alertas: false, relatorios: false },
       semComunicacao: false,
     });
+    // Já nasce com a leitura do histórico fictício (mm de hoje, status, última comunicação)
+    plvData.applyEngineTelemetry?.(list[list.length - 1]);
 
     plvData.PLUV_SENSORS = plvData.PLUV_SENSORS || {};
     if (!plvData.PLUV_SENSORS[pluvioId]) {

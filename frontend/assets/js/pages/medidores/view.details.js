@@ -64,7 +64,9 @@
 
     const seed = hashStr(String(id));
     const rand = seededRandom(seed);
-    const percent = percentRaw === null ? Math.round(40 + rand() * 50) : Math.max(0, Math.min(100, percentRaw));
+    // Sem leitura salva: leitura atual do histórico fictício (mesma do mapa/gráfico)
+    const engineNow = percentRaw === null && window.IcDemoHistory ? window.IcDemoHistory.meter.current(equip) : null;
+    const percent = percentRaw === null ? (engineNow ? engineNow.pct : Math.round(40 + rand() * 50)) : Math.max(0, Math.min(100, percentRaw));
 
     const capacity =
       toNumber(data.capacidadeM3) ??
@@ -238,7 +240,112 @@
       bar.classList.toggle("is-running", !d.offline);
     }
     if (text) text.textContent = d.offline ? "SEM COMUNICAÇÃO" : "MONITORANDO";
+
+    renderLevelHistory(equip);
   }
+
+  // =========================
+  // Histórico + gráfico de nível — gerados pelo motor único
+  // (assets/js/core/demo-history.js), leitura a cada 15 min, filtrados
+  // pelo período global (mesmo popover do pivô/bomba/pluviometria).
+  // =========================
+  const HIST_PAGE_SIZE = 10;
+  let historyPageMdn = 1;
+
+  function levelRange() {
+    return window.IcDemoHistory.periodFrom(window.Plv?.state?.period, 1);
+  }
+
+  function renderLevelHistory(equip) {
+    const DH = window.IcDemoHistory;
+    const panel = $("mdndPanel");
+    if (!DH || !equip || !panel) return;
+    window.Plv?.period?.syncUI?.();
+    const range = levelRange();
+    const model = DH.meter.model(equip);
+    const readings = DH.meter.readings(equip, range.start, range.end, 15); // recente → antigo
+    const cur = DH.meter.current(equip);
+    const fm = (v) => `${v.toFixed(2)} m`;
+
+    setText("mdndKpiMin", `Min.: ${Math.round(model.minPct)}%`);
+    setText("mdndKpiMax", `Max.: ${Math.round(model.maxPct)}%`);
+    setText("mdndLastUpdate", DH.fmt.dateTime(cur.lastCommunication));
+
+    // Tabela
+    const body = panel.querySelector(".mdnd-history tbody");
+    const total = Math.max(1, Math.ceil(readings.length / HIST_PAGE_SIZE));
+    historyPageMdn = Math.min(Math.max(1, historyPageMdn), total);
+    if (body) {
+      const slice = readings.slice((historyPageMdn - 1) * HIST_PAGE_SIZE, historyPageMdn * HIST_PAGE_SIZE);
+      body.innerHTML = slice.length
+        ? slice.map((r) => `<tr class="pivo-history__row"><td>${DH.fmt.dateTime(r.date)}</td><td>${fm(r.measure)}</td><td>${fm(r.offset)}</td><td>${fm(r.level)} <small style="color:#94a3b8">(${r.pct.toFixed(0)}%)</small></td></tr>`).join("")
+        : `<tr class="pivo-history__row"><td colspan="4" style="text-align:center;padding:28px 12px;color:#64748b;">Nenhuma leitura no período selecionado.</td></tr>`;
+    }
+    const pager = panel.querySelector(".mdnd-history .pivo-history__pagination");
+    if (pager) {
+      pager.innerHTML = DH.paginationHtml(historyPageMdn, total);
+      pager.style.display = total > 1 ? "" : "none";
+    }
+
+    // Gráfico (ordem cronológica, reduzido a ~160 pontos)
+    const chrono = readings.slice().reverse();
+    const step = Math.max(1, Math.floor(chrono.length / 160));
+    const pts = chrono.filter((_, i) => i % step === 0 || i === chrono.length - 1);
+    const maxM = Math.max(1, Math.ceil(model.maxM));
+    const W = 1000;
+    const TOP = 10;
+    const BOT = 270;
+    const y = (m) => BOT - (m / maxM) * (BOT - TOP);
+    const t0 = range.start.getTime();
+    const t1 = Math.max(t0 + 1, range.end.getTime());
+    const x = (d) => ((d.getTime() - t0) / (t1 - t0)) * W;
+    const line = pts.map((p, i) => `${i ? "L" : "M"}${x(p.date).toFixed(1)},${y(p.level).toFixed(1)}`).join(" ");
+    const svg = panel.querySelector(".mdnd-level-svg");
+    if (svg && pts.length) {
+      const first = x(pts[0].date).toFixed(1);
+      const last = x(pts[pts.length - 1].date).toFixed(1);
+      svg.querySelector(".mdnd-level-line")?.setAttribute("d", line);
+      svg.querySelector(".mdnd-level-fill")?.setAttribute("d", `${line} L${last},${BOT} L${first},${BOT} Z`);
+      const maxLine = svg.querySelector(".mdnd-level-ref--max");
+      const minLine = svg.querySelector(".mdnd-level-ref--min");
+      const yMax = y((model.maxPct / 100) * model.maxM).toFixed(1);
+      const yMin = y((model.minPct / 100) * model.maxM).toFixed(1);
+      maxLine?.setAttribute("y1", yMax); maxLine?.setAttribute("y2", yMax);
+      minLine?.setAttribute("y1", yMin); minLine?.setAttribute("y2", yMin);
+    }
+    const yAxis = panel.querySelector(".mdnd-level-y");
+    if (yAxis) yAxis.innerHTML = [1, 0.75, 0.5, 0.25, 0].map((f) => `<span>${(maxM * f).toFixed(maxM * f % 1 ? 1 : 0)}m</span>`).join("");
+    const xAxis = panel.querySelector(".mdnd-level-x");
+    if (xAxis) {
+      const spanH = (t1 - t0) / 3600000;
+      const n = 6;
+      const labels = Array.from({ length: n }, (_, i) => new Date(t0 + ((t1 - t0) * i) / (n - 1)));
+      xAxis.innerHTML = labels.map((d) => `<span>${spanH <= 26 ? DH.fmt.time(d) : DH.fmt.dayMonth(d)}</span>`).join("");
+    }
+    const legMin = panel.querySelector(".mdnd-level-legend__item--min");
+    const legMax = panel.querySelector(".mdnd-level-legend__item--max");
+    if (legMin) legMin.textContent = `Nível mínimo (${Math.round(model.minPct)}%)`;
+    if (legMax) legMax.textContent = `Nível máximo (${Math.round(model.maxPct)}%)`;
+
+    // Indicador: nível atual e variação vs período anterior (média)
+    const avg = (arr) => (arr.length ? arr.reduce((a, r) => a + r.pct, 0) / arr.length : 0);
+    const span = t1 - t0;
+    const prev = DH.meter.readings(equip, new Date(t0 - span), new Date(t0), 30);
+    const diff = avg(readings) - avg(prev);
+    const kpiVal = panel.querySelector(".mdnd-level-kpi__val");
+    const kpiTrend = panel.querySelector(".mdnd-level-kpi__trend");
+    if (kpiVal) kpiVal.textContent = `${Math.round(cur.pct)}%`;
+    if (kpiTrend) {
+      kpiTrend.textContent = `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}% vs período anterior`;
+      kpiTrend.style.color = diff >= 0 ? "#16a34a" : "";
+    }
+  }
+
+  document.addEventListener("pluv:periodChanged", () => {
+    if (!$("mdndPanel")) return;
+    historyPageMdn = 1;
+    renderLevelHistory(getFocusMdn());
+  });
 
   // setText compartilhado — ver assets/js/core/equip-utils.js
   const { setText } = window.IcEquipUtils;
@@ -312,6 +419,14 @@
     const panel = $("mdndPanel");
     if (panel) {
       panel.addEventListener("click", (e) => {
+        const pageBtn = e.target.closest(".mdnd-history .pivo-history__pagination [data-page]");
+        if (pageBtn) {
+          if (!pageBtn.disabled) {
+            historyPageMdn = Number(pageBtn.dataset.page) || 1;
+            renderLevelHistory(getFocusMdn());
+          }
+          return;
+        }
         const backBtn = e.target.closest(".js-details-back");
         if (backBtn) {
           window.IcNavigate?.("visao-geral");

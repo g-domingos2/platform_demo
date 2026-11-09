@@ -346,6 +346,11 @@
   function renderDetails() {
     const p = getFocusPluvio();
     if (!p) return;
+    window.Plv?.data?.applyEngineTelemetry?.(p);
+    window.Plv?.period?.syncUI?.();
+    const DH = window.IcDemoHistory;
+    const pid = String(p.sourceEquipId || p.id || "");
+    const engineOn = !!(DH && pid && DH.findEquipment(pid));
     if (lastMaintPluvioId !== p.id) {
       state.pluvMaintEditRowId = null;
       lastMaintPluvioId = p.id;
@@ -404,11 +409,12 @@
     const monthVal = (20 + rand() * 200).toFixed(1);
     const yearVal = (200 + rand() * 1000).toFixed(1);
 
+    const sumRain = (a, b) => DH.rain.daily(pid, a, b).reduce((acc, d) => acc + d.mm, 0);
     const monthEl = document.getElementById("pluvdKpiMonth");
-    if (monthEl) monthEl.textContent = monthVal;
+    if (monthEl) monthEl.textContent = engineOn ? sumRain(new Date(DH.NOW.getFullYear(), DH.NOW.getMonth(), 1), DH.NOW).toFixed(1) : monthVal;
 
     const yearEl = document.getElementById("pluvdKpiYear");
-    if (yearEl) yearEl.textContent = yearVal;
+    if (yearEl) yearEl.textContent = engineOn ? sumRain(new Date(DH.NOW.getFullYear(), 0, 1), DH.NOW).toFixed(1) : yearVal;
 
     // Summary KPIs
     const r2 = seededRandom(seed + 7);
@@ -423,10 +429,11 @@
     setText("pluvdKpiRainDays", rainDays);
     setText("pluvdKpiTotal", `${total} mm`);
     setText("pluvdKpiBigEvent", `${bigEvent} mm`);
+    if (engineOn) renderEngineSummary(p);
 
     // Footer
     const lastEl = document.getElementById("pluvdLastUpdate");
-    if (lastEl) lastEl.innerHTML = `<span class="comm-label">Última comunicação:</span> ${p.updated || "—"}`;
+    if (lastEl) lastEl.innerHTML = `<span class="comm-label">Última comunicação:</span> ${engineOn ? DH.fmt.dateTime(DH.lastCommunication(pid)) : (p.updated || "—")}`;
 
     // Info card
     setText("pluvdInfoTalhao", p.sub || "—");
@@ -449,7 +456,7 @@
     }
 
     // Battery seeded
-    const battPct = 40 + Math.round(r2() * 58);
+    const battPct = engineOn && Number.isFinite(Number(p.battery)) ? Number(p.battery) : 40 + Math.round(r2() * 58);
     const battFill = document.getElementById("pluvdBatteryFill");
     const battLabel = document.getElementById("pluvdBatteryPct");
     if (battFill) battFill.style.width = `${battPct}%`;
@@ -464,6 +471,33 @@
 
   // setText compartilhado — ver assets/js/core/equip-utils.js
   const { setText } = window.IcEquipUtils;
+
+  // Indicadores do período (popover global) a partir das leituras reais
+  function renderEngineSummary(p) {
+    const DH = window.IcDemoHistory;
+    const pid = String(p.sourceEquipId || p.id || "");
+    const range = DH.periodFrom(window.Plv?.state?.period, 1);
+    const readings = DH.rain.hourly(pid, range.start, range.end);
+    const daily = DH.rain.daily(pid, range.start, range.end);
+    const total = daily.reduce((a, d) => a + d.mm, 0);
+    const prev = DH.rain.hourly(pid, new Date(DH.NOW.getTime() - 60 * 86400000), new Date(DH.NOW.getTime() - 30 * 86400000)).length;
+    const lastMonth = DH.rain.hourly(pid, new Date(DH.NOW.getTime() - 30 * 86400000), DH.NOW).length;
+    setText("pluvdKpiEvents", readings.length);
+    setText("pluvdKpiMaxIntensity", `${(readings.reduce((m, r) => Math.max(m, r.mm), 0)).toFixed(1)} mm/h`);
+    setText("pluvdKpiRainDays", daily.filter((d) => d.mm > 0).length);
+    setText("pluvdKpiTotal", `${total.toFixed(1)} mm`);
+    setText("pluvdKpiBigEvent", `${daily.reduce((m, d) => Math.max(m, d.mm), 0).toFixed(1)} mm`);
+    const trend = document.querySelector("#pluvdKpiEvents")?.parentElement?.querySelector(".pivo-faults__trend");
+    if (trend) {
+      const diff = lastMonth - prev;
+      trend.innerHTML = `Último mês <i class="fa-solid ${diff >= 0 ? "fa-arrow-trend-up is-up" : "fa-arrow-trend-down is-down"}"></i> ${Math.abs(diff)}`;
+    }
+  }
+
+  document.addEventListener("pluv:periodChanged", () => {
+    const p = document.getElementById("pluvdKpiEvents") ? getFocusPluvio() : null;
+    if (p && window.IcDemoHistory) renderEngineSummary(p);
+  });
 
   // ============================
   // Precipitation Chart
@@ -978,6 +1012,13 @@
     const year = baseDate.getFullYear();
     const month = baseDate.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const DH = window.IcDemoHistory;
+    const pid = String(p?.sourceEquipId || p?.id || "");
+    if (DH && pid && DH.findEquipment(pid)) {
+      return DH.rain.daily(pid, new Date(year, month, 1), new Date(year, month, daysInMonth, 23, 59))
+        .map((d) => (d.date > DH.NOW ? 0 : d.mm))
+        .concat(Array(daysInMonth).fill(0)).slice(0, daysInMonth);
+    }
     const seed = hashStr(String((p && (p.id || p.nome)) || "pluv") + `_${year}_${month}`);
     const rand = seededRandom(seed);
     const values = [];
@@ -1001,6 +1042,26 @@
       return { values, labels };
     }
 
+    const DH = window.IcDemoHistory;
+    const pid = String(p?.sourceEquipId || p?.id || "");
+    if (DH && pid && DH.findEquipment(pid)) {
+      if (period === "24h") {
+        const end = DH.NOW;
+        const start = new Date(end.getTime() - 24 * 3600000);
+        const firstHour = new Date(start); firstHour.setMinutes(0, 0, 0);
+        const values = new Array(24).fill(0);
+        DH.rain.hourly(pid, start, end).forEach((r) => {
+          const idx = Math.min(23, Math.floor((r.date - firstHour) / 3600000));
+          if (idx >= 0) values[idx] = Math.round((values[idx] + r.mm) * 10) / 10;
+        });
+        return { values, labels: values.map((_, i) => `${String((firstHour.getHours() + i) % 24).padStart(2, "0")}h`) };
+      }
+      const end = DH.NOW;
+      const start = new Date(DH.dayStart(end).getTime() - 6 * 86400000);
+      const daily = DH.rain.daily(pid, start, end);
+      const wd = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+      return { values: daily.map((d) => d.mm), labels: daily.map((d) => wd[d.date.getDay()]) };
+    }
     const seed = hashStr(String((p && (p.id || p.nome)) || "pluv") + period);
     const rand = seededRandom(seed);
     const len = period === "24h" ? 24 : 7;

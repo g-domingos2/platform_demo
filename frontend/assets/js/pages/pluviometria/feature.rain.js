@@ -72,6 +72,43 @@
     }
   }
 
+  // ===== Chuva real do histórico fictício (demo-history.js) =====
+  // Média dos pluviômetros selecionados (ou de todos). Sem pluviômetro
+  // cadastrado → tudo zerado (nada de chuva "inventada").
+  const DH = () => window.IcDemoHistory;
+  function engineGauges() {
+    const sel = Plv.cards?.selectedList?.() || [];
+    const list = sel.length ? sel : (data.PLUVIOS || []);
+    return list.map((p) => String(p.sourceEquipId || p.id || "")).filter(Boolean);
+  }
+  function engineFarmId() {
+    return DH()?.activeFarm()?.id || "farm";
+  }
+  function engineDaily(start, end) {
+    const ids = engineGauges();
+    const days = [];
+    for (let d = DH().dayStart(start); d <= end; d = new Date(d.getTime() + DH().DAY)) {
+      const mm = ids.length ? ids.reduce((a, id) => a + DH().localRain(engineFarmId(), id, d), 0) / ids.length : 0;
+      days.push({ date: new Date(d), mm: Math.round(mm * 10) / 10 });
+    }
+    return days;
+  }
+  function engineHourly(start, end) {
+    const ids = engineGauges();
+    const hours = new Array(24).fill(0);
+    if (!ids.length) return hours;
+    ids.forEach((id) => {
+      DH().rain.hourly(id, start, end).forEach((r) => {
+        const idx = Math.floor((r.date - start) / 3600000);
+        if (idx >= 0 && idx < 24) hours[idx] += r.mm / ids.length;
+      });
+    });
+    return hours.map((v) => Math.round(v * 10) / 10);
+  }
+  function engineSum(start, end) {
+    return engineDaily(start, end).reduce((a, d) => a + d.mm, 0);
+  }
+
   function daysInCurrentMonth() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -179,19 +216,30 @@
       ? (days <= 1 ? "24h" : days <= 7 ? "7d" : days <= 14 ? "14d" : "30d")
       : state.rainPeriod;
     let series = getSeries(periodKey);
-    const seriesMax = Math.max(0, ...series);
-    if (seriesMax > 0) {
-      const targetMax =
-        seriesMax < 8 ? 8 :
-        seriesMax < 12 ? 12 :
-        16;
-      const scale = targetMax / seriesMax;
-      series = series.map((v) => {
-        const scaled = Math.min(16, Math.max(0, v * scale));
-        return Math.round(scaled * 10) / 10;
-      });
+    let engineDays = null;
+    if (DH()) {
+      if (periodKey === "24h") {
+        const end = DH().NOW;
+        const start = new Date(end.getTime() - 24 * 3600000);
+        series = engineHourly(start, end);
+      } else {
+        const end = period?.end ? new Date(Math.min(new Date(period.end).getTime() + 86399999, DH().NOW.getTime())) : DH().NOW;
+        const start = period?.start ? new Date(period.start) : new Date(DH().dayStart(end).getTime() - ((days || 7) - 1) * 86400000);
+        engineDays = engineDaily(start, end);
+        series = engineDays.map((d) => d.mm);
+      }
+    } else {
+      const seriesMax = Math.max(0, ...series);
+      if (seriesMax > 0) {
+        const targetMax = seriesMax < 8 ? 8 : seriesMax < 12 ? 12 : 16;
+        const scale = targetMax / seriesMax;
+        series = series.map((v) => Math.round(Math.min(16, Math.max(0, v * scale)) * 10) / 10);
+      }
     }
-    const maxAxis = 16;
+    const peak = Math.max(0, ...series);
+    const maxAxis = DH() ? Math.max(4, Math.ceil(peak / 4) * 4) : 16;
+    const yAxis = $("rainYAxis");
+    if (yAxis) yAxis.innerHTML = [1, 0.75, 0.5, 0.25, 0].map((f) => `<span>${Math.round(maxAxis * f)}</span>`).join("");
     const total = series.reduce((a, b) => a + b, 0);
 
     totalEl.textContent = total.toFixed(1);
@@ -214,7 +262,7 @@
       labels = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
     } else {
       const len = series.length;
-      const start = period?.start ? dateOnly(period.start) : null;
+      const start = engineDays ? engineDays[0].date : period?.start ? dateOnly(period.start) : null;
       labels = Array.from({ length: len }, (_, i) => {
         if (start) {
           const d = new Date(start);
@@ -229,11 +277,48 @@
 
     updateKpis({ series24h: periodKey === "24h" ? series : null });
     setRainChips();
+    renderRainEvents();
 
     const monthlyPanel = $("rainMonthlyPanel");
     if (monthlyPanel && !monthlyPanel.classList.contains("is-hidden")) {
       renderMonthlyCalendar();
     }
+  }
+
+  // Eventos: leituras de chuva do período (mesma série do gráfico)
+  function renderRainEvents() {
+    const host = $("pluvEventsList");
+    if (!host || !DH()) return;
+    const period = getPeriod();
+    const end = period?.end ? new Date(Math.min(new Date(period.end).getTime() + 86399999, DH().NOW.getTime())) : DH().NOW;
+    const start = period?.start ? new Date(period.start) : new Date(DH().dayStart(end).getTime() - 6 * 86400000);
+    const sel = Plv.cards?.selectedList?.() || [];
+    const list = sel.length ? sel : (data.PLUVIOS || []);
+    const items = [];
+    list.forEach((p) => {
+      const id = String(p.sourceEquipId || p.id || "");
+      if (!id || !DH().findEquipment(id)) return;
+      DH().rain.hourly(id, start, end).forEach((r) => items.push({ name: p.nome || "Pluviômetro", ...r }));
+    });
+    items.sort((a, b) => b.date - a.date);
+    if (!items.length) {
+      host.innerHTML = '<div class="pluv-empty">Nenhum evento de chuva no período.</div>';
+      return;
+    }
+    const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    host.innerHTML = items.slice(0, 30).map((ev) => {
+      const level = ev.mm >= 10 ? "Forte" : ev.mm >= 2.5 ? "Moderada" : "Fraca";
+      return `<div class="pluv-event">
+          <span class="pluv-event__dot pluv-event__dot--rain"></span>
+          <div class="pluv-event__card">
+            <div class="pluv-event__head">
+              <span class="pluv-event__title">Chuva registrada · ${esc(ev.name)}</span>
+              <span class="pluv-event__time">${DH().fmt.dateTime(ev.date)}</span>
+            </div>
+            <div class="pluv-event__desc">${ev.mm.toFixed(1)} mm (${level}) · acumulado do dia ${ev.acc.toFixed(1)} mm</div>
+          </div>
+        </div>`;
+    }).join("");
   }
 
   function seededValue(seed, min, max) {
@@ -266,6 +351,18 @@
     const baseDay = baseDate.getDate();
     const selSeed = selectionSeed();
 
+    if (DH()) {
+      const now = DH().NOW;
+      const p = getPeriod();
+      const pEnd = p?.end ? new Date(Math.min(new Date(p.end).getTime() + 86399999, now.getTime())) : now;
+      const pStart = p?.start ? new Date(p.start) : new Date(DH().dayStart(now).getTime() - 6 * 86400000);
+      const fmt1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+      if (totalEl) totalEl.textContent = fmt1(engineSum(pStart, pEnd));
+      if (todayEl) todayEl.textContent = fmt1(engineSum(DH().dayStart(now), now));
+      if (monthEl) monthEl.textContent = fmt1(engineSum(new Date(now.getFullYear(), now.getMonth(), 1), now));
+      if (yearEl) yearEl.textContent = fmt1(engineSum(new Date(now.getFullYear(), 0, 1), now));
+      return;
+    }
     const last24hSeries = series24h || getSeries("24h");
     const last24h = last24hSeries.reduce((a, b) => a + b, 0);
     if (totalEl) totalEl.textContent = (last24h + (selSeed % 7) * 0.3).toFixed(1);
@@ -298,6 +395,11 @@
 
   function seededMonthData(year, month, seedBoost) {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    if (DH()) {
+      const start = new Date(year, month, 1);
+      const end = new Date(year, month, daysInMonth, 23, 59);
+      return engineDaily(start, end).map((d) => (d.date > DH().NOW ? 0 : d.mm));
+    }
     const base = (Plv.cards?.selectedList?.() || data.PLUVIOS || []).length || (data.PLUVIOS || []).length;
     const seed = (year * 100 + month + 1) * 37 + base * 97 + (seedBoost || 0);
     const rand = seededRandom(seed);

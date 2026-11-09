@@ -1456,7 +1456,10 @@
     if (!slot) return;
     const html = await fetch("./pages/relatorios.html").then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); });
     slot.innerHTML = html;
+    // Filtros só com os equipamentos criados na fazenda (antes do init dos multiselects)
+    window.IcReportDemo?.prepare?.(slot);
     initReportUI(slot, options || {});
+    window.IcReportDemo?.attach?.(slot);
   }
 
   function hideMapCard() {
@@ -1474,7 +1477,6 @@
     btnExportReportIrrigacao: "Irrigação",
     btnExportReportPivots: "Operação",
     btnExportReportEnergy: "Energia",
-    btnExportReportRain: "Pluviometria",
     btnExportReportCarreteis: "Carretéis",
   };
   const REPORT_SECTION_TYPES = {
@@ -1482,7 +1484,6 @@
     reportPivots: "Operação",
     reportEnergy: "Operação",
     reportWater: "Energia",
-    reportRain: "Pluviometria",
     reportCarreteis: "Carretéis",
   };
   REPORT_BUTTON_TYPES.btnExportReportWater = "Energia";
@@ -1948,6 +1949,8 @@
       const valueEl = item.querySelector(".farm-report__stats-value");
       if (!labelEl || !valueEl) return;
       if (valueEl.hasAttribute("data-carretel-derived")) return;
+      // Indicadores calculados de verdade (relatorios/demo-data.js) não escalam por período
+      if (valueEl.closest("[data-demo-live]")) return;
       const reportId = item.closest("[data-stats-for]")?.getAttribute("data-stats-for") || "stats";
       const label = labelEl.textContent.replace(/\s+/g, " ").trim();
       const statsOptions = { mode: "html" };
@@ -1960,6 +1963,7 @@
 
     root.querySelectorAll("table:not(.pivot-fault-detail-table)").forEach((table, tableIndex) => {
       const headerMap = buildTableHeaderMap(table);
+      if (table.querySelector("[data-demo-body], [data-carretel-body]")) return;
       const isGerencial = !!table.closest("#reportPivots");
       const isCarreteis = !!table.closest("#reportCarreteis");
       Array.from(table.querySelectorAll("tbody tr")).forEach((row, rowIndex) => {
@@ -3248,7 +3252,7 @@
         const controlGap = parseFloat(controlStyles.columnGap || controlStyles.gap) || 0;
         const chipGap = parseFloat(chipsStyles.columnGap || chipsStyles.gap) || controlGap;
         const controlPadding = (parseFloat(controlStyles.paddingLeft) || 0) + (parseFloat(controlStyles.paddingRight) || 0);
-        const searchMinWidth = searchInput ? Math.max(parseFloat(window.getComputedStyle(searchInput).minWidth) || 0, 56) : 0;
+        const searchMinWidth = searchInput ? Math.max(parseFloat(window.getComputedStyle(searchInput).minWidth) || 0, 24) : 0;
         const chevronWidth = multi.querySelector(".farm-report__chev")?.getBoundingClientRect().width || 16;
         const reservedWidth = controlPadding + searchMinWidth + chevronWidth + (controlGap * 2) + 18;
         const available = Math.max(0, controlRect.width - reservedWidth);
@@ -3567,7 +3571,8 @@
       setStat("stops", String(total.stops));
     }
 
-    if (carretelBody) {
+    // Na demo o relatório de carretéis é montado por relatorios/demo-data.js
+    if (carretelBody && !window.IcReportDemo) {
       carretelBody.addEventListener("click", (event) => {
         const btn = event.target.closest("[data-carretel-report-toggle]");
         if (!btn) return;

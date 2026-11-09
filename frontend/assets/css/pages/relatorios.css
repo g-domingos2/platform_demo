@@ -3548,3 +3548,42 @@ body.is-relatorios .main--map {
     background: rgba(220, 38, 38, .18);
     color: #fca5a5;
 }
+
+/* =========================================================
+   Responsividade (indicadores e tabelas dos relatórios)
+   ========================================================= */
+.farm-report__stats-bar [data-stats-for].is-active {
+  flex-wrap: wrap;
+}
+.farm-report__stats-item {
+  min-width: 150px;
+}
+.farm-report__stats-value {
+  flex-wrap: wrap;
+  font-size: clamp(16px, 1.6vw, 22px);
+  text-align: center;
+}
+.irrigation-report__table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.irrigation-report__table-wrap > .irrigation-table {
+  min-width: 760px;
+}
+@media (max-width: 1100px) {
+  .farm-report__stats-item:not(:last-child)::after {
+    display: none;
+  }
+  .farm-report__stats-item {
+    flex: 1 1 30%;
+    border-bottom: 1px solid #eaeff5;
+  }
+}
+.relatorios-page .edit-panel__content,
+.relatorios-page .edit-panel__section,
+.relatorios-page .edit-panel__section-body {
+  min-width: 0;
+}
+.relatorios-page .farm-report__multi {
+  min-width: 220px;
+}

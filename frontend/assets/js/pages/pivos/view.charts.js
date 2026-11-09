@@ -239,6 +239,13 @@
     });
   }
 
+  // Motor único de histórico (assets/js/core/demo-history.js)
+  const DH = () => window.IcDemoHistory;
+  function dhRange() {
+    const p = getSelectedPeriod();
+    return DH().normRange(p.start, p.end);
+  }
+
   // Período escolhido no calendário compartilhado; sem seleção, últimos 7 dias.
   function getSelectedPeriod() {
     const period = window.Plv?.state?.period;
@@ -254,6 +261,15 @@
 
   // Acumulado de um segmento (índice i) em um período: lâmina de irrigação e precipitação (chuva).
   function accumulateSegment(pivotId, i, start, end) {
+    if (DH()) {
+      const sum = DH().pivot.summary(pivotId, start, end);
+      if (sum) {
+        const days = Math.max(1, Math.round((DH().normRange(start, end).end - DH().normRange(start, end).start) / 86400000));
+        // segmentos: pequena variação estável em torno da lâmina do pivô
+        const f = i === 0 ? 1 : 0.9 + seededRandom(`${pivotId}|seg${i}`) * 0.2;
+        return { irrigation: round1(sum.relLaminaMm * f), rain: round1(sum.rainMm), days };
+      }
+    }
     const base = getPivotFaultsSnapshot(pivotId).irrigationAccumulated / 30; // mm/dia médio do pivô
     const RUN_PROB = 0.65; // fração de dias em que o pivô irriga
     const factor = 0.75 + seededRandom(`${pivotId}|seg${i}`) * 0.5; // cada segmento recebe um pouco diferente
@@ -304,7 +320,15 @@
     const card = document.getElementById("pivoFaultsCard");
     if (!card) return;
 
-    const snapshot = getPivotFaultsSnapshot(pivotId);
+    let snapshot = getPivotFaultsSnapshot(pivotId);
+    if (DH()) {
+      const r = dhRange();
+      const f = DH().pivot.summary(pivotId, r.start, r.end)?.faults;
+      if (f) {
+        snapshot = { pressure: f.pressure, misalignment: f.misalignment, voltageLow: f.lowVoltage, voltagePeak: f.peakVoltage };
+        days = 30; // contagem já é do período
+      }
+    }
     const setValue = (fault, text) => {
       const el = card.querySelector(`.js-fault-item[data-fault="${fault}"] .pivo-faults__value`);
       if (el) el.textContent = text;
@@ -480,8 +504,19 @@
 
   function renderCharts() {
     const days = getSelectedPeriodDays();
-    const totalSnapshot = scaleSnapshotToPeriod(getPivotConsumptionSnapshot(state.selectedId), TOTAL_REFERENCE_DAYS);
-    const periodSnapshot = scaleSnapshotToPeriod(getPivotConsumptionSnapshot(state.selectedId), days);
+    let totalSnapshot = scaleSnapshotToPeriod(getPivotConsumptionSnapshot(state.selectedId), TOTAL_REFERENCE_DAYS);
+    let periodSnapshot = scaleSnapshotToPeriod(getPivotConsumptionSnapshot(state.selectedId), days);
+    if (DH() && DH().findEquipment(state.selectedId)) {
+      const r = dhRange();
+      const toSnap = (s) => ({
+        volumeTotal: s.volume,
+        hoursTotal: s.hours,
+        wetHours: { peak: s.hoursPeak, offPeak: s.hoursOff, reduced: s.hoursReduced },
+        energyCosts: { peak: s.costPeak, offPeak: s.costOff, reduced: s.costReduced },
+      });
+      totalSnapshot = toSnap(DH().pivot.summary(state.selectedId, DH().HISTORY_START, DH().NOW));
+      periodSnapshot = toSnap(DH().pivot.summary(state.selectedId, r.start, r.end));
+    }
     renderFaults(state.selectedId, days);
     const wetHoursSegments = [
       { label: ax("Hor\u00e1rio de Pico"), value: periodSnapshot.wetHours.peak, color: chartColors.peak },
@@ -555,7 +590,7 @@
   // ao trocar o filtro, como se fosse outra medição.
   function getPeriodEnd() {
     const period = window.Plv?.state?.period;
-    return period?.end ? new Date(period.end) : new Date("2026-05-30T12:00:00");
+    return period?.end ? new Date(period.end) : (window.IcDemoHistory?.NOW ? new Date(window.IcDemoHistory.NOW) : new Date());
   }
 
   // Pressão × ângulo do pivô. A ponta do pivô cruza um relevo (altitude do
@@ -585,15 +620,22 @@
     const altAt = (a) => altBase + relAt(a);
     // --- Pressão base na bomba e ganho por metro de queda de altitude ---
     const rP = makeRng(seed);
-    const pumpBar = 4.4 + rP() * 0.6;
-    const barPerM = 0.06 + rP() * 0.02;
+    let pumpBar = 4.4 + rP() * 0.6;
+    let barPerM = 0.06 + rP() * 0.02;
+    let altOffset = 0;
+    const pm = DH()?.findEquipment(pivotId) ? DH().pivot.model(pivotId) : null;
+    if (pm) {
+      pumpBar = pm.pTower + 0.15;
+      barPerM = 0.025 + rP() * 0.01;
+      altOffset = pm.altitude - altBase;
+    }
 
     const alt = [];
     const readings = [];
     const comparison = [];
     for (let a = 0; a <= 359; a += 2) {
       const h = relAt(a);                               // relativa, pra pressão
-      alt.push({ x: a, y: Number(altAt(a).toFixed(0)) }); // absoluta, pra exibir
+      alt.push({ x: a, y: Number((altAt(a) + altOffset).toFixed(0)) }); // absoluta, pra exibir
       // pressão cai quando a ponta sobe (h>0) e sobe quando desce (h<0)
       let p = pumpBar - h * barPerM;
       // Média 30 dias (comparação): perfil limpo, leve viés de degradação.
@@ -601,8 +643,8 @@
       // Atual: ruído de sensor + microvariação por período (nova leitura).
       const rN = makeRng(seed + a * 7 + days * 977);
       p += (rN() - 0.5) * 0.22 + (rN() > 0.97 ? -0.4 : 0);
-      p = Math.max(PRESSURE_MIN_BAR, p);
-      cmp = Math.max(PRESSURE_MIN_BAR, cmp);
+      p = Math.max(pm ? 0.6 : PRESSURE_MIN_BAR, p);
+      cmp = Math.max(pm ? 0.6 : PRESSURE_MIN_BAR, cmp);
       readings.push({ x: a, y: Number(p.toFixed(2)) });
       comparison.push({ x: a, y: Number(cmp.toFixed(2)) });
     }
@@ -613,6 +655,24 @@
 
   // Lâmina aplicada (mm) por ângulo — patamar com dois setores de reforço.
   function buildDepthSeries(pivotId, days) {
+    if (DH()?.findEquipment(pivotId)) {
+      const r = dhRange();
+      const ops = DH().pivot.ops(pivotId, r.start, r.end).filter((o) => o.wet);
+      const covers = (op, a) => {
+        const span = op.lap * 360;
+        if (span >= 359.5) return true;
+        const from = op.direction === "Avanço" ? op.angStart : op.angEnd;
+        const d = (((a - from) % 360) + 360) % 360;
+        return d <= span;
+      };
+      const readings = [];
+      for (let a = 0; a <= 359; a += 3) {
+        let v = 0;
+        ops.forEach((op) => { if (covers(op, a)) v += op.laminaMm * (op.overlap ?? 1); });
+        readings.push({ x: a, y: Number(v.toFixed(2)) });
+      }
+      return { readings };
+    }
     const rng = makeRng(hashPivotId(pivotId) * 40503 + 7 + days * 131);
     const base = 8 + rng() * 4;
     const boostA = Math.floor(rng() * 360);
@@ -695,6 +755,12 @@
   // Tensão (V) ao longo do PERÍODO selecionado: uma amostra a cada ~janela/N,
   // com quedas pontuais. Segue o filtro de período de verdade.
   function buildVoltageSeries(pivotId, days) {
+    if (DH()?.findEquipment(pivotId)) {
+      const r = dhRange();
+      const n = Math.min(96, Math.max(24, Math.round(days * 8)));
+      const series = DH().pivot.voltage(pivotId, r.start, r.end, n);
+      return { readings: series.map((p, i) => ({ x: i, y: p.v, t: p.t })), nominal: DH().pivot.model(pivotId).nominalV };
+    }
     const rng = makeRng(hashPivotId(pivotId) * 22695477 + 13 + days * 613);
     const nominal = 500 + Math.floor(rng() * 20);
     const end = getPeriodEnd().getTime();
@@ -1044,7 +1110,9 @@
         d.toLocaleDateString(window.IcI18n?.getLocale?.() || "pt-BR", { day: "2-digit", month: "short" }).replace(".", "") +
         " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
       const step = Math.floor(readings.length / 4);
-      setAxisLabels(voltEl, ".x-axis-labels", [0, step, step * 2, step * 3, readings.length - 1].map((i) => fmtDate(readings[i].t)));
+      // Rótulo do eixo em 2 linhas (dd/mm + hora): não sobrepõe em telas menores
+      const fmtAxis = (d) => `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}\n${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+      setAxisLabels(voltEl, ".x-axis-labels", [0, step, step * 2, step * 3, readings.length - 1].map((i) => fmtAxis(readings[i].t)));
       renderLineChart(
         voltEl,
         [{ points: readings, color: "#60a5fa", label: ax("Tensão"), width: 2, area: true, formatY: (v) => `${v.toFixed(1)}(V)` }],
@@ -1104,6 +1172,8 @@
   }
 
   function generateRainDays(pivotId, start, end) {
+    const ctx = DH()?.findEquipment(pivotId);
+    if (ctx) return DH().rainSeries(ctx.farm?.id, pivotId, start, end).map((d) => ({ date: d.date, mm: d.mm }));
     const totalDays = Math.max(1, Math.round((end - start) / 86400000) + 1);
     return Array.from({ length: totalDays }, (_, i) => {
       const date = new Date(start.getTime() + i * 86400000);
@@ -1147,7 +1217,7 @@
         plotEl.style.minWidth = "100%";
       }
     } else {
-      barsEl.style.gridTemplateColumns = `repeat(${days.length}, minmax(30px, 1fr))`;
+      barsEl.style.gridTemplateColumns = `repeat(${days.length}, minmax(0, 1fr))`;
       barsEl.style.width = "";
       barsEl.style.minWidth = "";
       if (plotEl) {
@@ -1188,6 +1258,10 @@
   // valores diários variam pouco entre si.
   // =========================
   function generateWaterDays(pivotId, start, end) {
+    if (DH()?.findEquipment(pivotId)) {
+      const ops = DH().pivot.ops(pivotId, start, end);
+      return DH().dailyFromOps(ops, start, end, "volume").map((d) => ({ date: d.date, value: Math.round(d.value * 10) / 10, unit: "m³" }));
+    }
     const totalDays = Math.max(1, Math.round((end - start) / 86400000) + 1);
     return Array.from({ length: totalDays }, (_, i) => {
       const date = new Date(start.getTime() + i * 86400000);
@@ -1250,7 +1324,29 @@
     document.getElementById("pivoWaterTooltip")?.classList.remove("is-visible");
   }
 
+  // Card de indicadores da tela SmartTouch/Centerstar (falhas + médias do
+  // período), a partir das mesmas operações do Histórico e do gráfico de água.
+  function renderSmartTouchFaults(pivotId) {
+    const pressureEl = document.querySelector('.pivo-faults [data-fault="current_pressure"] .pivo-faults__value');
+    if (!pressureEl || !DH()?.findEquipment(pivotId)) return;
+    const r = dhRange();
+    const sum = DH().pivot.summary(pivotId, r.start, r.end);
+    const wet = DH().pivot.ops(pivotId, r.start, r.end).filter((o) => o.wet);
+    const avg = (arr, f) => (arr.length ? arr.reduce((a, o) => a + f(o), 0) / arr.length : 0);
+    const set = (key, html) => {
+      const el = document.querySelector(`.pivo-faults [data-fault="${key}"] .pivo-faults__value`);
+      if (el) el.innerHTML = html;
+    };
+    set("pressure", String(sum.faults.pressure));
+    set("misalignment", String(sum.faults.misalignment));
+    set("current_pressure", `${avg(wet, (o) => o.pressureCenter).toFixed(1)} <span class="pivo-faults__unit">bar</span>`);
+    set("flow", `${Math.round(sum.wetHours > 0 ? sum.volume / sum.wetHours : 0)} <span class="pivo-faults__unit">m³/h</span>`);
+    set("precipitation_rate", `${avg(wet, (o) => o.laminaMm).toFixed(1)} <span class="pivo-faults__unit">mm</span>`);
+  }
+  chartsView.renderSmartTouchFaults = renderSmartTouchFaults;
+
   function renderWaterChart(pivotId) {
+    renderSmartTouchFaults(pivotId);
     const yEl = document.getElementById("pivoWaterY");
     const barsEl = document.getElementById("pivoWaterBars");
     if (!barsEl) return;

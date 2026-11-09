@@ -5878,3 +5878,23 @@ body.is-farm-edit:has(.estd-view) #pageSlot { height: 100%; min-height: 0; }
 [data-theme="dark"] .report-modal__btn-cancel:hover {
   color: #94a3b8;
 }
+
+/* Gráfico de nível: traço não deforma quando o SVG estica (responsivo) */
+.mdnd-level-line,
+.mdnd-level-ref {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Impacto: Chuva — rótulos centralizados sob as barras e barras que
+   encolhem em telas menores / períodos longos (responsivo) */
+.rain-chart__x {
+  gap: 4px;
+}
+.rain-chart__x > div {
+  text-align: center;
+  min-width: 0;
+  overflow: hidden;
+}
+.rain-bar {
+  width: min(40px, 80%);
+}

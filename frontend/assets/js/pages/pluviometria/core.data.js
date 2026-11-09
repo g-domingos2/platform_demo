@@ -757,6 +757,34 @@
     return map;
   }
 
+  // Telemetria "ao vivo" coerente com o histórico fictício (assets/js/core/demo-history.js):
+  // mm de hoje, status de chuva e última leitura saem da mesma série dos gráficos.
+  function applyEngineTelemetry(pluvio) {
+    const DH = window.IcDemoHistory;
+    const id = pluvio?.sourceEquipId || pluvio?.id;
+    if (!DH || !id || !DH.findEquipment(id)) return pluvio;
+    const today = DH.dayStart(DH.NOW);
+    const readings = DH.rain.hourly(id, today, DH.NOW);
+    const mmToday = DH.round(readings.reduce((a, r) => a + r.mm, 0), 1);
+    const last = readings[0] || null;
+    const minsAgo = last ? Math.round((DH.NOW - last.date) / 60000) : null;
+    const raining = last && minsAgo <= 90;
+    const lastComm = DH.lastCommunication(id);
+    const commMin = Math.max(1, Math.round((DH.NOW - lastComm) / 60000));
+    pluvio.mm = mmToday;
+    delete pluvio.displayMm;
+    pluvio.status = raining ? "rain" : "none";
+    pluvio.statusLabel = raining ? "Chovendo agora" : mmToday > 0 ? "Choveu hoje" : "Sem chuva no momento";
+    pluvio.statusMeta = last ? `há ${minsAgo >= 60 ? `${Math.floor(minsAgo / 60)}h ${minsAgo % 60}min` : `${minsAgo} min`}` : "Sem chuva hoje";
+    const rate = last ? last.mm : 0;
+    pluvio.intensidade = !raining ? "Sem chuva" : rate < 2.5 ? "Fraca" : rate < 10 ? "Moderada" : "Forte";
+    pluvio.intensidadeMeta = raining ? `desde ${DH.fmt.time(readings[readings.length - 1].date)}` : "—";
+    pluvio.updated = `Atualizado há ${commMin} min`;
+    pluvio.semComunicacao = false;
+    pluvio.battery = Math.round(70 + DH.unit(`bat|${id}`) * 30);
+    return pluvio;
+  }
+
   function buildPluvioRuntimeFromEquipment(equip, farm, index = 0) {
     const coords = resolveEquipmentCoords(equip) || { lat: null, lng: null };
     const pivotNameMap = getPivotNameMap(farm);
@@ -768,7 +796,7 @@
       ? { ...profile.uso }
       : { irrigacao: true, alertas: true, relatorios: true };
 
-    return {
+    return applyEngineTelemetry({
       id: String(equip?.id || `pluv_${Date.now()}_${index}`),
       nome: nextName || profile?.nome || `Pluviômetro ${index + 1}`,
       sub: String(equip?.data?.sub || profile?.sub || "").trim(),
@@ -803,7 +831,7 @@
       __manualLocation: !!equip?.data?.manualLocation,
       __mockProfileKey: profile?.key || null,
       semComunicacao: !!profile?.semComunicacao,
-    };
+    });
   }
 
   function applySharedPluvioTelemetry(pluvio, source, index = 0) {
@@ -833,7 +861,7 @@
     pluvio.net = String(profile.net || pluvio.net || "4G");
     pluvio.__mockProfileKey = profile.key || pluvio.__mockProfileKey || null;
     pluvio.semComunicacao = !!profile.semComunicacao;
-    return pluvio;
+    return applyEngineTelemetry(pluvio);
   }
 
   function formatPluvioLatLng(lat, lng) {
@@ -1347,6 +1375,7 @@
   data.syncPluviosWithFarmEquipment = syncPluviosWithFarmEquipment;
   data.persistPluvioToFarmEquipment = persistPluvioToFarmEquipment;
   data.refreshPluvioRuntime = refreshPluvioRuntime;
+  data.applyEngineTelemetry = applyEngineTelemetry;
   data.bringPluviosCloserToFarm = bringPluviosCloserToFarm;
   data.purgeLegacyFarPluvioLocations = purgeLegacyFarPluvioLocations;
 

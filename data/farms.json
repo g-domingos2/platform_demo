@@ -98,11 +98,11 @@
           "connected": true,
           "signal": "Bom",
           "battery": 100,
-          "irrigationProgress": 0.849887084713912,
-          "irrigatedPipeLength": 1129.8,
+          "irrigationProgress": 0.874658083527369,
+          "irrigatedPipeLength": 1162.8,
           "startPositionPendingIrrigation": false,
-          "pulledPipeLength": 199.6,
-          "hosePulledLength": 199.6,
+          "pulledPipeLength": 166.6,
+          "hosePulledLength": 166.6,
           "lastCommunication": "2026-11-05T16:53:48.111Z",
           "name": "",
           "setupMethod": "Puxando o carrinho (Padrão)",
@@ -139,8 +139,8 @@
           "connectivityType": "4g",
           "statusText": "IRRIGANDO",
           "currentSpeed": 18.8,
-          "currentPressure": 7.17,
-          "timeRemaining": "10h 37min"
+          "currentPressure": 7.2,
+          "timeRemaining": "8h 52min"
         }
       },
       {
@@ -199,6 +199,44 @@
           "nivelValMin": "",
           "nivelValMax": "",
           "radio": ""
+        }
+      },
+      {
+        "id": "equip_1794230491598",
+        "type": "smart_connect",
+        "category": "pivos",
+        "name": "Pivô 02",
+        "createdAt": "2026-11-09T13:21:31.598Z",
+        "data": {
+          "name": "Pivô 02",
+          "centerLat": -12.404133760726518,
+          "centerLng": -45.55885308441014,
+          "center": "-12.404134, -45.558853",
+          "radius": "792",
+          "bearing": 0,
+          "ref": "-12.397011, -45.558853",
+          "refLat": -12.397011133607643,
+          "refLng": -45.55885308441014,
+          "segments": [
+            {
+              "name": "Segmento 1",
+              "startAngle": 0,
+              "endAngle": 360
+            }
+          ],
+          "activeSegIdx": 0,
+          "canhaoSegments": [],
+          "activeCanhaoSegIdx": 0,
+          "canhaoMode": "off",
+          "manufacturer": "Bauer",
+          "panelType": "Nexus",
+          "powerUnit": "kw",
+          "commType": "4G",
+          "pressure": "pressostato",
+          "voltageController": true,
+          "minVoltage": "400",
+          "maxVoltage": "600",
+          "quickCreated": true
         }
       }
     ],

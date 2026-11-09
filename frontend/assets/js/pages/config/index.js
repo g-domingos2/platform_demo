@@ -177,7 +177,28 @@
             const select = e.target.closest('.js-advanced-select');
             if (select) {
                 const dropdown = select.parentElement.querySelector('.advanced-dropdown-panel');
-                if (dropdown) dropdown.classList.toggle('is-hidden');
+                if (dropdown) {
+                    const willOpen = dropdown.classList.contains('is-hidden');
+                    // Fecha os outros abertos
+                    root.querySelectorAll('.advanced-dropdown-panel').forEach(d => { if (d !== dropdown) d.classList.add('is-hidden'); });
+                    dropdown.classList.toggle('is-hidden', !willOpen);
+                    if (willOpen) {
+                        // Abre pra cima quando marcado (Navegação, fim da tela) ou quando
+                        // não há espaço suficiente abaixo do campo.
+                        const wrapper = select.parentElement;
+                        const forceUp = wrapper.dataset.dropUp === "true";
+                        dropdown.classList.remove('is-drop-up');
+                        const rect = select.getBoundingClientRect();
+                        const scroller = select.closest('.edit-panel__body, .config-content, main') || document.documentElement;
+                        const bottomLimit = Math.min(window.innerHeight, scroller.getBoundingClientRect().bottom || window.innerHeight);
+                        const needed = Math.min(dropdown.scrollHeight, 320) + 12;
+                        const spaceBelow = bottomLimit - rect.bottom;
+                        const spaceAbove = rect.top;
+                        if (forceUp || (spaceBelow < needed && spaceAbove > spaceBelow)) {
+                            dropdown.classList.add('is-drop-up');
+                        }
+                    }
+                }
                 return;
             }
 

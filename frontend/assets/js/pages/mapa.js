@@ -800,7 +800,13 @@
       const seed = getPivotTooltipSeed(equip?.id || "");
       // Aleatoriza a posição de alguns pivôs para mostrar movimento (aprox. 70%)
       const isMoved = (seed % 10) < 7;
-      const randomOffset = isMoved ? ((seed * 37) % span) : 0;
+      let randomOffset = isMoved ? ((seed * 37) % span) : 0;
+      // Parado: braço no ângulo onde terminou a última operação do histórico
+      // (o mesmo ângulo mostrado nos detalhes e no tooltip).
+      const DHa = window.IcDemoHistory;
+      if (DHa && equip?.id && DHa.findEquipment(equip.id) && span > 0) {
+        randomOffset = ((DHa.pivot.current(equip.id).angle % span) + span) % span;
+      }
 
       return {
         ...PIVOT_COLORS,
@@ -1135,7 +1141,8 @@
     if (data.semComunicacao === true || statusText === "offline" || statusText.includes("sem comunica")) {
       return { key: "offline", label: "Sem comunicação", badgeClass: "map-card__equip-badge--danger", color: "#DA1D29" };
     }
-    const percent = toNumber(data.levelPercent ?? data.percent ?? data.nivelPercent ?? data.current?.percent);
+    let percent = toNumber(data.levelPercent ?? data.percent ?? data.nivelPercent ?? data.current?.percent);
+    if (!Number.isFinite(percent) && window.IcDemoHistory && equip?.id) percent = window.IcDemoHistory.meter.current(equip)?.pct;
     const min = toNumber(data.nivelValMin);
     const max = toNumber(data.nivelValMax);
     if (Number.isFinite(percent)) {
@@ -1188,16 +1195,24 @@
     ].find((item) => String(item || "").trim());
     if (preferredText) return String(preferredText).trim();
 
-    const rawDate = [
-      source?.lastCommunication,
-      source?.ultimaComunicacao,
-      source?.lastSeenAt,
-      source?.updatedAt,
-    ]
+    const explicitDate = [source?.lastCommunication, source?.ultimaComunicacao]
+      .map((item) => formatPivotTooltipDate(item))
+      .find(Boolean);
+    if (explicitDate) return explicitDate;
+
+    // Sem telemetria explícita: mesma "última comunicação" das telas de
+    // detalhes (motor de histórico), em vez da data de cadastro/edição.
+    const DH = window.IcDemoHistory;
+    if (DH && source?.id && DH.findEquipment(source.id)) {
+      return DH.fmt.dateTime(DH.lastCommunication(source.id));
+    }
+
+    const rawDate = [source?.lastSeenAt, source?.updatedAt]
       .map((item) => formatPivotTooltipDate(item))
       .find(Boolean);
     if (rawDate) return rawDate;
     if (fallback !== null) return fallback;
+    if (DH) return DH.fmt.dateTime(new Date(DH.NOW.getTime() - (2 + (seed % 13)) * 60000));
 
     const day = String(1 + (seed % 28)).padStart(2, "0");
     const hour = String((seed * 3) % 24).padStart(2, "0");
@@ -1206,7 +1221,20 @@
   };
 
   const buildPivotTooltipSummary = (pivot, equip, pivotColors) => {
-    const source = window.Pivos?.data?.getPivotData?.(equip?.id) || equip?.data || {};
+    const baseSource = window.Pivos?.data?.getPivotData?.(equip?.id) || equip?.data || {};
+    // Mesmos números da tela de detalhes (motor de histórico) quando não há telemetria
+    const DHt = window.IcDemoHistory;
+    const curT = DHt && equip?.id && DHt.findEquipment(equip.id) ? DHt.pivot.current(equip.id) : null;
+    const ctxT = curT ? DHt.findEquipment(equip.id) : null;
+    const source = curT ? {
+      pressureCenter: curT.pressureCenter,
+      lastTowerPressure: curT.pressureTower,
+      rain24h: DHt.localRain(ctxT?.farm?.id, equip.id, DHt.NOW),
+      totalHours: curT.hours,
+      voltas: Math.round(curT.laps),
+      voltage: curT.voltage,
+      ...baseSource,
+    } : baseSource;
     const seed = getPivotTooltipSeed(equip?.id || source?.id || equip?.name || "");
     const fallbackAngle = Number.isFinite(pivotColors?.armAngleOffset)
       ? Math.round(((pivotColors.armAngleOffset % 360) + 360) % 360)
@@ -1454,15 +1482,16 @@
       toNumber(equip.data.percent) ??
       toNumber(equip.data.nivelPercent) ??
       toNumber(equip.data.current?.percent);
-    const hasReading = percentRaw !== null;
-    const percent = percentRaw === null ? (offline ? 0 : 82) : Math.max(0, Math.min(100, percentRaw));
+    const engineNow = percentRaw === null && window.IcDemoHistory && equip.id ? window.IcDemoHistory.meter.current(equip) : null;
+    const hasReading = percentRaw !== null || !!engineNow;
+    const percent = percentRaw === null ? (offline ? 0 : (engineNow ? engineNow.pct : 82)) : Math.max(0, Math.min(100, percentRaw));
     const metersRaw =
       toNumber(equip.data.levelMeters) ??
       toNumber(equip.data.nivelMeters) ??
       toNumber(equip.data.levelM) ??
       toNumber(equip.data.nivelM) ??
       toNumber(equip.data.current?.meters);
-    const meters = metersRaw === null ? 4.24 : Math.max(0, metersRaw);
+    const meters = metersRaw === null ? (engineNow ? engineNow.level : 4.24) : Math.max(0, metersRaw);
     const seed = getPivotTooltipSeed(equip.id || equip.data.serial || equip.name || "");
     const lastCommunication = resolvePivotTooltipLastCommunication(
       {
@@ -1471,6 +1500,7 @@
         lastCommunication: equip.data.lastCommunication || equip.data.ultimaComunicacao,
         lastSeenAt: equip.data.lastSeenAt || equip.updatedAt || equip.createdAt,
         updatedAt: equip.data.updatedAt || equip.updatedAt || equip.createdAt,
+        id: equip.id,
       },
       seed
     );
@@ -1496,6 +1526,7 @@
         lastCommunication: equip.data.lastCommunication || equip.data.ultimaComunicacao,
         lastSeenAt: equip.data.lastSeenAt || equip.updatedAt || equip.createdAt,
         updatedAt: equip.data.updatedAt || equip.updatedAt || equip.createdAt,
+        id: equip.id,
       },
       seed
     );
@@ -1574,9 +1605,9 @@
         lastCommunication: equip.data.lastCommunication || equip.data.ultimaComunicacao,
         lastSeenAt: equip.data.lastSeenAt || equip.data.updatedAt || equip.updatedAt,
         updatedAt: equip.data.updatedAt || equip.updatedAt,
+        id: equip.id,
       },
-      seed,
-      "04 mar 2026 15:15"
+      seed
     );
     return { center, pressure, lastCommunication, running, offline };
   };

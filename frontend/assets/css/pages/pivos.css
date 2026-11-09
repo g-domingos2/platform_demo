@@ -3200,10 +3200,14 @@ body.is-pivo-details-smarttouch .pivo-consumo-card,
   bottom: -28px;
 }
 
+.x-axis-labels--dates {
+  bottom: -34px;
+}
+
 .x-axis-labels--dates span {
   width: auto;
   text-align: center;
-  white-space: nowrap;
+  white-space: pre-line;
   word-wrap: normal;
   line-height: 1.2;
 }
@@ -6384,3 +6388,67 @@ button.fault-modal__refresh-btn {
   white-space: nowrap;
 }
 
+
+/* Histórico com poucas linhas: a tabela não estica pra altura do card
+   (a linha única ficava "solta" no meio/fim do card) */
+.pivo-history__table-wrapper > .pivo-history__table {
+  align-self: flex-start;
+}
+
+/* =========================================================
+   Responsividade dos detalhes (pivô / bomba / medidor / carretel)
+   ========================================================= */
+
+/* Pizzas de Consumo: encolhem junto com o card (antes eram 200px fixos e a
+   pizza de "Custos em Energia" era cortada em telas ~1100px) */
+#pivoChartConsumo,
+#pivoChartCustos {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+.pivo-consumo__pies .pivo-consumo__chart {
+  min-width: 0;
+  padding: 16px 12px;
+}
+
+/* Barras diárias (Pluviometria do pivô / Consumo da bomba): colunas podem
+   encolher, então todos os dias do período cabem no card */
+.bmbd-consumo-chart__bars {
+  min-width: 0;
+}
+.bmbd-consumo-chart__bar {
+  width: min(60px, 80%);
+}
+.bmbd-consumo-chart__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cabeçalho (pincard): KPIs não ficam por baixo dos botões em telas médias */
+@media (max-width: 1280px) {
+  .pincard__body {
+    flex-wrap: wrap;
+  }
+  .pincard__info {
+    min-width: 260px;
+  }
+  .pincard__kpis {
+    grid-template-columns: repeat(3, auto);
+    gap: 12px 28px;
+  }
+  .pincard__kpi--voltas {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .pincard__side {
+    flex: 1 1 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 0;
+  }
+}

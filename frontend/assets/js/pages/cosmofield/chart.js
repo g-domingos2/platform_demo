@@ -120,6 +120,15 @@
                 v = Math.max(9, Math.min(16, v));
                 values[i] = v;
             }
+            // Mesma âncora do caso com solo: a última leitura bate com o
+            // selo/mapa/card (antes ficava solta, ex.: 13,8% x 31,1%).
+            if (Number.isFinite(targetMoisture)) {
+                const delta = targetMoisture - values[anchorIdx];
+                for (let i = 0; i <= anchorIdx; i++) {
+                    const weight = i / Math.max(1, anchorIdx);
+                    values[i] = Math.max(0, values[i] + delta * weight);
+                }
+            }
         }
 
         // Perda recente de dados: a série fica fixa na última leitura.
@@ -129,10 +138,21 @@
         const rain = new Map();
 
         // Chuva: eventos esparsos, determinísticos pela seed da sonda.
-        const rainRnd = mulberry32(seed + 7);
-        for (let i = 0; i < total; i++) {
-            if (rainRnd() < 0.12) {
-                rain.set(i, { mm: Math.round((3 + rainRnd() * 25) * 10) / 10, irrigation: false });
+        const DH = window.IcDemoHistory;
+        const ctx = DH && opts.equipId ? DH.findEquipment(opts.equipId) : null;
+        if (ctx) {
+            // Chuva da fazenda no ponto da sonda (mesma série dos pluviômetros)
+            for (let i = 0; i < total; i++) {
+                const day = new Date(start.getTime() + i * 86400000);
+                const mm = DH.localRain(ctx.farm?.id, opts.equipId, day);
+                if (mm > 0) rain.set(i, { mm, irrigation: false });
+            }
+        } else {
+            const rainRnd = mulberry32(seed + 7);
+            for (let i = 0; i < total; i++) {
+                if (rainRnd() < 0.12) {
+                    rain.set(i, { mm: Math.round((3 + rainRnd() * 25) * 10) / 10, irrigation: false });
+                }
             }
         }
 

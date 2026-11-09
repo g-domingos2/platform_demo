@@ -81,7 +81,39 @@
   // Mock de histórico: repete o ciclo Atualização (status atual) / Nova
   // conexão / Atualização (desconectado) voltando no tempo, pra preencher a
   // tabela com várias páginas de linhas em vez de só 3-4 mockadas na mão.
+  // Período global (mesmo popover das outras telas de detalhes)
+  function engineRange() {
+    return window.IcDemoHistory.periodFrom(window.Plv?.state?.period, 7);
+  }
+  function engineOk(equip) {
+    return !!(window.IcDemoHistory && equip?.id && window.IcDemoHistory.findEquipment(equip.id));
+  }
+
   function buildMockEventRows(equip, d) {
+    if (engineOk(equip)) {
+      const DH = window.IcDemoHistory;
+      const range = engineRange();
+      const rows = [];
+      const meta = statusMeta(equip);
+      // Operação em andamento (simulação) aparece no topo
+      if (meta.text === "IRRIGANDO" && range.end >= new Date(DH.NOW.getTime() - 60000)) {
+        rows.push({ dateObj: DH.NOW, type: "Atualização", status: `IRRIGANDO | ${fmtNumber(d.currentSpeed || 18.8, 1)}m/h` });
+      }
+      DH.reel.ops(equip, range.start, range.end).forEach((op) => {
+        const sp = `${fmtNumber(op.speeds[0], 1)}m/h`;
+        const push = (date, type, status) => { if (date >= range.start && date <= range.end) rows.push({ dateObj: date, type, status }); };
+        push(op.start, "Nova conexão", `IRRIGANDO | ${sp}`);
+        push(new Date(op.start.getTime() + 2 * 60000), "Atualização", `IRRIGANDO | ${sp}`);
+        const endStatus = op.reason === "Concluído" ? "PARADO - FIM DO PERCURSO"
+          : op.reason === "Sensor de parada" ? "PARADO - SENSOR DE PARADA"
+            : op.reason === "Parada manual" ? "PARADO - PARADA MANUAL" : "PARADO - VELOCIDADE NÃO ATINGIDA";
+        push(op.end, "Atualização", endStatus);
+        const disc = new Date(op.end.getTime() + (12 + (op.retracted % 9)) * 60000);
+        push(disc, "Atualização", "DESCONECTADO");
+      });
+      rows.sort((a, b) => b.dateObj - a.dateObj);
+      return rows.map((r) => ({ ...r, date: fmtHistoryDate(r.dateObj) }));
+    }
     const meta = statusMeta(equip);
     const currentStatus = `${t(d.statusText || meta.text)}${(meta.text === "IRRIGANDO" && d.currentSpeed) ? ` | ${fmtNumber(d.currentSpeed, 1)}m/h` : ""}`;
     const base = d.lastCommunication ? new Date(d.lastCommunication) : new Date();
@@ -311,6 +343,32 @@
   // Mock de operações: um ciclo de irrigação por dia, voltando no tempo, com
   // duração/talhão/motivo variando por índice pra não repetir tudo igual.
   function buildMockOperationRows(equip, d) {
+    if (engineOk(equip)) {
+      const DH = window.IcDemoHistory;
+      const range = engineRange();
+      return DH.reel.ops(equip, range.start, range.end).map((op) => {
+        const peak = (() => {
+          for (let t = op.start.getTime(); t < op.end.getTime(); t += 30 * 60000) {
+            const h = new Date(t).getHours();
+            if (h >= 18 && h < 21) return "Sim";
+          }
+          return "Não";
+        })();
+        return {
+          start: fmtHistoryDate(op.start),
+          end: fmtHistoryDate(op.end),
+          peak,
+          total: `${fmtNumber(op.retracted, 1)}m`.replace(".0m", "m"),
+          blade: `${fmtNumber(op.laminaMm, 1)}mm`,
+          volume: `${fmtNumber(op.volume, 1)}m³`.replace(".0m³", "m³"),
+          mode: op.mode,
+          stopReason: op.reason,
+          plot: OPERATION_PLOTS[DH.hash(op.id) % OPERATION_PLOTS.length],
+          pressure: op.pressure,
+          speed: op.speeds[0],
+        };
+      });
+    }
     const base = d.lastCommunication ? new Date(d.lastCommunication) : new Date();
     let cursor = Number.isNaN(base.getTime()) ? new Date() : base;
     const fullLength = Math.max(0, Number(d.hoseLength) || 400);
@@ -657,6 +715,7 @@
     if (historyTab === "operations") {
       head.innerHTML = `<tr><th></th><th>${t("Início")}</th><th>${t("Fim")}</th><th>${t("Hora de Pico")}</th><th>${t("Total")}</th><th>${t("Lâmina d'água")}</th><th>${t("Volume Total Aplicado")}</th><th>${t("Modo")}</th><th>${t("Motivo da Parada")}</th><th>${t("Talhão")}</th></tr>`;
       const rows = buildMockOperationRows(equip, d);
+      if (!rows.length) { body.innerHTML = `<tr class="pivo-history__row"><td colspan="10" style="text-align:center;padding:28px 12px;color:#64748b;">${t("Nenhuma operação no período selecionado.")}</td></tr>`; return; }
       body.innerHTML = rows.map((row, i) => {
         const rowId = `op-${i}`;
         return `
@@ -676,8 +735,8 @@
           <td colspan="10">
             <div class="pivo-history__details">
               <div class="pivo-history__details-grid">
-                <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">${t("Pressão Atual")}:</span> <strong class="pivo-history__detail-value">${Number.isFinite(Number(d.currentPressure)) ? `${Number(d.currentPressure).toFixed(2)}bar` : "--"}</strong></div>
-                <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">${t("Velocidade")}:</span> <strong class="pivo-history__detail-value">${fmtNumber(d.currentSpeed || 18.8, 1)}m/h</strong></div>
+                <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">${t("Pressão Atual")}:</span> <strong class="pivo-history__detail-value">${Number.isFinite(Number(row.pressure ?? d.currentPressure)) ? `${Number(row.pressure ?? d.currentPressure).toFixed(2)}bar` : "--"}</strong></div>
+                <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">${t("Velocidade")}:</span> <strong class="pivo-history__detail-value">${fmtNumber(row.speed || d.currentSpeed || 18.8, 1)}m/h</strong></div>
                 <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">${t("Largura operacional")}:</span> <strong class="pivo-history__detail-value">${fmtNumber(d.workingWidth || 72, 0)}m</strong></div>
               </div>
             </div>
@@ -689,6 +748,7 @@
 
     head.innerHTML = `<tr><th></th><th>${t("Ocorrência")}</th><th>${t("Tipo")}</th><th>${t("Status")}</th></tr>`;
     const rows = buildMockEventRows(equip, d);
+    if (!rows.length) { body.innerHTML = `<tr class="pivo-history__row"><td colspan="4" style="text-align:center;padding:28px 12px;color:#64748b;">${t("Nenhum evento no período selecionado.")}</td></tr>`; return; }
     body.innerHTML = rows.map((row, i) => {
       const rowId = `ev-${i}`;
       return `
@@ -743,6 +803,12 @@
   }
 
   function buildDailyHoursSeries(equip, d) {
+    if (engineOk(equip)) {
+      const DH = window.IcDemoHistory;
+      const range = engineRange();
+      const ops = DH.reel.ops(equip, range.start, range.end);
+      return DH.dailyFromOps(ops, range.start, range.end, "durH").map((p, index) => ({ value: Math.round(p.value * 10) / 10, date: p.date, index }));
+    }
     const history = readPointArray(d.dailyHourmeter || d.hourmeterDaily || d.dailyHours || d.hourHistory, ["hours", "hourmeter", "value", "total"]);
     if (history.length) return history;
 
@@ -763,6 +829,12 @@
   }
 
   function buildFlowSeries(equip, d) {
+    if (engineOk(equip)) {
+      const DH = window.IcDemoHistory;
+      const range = engineRange();
+      const ops = DH.reel.ops(equip, range.start, range.end).slice().reverse();
+      if (ops.length) return ops.map((op, index) => ({ value: Math.round(op.laminaMm * 100) / 100, date: op.start, index }));
+    }
     const history = readPointArray(d.flowHistory || d.flowRateHistory || d.flowReadings || d.telemetry?.flow, ["flow", "flowRate", "currentFlow", "value"]);
     if (history.length) return history;
 
@@ -1025,9 +1097,10 @@
     }
     barsEl.innerHTML = points.map((point) => {
       const heightPct = yMax > 0 ? (point.value / yMax) * 100 : 0;
-      const label = fmtChartTime(point.date);
+      // uma barra por operação do período → rótulo com o dia da operação
+      const label = fmtChartDate(point.date);
       return `
-        <div class="carretel-bar-chart__group" data-label="${label}" data-tooltip-value="${fmtNumber(point.value, 2)} mm" data-color="#3b82f6" style="cursor:default;">
+        <div class="carretel-bar-chart__group" data-label="${fmtChartDateTime(point.date)}" data-tooltip-value="${fmtNumber(point.value, 2)} mm" data-color="#3b82f6" style="cursor:default;">
           <div class="carretel-bar-chart__columns">
             <div class="carretel-bar-chart__bar" style="height:${heightPct.toFixed(2)}%; background:#3b82f6;"></div>
           </div>
@@ -1120,6 +1193,15 @@
   function renderKpiPost(enabled) {
     setText("carretelKpiPost", `${t("Pós")} - ${enabled ? t("Habilitado") : t("Desabilitado")}`);
   }
+
+  document.addEventListener("pluv:periodChanged", () => {
+    if (!$("carretelHistoryBody")) return;
+    const equip = getSelected();
+    if (!equip) return;
+    renderHistory(equip);
+    renderBars(equip, equip.data || {});
+    renderFlowChart(equip, equip.data || {});
+  });
 
   window.IcCarretel = {
     async open(options = {}) {
@@ -1258,7 +1340,14 @@
       setText("carretelPressure", Number.isFinite(Number(d.currentPressure)) ? `${Number(d.currentPressure).toFixed(2)}bar` : "--");
       setText("carretelSignal", t(d.signal || (d.connected === false ? "Sem sinal" : "Bom")));
       setText("carretelBattery", Number.isFinite(Number(d.battery)) ? `${Number(d.battery).toFixed(0)}%` : "--");
-      const last = fmtDate(d.lastCommunication || equip.updatedAt || equip.createdAt);
+      let lastRaw = d.lastCommunication || equip.updatedAt || equip.createdAt;
+      if (window.IcDemoHistory) {
+        const eng = window.IcDemoHistory.lastCommunication(equip);
+        const cur = new Date(lastRaw);
+        if (Number.isNaN(cur.getTime()) || eng - cur > 3600000) lastRaw = eng;
+      }
+      const last = fmtDate(lastRaw);
+      window.Plv?.period?.syncUI?.();
       const lastEl = $("carretelLastUpdate");
       if (lastEl) lastEl.innerHTML = `<span class="comm-label">${t("Última comunicação:")}</span> ${last}`;
       setText("carretelKpiPulled", `${fmtNumber(d.pulledPipeLength, 1)}m`.replace(".0m", "m"));

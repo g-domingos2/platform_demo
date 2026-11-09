@@ -62,5 +62,19 @@ O card da fazenda (lista de equipamentos + **Criar equipamento**) funciona norma
 - Semente do `farms.json` não sobrescreve mais o que foi criado (só vale na 1ª visita).
 
 
+## Atualização 09/11/2026 — dados coerentes em todas as telas
+
+- **Novo** `assets/js/core/demo-history.js` (`window.IcDemoHistory`): motor único de histórico fictício.
+  Cada equipamento criado já nasce com ~400 dias de histórico (determinístico pelo id, datas relativas a hoje):
+  operações, eventos, consumo, energia por posto tarifário, falhas, chuva por pluviômetro, nível do medidor etc.
+  Detalhes, gráficos, tooltips do mapa e Relatórios leem dessa mesma fonte → os números batem entre si e com o período escolhido.
+- Detalhes ligados ao motor: Pivô (SmartConnect/Nexus), SmartTouch, LineStar, Bomba, Medidor de nível, Carretel,
+  Pluviômetro + tela de Pluviometria, Estação meteorológica e Cosmofield (KPIs, histórico paginado, gráficos, última comunicação).
+- **Relatórios da Fazenda**: listas e tabelas montadas só com os equipamentos criados na fazenda
+  (`assets/js/pages/relatorios/demo-data.js`); relatório de **Pluviometria removido**.
+- **Configurações › Preferências › Navegação**: os seletores de ação abrem **pra cima** (não cortam mais no fim da tela).
+- Responsividade: pizzas de consumo, barras diárias, eixo de datas do gráfico de tensão, cabeçalho dos detalhes e
+  indicadores/tabelas dos relatórios se ajustam a telas menores.
+
 ---
 Deploy atualizado em 2026-11-05 16:38.

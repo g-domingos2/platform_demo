@@ -455,7 +455,7 @@
 
         const footer = document.querySelector(".pincard__footer");
         if (footer) {
-            const currentValue = footer.textContent.split(":").slice(1).join(":").trim() || "29 mar 2026 14:30";
+            const currentValue = footer.textContent.split(":").slice(1).join(":").trim() || (window.IcDemoHistory ? window.IcDemoHistory.fmt.dateTime(window.IcDemoHistory.NOW) : "");
             footer.innerHTML = `<span class="comm-label">Última comunicação:</span> ${localizeUiText(currentValue, copy)}`;
         }
 
@@ -784,9 +784,9 @@
         if (historyPagination) {
             historyPagination.addEventListener("click", (e) => {
                 const btn = e.target.closest(".btn-page");
-                if (!btn || btn.classList.contains("is-static")) return;
+                if (!btn || btn.disabled || btn.classList.contains("is-static")) return;
 
-                const pageNum = parseInt(btn.textContent.trim());
+                const pageNum = parseInt(btn.dataset.page || btn.textContent.trim(), 10);
                 if (isNaN(pageNum)) return;
 
                 const activeTab = document.querySelector(".js-history-tab.is-active")?.getAttribute("data-tab") || "eventos";
@@ -1722,6 +1722,25 @@
 
         const kpiVoltas = $("kpiVoltasVal");
         if (kpiVoltas) kpiVoltas.textContent = 20 + (seed % 31);
+
+        // Valores reais do histórico fictício (mesma fonte do Histórico,
+        // gráficos e Relatórios) — sobrescreve os placeholders acima.
+        const DHc = window.IcDemoHistory;
+        const cur = DHc?.findEquipment(state.selectedId) ? DHc.pivot.current(state.selectedId) : null;
+        if (cur) {
+            const f1 = (v) => Number(v).toFixed(1);
+            if (kpiAngulo) kpiAngulo.textContent = `${Math.round(cur.angle)}°`;
+            if (kpiPCentro) kpiPCentro.textContent = `${f1(cur.pressureCenter)} bar`;
+            if (kpiHoras) kpiHoras.textContent = `${Math.round(cur.hours)}h`;
+            // chuva de hoje no pluviômetro do pivô (= última barra do gráfico Pluviometria)
+            const ctxP = DHc.findEquipment(state.selectedId);
+            if (kpiPluv) kpiPluv.textContent = `${f1(DHc.localRain(ctxP?.farm?.id, state.selectedId, DHc.NOW))} mm`;
+            if (kpiPTorre) kpiPTorre.textContent = `${f1(cur.pressureTower)} bar`;
+            if (kpiVoltagem) kpiVoltagem.textContent = `${cur.voltage} V`;
+            if (kpiVoltas) kpiVoltas.textContent = Math.round(cur.laps);
+            const footer = document.querySelector(".pincard__footer");
+            if (footer) footer.innerHTML = `<span class="comm-label">${getDetailsCopy().lastCommunication || "Última comunicação"}:</span> ${localizeUiText(DHc.fmt.dateTime(cur.lastCommunication), getDetailsCopy())}`;
+        }
         activeVariant?.afterRenderHeader?.({ pivoData, state });
         const activeHistoryTab = document.querySelector(".js-history-tab.is-active")?.getAttribute("data-tab") || "eventos";
         renderHistoryTable(activeHistoryTab);
@@ -2311,10 +2330,136 @@
         5: () => ``,
     };
 
+    // ===== Histórico gerado pelo motor (assets/js/core/demo-history.js) =====
+    const HIST_PAGE_SIZE = 10;
+
+    function dhHistoryRange() {
+        return window.IcDemoHistory.periodFrom(window.Plv?.state?.period, 7);
+    }
+
+    function renderHistoryPager(page, total) {
+        const pager = document.querySelector(".pivo-history__pagination");
+        if (!pager) return;
+        pager.innerHTML = window.IcDemoHistory.paginationHtml(page, total);
+        pager.style.display = total > 1 ? "" : "none";
+    }
+
+    function emptyHistoryRow(cols, text) {
+        return `<tr class="pivo-history__row"><td colspan="${cols}" style="text-align:center;padding:28px 12px;color:var(--muted-500,#64748b);">${text}</td></tr>`;
+    }
+
+    function renderHistoryTableFromEngine(tab, page) {
+        const DHx = window.IcDemoHistory;
+        const head = $("pivoHistoryTableHead");
+        const body = $("pivoHistoryTableBody");
+        const copy = getDetailsCopy();
+        const activeVariantKey = getActiveDetailsVariant()?.key;
+        const isSmartTouch = activeVariantKey === "smarttouch" || activeVariantKey === "centerstar";
+        const range = dhHistoryRange();
+        const id = state.selectedId;
+        const table = head.closest("table");
+        table?.classList.remove("is-centered");
+
+        if (tab === "eventos") {
+            head.innerHTML = `<tr><th></th><th style="width: 160px;">${copy.occurrence}</th><th>${copy.type}</th><th>${copy.status}</th></tr>`;
+            const items = [];
+            if (isSmartTouch) {
+                DHx.pivot.ops(id, range.start, range.end).forEach((op) => {
+                    if (op.start >= range.start) items.push({ date: op.start, html: () => renderSmartTouchEventoRow(DHx.fmt.dateTime(op.start), "change_configuration") });
+                    if (op.end <= range.end) items.push({ date: op.end, html: () => renderSmartTouchEventoRow(DHx.fmt.dateTime(op.end), op.fault ? "no_communication" : "stopped_reverse") });
+                });
+            } else {
+                DHx.pivot.events(id, range.start, range.end).forEach((ev) => {
+                    items.push({ date: ev.date, html: () => renderEventoRow(DHx.fmt.dateTime(ev.date), ev.type, ev.status, ev.details, ev.dot || null) });
+                });
+                const ops = DHx.pivot.ops(id, range.start, range.end);
+                if (historyFilters.gps) {
+                    ops.filter((o) => o.wet).forEach((op) => {
+                        const mid = new Date((op.start.getTime() + op.end.getTime()) / 2);
+                        if (mid < range.start || mid > range.end) return;
+                        const span = op.lap * 360 * (op.direction === "Avanço" ? 1 : -1);
+                        const ang = (((op.angStart + span / 2) % 360) + 360) % 360;
+                        const det = {
+                            ...GPS_MOCK_DETAILS,
+                            lamina: `${DHx.fmt.n(op.laminaMm, 2)} mm`,
+                            pressao: `${DHx.fmt.n(op.pressureTower, 1)} bar`,
+                            pressaoCentro: `${DHx.fmt.n(op.pressureCenter, 2)} bar`,
+                            pressaoUltimaTorre: `${DHx.fmt.n(op.pressureTower, 2)} bar`,
+                            tensao: `${op.voltage} V`,
+                            horimetroTotal: DHx.fmt.hm((op.hourStart + op.hourEnd) / 2),
+                            horimetroMolhado: DHx.fmt.hm((op.wetStart + op.wetEnd) / 2),
+                            direcao: op.direction,
+                            modo: op.mode,
+                            anguloParada: `${Math.round(op.angEnd)}°`,
+                            percentimetroLamina: `${op.percent}% - ${DHx.fmt.n(op.laminaMm, 2)} mm`,
+                        };
+                        items.push({ date: mid, html: () => renderGpsEventoRow(DHx.fmt.dateTime(mid), ang, det) });
+                    });
+                }
+                if (historyFilters.central) {
+                    for (let d = DHx.dayStart(range.start); d <= range.end; d = new Date(d.getTime() + DHx.DAY)) {
+                        if (DHx.unit(`co|${id}|${DHx.dayKey(d)}`) > 0.25) continue;
+                        const off = new Date(d.getTime() + Math.floor(DHx.unit(`cot|${id}|${DHx.dayKey(d)}`) * 23) * DHx.HOUR + 7 * DHx.MIN);
+                        const on = new Date(off.getTime() + (3 + Math.floor(DHx.unit(`cod|${id}|${DHx.dayKey(d)}`) * 20)) * DHx.MIN);
+                        if (off >= range.start && off <= range.end) items.push({ date: off, html: () => renderCentralEventoRow(DHx.fmt.dateTime(off), false) });
+                        if (on >= range.start && on <= range.end) items.push({ date: on, html: () => renderCentralEventoRow(DHx.fmt.dateTime(on), true) });
+                    }
+                }
+            }
+            items.sort((a, b) => b.date - a.date);
+            const total = Math.max(1, Math.ceil(items.length / HIST_PAGE_SIZE));
+            const pg = Math.min(Math.max(1, page), total);
+            body.innerHTML = items.length
+                ? items.slice((pg - 1) * HIST_PAGE_SIZE, pg * HIST_PAGE_SIZE).map((it) => it.html()).join("")
+                : emptyHistoryRow(4, "Nenhum evento no período selecionado.");
+            renderHistoryPager(pg, total);
+            return;
+        }
+
+        // Operações
+        const ops = DHx.pivot.ops(id, range.start, range.end);
+        const total = Math.max(1, Math.ceil(ops.length / HIST_PAGE_SIZE));
+        const pg = Math.min(Math.max(1, page), total);
+        const slice = ops.slice((pg - 1) * HIST_PAGE_SIZE, pg * HIST_PAGE_SIZE);
+        if (isSmartTouch) {
+            head.innerHTML = `<tr><th></th><th style="text-align:left">Dia</th><th>Hora início</th><th>Hora fim</th><th>Ângulo inicial</th><th>Ângulo final</th><th>Horas totais</th><th>Consumo de água (m³/h)</th></tr>`;
+            body.innerHTML = slice.length ? slice.map((op) => renderSmartTouchOperacaoRow(
+                DHx.fmt.date(op.start), DHx.fmt.time(op.start), DHx.fmt.time(op.end),
+                `${Math.round(op.angStart)}°`, `${Math.round(op.angEnd)}°`, DHx.fmt.hm(op.durH),
+                op.wet ? DHx.fmt.n(op.volume / op.durH, 1) : "0,0"
+            )).join("") : emptyHistoryRow(8, "Nenhuma operação no período selecionado.");
+        } else {
+            head.innerHTML = `<tr><th></th><th>Início</th><th>Fim</th><th>Lâmina</th><th>Modo</th><th>Ângulo início</th><th>Ângulo fim</th><th>Voltas</th></tr>`;
+            body.innerHTML = slice.length ? slice.map((op) => renderOperacaoRow(
+                DHx.fmt.dateTime(op.start), DHx.fmt.dateTime(op.end), `${op.percent}%`, op.mode,
+                `${DHx.fmt.n(op.angStart, 1)}°`, `${DHx.fmt.n(op.angEnd, 1)}°`, DHx.fmt.n(op.lap, 2),
+                {
+                    tipo: op.scheduled ? "Irrigação por Agendamento" : "Irrigação Simples",
+                    laminaMm: op.wet ? DHx.fmt.n(op.laminaMm, 2) : "0,00",
+                    velocidade: `${op.percent}`,
+                    tempoOperacao: DHx.fmt.n(op.durH, 2),
+                    usuario: op.scheduled ? "Agendamento" : op.user,
+                }
+            )).join("") : emptyHistoryRow(8, "Nenhuma operação no período selecionado.");
+        }
+        renderHistoryPager(pg, total);
+    }
+
+    // Troca de período → histórico acompanha
+    document.addEventListener("pluv:periodChanged", () => {
+        if (!document.getElementById("pivoHistoryTableBody")) return;
+        const activeTab = document.querySelector(".js-history-tab.is-active")?.getAttribute("data-tab") || "eventos";
+        renderHistoryTable(activeTab, 1);
+    });
+
     function renderHistoryTable(tab, page = 1) {
         const head = $("pivoHistoryTableHead");
         const body = $("pivoHistoryTableBody");
         if (!head || !body) return;
+        if (window.IcDemoHistory?.findEquipment(state.selectedId)) {
+            renderHistoryTableFromEngine(tab, page);
+            return;
+        }
 
         const copy = getDetailsCopy();
         const activeVariantKey = getActiveDetailsVariant()?.key;

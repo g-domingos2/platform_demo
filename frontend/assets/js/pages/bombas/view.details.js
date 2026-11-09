@@ -171,7 +171,10 @@
   function getConsumoDailyLimit() {
     const equip = getFocusBmb();
     const saved = Number(equip?.data?.consumptionLimit);
-    const limit = saved > 0 ? saved : 5500;
+    // Sem limite cadastrado: referência de ~12 h/dia na vazão da bomba
+    // (mesma vazão usada no histórico), pra linha ficar na escala das barras.
+    const flow = window.IcDemoHistory && equip ? window.IcDemoHistory.pump.current(equip)?.flow : 0;
+    const limit = saved > 0 ? saved : (flow > 0 ? Math.round((flow * 12) / 100) * 100 : 5500);
     return { limit };
   }
 
@@ -184,6 +187,13 @@
   // quais dias tiveram consumo — mesmo padrão do modo "Mês" de antes,
   // só que agora vale pra qualquer período escolhido no popover.
   function generateConsumoData(start, end) {
+    const equip = getFocusBmb();
+    if (window.IcDemoHistory && equip) {
+      return window.IcDemoHistory.pump.daily(equip, start, end).map((d) => ({
+        label: fmtDateBR(d.date),
+        total: Math.round(d.value * 100) / 100,
+      }));
+    }
     const totalDays = Math.max(1, Math.round((end - start) / 86400000) + 1);
     return Array.from({ length: totalDays }, (_, i) => {
       const d = new Date(start.getTime() + i * 86400000);
@@ -385,7 +395,70 @@
   // estiver mesmo montada.
   document.addEventListener("pluv:periodChanged", () => {
     if ($("bmbdConsumoBars")) renderConsumoChart();
+    if ($("bmbdHistoryTableBody")) { historyPage.eventos = 1; historyPage.operacoes = 1; renderHistory(); }
   });
+
+  // =========================
+  // Histórico (Eventos / Operações) — gerado pelo motor único
+  // (assets/js/core/demo-history.js): mesmas operações do gráfico de
+  // consumo e dos Relatórios (Energia, Gestão Hídrica, Conformidade).
+  // =========================
+  const HIST_PAGE_SIZE = 10;
+  const historyPage = { eventos: 1, operacoes: 1 };
+  const CHECK_ICON = '<img src="./assets/img/svg/check-check.svg" style="width:16px;height:16px;vertical-align:middle;filter:invert(48%) sepia(79%) saturate(476%) hue-rotate(86deg) brightness(118%) contrast(119%);" alt="">';
+
+  function historyRange() {
+    return window.IcDemoHistory.periodFrom(window.Plv?.state?.period, 7);
+  }
+
+  function renderHistory() {
+    const DH = window.IcDemoHistory;
+    const equip = getFocusBmb();
+    const panel = $("bmbdPanel");
+    if (!DH || !equip || !panel) return;
+    const range = historyRange();
+    const empty = (cols, t) => `<tr class="bmbd-history__row"><td colspan="${cols}" style="text-align:center;padding:28px 12px;color:#64748b;">${t}</td></tr>`;
+
+    // Eventos
+    const evBody = $("bmbdHistoryTableBody");
+    const events = DH.pump.events(equip, range.start, range.end);
+    const evTotal = Math.max(1, Math.ceil(events.length / HIST_PAGE_SIZE));
+    historyPage.eventos = Math.min(historyPage.eventos, evTotal);
+    if (evBody) {
+      const slice = events.slice((historyPage.eventos - 1) * HIST_PAGE_SIZE, historyPage.eventos * HIST_PAGE_SIZE);
+      evBody.innerHTML = slice.length ? slice.map((ev) => {
+        const details = Object.entries(ev.details || {}).map(([k, v]) =>
+          `<div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">${k}:</span> <strong class="bmbd-history__detail-value">${v}</strong></div>`).join("");
+        return `<tr class="bmbd-history__row">
+            <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
+            <td>${DH.fmt.dateTime(ev.date)}</td>
+            <td>${ev.type}${ev.type === "Comando" ? " " + CHECK_ICON : ""}</td>
+            <td>${ev.status}</td>
+          </tr>
+          <tr class="bmbd-history__row-details" style="display: none;"><td colspan="4"><div class="bmbd-history__details">
+            <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">${details}</div>
+          </div></td></tr>`;
+      }).join("") : empty(4, "Nenhum evento no período selecionado.");
+    }
+    const evPager = panel.querySelector('[data-panel="eventos"] .bmbd-history__pagination');
+    if (evPager) { evPager.innerHTML = DH.paginationHtml(historyPage.eventos, evTotal); evPager.style.display = evTotal > 1 ? "" : "none"; }
+
+    // Operações
+    const opBody = panel.querySelector('[data-panel="operacoes"] tbody');
+    const ops = DH.pump.ops(equip, range.start, range.end);
+    const opTotal = Math.max(1, Math.ceil(ops.length / HIST_PAGE_SIZE));
+    historyPage.operacoes = Math.min(historyPage.operacoes, opTotal);
+    if (opBody) {
+      const slice = ops.slice((historyPage.operacoes - 1) * HIST_PAGE_SIZE, historyPage.operacoes * HIST_PAGE_SIZE);
+      opBody.innerHTML = slice.length ? slice.map((op) => `<tr class="bmbd-history__row">
+          <td>${DH.fmt.dateTime(op.start)}</td>
+          <td>${DH.fmt.dateTime(op.end)}</td>
+          <td>${DH.fmt.n(op.volume, 2)} m³</td>
+        </tr>`).join("") : empty(3, "Nenhuma operação no período selecionado.");
+    }
+    const opPager = panel.querySelector('[data-panel="operacoes"] .bmbd-history__pagination');
+    if (opPager) { opPager.innerHTML = DH.paginationHtml(historyPage.operacoes, opTotal); opPager.style.display = opTotal > 1 ? "" : "none"; }
+  }
 
   function initConsumoChart() {
     const panel = $("bmbdPanel");
@@ -503,6 +576,18 @@
     setText("bmbdKpiVibration", `${d.vibration.toFixed(1)} mm/s`);
 
     setText("bmbdLastUpdate", formatLastUpdate(d.updated));
+    const DHc = window.IcDemoHistory;
+    const cur = DHc ? DHc.pump.current(equip) : null;
+    if (cur) {
+      setText("bmbdKpiPressure", `${cur.pressure.toFixed(1)} bar`);
+      setText("bmbdKpiFlow", `${Math.round(cur.flow)} m³/h`);
+      setText("bmbdKpiHorimeter", `${Math.round(cur.hours)}h`);
+      setText("bmbdLastUpdate", DHc.fmt.dateTime(cur.lastCommunication));
+    }
+    historyPage.eventos = 1;
+    historyPage.operacoes = 1;
+    renderHistory();
+    if ($("bmbdConsumoBars") && $("bmbdPanel")?.dataset.consumoInit === "1") renderConsumoChart();
 
     setText("bmbdSummaryHours", `${d.hours.toFixed(1)} h`);
     setText("bmbdSummaryHoursTrend", "+5% vs anterior");
@@ -526,7 +611,10 @@
       bar.classList.toggle("is-offline", d.offline);
       bar.classList.toggle("is-running", !d.offline);
     }
-    if (text) text.textContent = d.offline ? "SEM COMUNICAÇÃO" : "LIGADO VIA INTERNET";
+    // Status coerente com o desenho no mapa (azul = ligada, amarelo = desligada)
+    if (bar) bar.classList.toggle("is-energized", !d.offline && !d.running);
+    if (bar) bar.classList.toggle("is-running", !d.offline && !!d.running);
+    if (text) text.textContent = d.offline ? "SEM COMUNICAÇÃO" : (d.running ? "LIGADO VIA INTERNET" : "DESLIGADA");
 
     const power = $("bmbdStatusPower");
     if (power) power.style.display = d.offline ? "none" : "";
@@ -717,6 +805,15 @@
           panel.querySelectorAll(".bmbd-history__tab-panel").forEach(p => {
             p.style.display = p.getAttribute("data-panel") === tab ? "" : "none";
           });
+          return;
+        }
+
+        const pageBtn = e.target.closest(".bmbd-history__pagination [data-page]");
+        if (pageBtn) {
+          if (pageBtn.disabled) return;
+          const tab = pageBtn.closest("[data-panel]")?.getAttribute("data-panel") || "eventos";
+          historyPage[tab] = Number(pageBtn.dataset.page) || 1;
+          renderHistory();
           return;
         }
 

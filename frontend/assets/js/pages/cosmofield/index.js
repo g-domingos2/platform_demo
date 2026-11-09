@@ -401,6 +401,7 @@
         const reading = window.IcCosmofieldReading?.(device, index);
         return {
             seed: deviceSeed(device),
+            equipId: device?.id,
             moisture: reading?.moistureValue,
             fieldCapacity: Number(String(data.fieldCapacity ?? "").replace(",", ".")),
             wiltingPoint: Number(String(data.wiltingPoint ?? "").replace(",", ".")),

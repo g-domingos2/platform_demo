@@ -116,8 +116,29 @@
       Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : parseLatLngText(data.loc);
     const status = String(data.status || "").toLowerCase();
     const offline = data.semComunicacao === true || status === "offline";
-    const updated = data.updated || equip?.updatedAt || equip?.createdAt || "";
-    const current = (data.current && typeof data.current === "object") ? data.current : null;
+    let updated = data.updated || equip?.updatedAt || equip?.createdAt || "";
+    let current = (data.current && typeof data.current === "object") ? data.current : null;
+    // Sem telemetria salva: leitura atual do histórico fictício (mesma das tabelas/gráfico)
+    const DH = window.IcDemoHistory;
+    if (DH && equip?.id && DH.findEquipment(equip.id)) {
+      const lc = DH.lastCommunication(equip);
+      updated = lc.toISOString();
+      if (!current) {
+        const now = DH.station.at(equip, lc);
+        const today = DH.station.daily(equip, DH.dayStart(DH.NOW), DH.NOW)[0];
+        const hFrac = Math.max(0, Math.min(1, (lc.getHours() - 6) / 12));
+        current = {
+          temperature: now.temp,
+          humidity: now.rh,
+          windSpeed: now.wind,
+          windDirection: now.windDir,
+          solarRadiation: now.solar,
+          eto: Math.round(today.eto * hFrac * 100) / 100,
+          rainDay: DH.localRain(DH.findEquipment(equip.id).farm?.id, equip.id, DH.NOW),
+          pressure: now.pressure,
+        };
+      }
+    }
     return {
       id, name, center, offline, updated, current,
       lat, lng,
@@ -473,6 +494,41 @@
   function ensureHourly(d) {
     const sig = `${d.id}|${d.updated}`;
     if (state._hourlySig === sig && Array.isArray(state._hourly)) return;
+
+    // Histórico fictício único: chuva = mesma série dos pluviômetros/relatórios
+    const DH = window.IcDemoHistory;
+    if (DH && DH.findEquipment(d.id)) {
+      const end = new Date(DH.NOW);
+      end.setMinutes(0, 0, 0);
+      const startAll = new Date(end.getTime() - (HOURLY_DAYS * 24 - 1) * 3600000);
+      const rainByHour = new Map();
+      DH.rain.hourly(d.id, startAll, DH.NOW).forEach((r) => {
+        const k = Math.floor(r.date.getTime() / 3600000);
+        rainByHour.set(k, round1((rainByHour.get(k) || 0) + r.mm));
+      });
+      const rows = [];
+      for (let i = HOURLY_DAYS * 24 - 1; i >= 0; i--) {
+        const t = new Date(end.getTime() - i * 3600000);
+        const w = DH.station.at(d.id, t);
+        const hour = t.getHours();
+        const sun = Math.max(0, Math.sin(((hour - 6) / 12) * Math.PI));
+        const rain = rainByHour.get(Math.floor(t.getTime() / 3600000)) || 0;
+        rows.push({
+          ts: t.toISOString(),
+          temp: w.temp,
+          humidity: w.rh,
+          wind: w.wind,
+          radiation: w.solar,
+          rain,
+          eto: round2((w.eto * sun) / 7.6),
+          battery: round2(12.7 + Math.sin((hour / 24) * Math.PI) * 0.4 - 0.1),
+        });
+      }
+      state._hourly = rows;
+      state._hourlySig = sig;
+      if (typeof state._rawPage !== "number") state._rawPage = 0;
+      return;
+    }
 
     const c = d.current || {};
     const base = {
