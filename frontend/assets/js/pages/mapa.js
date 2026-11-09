@@ -2564,7 +2564,7 @@
     const layer = L.marker([mdn.center.lat, mdn.center.lng], { icon }).addTo(mdnLayer);
 
     const tooltipHtml = `
-      <div class="pivot-tooltip pivot-tooltip--pivot-card">
+      <div class="pivot-tooltip pivot-tooltip--pivot-card pivot-tooltip--tall">
         <div class="pivot-tooltip__topline">
           <span class="pivot-tooltip__name">${escapeTooltipHtml(equip.name || "MDN")}</span>
           <span class="pivot-tooltip__status ${mdn.offline ? "is-danger" : status.key === "low" ? "is-warning" : status.key === "high" ? "is-info" : "is-success"}">
@@ -3101,12 +3101,12 @@
     const layer = L.marker([pump.center.lat, pump.center.lng], { icon }).addTo(pumpLayer);
 
     const tooltipHtml = `
-      <div class="pivot-tooltip pivot-tooltip--pivot-card">
+      <div class="pivot-tooltip pivot-tooltip--pivot-card pivot-tooltip--tall">
         <div class="pivot-tooltip__topline">
           <span class="pivot-tooltip__name">${escapeTooltipHtml(equip.name || "Bomba")}</span>
           <span class="pivot-tooltip__status ${pump.offline ? "is-danger" : (pump.running ? "is-info" : "is-warning")}">${pump.offline ? "SEM COMUNICACAO" : (pump.running ? "LIGADA VIA INTERNET" : "DESLIGADA")}</span>
         </div>
-        <span class="pivot-tooltip__date">Ultima comunicacao: ${escapeTooltipHtml(pump.lastCommunication)}</span>
+        <span class="pivot-tooltip__date">Última comunicação: ${escapeTooltipHtml(pump.lastCommunication)}</span>
       </div>
     `;
 

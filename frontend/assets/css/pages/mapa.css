@@ -1774,8 +1774,8 @@ body:not(.is-visao-geral) .map-simbar {
   text-align: left;
   gap: 10px;
   padding: 10px 12px;
-  min-width: 280px;
-  max-width: 360px;
+  min-width: 320px;
+  max-width: 340px;
 }
 
 .pivot-tooltip__topline {
@@ -1796,7 +1796,7 @@ body:not(.is-visao-geral) .map-simbar {
 
 .pivot-tooltip--pivot-card .pivot-tooltip__status {
   flex-shrink: 0;
-  max-width: 148px;
+  max-width: 210px;
   white-space: nowrap;
 }
 
@@ -2178,7 +2178,9 @@ input:checked + .map-signal-switch__slider:before {
 .leaflet-tooltip.pivot-tooltip-wrap--pivot-card {
   padding: 10px 12px;
   border-radius: 10px;
-  max-width: 292px;
+  /* Balão um pouco maior: o selo de status ("MOVENDO A SECO 5.75 MM") e o
+     horímetro ("4849h00min") eram cortados com 292px */
+  max-width: 360px;
 }
 
 /* Cosmofield: umidade em destaque no topo (é o dado que se olha primeiro),
@@ -3323,4 +3325,14 @@ body.is-conectividade .conn-logs { top: 164px; bottom: 24px; }
 
 [data-theme="dark"] .cf-tip__offline--battery i {
   color: #f87171;
+}
+
+/* Balões da Bomba e do Medidor de Nível: um pouco mais altos (mais respiro) */
+.pivot-tooltip--pivot-card.pivot-tooltip--tall {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  gap: 12px;
+  min-height: 0;
+  /* nome no topo, última comunicação embaixo, respiro no meio */
+  justify-content: space-between;
 }
