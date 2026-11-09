@@ -413,18 +413,18 @@
         : `${copy.currentAngle}: ${asNum(angle, 0).toFixed(1)}°`;
 
       const directionButtons = isLinear ? `
-        <button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco" aria-label="A para B" title="A para B">
-          ${copy.directions.avanco} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </button>
         <button type="button" class="op-form__seg-btn ${initialDirection === "reverso" ? "is-active" : ""}" data-value="reverso" aria-label="B para A" title="B para A">
           <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${copy.directions.reverso}
         </button>
-      ` : `
-        <button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco">
-          ${copy.directions.avanco} <i class="fa-solid fa-arrow-rotate-right"></i>
+        <button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco" aria-label="A para B" title="A para B">
+          ${copy.directions.avanco} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </button>
+      ` : `
         <button type="button" class="op-form__seg-btn ${initialDirection === "reverso" ? "is-active" : ""}" data-value="reverso">
-          ${copy.directions.reverso} <i class="fa-solid fa-arrow-rotate-left"></i>
+          Reverso <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-undo"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+        </button>
+        <button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco">
+          Avanço <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-redo"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
         </button>
       `;
 

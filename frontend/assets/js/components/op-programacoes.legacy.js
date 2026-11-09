@@ -2603,7 +2603,7 @@
 
                 <div class="op-form__group">
                   <div class="op-form__label">Direção</div>
-                  <div class="op-form__segmented js-dir-group"><button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco">Avanço</button><button type="button" class="op-form__seg-btn ${initialDirection === "reverso" ? "is-active" : ""}" data-value="reverso">Reverso</button></div>
+                  <div class="op-form__segmented js-dir-group"><button type="button" class="op-form__seg-btn ${initialDirection === "reverso" ? "is-active" : ""}" data-value="reverso">Reverso</button><button type="button" class="op-form__seg-btn ${initialDirection === "avanco" ? "is-active" : ""}" data-value="avanco">Avanço</button></div>
                 </div>
                 <div class="op-form__group">
                   <div class="op-form__label">Modo de irrigação</div>
