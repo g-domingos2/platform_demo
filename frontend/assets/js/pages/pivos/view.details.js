@@ -1936,14 +1936,14 @@
 
                 const shapeOutlineOpts = {
                     color: pivotColors.outline,
-                    weight: 2.5,
-                    opacity: 0.85,
+                    weight: 3,
+                    opacity: 1,
                     fillOpacity: 0,
                     interactive: false,
                 };
                 const shapeOpts = {
                     color: pivotColors.stroke,
-                    weight: 2,
+                    weight: 3,
                     fillColor: pivotColors.fill,
                     fillOpacity: shapeFillOpacity,
                 };
@@ -1979,7 +1979,7 @@
                     const shouldDrawStatusBand = hasStatusBand && bandProgress > 0;
                     const bandEndAngle = startAngle + ((endAngle - startAngle) * bandProgress) / 100;
                     if (shouldDrawStatusBand && sharedPivotUtils?.buildSectorRing) {
-                        L.polygon(sharedPivotUtils.buildSectorRing(pivoData.center, radius, innerRadius, bearingRef, startAngle, bandEndAngle), {
+                        L.polygon(sharedPivotUtils.buildSectorRing(pivoData.center, radius, innerRadius, bearingRef, pivotColors.bandStartAngle ?? startAngle, pivotColors.bandEndAngle ?? bandEndAngle), {
                             color: pivotColors.stroke,
                             weight: 0,
                             fillColor: bandFillColor,
@@ -1996,18 +1996,8 @@
                         }).addTo(minimapInstance);
                     }
 
-                    // Linha de referência branca
-                    const brngRefRad = bearingRef * Math.PI / 180;
-                    const rLat = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brngRefRad));
-                    const rLng = lon1 + Math.atan2(Math.sin(brngRefRad) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(rLat));
-                    L.polyline([centerPt, [rLat * 180 / Math.PI, rLng * 180 / Math.PI]], {
-                        color: "rgba(0,0,0,0.7)", weight: 3, opacity: 1
-                    }).addTo(minimapInstance);
-                    L.polyline([centerPt, [rLat * 180 / Math.PI, rLng * 180 / Math.PI]], {
-                        color: pivotColors.ref,
-                        weight: 2,
-                        opacity: 0.95
-                    }).addTo(minimapInstance);
+                    // Braço, triângulo e linhas: exatamente o desenho da Visão Geral
+                    window.IcMapDrawPivotOverlay?.({ ...pivoData, radius }, pivotColors, minimapInstance);
 
                 } else {
                     // Círculo completo
@@ -2021,8 +2011,8 @@
                             radius,
                             innerRadius,
                             sharedPivotUtils.getPivotBearingRefDeg(pivoData),
-                            0,
-                            (360 * bandProgress) / 100
+                            pivotColors.bandStartAngle ?? 0,
+                            pivotColors.bandEndAngle ?? (360 * bandProgress) / 100
                         ), {
                             color: pivotColors.stroke,
                             weight: 0,
@@ -2040,34 +2030,9 @@
                         }).addTo(minimapInstance);
                     }
 
-                    // Linha de referência e triângulo se existir ref
+                    // Braço, triângulo e linhas: exatamente o desenho da Visão Geral
                     if (pivoData.ref) {
-                        const ang = bearingRad(pivoData.center, pivoData.ref);
-                        const lineEnd = destinationPoint(pivoData.center, radius, ang);
-
-                        L.polyline([centerPt, [lineEnd.lat, lineEnd.lng]], {
-                            color: "rgba(0,0,0,0.7)", weight: 3, opacity: 1
-                        }).addTo(minimapInstance);
-                        L.polyline([centerPt, [lineEnd.lat, lineEnd.lng]], {
-                            color: pivotColors.ref,
-                            weight: 2,
-                            opacity: 0.95
-                        }).addTo(minimapInstance);
-
-                        const wedgeAngle = (8 * Math.PI) / 180;
-                        const left = destinationPoint(pivoData.center, radius, ang - wedgeAngle);
-                        const right = destinationPoint(pivoData.center, radius, ang + wedgeAngle);
-                        const inner = destinationPoint(pivoData.center, radius * 0.7, ang);
-                        L.polygon([
-                            [left.lat, left.lng],
-                            [right.lat, right.lng],
-                            [inner.lat, inner.lng]
-                        ], {
-                            color: pivotColors.ref,
-                            weight: 1,
-                            fillColor: pivotColors.refFill,
-                            fillOpacity: 0.95
-                        }).addTo(minimapInstance);
+                        window.IcMapDrawPivotOverlay?.({ ...pivoData, radius }, pivotColors, minimapInstance);
                     }
                 }
 

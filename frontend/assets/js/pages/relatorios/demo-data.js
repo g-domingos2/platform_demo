@@ -141,7 +141,7 @@
           <td>${op.scheduled ? "Agendada" : "Simples"} · ${op.direction}</td>
           <td>${n(op.angStart, 1)}</td>
           <td>${n(op.angEnd, 1)}</td>
-          <td>${n(op.laminaMm)} <small style="color:#94a3b8">(${op.percent}%)</small></td>
+          <td>${n(op.laminaMm)}</td>
           <td>${n(op.volume)}</td>
           <td>${n(op.relLaminaMm)}</td>
           <td>${n(op.cost)}</td>

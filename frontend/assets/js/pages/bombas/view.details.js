@@ -922,6 +922,8 @@
   }
 
   function getPumpIcon(color) {
+    // Mesmo ícone da Visão Geral (mapa.js)
+    if (typeof window.IcMapPumpIcon === "function") return window.IcMapPumpIcon(color);
     return L.divIcon({
       className: "map-pump-marker",
       html: `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 40 32" fill="${color}" stroke="#111827" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h10v5h3a3 3 0 0 1 3 3v2h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-5v2a3 3 0 0 1-3 3h1l2.5 5h-21l2.5-5h1a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3h3V2z"/></svg>`,
