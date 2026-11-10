@@ -834,7 +834,7 @@
   const getMdnMarkerVisual = () => {
     const zoom = Number(map?.getZoom?.() ?? 15);
     const factor = Math.max(0.5, Math.min(1, (zoom - 5) / 10));
-    const size = Math.round(48 * factor);
+    const size = Math.round(56 * factor);
     const border = Math.max(2, Math.round(3 * factor));
     const ring = Math.max(1, Math.round(3 * factor));
     const font = Math.max(10, Math.round(12 * factor));

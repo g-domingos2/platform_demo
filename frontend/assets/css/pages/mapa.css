@@ -373,8 +373,8 @@ body:not(.is-visao-geral) .map-simbar {
    anel sólido, folga transparente, "água" sólida subindo de baixo e
    percentual em branco translúcido, sem sombra. */
 .map-mdn-marker {
-  width: var(--mdn-size, 48px);
-  height: var(--mdn-size, 48px);
+  width: var(--mdn-size, 56px);
+  height: var(--mdn-size, 56px);
   box-sizing: border-box;
   border-radius: 50%;
   border: var(--mdn-border, 3px) solid var(--mdn-color, #6699ff);
