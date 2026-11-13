@@ -11,6 +11,7 @@
     let minimapWheelListenersBound = false;
     let minimapHintTimer = null;
     let selectorOutsideClickHandler = null;
+    let simStatusHandler = null;
     let filterOutsideClickHandler = null;
     const lineStarOperationDetails = Object.freeze([
         { tipo: "Irrigação", laminaMm: "7,57", velocidade: "70,00", tempoOperacao: "6,60", usuario: "Bauer Irricontrol" },
@@ -562,6 +563,25 @@
                     }
                 });
             }
+
+            // Botão Parar — mesmo caminho do "Parar" do modal de operação:
+            // volta para "painel energizado" e encerra o movimento.
+            const stopBtn = $("linestarStopBtn");
+            if (stopBtn) {
+                stopBtn.addEventListener("click", () => {
+                    if (!selectedId) return;
+                    window.IcSetSimPivotStatus?.(selectedId, "painel_energizado");
+                    this.renderData();
+                });
+            }
+
+            // Mantém o card de status em dia quando a simulação muda o status
+            // (ligar pelo modal, parar, fim da operação…).
+            if (simStatusHandler) window.removeEventListener("ic:sim-status-change", simStatusHandler);
+            simStatusHandler = () => {
+                if (document.getElementById("linestarStatus")) this.renderData();
+            };
+            window.addEventListener("ic:sim-status-change", simStatusHandler);
 
             // Histórico/Operações gerados pelo motor único (demo-history.js),
             // no lugar das linhas fixas de "abr 2026" do HTML.
@@ -1290,6 +1310,10 @@
             if (filterOutsideClickHandler) {
                 document.removeEventListener("click", filterOutsideClickHandler);
                 filterOutsideClickHandler = null;
+            }
+            if (simStatusHandler) {
+                window.removeEventListener("ic:sim-status-change", simStatusHandler);
+                simStatusHandler = null;
             }
             if (minimapHintTimer) {
                 clearTimeout(minimapHintTimer);

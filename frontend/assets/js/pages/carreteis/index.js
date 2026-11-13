@@ -6,6 +6,7 @@
   const t = (text) => window.IcI18n?.t?.(text) ?? text;
   let selectedId = null;
   let selectorOutsideClickHandler = null;
+  let filterOutsideClickHandler = null;
   let minimap = null;
   let minimapLayers = [];
 
@@ -1229,6 +1230,10 @@
       if (slot) slot.innerHTML = "";
       document.body.classList.remove("is-pivo-details");
       window.icMapSetWheelMode?.("free");
+      if (filterOutsideClickHandler) {
+        document.removeEventListener("click", filterOutsideClickHandler);
+        filterOutsideClickHandler = null;
+      }
       if (minimap) {
         try { minimap.off(); minimap.remove(); } catch (_) { }
         minimap = null;
@@ -1301,9 +1306,13 @@
           renderHistory(getSelected());
         });
       });
-      document.addEventListener("click", (event) => {
+      // Remove o listener da abertura anterior antes de registrar o novo
+      // (a tela é recriada a cada abertura e eles iam se acumulando).
+      if (filterOutsideClickHandler) document.removeEventListener("click", filterOutsideClickHandler);
+      filterOutsideClickHandler = (event) => {
         if (filterWrap && !filterWrap.contains(event.target)) filterWrap.classList.remove("is-open");
-      });
+      };
+      document.addEventListener("click", filterOutsideClickHandler);
       $("carretelStartBtn")?.addEventListener("click", () => openStartModal(getSelected()));
       $("carretelStopBtn")?.addEventListener("click", () => {
         const equip = getSelected();

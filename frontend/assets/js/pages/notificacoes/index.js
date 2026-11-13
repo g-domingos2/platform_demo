@@ -4,6 +4,30 @@
     const state = { isOpen: false };
     const $ = (id) => document.getElementById(id);
 
+    // Modal da página de Notificações montada agora (a página é recriada a
+    // cada abertura, então guardamos só a referência atual).
+    let activeModal = null;
+    let globalListenersBound = false;
+
+    function bindGlobalListeners() {
+        if (globalListenersBound) return;
+        globalListenersBound = true;
+
+        // Fecha o dropdown de dispositivos ao clicar fora dele.
+        document.addEventListener("click", (e) => {
+            const ctx = activeModal;
+            if (!ctx || !ctx.modal.isConnected || !ctx.modal.classList.contains("is-open")) return;
+            const api = ctx.getDevicesApi();
+            if (api && !api.contains(e.target)) api.close();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            const ctx = activeModal;
+            if (e.key !== "Escape" || !ctx || !ctx.modal.isConnected) return;
+            if (ctx.modal.classList.contains("is-open")) ctx.close();
+        });
+    }
+
     // =========================================================
     // Conteúdo de cada categoria — replicado da plataforma real
     // (nomes, ordem e quais itens têm "alertas críticos").
@@ -642,18 +666,17 @@
             closeModal();
         });
 
-        // Fecha o dropdown de dispositivos ao clicar fora dele.
-        document.addEventListener("click", (e) => {
-            if (!modal.classList.contains("is-open") || !devicesApi) return;
-            if (!devicesApi.contains(e.target)) devicesApi.close();
-        });
-
         // Lista (dentro do modal) rola: o dropdown é "fixed", então fecha ao rolar.
         modal.querySelector("#notifAddBody")?.addEventListener("scroll", () => devicesApi?.close(), true);
 
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-        });
+        // Os listeners de documento são registrados uma vez só (bindGlobalListeners)
+        // e sempre olham para o modal da página aberta agora.
+        activeModal = {
+            modal,
+            getDevicesApi: () => devicesApi,
+            close: closeModal
+        };
+        bindGlobalListeners();
 
         refreshLists();
     }
@@ -707,6 +730,7 @@
 
     function close() {
         state.isOpen = false;
+        activeModal = null;
         document.body.classList.remove("is-farm-edit", "is-modal-open");
         const slot = $("pageSlot");
         if (slot) slot.innerHTML = "";

@@ -726,12 +726,29 @@
     if (modal) modal.classList.add("is-hidden");
   }
 
+  function applyBombaTabState(mode) {
+    const startInput = $("bmbdStartDateInput");
+    const endInput = $("bmbdEndDateInput");
+    // "Começar agora" → desabilita início (começa agora, sem data)
+    if (startInput) startInput.disabled = mode === "agora";
+    // "Sem parar" → desabilita fim
+    if (endInput) endInput.disabled = mode === "sem_parar";
+  }
+
+  // Liga os eventos do modal UMA vez por elemento. Antes eram religados a cada
+  // abertura (e os "once" só saíam quando disparavam), então abrir/cancelar
+  // várias vezes fazia o OK rodar várias vezes. O modal é recriado junto com a
+  // página, então o data-bound volta a ficar vazio quando o HTML é recarregado.
   function bindBombaModalEvents(modal) {
+    applyBombaTabState("agora");
+    if (modal.dataset.bound === "1") return;
+    modal.dataset.bound = "1";
+
     const close = () => closeBombaStartModal();
 
-    $("bmbdStartModalClose")?.addEventListener("click", close, { once: true });
-    $("bmbdStartModalCancel")?.addEventListener("click", close, { once: true });
-    $("bmbdStartModalBackdrop")?.addEventListener("click", close, { once: true });
+    $("bmbdStartModalClose")?.addEventListener("click", close);
+    $("bmbdStartModalCancel")?.addEventListener("click", close);
+    $("bmbdStartModalBackdrop")?.addEventListener("click", close);
 
     // Botões de calendário abrem o picker
     modal.querySelectorAll(".bmbd-cal-btn").forEach((btn) => {
@@ -741,30 +758,20 @@
       });
     });
 
-    const applyTabState = (mode) => {
-      const startInput = $("bmbdStartDateInput");
-      const endInput = $("bmbdEndDateInput");
-      // "Começar agora" → desabilita início (começa agora, sem data)
-      if (startInput) startInput.disabled = mode === "agora";
-      // "Sem parar" → desabilita fim
-      if (endInput) endInput.disabled = mode === "sem_parar";
-    };
-
     // Tabs
     modal.querySelectorAll(".bmbd-modal-tab").forEach((tab) => {
       tab.addEventListener("click", () => {
         modal.querySelectorAll(".bmbd-modal-tab").forEach(t => t.classList.remove("is-active"));
         tab.classList.add("is-active");
-        applyTabState(tab.dataset.mode);
+        applyBombaTabState(tab.dataset.mode);
       });
     });
-
-    applyTabState("agora");
 
     // Sync end date when start date changes
     $("bmbdStartDateInput")?.addEventListener("change", (e) => {
       const endInput = $("bmbdEndDateInput");
-      if (!endInput || endInput.value <= e.target.value) {
+      if (!endInput) return;
+      if (!endInput.value || endInput.value <= e.target.value) {
         endInput.value = addHoursISO(e.target.value, 1);
       }
       endInput.min = e.target.value;
@@ -775,11 +782,11 @@
       const mode = activeTab?.dataset?.mode || "agora";
       const startDate = $("bmbdStartDateInput")?.value || null;
       const endDate = $("bmbdEndDateInput")?.value || null;
-      console.info("[bomba] ligar", { mode, startDate, endDate });
+      console.info("[bomba] agendamento", { mode, startDate, endDate });
       // "Começar agora" / "Sem parar" ligam a bomba na hora; "Intervalo" fica só agendado.
       if (mode !== "intervalo") setFocusBombaRunning(true);
       close();
-    }, { once: true });
+    });
   }
 
   // Liga/desliga a bomba em foco (mesmo armazenamento do mapa/lista) e
