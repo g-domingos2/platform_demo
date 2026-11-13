@@ -98,6 +98,62 @@
     height: auto;
 }
 
+/* Configurações: mesmo padrão das telas de edição acima — a rolagem fica no
+   overlay inteiro. Antes o overlay tinha overflow:hidden e o painel tinha
+   min-height:100vh + 520px de corpo, então em telas mais baixas o conteúdo
+   era cortado e a página ficava "travada", sem rolar. */
+#configOverlay {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#configOverlay .config-page {
+    height: auto;
+    min-height: 0;
+}
+
+#configOverlay .edit-panel__tab-body.is-active {
+    display: block;
+    min-height: 0;
+    height: auto;
+}
+
+#configOverlay .edit-panel__body {
+    overflow: visible;
+    height: auto;
+}
+
+#configOverlay .edit-panel__content {
+    overflow-y: visible;
+    height: auto;
+}
+
+/* Telas estreitas: o "180px 1fr" do .config-page tinha prioridade sobre o
+   @media do edit-panel.css, então o menu lateral nunca empilhava. */
+@media (max-width: 980px) {
+    .config-page .edit-panel__body {
+        grid-template-columns: 1fr;
+    }
+
+    .config-page .edit-panel__nav,
+    .config-page .edit-panel__content {
+        border-radius: 0;
+    }
+
+    .config-page .edit-panel__content {
+        padding: 20px 16px 40px;
+    }
+
+    .config-page .pref-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .config-page .custom-select-wrapper {
+        max-width: 100%;
+    }
+}
+
 /* Único ponto de pintura do gradiente dark: .config-overlay é sempre
    viewport inteiro (fixed, inset:0), então o painel (.config-page) e a
    titlebar ficam transparentes e só revelam este fundo — sem costura,
