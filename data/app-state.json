@@ -6,7 +6,9 @@
   },
   "talhoesByFarm": {},
   "pluviosByFarm": {
-    "farm_demo_001": []
+    "farm_demo_001": [],
+    "default": [],
+    "farm_1794580515859_3ixohk": []
   },
   "operacao": {
     "activitiesByFarm": {},

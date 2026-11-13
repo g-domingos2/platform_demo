@@ -892,6 +892,17 @@
                     }
                     return;
                 }
+
+                // 4. Stop Pivot button — mesmo caminho do "Parar" do modal de operação:
+                // volta o pivô para "painel energizado" e encerra o movimento.
+                // A simulação dispara "ic:sim-status-change", que atualiza o card.
+                const stopBtn = e.target.closest(".pincard__control-btn.is-stop");
+                if (stopBtn) {
+                    if (!state.selectedId) return;
+                    window.IcSetSimPivotStatus?.(state.selectedId, "painel_energizado");
+                    updatePincardStatus(state.selectedId);
+                    return;
+                }
             });
         }
     }

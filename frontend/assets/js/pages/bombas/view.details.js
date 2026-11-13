@@ -776,8 +776,22 @@
       const startDate = $("bmbdStartDateInput")?.value || null;
       const endDate = $("bmbdEndDateInput")?.value || null;
       console.info("[bomba] ligar", { mode, startDate, endDate });
+      // "Começar agora" / "Sem parar" ligam a bomba na hora; "Intervalo" fica só agendado.
+      if (mode !== "intervalo") setFocusBombaRunning(true);
       close();
     }, { once: true });
+  }
+
+  // Liga/desliga a bomba em foco (mesmo armazenamento do mapa/lista) e
+  // re-renderiza o card de detalhes e o minimapa.
+  function setFocusBombaRunning(running) {
+    const equip = getFocusBmb();
+    if (!equip) return;
+    const id = normalizeBmb(equip).id;
+    console.info(running ? "[bomba] ligar" : "[bomba] desligar", { id });
+    window.IcSetBombaRunning?.(id, running);
+    renderDetails();
+    updateDetailsMinimap();
   }
 
   function bindDetailsEvents() {
@@ -843,6 +857,13 @@
         const startBtn = e.target.closest(".pincard__control-btn.is-start");
         if (startBtn) {
           openBombaStartModal();
+          return;
+        }
+
+        // Desligar Bomba button
+        const stopBtn = e.target.closest(".pincard__control-btn.is-stop");
+        if (stopBtn) {
+          setFocusBombaRunning(false);
           return;
         }
 
