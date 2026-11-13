@@ -1366,16 +1366,6 @@
     }
 
 
-    // Botão Deletar fazenda
-    const deleteBtn = $("farmEditDeleteBtn");
-    if (deleteBtn && !deleteBtn.dataset.bound) {
-      deleteBtn.dataset.bound = "1";
-      deleteBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        handleDeleteFarm();
-      });
-    }
-
     // Botão Salvar (Busca mais direta)
     const saveBtn = getSaveButton();
     if (saveBtn) {
@@ -1520,89 +1510,65 @@
     setupHolidays();
   }
 
+  // Mesma chave usada em cadastros/core.data.js e create-farm/feature.events.js:
+  // marca que a base ficou vazia de propósito, para o farms.json inicial não
+  // "ressuscitar" a fazenda apagada na próxima recarga.
+  const FARM_EMPTY_START_KEY = "ic_farm_empty_start_v3";
+
+  // Apaga no servidor só quando ele existe (npm start → localhost:3100).
+  // Publicado (GitHub Pages/Netlify) não há /api — o DELETE dava 405 — e a
+  // fazenda vive só no localStorage, então basta removê-la localmente.
   async function deleteFarm(farmId) {
-    const API = window.IC_API_CONFIG;
-    const baseUrl = API?.baseUrl || "";
-    const url = `${baseUrl}/api/farms/${encodeURIComponent(farmId)}`;
+    const API = window.IC_API_CONFIG || {};
+    if (API.usesStaticData || !API.baseUrl) return { ok: true, local: true };
+
+    const url = `${API.baseUrl}/api/farms/${encodeURIComponent(farmId)}`;
     const resp = await fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" } });
     if (!resp.ok) {
       const data = await resp.json().catch(() => ({}));
       throw new Error(data.error || `HTTP ${resp.status}`);
     }
-    return resp.json();
+    return resp.json().catch(() => ({ ok: true }));
   }
 
-  async function handleDeleteFarm() {
-    const farm = getFarmData();
-    if (!farm?.id) {
-      notifyError("Nenhuma fazenda ativa encontrada.");
-      return;
-    }
-    const confirmed = confirm(`Tem certeza que deseja deletar a fazenda "${farm.name || farm.id}"?\n\nEsta ação não pode ser desfeita e removerá todos os equipamentos associados.`);
-    if (!confirmed) return;
+  // Remove a fazenda do estado em memória e do armazenamento local.
+  async function removeFarmLocally(farmId) {
+    const allFarms = getAllFarmRecords().filter((f) => String(f?.id) !== String(farmId));
 
-    const deleteBtn = $("farmEditDeleteBtn");
-    if (deleteBtn) {
-      deleteBtn.disabled = true;
-      deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deletando';
+    const createFarm = window.CreateFarm || {};
+    const createState = createFarm.state || {};
+    const setters = createFarm.setters || {};
+    if (typeof setters.setFarms === "function") setters.setFarms(allFarms);
+    else createState.farms = allFarms;
+
+    const activeId = sessionStorage.getItem("ic_active_farm");
+    if (activeId === String(farmId)) {
+      sessionStorage.removeItem("ic_active_farm");
+      sessionStorage.removeItem("ic_active_farm_id");
+      if (typeof setters.setCurrentFarmId === "function") setters.setCurrentFarmId(null);
+      else createState.currentFarmId = null;
+      window.IcFarmActive = null;
+    }
+
+    if (typeof window.Cad?.data?.persistFarmDataset === "function") {
+      await window.Cad.data.persistFarmDataset(allFarms);
+    } else if (typeof window.CreateFarm?.events?.saveFarms === "function") {
+      await window.CreateFarm.events.saveFarms();
+    } else {
+      localStorage.setItem("ic_farms", JSON.stringify(allFarms));
     }
 
     try {
-      await deleteFarm(farm.id);
+      if (allFarms.length === 0) localStorage.setItem(FARM_EMPTY_START_KEY, "1");
+    } catch (_) { }
 
-      // Remove do estado local
-      let allFarms = getAllFarmRecords().filter((f) => String(f?.id) !== String(farm.id));
-
-      // Atualiza estado global
-      const createFarm = window.CreateFarm || {};
-      const createState = createFarm.state || {};
-      const setters = createFarm.setters || {};
-      if (typeof setters.setFarms === "function") setters.setFarms(allFarms);
-      else createState.farms = allFarms;
-
-      // Limpa active farm se era a deletada
-      const activeId = sessionStorage.getItem("ic_active_farm");
-      if (activeId === String(farm.id)) {
-        sessionStorage.removeItem("ic_active_farm");
-        sessionStorage.removeItem("ic_active_farm_id");
-        if (typeof setters.setCurrentFarmId === "function") setters.setCurrentFarmId(null);
-        else createState.currentFarmId = null;
-        window.IcFarmActive = null;
-      }
-
-      // Persiste localmente
-      if (typeof window.Cad?.data?.persistFarmDataset === "function") {
-        await window.Cad.data.persistFarmDataset(allFarms);
-      } else if (typeof window.CreateFarm?.events?.saveFarms === "function") {
-        await window.CreateFarm.events.saveFarms();
-      } else {
-        localStorage.setItem("ic_farms", JSON.stringify(allFarms));
-      }
-
-      close();
-
-      // Força recarregar dados
-      if (typeof window.Cad?.data?.loadFarmDataset === "function") {
-        await window.Cad.data.loadFarmDataset();
-      }
-
-      window.dispatchEvent(new CustomEvent("ic:farm-changed", { detail: { farm: null } }));
-      window.dispatchEvent(new Event("ic:layout-change"));
-
-      // Volta para visão geral
-      if (window.IcNavigate) window.IcNavigate("visao-geral");
-      else document.querySelector('.nav__item[data-route="visao-geral"]')?.click();
-
-      notifySuccess(`Fazenda "${farm.name || farm.id}" deletada com sucesso.`);
-    } catch (error) {
-      console.error("[FarmEdit] Falha ao deletar fazenda:", error);
-      notifyError("Não foi possível deletar a fazenda.");
-    } finally {
-      if (deleteBtn) {
-        deleteBtn.disabled = false;
-        deleteBtn.innerHTML = '<i class="fa-regular fa-trash-can"></i> Deletar';
-      }
+    if (typeof window.Cad?.data?.loadFarmDataset === "function") {
+      await window.Cad.data.loadFarmDataset();
     }
+
+    window.dispatchEvent(new CustomEvent("ic:farm-changed", { detail: { farm: null } }));
+    window.dispatchEvent(new Event("ic:layout-change"));
+    return allFarms;
   }
 
   // ========== COMANDO OCULTO: GERENCIADOR DE FAZENDAS (Ctrl+Shift+D) ==========
@@ -1676,37 +1642,7 @@
           btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
           try {
             await deleteFarm(delId);
-            // Remove do estado local
-            let allFarms = getAllFarmRecords().filter((f) => String(f?.id) !== String(delId));
-            const createFarm = window.CreateFarm || {};
-            const createState = createFarm.state || {};
-            const setters = createFarm.setters || {};
-            if (typeof setters.setFarms === "function") setters.setFarms(allFarms);
-            else createState.farms = allFarms;
-
-            const activeId = sessionStorage.getItem("ic_active_farm");
-            if (activeId === String(delId)) {
-              sessionStorage.removeItem("ic_active_farm");
-              sessionStorage.removeItem("ic_active_farm_id");
-              if (typeof setters.setCurrentFarmId === "function") setters.setCurrentFarmId(null);
-              else createState.currentFarmId = null;
-              window.IcFarmActive = null;
-            }
-
-            if (typeof window.Cad?.data?.persistFarmDataset === "function") {
-              await window.Cad.data.persistFarmDataset(allFarms);
-            } else if (typeof window.CreateFarm?.events?.saveFarms === "function") {
-              await window.CreateFarm.events.saveFarms();
-            } else {
-              localStorage.setItem("ic_farms", JSON.stringify(allFarms));
-            }
-
-            if (typeof window.Cad?.data?.loadFarmDataset === "function") {
-              await window.Cad.data.loadFarmDataset();
-            }
-
-            window.dispatchEvent(new CustomEvent("ic:farm-changed", { detail: { farm: null } }));
-            window.dispatchEvent(new Event("ic:layout-change"));
+            await removeFarmLocally(delId);
 
             renderList();
             notifySuccess(`Fazenda "${delName}" deletada.`);

@@ -569,6 +569,14 @@
           hideApiToast();
           return Promise.resolve();
         }
+        // Base zerada de propósito (ex.: última fazenda apagada pelo Ctrl+Shift+D):
+        // respeita o vazio em vez de repovoar com a semente do farms.json.
+        if (Array.isArray(stored) && stored.length === 0 && localStorage.getItem(FARM_EMPTY_START_KEY) === "1") {
+          state.farms = [];
+          syncSavedFarmSelection(state.farms);
+          hideApiToast();
+          return Promise.resolve();
+        }
       } catch (_) { }
 
       return fetch("./data/farms.json", { headers: { Accept: "application/json" } })
