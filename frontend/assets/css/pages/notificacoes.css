@@ -215,3 +215,444 @@
 [data-theme="dark"] .notif-alert-card__sub-label {
   color: #cbd5e1;
 }
+
+/* =========================================================
+   Notificações — ajustes para ficar igual à plataforma
+   (tudo escopado em #notifAddModal / .notif-* para não mexer
+   no modal de criar equipamento, que usa as mesmas classes)
+   ========================================================= */
+
+/* Modal mais estreito (≈700px, como na plataforma) */
+#notifAddModal .create-equip__dialog {
+  width: min(700px, calc(100vw - 32px));
+  max-width: 700px;
+}
+
+/* Stepper horizontal: (1) Informações ———— (2) Opções */
+#notifAddModal .create-equip__steps {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 4px 0 22px;
+  padding: 0;
+  overflow: visible;
+}
+
+#notifAddModal .create-equip__step {
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, .45);
+}
+
+#notifAddModal .create-equip__step:first-child {
+  flex: 1 1 auto;
+}
+
+#notifAddModal .create-equip__step:first-child::after {
+  content: "";
+  position: static;
+  display: block;
+  flex: 1 1 auto;
+  height: 1px;
+  width: auto;
+  margin: 0 16px;
+  background: #e5e7eb;
+  transform: none;
+  border-radius: 0;
+}
+
+#notifAddModal .create-equip__step.is-done::after {
+  background: #16a34a;
+}
+
+#notifAddModal .create-equip__step-num {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 400;
+  background: rgba(0, 0, 0, .06);
+  color: rgba(0, 0, 0, .65);
+  box-shadow: none;
+}
+
+#notifAddModal .create-equip__step--active {
+  color: rgba(0, 0, 0, .88);
+}
+
+#notifAddModal .create-equip__step--active .create-equip__step-num {
+  background: #16a34a;
+  color: #fff;
+}
+
+#notifAddModal .create-equip__step.is-done {
+  color: rgba(0, 0, 0, .88);
+}
+
+#notifAddModal .create-equip__step.is-done .create-equip__step-num {
+  background: #e6f7ee;
+  color: #16a34a;
+}
+
+/* Passo 1 centralizado e mais estreito, como no antd */
+#notifAddStep0 {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+#notifAddModal .equip-input.is-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .12);
+}
+
+/* Tipo de pivô (radio) */
+.notif-choice {
+  margin-top: 18px;
+}
+
+.notif-choice[hidden] {
+  display: none;
+}
+
+.notif-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 4px;
+}
+
+.notif-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, .88);
+  cursor: pointer;
+  user-select: none;
+}
+
+.notif-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.notif-radio__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  position: relative;
+  flex: 0 0 auto;
+  transition: border-color .15s, background .15s;
+}
+
+.notif-radio input:checked + .notif-radio__dot {
+  border-color: #16a34a;
+  background: #16a34a;
+}
+
+.notif-radio input:checked + .notif-radio__dot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.notif-radio input:focus-visible + .notif-radio__dot {
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, .2);
+}
+
+/* Multiselect de dispositivos: etiquetas dentro do campo */
+#notifDevicesTrigger {
+  min-height: 34px;
+  height: auto;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#notifDevicesLabel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  white-space: normal;
+}
+
+.notif-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 4px 0 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .06);
+  color: rgba(0, 0, 0, .88);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.notif-tag__x {
+  border: 0;
+  background: transparent;
+  padding: 0 2px;
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(0, 0, 0, .45);
+  cursor: pointer;
+}
+
+.notif-tag__x:hover {
+  color: rgba(0, 0, 0, .88);
+}
+
+/* Itens da lista: ✓ à direita e fundo verde claro quando marcado */
+#notifDevicesDropdown .ip-multiselect__list {
+  max-height: 256px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+#notifDevicesList .ip-multiselect__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 14px;
+  color: rgba(0, 0, 0, .88);
+  text-align: left;
+  cursor: pointer;
+}
+
+#notifDevicesList .ip-multiselect__option:hover {
+  background: rgba(0, 0, 0, .04);
+}
+
+#notifDevicesList .ip-multiselect__option.is-selected {
+  background: #e6f7ee;
+  font-weight: 600;
+}
+
+#notifDevicesList .ip-multiselect__check {
+  order: 2;
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  color: #16a34a;
+  visibility: hidden;
+}
+
+#notifDevicesList .ip-multiselect__option.is-selected .ip-multiselect__check {
+  visibility: visible;
+}
+
+/* Cards de alerta: chevron "›" que gira 90° quando aberto (antd) */
+#notifAddModal .notif-alert-card__chevron {
+  transform: rotate(-90deg);
+}
+
+#notifAddModal .notif-alert-card.is-expanded .notif-alert-card__chevron {
+  transform: rotate(0deg);
+}
+
+#notifAddModal .notif-status-row,
+#notifAddModal .notif-alert-card {
+  border-radius: 8px;
+}
+
+#notifAddModal .notif-status-row {
+  padding: 16px 24px;
+}
+
+#notifAddModal .notif-alert-card__header {
+  padding: 16px 24px;
+}
+
+#notifAddModal .notif-alert-card__body {
+  padding: 0 24px 16px;
+}
+
+#notifAddModal .notif-status-row__label,
+#notifAddModal .notif-alert-card__heading {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#notifAddModal .notif-alert-card__sub-label {
+  font-size: 14px;
+}
+
+/* Enviar desabilitado (cinza) enquanto não há dispositivo */
+#btnNotifAddNext:disabled {
+  background: rgba(0, 0, 0, .04);
+  border-color: #d9d9d9;
+  color: rgba(0, 0, 0, .25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ===== Lista de grupos criados ===== */
+.notif-group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 28px 28px;
+}
+
+.notif-group-list:empty {
+  display: none;
+}
+
+.notif-empty[hidden] {
+  display: none;
+}
+
+.notif-group {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.notif-group__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notif-group__name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.notif-group__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.notif-group__meta i {
+  margin-right: 5px;
+  color: #94a3b8;
+}
+
+.notif-group__devices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.notif-group__actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.notif-group__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.notif-group__btn:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.notif-group__btn--danger:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+[data-theme="dark"] .notif-group {
+  background: #141414;
+  border-color: rgba(255, 255, 255, .08);
+}
+
+[data-theme="dark"] .notif-group__name,
+[data-theme="dark"] .notif-radio,
+[data-theme="dark"] #notifAddModal .create-equip__step--active,
+[data-theme="dark"] #notifAddModal .create-equip__step.is-done {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .notif-group__btn {
+  background: transparent;
+  border-color: rgba(255, 255, 255, .15);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .notif-tag {
+  background: rgba(255, 255, 255, .08);
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] #notifDevicesList .ip-multiselect__option {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] #notifDevicesList .ip-multiselect__option.is-selected {
+  background: rgba(22, 163, 74, .18);
+}
+
+@media (max-width: 640px) {
+  .notif-group {
+    flex-direction: column;
+  }
+}
+
+.notif-choice .equip-label.is-required::before {
+  content: "*";
+  color: #ef4444;
+  margin-right: 4px;
+}
+
+/* Título do campo de escolha igual ao "Nome do grupo de notificações" */
+.notif-choice .equip-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(15, 23, 42);
+  margin-bottom: 8px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Cabe "SmartConnect ou Nexus" + "SmartTouch ou UniversalTouch" na mesma linha */
+#notifAddStep0 {
+  max-width: 460px;
+}
+
+[data-theme="dark"] .notif-choice .equip-label {
+  color: #f1f5f9;
+}

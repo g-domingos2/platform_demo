@@ -15,6 +15,7 @@
     <div class="edit-panel__body">
       <aside class="edit-panel__nav" aria-label="Seções de notificações">
         <button class="edit-panel__nav-item is-active" type="button" data-target="#notifPivo">Pivô</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#notifCarretel">Carretel</button>
         <button class="edit-panel__nav-item" type="button" data-target="#notifBomba">Bomba</button>
         <button class="edit-panel__nav-item" type="button" data-target="#notifMedidor">Medidores de nível</button>
       </aside>
@@ -30,7 +31,24 @@
               Adicionar Notificação
             </button>
           </div>
-          <div class="notif-empty">
+          <div class="notif-group-list" data-notif-list="pivo"></div>
+          <div class="notif-empty" data-notif-empty="pivo">
+            <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
+            <span class="notif-empty__text">Não há dados</span>
+          </div>
+        </section>
+
+        <!-- CARRETEL -->
+        <section class="edit-panel__section" id="notifCarretel">
+          <div class="notif-section-header">
+            <h2 class="notif-section-title">Notificações de Carretel</h2>
+            <button class="btn btn--primary notif-add-btn" type="button" data-notif-open data-notif-category="carretel">
+              <i class="fa-solid fa-circle-plus"></i>
+              Adicionar Notificação
+            </button>
+          </div>
+          <div class="notif-group-list" data-notif-list="carretel"></div>
+          <div class="notif-empty" data-notif-empty="carretel">
             <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
             <span class="notif-empty__text">Não há dados</span>
           </div>
@@ -45,7 +63,8 @@
               Adicionar Notificação
             </button>
           </div>
-          <div class="notif-empty">
+          <div class="notif-group-list" data-notif-list="bomba"></div>
+          <div class="notif-empty" data-notif-empty="bomba">
             <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
             <span class="notif-empty__text">Não há dados</span>
           </div>
@@ -60,7 +79,8 @@
               Adicionar Notificação
             </button>
           </div>
-          <div class="notif-empty">
+          <div class="notif-group-list" data-notif-list="medidor"></div>
+          <div class="notif-empty" data-notif-empty="medidor">
             <i class="fa-regular fa-envelope-open notif-empty__icon"></i>
             <span class="notif-empty__text">Não há dados</span>
           </div>
@@ -98,6 +118,14 @@
           <div class="equip-field">
             <label class="equip-label" for="notifGroupName"><span class="equip-required">*</span>Nome do grupo de notificações</label>
             <input class="equip-input" id="notifGroupName" type="text" placeholder="Grupo do pivô" />
+            <span class="notif-field-error" id="notifGroupNameError" hidden>Por favor, insira o nome do grupo</span>
+          </div>
+
+          <!-- Escolha do passo 1 (Pivô: Tipo de pivô / Bomba: Versão) — montada pelo JS -->
+          <div class="equip-field notif-choice" id="notifChoiceField" hidden>
+            <div class="equip-label" id="notifChoiceLabel"></div>
+            <div class="notif-radio-group" role="radiogroup" id="notifChoiceGroup"></div>
+            <span class="notif-field-error" id="notifChoiceError" hidden>Por favor, selecione uma opção</span>
           </div>
 
           <div class="notif-period">
