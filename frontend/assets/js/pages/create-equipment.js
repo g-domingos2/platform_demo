@@ -1452,6 +1452,8 @@
         data,
       };
       if (typeof clearDraft === "function") clearDraft(selectedType);
+      console.log("[CreateEquipment] Salvando equipamento:", equip);
+      console.log("[CreateEquipment] IcFarmsAddEquipment existe?", !!window.IcFarmsAddEquipment);
       if (window.IcFarmsAddEquipment) {
         window.IcFarmsAddEquipment(equip);
         // Força re-render do mapa após atualização do estado
@@ -1543,6 +1545,7 @@
   // Eventos base
   // =========================
   openBtn.addEventListener("click", () => {
+    console.log("[CreateEquipment] Botão Criar Equipamento clicado. is-connectivity?", openBtn.classList.contains("is-connectivity"));
     if (openBtn.classList.contains("is-connectivity")) return;
 
     // O modal abre na hora: a lista de pivôs só é usada nos steps de

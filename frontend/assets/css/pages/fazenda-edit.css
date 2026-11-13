@@ -495,8 +495,49 @@ body.is-farm-edit .map-card {
   color: #64748b !important;
 }
 
-/* Feriados: botão "Adicionar feriado" e toggle Mês/Ano são inline style sem
-   classe própria, então também usamos seletor de atributo com !important. */
+/* Botão de deletar fazenda */
+#farmEditDeleteBtn:hover {
+  background: #fef2f2 !important;
+}
+
+#farmEditDeleteBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal do Gerenciador de Fazendas - dark mode */
+[data-theme="dark"] #farmManagerModal .create-equip__dialog {
+  background: #141414 !important;
+}
+
+[data-theme="dark"] #farmManagerModal header {
+  border-bottom-color: rgba(255, 255, 255, .1) !important;
+}
+
+[data-theme="dark"] #farmManagerModal #farmManagerTitle {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] #farmManagerModal footer {
+  border-top-color: rgba(255, 255, 255, .1) !important;
+}
+
+[data-theme="dark"] #farmManagerList > div {
+  background: #1a1a1a !important;
+  border-color: rgba(255, 255, 255, .12) !important;
+}
+
+[data-theme="dark"] #farmManagerList > div > div:first-child > div:first-child {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] #farmManagerList > div > div:first-child > div:last-child {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] #farmManagerEmpty {
+  color: #64748b !important;
+}
 [data-theme="dark"] #farmHolidayAddManual {
   background: #1e293b !important;
   border-color: rgba(255, 255, 255, .12) !important;

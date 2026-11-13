@@ -86,6 +86,7 @@
         <span>${t("Criar equipamento")}</span>
       `;
     ctaBtn.classList.toggle("is-connectivity", isConnectivity);
+    ctaBtn.style.fontWeight = "900";
   }
 
   function isLineStarItem(item) {

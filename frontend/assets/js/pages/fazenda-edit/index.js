@@ -1366,6 +1366,16 @@
     }
 
 
+    // Botão Deletar fazenda
+    const deleteBtn = $("farmEditDeleteBtn");
+    if (deleteBtn && !deleteBtn.dataset.bound) {
+      deleteBtn.dataset.bound = "1";
+      deleteBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        handleDeleteFarm();
+      });
+    }
+
     // Botão Salvar (Busca mais direta)
     const saveBtn = getSaveButton();
     if (saveBtn) {
@@ -1508,6 +1518,228 @@
     setupSignalStudy();
     bindWheelToContentScroll();
     setupHolidays();
+  }
+
+  async function deleteFarm(farmId) {
+    const API = window.IC_API_CONFIG;
+    const baseUrl = API?.baseUrl || "";
+    const url = `${baseUrl}/api/farms/${encodeURIComponent(farmId)}`;
+    const resp = await fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+    if (!resp.ok) {
+      const data = await resp.json().catch(() => ({}));
+      throw new Error(data.error || `HTTP ${resp.status}`);
+    }
+    return resp.json();
+  }
+
+  async function handleDeleteFarm() {
+    const farm = getFarmData();
+    if (!farm?.id) {
+      notifyError("Nenhuma fazenda ativa encontrada.");
+      return;
+    }
+    const confirmed = confirm(`Tem certeza que deseja deletar a fazenda "${farm.name || farm.id}"?\n\nEsta ação não pode ser desfeita e removerá todos os equipamentos associados.`);
+    if (!confirmed) return;
+
+    const deleteBtn = $("farmEditDeleteBtn");
+    if (deleteBtn) {
+      deleteBtn.disabled = true;
+      deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deletando';
+    }
+
+    try {
+      await deleteFarm(farm.id);
+
+      // Remove do estado local
+      let allFarms = getAllFarmRecords().filter((f) => String(f?.id) !== String(farm.id));
+
+      // Atualiza estado global
+      const createFarm = window.CreateFarm || {};
+      const createState = createFarm.state || {};
+      const setters = createFarm.setters || {};
+      if (typeof setters.setFarms === "function") setters.setFarms(allFarms);
+      else createState.farms = allFarms;
+
+      // Limpa active farm se era a deletada
+      const activeId = sessionStorage.getItem("ic_active_farm");
+      if (activeId === String(farm.id)) {
+        sessionStorage.removeItem("ic_active_farm");
+        sessionStorage.removeItem("ic_active_farm_id");
+        if (typeof setters.setCurrentFarmId === "function") setters.setCurrentFarmId(null);
+        else createState.currentFarmId = null;
+        window.IcFarmActive = null;
+      }
+
+      // Persiste localmente
+      if (typeof window.Cad?.data?.persistFarmDataset === "function") {
+        await window.Cad.data.persistFarmDataset(allFarms);
+      } else if (typeof window.CreateFarm?.events?.saveFarms === "function") {
+        await window.CreateFarm.events.saveFarms();
+      } else {
+        localStorage.setItem("ic_farms", JSON.stringify(allFarms));
+      }
+
+      close();
+
+      // Força recarregar dados
+      if (typeof window.Cad?.data?.loadFarmDataset === "function") {
+        await window.Cad.data.loadFarmDataset();
+      }
+
+      window.dispatchEvent(new CustomEvent("ic:farm-changed", { detail: { farm: null } }));
+      window.dispatchEvent(new Event("ic:layout-change"));
+
+      // Volta para visão geral
+      if (window.IcNavigate) window.IcNavigate("visao-geral");
+      else document.querySelector('.nav__item[data-route="visao-geral"]')?.click();
+
+      notifySuccess(`Fazenda "${farm.name || farm.id}" deletada com sucesso.`);
+    } catch (error) {
+      console.error("[FarmEdit] Falha ao deletar fazenda:", error);
+      notifyError("Não foi possível deletar a fazenda.");
+    } finally {
+      if (deleteBtn) {
+        deleteBtn.disabled = false;
+        deleteBtn.innerHTML = '<i class="fa-regular fa-trash-can"></i> Deletar';
+      }
+    }
+  }
+
+  // ========== COMANDO OCULTO: GERENCIADOR DE FAZENDAS (Ctrl+Shift+D) ==========
+  function openFarmManagerModal() {
+    const MODAL_ID = "farmManagerModal";
+    let modal = document.getElementById(MODAL_ID);
+    if (modal) { modal.remove(); modal = null; }
+
+    const farms = getAllFarmRecords();
+    modal = document.createElement("div");
+    modal.id = MODAL_ID;
+    modal.className = "create-equip";
+    modal.innerHTML = `
+      <div class="create-equip__backdrop" data-fm-close></div>
+      <section class="create-equip__dialog" role="dialog" aria-modal="true" aria-labelledby="farmManagerTitle"
+               style="width:min(640px,calc(100vw - 48px)); padding:0; display:flex; flex-direction:column; max-height:calc(100vh - 40px); background:#fff; border-radius:12px; overflow:hidden;">
+        <header style="display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #e5e7eb; flex-shrink:0;">
+          <h3 id="farmManagerTitle" style="font-size:18px; font-weight:700; color:#0f172a; margin:0;">Gerenciador de Fazendas</h3>
+          <button type="button" data-fm-close style="background:none; border:none; font-size:18px; color:#6b7280; cursor:pointer; line-height:1;"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+        <div style="padding:20px 24px; flex:1; overflow-y:auto;">
+          <p style="font-size:13px; color:#64748b; margin:0 0 16px;">Use este painel para deletar fazendas do sistema. Esta ação não pode ser desfeita.</p>
+          <div id="farmManagerList" style="display:flex; flex-direction:column; gap:10px;"></div>
+          <div id="farmManagerEmpty" style="display:none; text-align:center; padding:32px 0; color:#9ca3af;">
+            <i class="fa-regular fa-folder-open" style="font-size:32px;"></i>
+            <p style="font-size:13px; margin-top:8px;">Nenhuma fazenda cadastrada.</p>
+          </div>
+        </div>
+        <footer style="display:flex; justify-content:flex-end; gap:10px; padding:14px 24px; border-top:1px solid #e5e7eb; flex-shrink:0;">
+          <button type="button" data-fm-close style="padding:8px 20px; border-radius:8px; font-size:13px; font-weight:500; border:1px solid #cbd5e1; background:#fff; color:#475569; cursor:pointer;">Fechar</button>
+        </footer>
+      </section>`;
+    document.body.appendChild(modal);
+
+    const listEl = modal.querySelector("#farmManagerList");
+    const emptyEl = modal.querySelector("#farmManagerEmpty");
+
+    function renderList() {
+      const currentFarms = getAllFarmRecords();
+      if (!currentFarms.length) {
+        listEl.innerHTML = "";
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
+      listEl.innerHTML = currentFarms.map((f) => {
+        const name = f.name || "Fazenda sem nome";
+        const id = f.id || "";
+        const equipCount = Array.isArray(f.equipments) ? f.equipments.length : 0;
+        return `
+          <div data-farm-id="${id}" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border:1px solid #e2e8f0; border-radius:8px; background:#f8fafc;">
+            <div style="min-width:0;">
+              <div style="font-size:14px; font-weight:600; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</div>
+              <div style="font-size:12px; color:#64748b; margin-top:2px;">ID: ${id} · ${equipCount} equipamento${equipCount !== 1 ? "s" : ""}</div>
+            </div>
+            <button type="button" data-fm-delete="${id}" data-fm-name="${name.replace(/"/g, "&quot;")}"
+                    style="flex-shrink:0; margin-left:12px; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:6px; border:1px solid #ef4444; background:#fff; color:#ef4444; font-size:12px; font-weight:600; cursor:pointer;">
+              <i class="fa-regular fa-trash-can"></i>
+              Deletar
+            </button>
+          </div>`;
+      }).join("");
+
+      // Bind delete buttons
+      listEl.querySelectorAll("[data-fm-delete]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const delId = btn.dataset.fmDelete;
+          const delName = btn.dataset.fmName || delId;
+          if (!confirm(`Deletar a fazenda "${delName}"?\n\nEsta ação não pode ser desfeita.`)) return;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+          try {
+            await deleteFarm(delId);
+            // Remove do estado local
+            let allFarms = getAllFarmRecords().filter((f) => String(f?.id) !== String(delId));
+            const createFarm = window.CreateFarm || {};
+            const createState = createFarm.state || {};
+            const setters = createFarm.setters || {};
+            if (typeof setters.setFarms === "function") setters.setFarms(allFarms);
+            else createState.farms = allFarms;
+
+            const activeId = sessionStorage.getItem("ic_active_farm");
+            if (activeId === String(delId)) {
+              sessionStorage.removeItem("ic_active_farm");
+              sessionStorage.removeItem("ic_active_farm_id");
+              if (typeof setters.setCurrentFarmId === "function") setters.setCurrentFarmId(null);
+              else createState.currentFarmId = null;
+              window.IcFarmActive = null;
+            }
+
+            if (typeof window.Cad?.data?.persistFarmDataset === "function") {
+              await window.Cad.data.persistFarmDataset(allFarms);
+            } else if (typeof window.CreateFarm?.events?.saveFarms === "function") {
+              await window.CreateFarm.events.saveFarms();
+            } else {
+              localStorage.setItem("ic_farms", JSON.stringify(allFarms));
+            }
+
+            if (typeof window.Cad?.data?.loadFarmDataset === "function") {
+              await window.Cad.data.loadFarmDataset();
+            }
+
+            window.dispatchEvent(new CustomEvent("ic:farm-changed", { detail: { farm: null } }));
+            window.dispatchEvent(new Event("ic:layout-change"));
+
+            renderList();
+            notifySuccess(`Fazenda "${delName}" deletada.`);
+          } catch (err) {
+            console.error("[FarmManager] Falha ao deletar:", err);
+            notifyError("Não foi possível deletar a fazenda.");
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-regular fa-trash-can"></i> Deletar';
+          }
+        });
+      });
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.style.display = "none";
+      modal.remove();
+    }
+
+    modal.querySelectorAll("[data-fm-close]").forEach((el) => el.addEventListener("click", closeModal));
+    renderList();
+    modal.classList.add("is-open");
+    modal.style.display = "flex";
+  }
+
+  if (!window.__icFarmManagerShortcutBound) {
+    window.__icFarmManagerShortcutBound = true;
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "D") {
+        e.preventDefault();
+        openFarmManagerModal();
+      }
+    });
   }
 
   function bindSidebarShortcut() {

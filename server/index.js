@@ -328,6 +328,25 @@ app.put("/api/app-state", async (req, res) => {
   }
 });
 
+app.delete("/api/farms/:id", async (req, res) => {
+  try {
+    const farmId = String(req.params.id || "").trim();
+    if (!farmId) {
+      return res.status(400).json({ error: "ID da fazenda é obrigatório." });
+    }
+    const farms = await readFarms();
+    const nextFarms = farms.filter((f) => String(f?.id || "").trim() !== farmId);
+    if (nextFarms.length === farms.length) {
+      return res.status(404).json({ error: "Fazenda não encontrada." });
+    }
+    await writeFarms(nextFarms);
+    res.json({ ok: true, farms: nextFarms });
+  } catch (err) {
+    console.error("Erro na rota DELETE /api/farms/:id:", err);
+    res.status(500).json({ error: "Falha ao deletar fazenda." });
+  }
+});
+
 const STATIC_MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",

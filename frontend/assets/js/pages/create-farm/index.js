@@ -3,7 +3,12 @@
   "use strict";
 
   const CreateFarm = window.CreateFarm || {};
-  if (!CreateFarm.initDomRefs || !CreateFarm.initDomRefs()) return;
+  console.log("[CreateFarm] initDomRefs existe?", !!CreateFarm.initDomRefs);
+  if (!CreateFarm.initDomRefs || !CreateFarm.initDomRefs()) {
+    console.warn("[CreateFarm] initDomRefs falhou ou não existe");
+    return;
+  }
+  console.log("[CreateFarm] initDomRefs OK, prosseguindo...");
 
   const state = CreateFarm.state || {};
   const events = CreateFarm.events || {};
