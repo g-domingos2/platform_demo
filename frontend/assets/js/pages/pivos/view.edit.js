@@ -1176,6 +1176,16 @@
                 return;
             }
 
+            // Histórico de Configurações: registra o que acabou de ser salvo.
+            try {
+                const panel = $("pivoEditPanel");
+                if (panel && window.IcConfigHistory) {
+                    window.IcConfigHistory.record(panel, result.payload.id ?? state.selectedId, CONFIG_HISTORY_OPTS);
+                }
+            } catch (err) {
+                console.error("Falha ao registrar o histórico de configurações.", err);
+            }
+
             try {
                 renderPivotSelectorList();
             } catch (err) {
@@ -1276,7 +1286,69 @@
         });
     }
 
+    // ── Histórico de Configurações (DEMO) ────────────────────────────────────
+    // Cada Salvar vira uma linha em Histórico › Histórico de Configurações
+    // (assets/js/core/demo-config-history.js). Os segmentos entram como seção
+    // própria porque vivem no mapa, não em campos do formulário.
+    function configHistoryExtraSections() {
+        const fmtAng = (v) => {
+            const n = Number(v);
+            return Number.isFinite(n) ? `${Number(n.toFixed(2))}°` : "—";
+        };
+        const out = [];
+        // Referência inicial (ângulo 0°): fica num campo oculto do formulário.
+        const refText = String($("pivoEditLocRef")?.value || pivoGlobalData?.ref || "").trim();
+        if (refText) {
+            out.push({ sectionId: "pivoEditLocation", after: 1, fields: [{ label: "Referência inicial (Ângulo 0°)", value: refText }] });
+        }
+        // Os segmentos só são carregados quando o mapa de Localização abre; antes
+        // disso vale o que está salvo no pivô.
+        let segs = Array.isArray(pivoSegments) && pivoSegments.length ? pivoSegments : null;
+        if (!segs) {
+            const saved = Array.isArray(pivoGlobalData?.segments) && pivoGlobalData.segments.length ? pivoGlobalData.segments : null;
+            const limit = getPivotMaxAngleValue();
+            segs = saved
+                ? (window.IcSegments && limit < 360 ? window.IcSegments.fit(saved, limit) : saved)
+                : [{ name: "Segmento 1", startAngle: 0, endAngle: limit }];
+        }
+        if (segs.length) {
+            out.push({
+                title: "Segmentos",
+                fields: segs.map((seg, i) => ({
+                    label: `Segmento ${i + 1}`,
+                    value: `${String(seg.name || "").trim() || `Segmento ${i + 1}`} (${fmtAng(seg.startAngle)} a ${fmtAng(seg.endAngle)})`,
+                })),
+            });
+        }
+        return out;
+    }
+
+    // Os campos do editor de segmento/canhão mostram só o item selecionado no
+    // momento: ficam de fora (os segmentos entram pela seção "Segmentos").
+    const CONFIG_HISTORY_OPTS = {
+        extraSections: configHistoryExtraSections,
+        skipSelector: '[id^="pivoEditSeg"], [id^="pivoEditCanhaoSeg"], #pivoEditMaxAngle',
+    };
+
+    function attachConfigHistory() {
+        const panel = $("pivoEditPanel");
+        if (!panel || !window.IcConfigHistory || state.selectedId == null) return;
+        window.IcConfigHistory.attach(panel, state.selectedId, CONFIG_HISTORY_OPTS);
+    }
+
     function renderPivotForm() {
+        renderPivotFormCore();
+        // Espera o formulário terminar de ser preenchido (mapa/segmentos entram
+        // logo depois) para fotografar a configuração atual.
+        clearTimeout(edit._cfgHistTimer);
+        const forId = state.selectedId;
+        edit._cfgHistTimer = setTimeout(() => {
+            if (String(forId) !== String(state.selectedId)) return;
+            try { attachConfigHistory(); } catch (err) { console.error("Falha ao montar o histórico de configurações.", err); }
+        }, 500);
+    }
+
+    function renderPivotFormCore() {
         const pivoData = Pivos.data?.getPivotData?.(state.selectedId) || null;
         if (!pivoData) {
             return;
@@ -2479,31 +2551,55 @@
         pivoSegments[0].endAngle = maxAngle;
     }
 
+    // Proporção de cada segmento, guardada enquanto os segmentos estão "sadios".
+    // Ao digitar o ângulo máximo, cada tecla dispara um ajuste ("2", "24",
+    // "240"): reescalar a partir do valor intermediário amassava os segmentos
+    // em 0° e eles ficavam um em cima do outro. Com a proporção guardada, o
+    // resultado depende só do ângulo final digitado.
+    let segmentFractionCache = null; // { count, fractions }
+
+    function rememberSegmentFractions() {
+        // 359: mede o tamanho "cru" de cada segmento (sem tratar como volta completa).
+        const fr = window.IcSegments?.fractions(pivoSegments, 359);
+        if (fr) {
+            // Só atualiza se o usuário realmente mexeu nas divisas (diferença > 0,5°);
+            // assim arredondamentos de ajustes seguidos não se acumulam.
+            const same = segmentFractionCache && segmentFractionCache.count === fr.length
+                && fr.every((f, i) => Math.abs(f - segmentFractionCache.fractions[i]) * getPivotMaxAngleValue() <= 0.5);
+            if (!same) segmentFractionCache = { count: pivoSegments.length, fractions: fr };
+        } else if (segmentFractionCache && segmentFractionCache.count !== pivoSegments.length) segmentFractionCache = null;
+    }
+
+    function replaceSegments(next) {
+        // Mantém os mesmos objetos (há referências a eles nos marcadores do mapa).
+        next.forEach((seg, i) => {
+            if (pivoSegments[i]) Object.assign(pivoSegments[i], seg);
+            else pivoSegments[i] = seg;
+        });
+        pivoSegments.length = next.length;
+    }
+
+    // Garante que os segmentos caibam em 0°..ângulo máximo (pivô setorial).
+    function fitSegmentsToPivot() {
+        const maxAngle = getPivotMaxAngleValue();
+        if (!window.IcSegments || pivoSegments.length === 0) return;
+        if (pivoSegments.length === 1) { normalizeSingleSegment(); return; }
+        if (maxAngle >= 360 && window.IcSegments.isValid(pivoSegments, 360)) return;
+        if (maxAngle < 360 && window.IcSegments.isValid(pivoSegments, maxAngle)) return;
+        replaceSegments(window.IcSegments.fit(pivoSegments, maxAngle));
+    }
+
     function syncSegmentsToPivotBounds() {
         const maxAngle = getPivotMaxAngleValue();
         if (pivoSegments.length === 0) return;
         if (pivoSegments.length === 1) { normalizeSingleSegment(); return; }
+        if (!window.IcSegments) return;
         // Escala proporcional: mantém as proporções relativas dos segmentos
-        const totalSpan = pivoSegments.reduce((sum, seg) => {
-            const s = parseFloat(seg.startAngle) || 0;
-            const e = parseFloat(seg.endAngle) || 0;
-            return sum + Math.max(0, e - s);
-        }, 0);
-        if (!Number.isFinite(totalSpan) || totalSpan <= 0) {
-            const step = maxAngle / pivoSegments.length;
-            pivoSegments.forEach((seg, i) => {
-                seg.startAngle = Math.round(i * step);
-                seg.endAngle = Math.round((i + 1) * step);
-            });
-            return;
-        }
-        let cursor = 0;
-        pivoSegments.forEach((seg, i) => {
-            const span = (parseFloat(seg.endAngle) - parseFloat(seg.startAngle)) / totalSpan * maxAngle;
-            seg.startAngle = Math.round(cursor);
-            cursor += span;
-            seg.endAngle = i === pivoSegments.length - 1 ? maxAngle : Math.round(cursor);
-        });
+        rememberSegmentFractions();
+        const fractions = segmentFractionCache && segmentFractionCache.count === pivoSegments.length
+            ? segmentFractionCache.fractions
+            : pivoSegments.map(() => 1 / pivoSegments.length);
+        replaceSegments(window.IcSegments.fit(pivoSegments, maxAngle, fractions));
     }
 
     function renderSegmentsUI() {
@@ -2546,16 +2642,34 @@
             addBtn.onclick = () => {
                 // Divide o último segmento ao meio em vez de redistribuir tudo,
                 // preservando as divisas que o usuário ajustou manualmente
+                // Tudo é calculado com o ângulo máximo ATUAL do pivô (antes era
+                // sempre como se fosse 360°, e em pivô setorial os segmentos
+                // novos nasciam um em cima do outro).
+                const limit = getPivotMaxAngleValue();
+                const isFullCircle = limit >= 360;
+                fitSegmentsToPivot();
                 const newCount = pivoSegments.length + 1;
                 const last = pivoSegments[pivoSegments.length - 1];
                 const lastStart = parseFloat(last.startAngle) || 0;
                 let lastEnd = parseFloat(last.endAngle);
-                if (!Number.isFinite(lastEnd)) lastEnd = maxAngle;
+                if (!Number.isFinite(lastEnd)) lastEnd = limit;
+                if (!isFullCircle) lastEnd = Math.min(lastEnd, limit);
                 let span = lastEnd - lastStart;
-                if (span <= 0) span += 360; // segmento que cruza o ângulo zero
-                const mid = +((lastStart + span / 2) % 360).toFixed(2);
-                last.endAngle = mid;
-                pivoSegments.push({ name: `Segmento ${newCount}`, startAngle: mid, endAngle: lastEnd });
+                if (span <= 0 && isFullCircle) span += 360; // volta completa: segmento que cruza o ângulo zero
+                if (span < 2) {
+                    // Último segmento sem espaço para dividir: redistribui todos por igual.
+                    pivoSegments.push({ name: `Segmento ${newCount}`, startAngle: 0, endAngle: limit });
+                    replaceSegments(window.IcSegments
+                        ? window.IcSegments.fit(pivoSegments, limit, pivoSegments.map(() => 1))
+                        : pivoSegments);
+                } else {
+                    let mid = lastStart + span / 2;
+                    if (isFullCircle) mid %= 360;
+                    mid = +mid.toFixed(2);
+                    last.endAngle = mid;
+                    pivoSegments.push({ name: `Segmento ${newCount}`, startAngle: mid, endAngle: lastEnd });
+                }
+                rememberSegmentFractions();
                 activeSegmentIndex = pivoSegments.length - 1;
                 showSegmentMarkers = true;
                 renderSegmentsUI();
@@ -2647,6 +2761,27 @@
                     drawMapFeatures();
                     renderSegmentsUI();
                 }
+            };
+            // Ao sair do campo: o fim do segmento não pode passar do ângulo máximo
+            // do pivô nem invadir os segmentos vizinhos.
+            $("pivoEditSegEndAng").onchange = (e) => {
+                const seg = pivoSegments[activeSegmentIndex];
+                if (!seg) return;
+                const limit = getPivotMaxAngleValue();
+                if (limit >= 360 && pivoSegments.length > 1 && window.IcSegments?.isValid(pivoSegments, 360)) return;
+                const next = pivoSegments[activeSegmentIndex + 1];
+                const start = parseFloat(seg.startAngle) || 0;
+                const hi = next ? Math.max(start + 1, (parseFloat(next.endAngle) || limit) - 1) : limit;
+                let val = parseFloat(e.target.value);
+                if (!Number.isFinite(val)) val = hi;
+                // O último segmento sempre termina no ângulo máximo.
+                val = next ? Math.min(hi, Math.max(start + 1, val)) : limit;
+                seg.endAngle = val;
+                if (next) next.startAngle = val;
+                e.target.value = val;
+                rememberSegmentFractions();
+                drawMapFeatures();
+                renderSegmentsUI();
             };
         }
 
@@ -3093,6 +3228,11 @@
         activeSegmentIndex = 0;
         showSegmentMarkers = true;
         normalizeSingleSegment();
+        // Segmentos salvos fora do ângulo máximo (ex.: pivô que era 360° e virou
+        // setorial) são encaixados ao abrir a edição.
+        segmentFractionCache = null;
+        fitSegmentsToPivot();
+        rememberSegmentFractions();
         
         // Layers permanentes: criados uma vez, atualizados in-place
         locationCircle = L.circle([lat, lng], {

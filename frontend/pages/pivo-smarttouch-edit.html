@@ -149,22 +149,11 @@
 
                   <div class="edit-panel__field-box" style="padding: 0; border: none; background: transparent;">
                     <label for="stConfigManufacturer"><span class="edit-panel__req">*</span> Fabricante do equipamento</label>
+                    <!-- SmartTouch é exclusivo da Bauer: fabricante fixo. -->
                     <div class="edit-panel__select-field" style="width: 100%;">
-                      <button class="edit-panel__select-btn" type="button" aria-expanded="false">Bauer</button>
-                      <i class="fa-solid fa-chevron-down"></i>
-                      <div class="edit-panel__select-menu" role="listbox">
-                        <button class="edit-panel__select-option is-active" type="button" data-value="bauer">Bauer</button>
-                        <button class="edit-panel__select-option" type="button" data-value="valley">Valley</button>
-                        <button class="edit-panel__select-option" type="button" data-value="irrigabras">Irrigabras</button>
-                        <button class="edit-panel__select-option" type="button" data-value="krebs">Krebs</button>
-                        <button class="edit-panel__select-option" type="button" data-value="carborundum">Carborundum</button>
-                      </div>
+                      <button class="edit-panel__select-btn" type="button" aria-expanded="false" disabled aria-disabled="true" title="O SmartTouch é exclusivo da Bauer" style="background:#f1f5f9;color:#475569;cursor:not-allowed;">Bauer</button>
                       <select id="stConfigManufacturer" aria-hidden="true" tabindex="-1" style="display: none;">
                         <option value="bauer" selected>Bauer</option>
-                        <option value="valley">Valley</option>
-                        <option value="irrigabras">Irrigabras</option>
-                        <option value="krebs">Krebs</option>
-                        <option value="carborundum">Carborundum</option>
                       </select>
                     </div>
                   </div>

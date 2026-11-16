@@ -899,7 +899,11 @@
                 const stopBtn = e.target.closest(".pincard__control-btn.is-stop");
                 if (stopBtn) {
                     if (!state.selectedId) return;
-                    window.IcSetSimPivotStatus?.(state.selectedId, "painel_energizado");
+                    // "Parado via internet": o braço fica na última posição e o
+                    // comando entra no histórico (IcDemoHistory.log, via simulação).
+                    if (typeof window.IcStopSimPivot === "function") window.IcStopSimPivot(state.selectedId);
+                    else window.IcSetSimPivotStatus?.(state.selectedId, "painel_energizado");
+                    window.IcNotify?.success?.("Comando de parada enviado.", 2000);
                     updatePincardStatus(state.selectedId);
                     return;
                 }
@@ -1764,6 +1768,7 @@
 
     const _PINCARD_STATUS_MAP = {
         painel_energizado:      { cls: "is-energized", text: "PAINEL ENERGIZADO" },
+        parado_via_internet:    { cls: "is-energized", text: "PARADO VIA INTERNET" },
         irrigando:              { cls: "is-running",   text: "IRRIGANDO" },
         movendo_a_seco:         { cls: "is-brown",     text: "MOVENDO A SECO" },
         irrigacao_finalizada:   { cls: "is-complete",  text: "IRRIGAÇÃO FINALIZADA" },
@@ -2407,7 +2412,7 @@
         } else {
             head.innerHTML = `<tr><th></th><th>Início</th><th>Fim</th><th>Lâmina</th><th>Modo</th><th>Ângulo início</th><th>Ângulo fim</th><th>Voltas</th></tr>`;
             body.innerHTML = slice.length ? slice.map((op) => renderOperacaoRow(
-                DHx.fmt.dateTime(op.start), DHx.fmt.dateTime(op.end), `${op.percent}%`, op.mode,
+                DHx.fmt.dateTime(op.start), op.open ? "Em andamento" : DHx.fmt.dateTime(op.end), `${op.percent}%`, op.mode,
                 `${DHx.fmt.n(op.angStart, 1)}°`, `${DHx.fmt.n(op.angEnd, 1)}°`, DHx.fmt.n(op.lap, 2),
                 {
                     tipo: op.scheduled ? "Irrigação por Agendamento" : "Irrigação Simples",
@@ -2420,6 +2425,25 @@
         }
         renderHistoryPager(pg, total);
     }
+
+    // Comando dado / operação encerrada na demo → o histórico se atualiza sozinho,
+    // mantendo a aba e a página em que o usuário está.
+    let _histLiveTimer = null;
+    window.addEventListener("ic:demo-history-change", (ev) => {
+        if (!document.getElementById("pivoHistoryTableBody")) return;
+        const changedId = ev?.detail?.equipId;
+        if (changedId && String(changedId) !== String(state.selectedId)) return;
+        clearTimeout(_histLiveTimer);
+        _histLiveTimer = setTimeout(() => {
+            if (!document.getElementById("pivoHistoryTableBody")) return;
+            // Não recolhe uma linha que o usuário abriu para ler os detalhes.
+            const anyOpen = [...document.querySelectorAll("#pivoHistoryTableBody .pivo-history__row-details")].some((r) => r.style.display !== "none");
+            if (anyOpen) return;
+            const activeTab = document.querySelector(".js-history-tab.is-active")?.getAttribute("data-tab") || "eventos";
+            const page = parseInt(document.querySelector(".pivo-history__pagination .btn-page.is-active")?.getAttribute("data-page") || "1", 10) || 1;
+            renderHistoryTable(activeTab, page);
+        }, 150);
+    });
 
     // Troca de período → histórico acompanha
     document.addEventListener("pluv:periodChanged", () => {

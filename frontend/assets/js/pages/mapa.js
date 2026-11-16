@@ -728,9 +728,11 @@
       const statusKey = String(resolvedStatus.key || "");
       const hasProgressBand = STATUS_PROGRESS_KEYS.has(statusKey);
       const bandProgress = hasProgressBand ? progress : (statusKey === "irrigacao_finalizada" ? 100 : 0);
-      const lineProgress = hasProgressBand ? progress : 0;
       // Pivô operado (com operação ativa): usa o ângulo real, sem offset randômico.
       const motionInfo = window.IcGetPivotMotionInfo?.(equip?.id) || null;
+      // Parado/finalizado: o braço permanece na última posição (não volta para 0°).
+      const restProgress = motionInfo && (motionInfo.parked || motionInfo.finished) ? clampPercent(motionInfo.progress) : 0;
+      const lineProgress = hasProgressBand ? progress : restProgress;
       const seed = getPivotTooltipSeed(equip?.id || "");
       const isMoved = (seed % 10) < 7;
       const seedOffset = (isMoved && !motionInfo) ? ((seed * 37) % span) : 0;
@@ -787,8 +789,8 @@
         bandStartAngle,
         bandEndAngle,
         // Ângulos da operação (verde = partida, vermelho = parada) — só durante a operação ativa.
-        opStartAngleDeg: (motionInfo && !motionInfo.finished) ? (motionInfo.startAngleDeg ?? null) : null,
-        opStopAngleDeg: (motionInfo && !motionInfo.finished) ? (motionInfo.stopAngleDeg ?? null) : null,
+        opStartAngleDeg: (motionInfo && !motionInfo.finished && !motionInfo.parked) ? (motionInfo.startAngleDeg ?? null) : null,
+        opStopAngleDeg: (motionInfo && !motionInfo.finished && !motionInfo.parked) ? (motionInfo.stopAngleDeg ?? null) : null,
         // Sentido de giro do braço: -1 = reverso (anti-horário), 1 = avanço (horário).
         armDirSign: (motionInfo && motionInfo.dirSign < 0) ? -1 : 1,
       };
@@ -1162,12 +1164,29 @@
     const key = String(id || "");
     if (!key) return;
     const overrides = readBombaOverrides();
+    const farm = window.IcFarmGetActive?.() || window.icFarmData || window.IcFarmActive || null;
+    // Estado anterior, para só registrar no histórico quando o comando muda algo.
+    const equip = (Array.isArray(farm?.equipments) ? farm.equipments : []).find((e) => String(e?.id || "") === key) || null;
+    const wasRunning = key in overrides ? !!overrides[key] : (equip ? !!resolveBombaRunning(equip) : false);
     overrides[key] = !!running;
     try { localStorage.setItem(BOMBA_OVERRIDE_KEY, JSON.stringify(overrides)); } catch (_) {}
-    const farm = window.IcFarmGetActive?.() || window.icFarmData || window.IcFarmActive || null;
+    // Histórico da bomba (Eventos/Operações): comando LIGAR / DESLIGAR.
+    try {
+      const log = window.IcDemoHistory?.log;
+      if (log && !!running !== wasRunning) {
+        if (running) log.pumpStart(key);
+        else if (!log.pumpEnd(key)) {
+          // Estava ligada sem um "LIGAR" registrado na demo: grava só o desligamento.
+          const DH = window.IcDemoHistory;
+          log.addEvent(key, { type: "Atualização de Bomba", status: "DESLIGADA PELA INTERNET", details: { "Enviado por": log.user(), "Recebido em": DH.fmt.dateTimeSec(new Date()) } });
+        }
+      }
+    } catch (_) {}
     if (farm && typeof window.IcMapRenderPivots === "function") window.IcMapRenderPivots(farm);
     window.IcFarmsRenderEquipment?.();
     window.IcMapUpdateCardStatusCounts?.();
+    // Avisa as telas abertas (detalhes da bomba) para atualizarem o status na hora.
+    try { window.dispatchEvent(new CustomEvent("ic:bomba-status-change", { detail: { id: key, running: !!running } })); } catch (_) {}
   };
 
   const formatPivotTooltipNumber = (value, digits = 1) => {
@@ -1330,7 +1349,7 @@
   const DISPLAY_LAP_HOURS_AT_100 = 14; // ~14h por volta a 100% (estimativa só p/ exibição)
   const buildPivotStatusExtraHtml = (pivotId) => {
     const info = window.IcGetPivotMotionInfo?.(pivotId);
-    if (!info) return "";
+    if (!info || info.parked) return "";
     const dirIcon = info.dirSign < 0 ? "fa-arrow-rotate-left" : "fa-arrow-rotate-right";
     const dirTitle = info.dirSign < 0 ? "Reverso" : "Avanço";
     // Lâmina de água da operação (mm).

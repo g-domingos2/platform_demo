@@ -1194,6 +1194,10 @@
 
       if (!state.segments || state.segments.length === 0) {
         state.segments = [{ name: "Segmento 1", startAngle: 0, endAngle: validMax }];
+      } else if (window.IcSegments && !window.IcSegments.isValid(state.segments, validMax)) {
+        // O ângulo máximo mudou depois que os segmentos foram criados (ex.: 360° → 240°):
+        // encaixa os segmentos no novo ângulo em vez de deixá-los como se fosse 360°.
+        state.segments = window.IcSegments.fit(state.segments, validMax);
       }
       if (state.activeSegIdx === undefined) state.activeSegIdx = 0;
 

@@ -1732,7 +1732,10 @@
       confirmBtn?.addEventListener("click", handleConfirm);
 
       stopBtn?.addEventListener("click", () => {
-        window.IcSetSimPivotStatus?.(pivotId, "painel_energizado");
+        // Comando de parada: status "Parado via internet" e o braço fica na última posição.
+        if (typeof window.IcStopSimPivot === "function") window.IcStopSimPivot(pivotId);
+        else window.IcSetSimPivotStatus?.(pivotId, "painel_energizado");
+        window.IcNotify?.success?.("Comando de parada enviado.", 2000);
         if (typeof onSave === "function") {
           try { onSave({ ...buildPayload(), action: "stop" }); } catch (_) {}
         }

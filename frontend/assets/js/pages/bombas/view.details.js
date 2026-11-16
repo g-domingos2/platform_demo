@@ -452,7 +452,7 @@
       const slice = ops.slice((historyPage.operacoes - 1) * HIST_PAGE_SIZE, historyPage.operacoes * HIST_PAGE_SIZE);
       opBody.innerHTML = slice.length ? slice.map((op) => `<tr class="bmbd-history__row">
           <td>${DH.fmt.dateTime(op.start)}</td>
-          <td>${DH.fmt.dateTime(op.end)}</td>
+          <td>${op.open ? "Em andamento" : DH.fmt.dateTime(op.end)}</td>
           <td>${DH.fmt.n(op.volume, 2)} m³</td>
         </tr>`).join("") : empty(3, "Nenhuma operação no período selecionado.");
     }
@@ -796,10 +796,26 @@
     if (!equip) return;
     const id = normalizeBmb(equip).id;
     console.info(running ? "[bomba] ligar" : "[bomba] desligar", { id });
+    const wasRunning = window.IcResolveBombaRunning ? !!window.IcResolveBombaRunning(equip) : null;
     window.IcSetBombaRunning?.(id, running);
     renderDetails();
     updateDetailsMinimap();
+    if (wasRunning === !!running) window.IcNotify?.success?.(running ? "A bomba já está ligada." : "A bomba já está desligada.", 2000);
+    else window.IcNotify?.success?.(running ? "Comando enviado: bomba ligada." : "Comando enviado: bomba desligada.", 2000);
   }
+
+  // Comando dado por outra tela (card do mapa) ou novo registro no histórico →
+  // o card de detalhes e a tabela se atualizam sozinhos.
+  window.addEventListener("ic:bomba-status-change", () => {
+    if (!$("bmbdStatusBar")) return;
+    try { renderDetails(); updateDetailsMinimap(); } catch (_) { }
+  });
+  window.addEventListener("ic:demo-history-change", (ev) => {
+    if (!$("bmbdHistoryTableBody")) return;
+    const kind = ev?.detail?.kind;
+    if (kind && kind !== "pump" && kind !== "event" && kind !== "clear" && kind !== "sync") return;
+    try { renderHistory(); } catch (_) { }
+  });
 
   function bindDetailsEvents() {
     if (detailsEventsBound) return;

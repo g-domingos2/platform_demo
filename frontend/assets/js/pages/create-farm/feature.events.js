@@ -222,6 +222,9 @@
         ? farm
         : { ...farm, id: nextId, displayId: nextDisplayId };
       if (!("displayId" in nextFarm)) nextFarm.displayId = nextDisplayId;
+      // Pivô setorial criado no cadastro (ângulo máximo < 360°) e segmentos
+      // fora do ângulo máximo são corrigidos aqui (core/segment-utils.js).
+      try { if (window.IcSegments?.normalizeFarmPivots(nextFarm)) changed = true; } catch (_) { }
       return nextFarm;
     });
     return { farms: normalized, changed };

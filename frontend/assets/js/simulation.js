@@ -47,6 +47,22 @@
         outerFillOpacity: 0
       }
     },
+    parado_via_internet: {
+      label: "Parado via internet",
+      badgeText: "PARADO VIA INTERNET",
+      legend: "100% amarelo",
+      statusText: "PARADO VIA INTERNET",
+      statusClass: "is-warning",
+      badgeClass: "map-card__equip-badge--warn",
+      visual: {
+        fill: "#dac422",
+        stroke: "#dac422",
+        outline: "#dac422",
+        outerFill: "",
+        fillOpacity: 0.22,
+        outerFillOpacity: 0
+      }
+    },
     irrigando: {
       label: "Irrigando",
       badgeText: "IRRIGANDO",
@@ -321,6 +337,7 @@
     const key = getStatusKeyForPivot(pivotId);
     const meta = getStatusMeta(key);
     const baseVisual = getBasePivotVisuals();
+    const idle = key === "painel_energizado" || key === "parado_via_internet";
     return {
       key,
       label: meta.label,
@@ -331,10 +348,10 @@
       badgeClass: meta.badgeClass,
       visual: {
         ...meta.visual,
-        fill: key === "painel_energizado" ? baseVisual.fill : meta.visual.fill,
-        stroke: key === "painel_energizado" ? baseVisual.stroke : meta.visual.stroke,
-        outline: key === "painel_energizado" ? baseVisual.outline : meta.visual.outline,
-        fillOpacity: key === "painel_energizado" ? baseVisual.fillOpacity : getBasePivotFillOpacity()
+        fill: idle ? baseVisual.fill : meta.visual.fill,
+        stroke: idle ? baseVisual.stroke : meta.visual.stroke,
+        outline: idle ? baseVisual.outline : meta.visual.outline,
+        fillOpacity: idle ? baseVisual.fillOpacity : getBasePivotFillOpacity()
       }
     };
   };
@@ -348,16 +365,78 @@
     ferti: "ferti_irrigando",
   };
 
+  // --- Registro no histórico (IcDemoHistory.log) --------------------------------
+  // Todo início/fim de operação do pivô vira linha em Histórico › Eventos/Operações.
+  const histLog = () => window.IcDemoHistory?.log || null;
+  const motionAngleDeg = (m) => (m && Number.isFinite(m.progress) ? (((m.progress / 100) * 360) % 360 + 360) % 360 : 0);
+  const logOpStart = (id, info) => { try { histLog()?.pivotStart(id, info); } catch (_) { } };
+  const logOpEnd = (id, info) => { try { histLog()?.pivotEnd(id, info); } catch (_) { } };
+  const startInfoFromQueueOp = (q) => ({
+    percent: q.speedPct, wet: q.mode !== "movendo_a_seco", ferti: q.mode === "ferti_irrigando",
+    reverse: q.dirSign < 0, angle: q.startAngle, laminaMm: q.laminaMm,
+    stopMode: q.stopType === "angle" ? "por_angulo" : q.stopType === "laps" ? "por_voltas" : "sem_parar",
+    stopValue: q.stopType === "angle" ? q.stopTargetDeg : q.stopType === "laps" ? q.stopLaps : null,
+    scheduled: !!q.scheduled,
+  });
+
+  // Tira o pivô de operação sem perder a posição: o braço fica onde parou.
+  const parkMotion = (id) => {
+    const store = getRuntimeStore();
+    const m = store.motion[id];
+    if (!m) return;
+    store.motion[id] = {
+      progress: m.progress ?? 0,
+      speedPct: m.speedPct || 100,
+      dirSign: m.dirSign < 0 ? -1 : 1,
+      laminaMm: m.laminaMm,
+      parked: true,
+    };
+  };
+
   window.IcSetSimPivotStatus = (pivotId, statusKey) => {
     const aliased = STATUS_KEY_ALIAS[statusKey] || statusKey;
     const key = STATUS_META[aliased] ? aliased : "painel_energizado";
     const id = String(pivotId || "");
     const store = getRuntimeStore();
+    const prevKey = getStatusKeyForPivot(id);
+    const wasActive = ACTIVE_PROGRESS_STATUS_KEYS.has(prevKey);
+    const willBeActive = ACTIVE_PROGRESS_STATUS_KEYS.has(key);
+    const prevMotion = store.motion[id];
+    if (wasActive && prevKey !== key) {
+      // Saiu de uma operação (parou, finalizou ou trocou de modo) → fecha no histórico.
+      logOpEnd(id, {
+        reason: key === "irrigacao_finalizada" ? "finished" : willBeActive ? "replaced" : "stopped",
+        angle: motionAngleDeg(prevMotion), traveledDeg: prevMotion?.traveledDeg,
+      });
+    }
     store.statusOverrides[id] = key;
-    // Ao sair de um status ativo (parar/finalizar), encerra o movimento do pivô.
-    if (!ACTIVE_PROGRESS_STATUS_KEYS.has(key)) delete store.motion[id];
+    // Ao sair de um status ativo (parar/finalizar), encerra o movimento do pivô,
+    // mas mantém o braço na última posição.
+    if (!willBeActive) {
+      if (wasActive) parkMotion(id);
+      else if (prevMotion && !prevMotion.parked && !prevMotion.finished) delete store.motion[id];
+    } else if (prevMotion?.parked) {
+      // Voltou a operar a partir de onde estava parado.
+      store.motion[id] = { progress: prevMotion.progress, speedPct: prevMotion.speedPct, dirSign: prevMotion.dirSign, laminaMm: prevMotion.laminaMm, baseSimMs: getSimNowMs() };
+    }
+    if (willBeActive && prevKey !== key) {
+      // Operação ligada sem passar pelo modal (barra de simulação / programações).
+      const m = store.motion[id];
+      logOpStart(id, {
+        percent: m?.speedPct || 100, wet: key !== "movendo_a_seco", ferti: key === "ferti_irrigando",
+        reverse: (m?.dirSign || 1) < 0, angle: motionAngleDeg(m), laminaMm: m?.laminaMm,
+      });
+    }
     syncPivotRuntimeStates();
     refreshStatusViews();
+  };
+
+  // Comando "Parar pivô" enviado pela plataforma: status "Parado via internet"
+  // e o braço permanece na última posição.
+  window.IcStopSimPivot = (pivotId) => {
+    const id = String(pivotId || "");
+    if (!id) return;
+    window.IcSetSimPivotStatus(id, "parado_via_internet");
   };
 
   // --- Movimento por pivô (chamado pelo motor de programações) -----------------
@@ -422,7 +501,7 @@
       startAngleDeg = m.finishedArc.start;
       stopAngleDeg = m.finishedArc.stop;
     }
-    return { progress, dirSign, speedPct: m.speedPct, laminaMm: Number(m.laminaMm) || 0, remainingMs: remainingFrac * lapMs, startAngleDeg, stopAngleDeg, finished: !!m.finished };
+    return { progress, dirSign, speedPct: m.speedPct, laminaMm: Number(m.laminaMm) || 0, remainingMs: remainingFrac * lapMs, startAngleDeg, stopAngleDeg, finished: !!m.finished, parked: !!m.parked };
   };
 
   // --- Execução de operações (sequência) em tempo real, sem depender do Play global ---
@@ -448,7 +527,8 @@
       if (dist <= 0.0001) dist = 360;
       stopDistDeg = dist;
     }
-    return { mode: opModeKey(op), dirSign, speedPct, startAngle, stopType, stopDistDeg, stopLaps, laminaMm: Number(op?.laminaMm) || 0 };
+    const stopTargetDeg = stopType === "angle" ? (((Number(op?.stopValue) || 0) % 360) + 360) % 360 : null;
+    return { mode: opModeKey(op), dirSign, speedPct, startAngle, stopType, stopDistDeg, stopLaps, stopTargetDeg, laminaMm: Number(op?.laminaMm) || 0, scheduled: (op?.startMode || "agora") !== "agora" };
   };
 
   // Roda uma ou mais operações em sequência (ex.: mover a seco e depois irrigar).
@@ -458,6 +538,11 @@
     const queue = ops.map(normalizeOpForRun);
     const first = queue[0];
     const store = getRuntimeStore();
+    // Se já havia operação rodando, ela é encerrada (substituída) no histórico.
+    if (ACTIVE_PROGRESS_STATUS_KEYS.has(getStatusKeyForPivot(id))) {
+      logOpEnd(id, { reason: "replaced", angle: motionAngleDeg(store.motion[id]), traveledDeg: store.motion[id]?.traveledDeg });
+    }
+    logOpStart(id, startInfoFromQueueOp(first));
     store.motion[id] = {
       progress: (first.startAngle / 360) * 100,
       speedPct: first.speedPct,
@@ -520,9 +605,15 @@
               : (((m.progress * 3.6) % 360) + 360) % 360;
             m.lastIrrigArc = { start: cur.startAngle, stop: stopDeg, dirSign: cur.dirSign };
           }
+          // Histórico: fecha a operação concluída (ângulo final e arco percorrido).
+          const endDeg = cur.stopType === "angle"
+            ? (((cur.startAngle + cur.dirSign * cur.stopDistDeg) % 360) + 360) % 360
+            : motionAngleDeg(m);
+          logOpEnd(id, { reason: "finished", angle: endDeg, traveledDeg: cur.stopType === "angle" ? cur.stopDistDeg : m.traveledDeg });
           m.queue.shift();
           if (m.queue.length) {
             const nxt = m.queue[0];
+            logOpStart(id, startInfoFromQueueOp(nxt));
             m.dirSign = nxt.dirSign;
             m.speedPct = nxt.speedPct;
             m.laminaMm = nxt.laminaMm;
@@ -541,7 +632,8 @@
             };
             store.statusOverrides[id] = "irrigacao_finalizada";
           } else {
-            delete store.motion[id];
+            // Terminou a seco: volta para "painel energizado", com o braço onde parou.
+            store.motion[id] = { progress: (endDeg / 360) * 100, speedPct: m.speedPct, dirSign: m.dirSign, laminaMm: m.laminaMm, parked: true };
             store.statusOverrides[id] = "painel_energizado";
           }
           transitioned = true;
@@ -571,7 +663,13 @@
   }
 
   window.IcClearSimPivotStatus = (pivotId) => {
-    delete getRuntimeStore().statusOverrides[String(pivotId || "")];
+    const cid = String(pivotId || "");
+    if (ACTIVE_PROGRESS_STATUS_KEYS.has(getStatusKeyForPivot(cid))) {
+      const cm = getRuntimeStore().motion[cid];
+      logOpEnd(cid, { reason: "stopped", angle: motionAngleDeg(cm), traveledDeg: cm?.traveledDeg });
+      parkMotion(cid);
+    }
+    delete getRuntimeStore().statusOverrides[cid];
     syncPivotRuntimeStates();
     refreshStatusViews();
   };
@@ -739,6 +837,7 @@
       { value: "irrigando", label: STATUS_META.irrigando.label },
       { value: "movendo_a_seco", label: STATUS_META.movendo_a_seco.label },
       { value: "irrigacao_finalizada", label: STATUS_META.irrigacao_finalizada.label },
+      { value: "parado_via_internet", label: STATUS_META.parado_via_internet.label },
       { value: "painel_desligado", label: STATUS_META.painel_desligado.label },
       { value: "preparando_irrigar", label: STATUS_META.preparando_irrigar.label },
       { value: "alerta", label: STATUS_META.alerta.label },

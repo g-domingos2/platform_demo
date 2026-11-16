@@ -82,6 +82,8 @@
 
           <!-- logo pequena (sidebar fechado) -->
           <img class="brand__logo brand__logo--mini" src="./assets/img/brand/IRRICONTROL_ONE_ICON_4C_cropped.png" alt="Irricontrol" />
+          <!-- DEMO: flag ao lado do logo (some nada em ambiente real) -->
+          <span class="demo-flag" title="Versão demo de testes: nenhuma ação tem efeito em ambiente real">Demo</span>
         </button>
       </div>
 
@@ -639,12 +641,14 @@
   <!-- Helper central: escapeHtml/parseLatLng/formatLatLng compartilhados
        pelas páginas de equipamento (window.IcGeo) -->
   <script src="./assets/js/core/geo-utils.js" defer></script>
+  <script src="./assets/js/core/segment-utils.js" defer></script>
   <script src="./assets/js/core/date-input.js" defer></script>
   <!-- Helper central: getActiveFarmEquipments compartilhado entre
        SmartConnect e SmartTouch (window.IcFarm) -->
   <script src="./assets/js/core/farm-utils.js" defer></script>
   <!-- Motor único de histórico fictício (detalhes, gráficos e relatórios) -->
   <script src="./assets/js/core/demo-history.js" defer></script>
+  <script src="./assets/js/core/demo-config-history.js" defer></script>
   <!-- Helper central: pinIcon/uid compartilhados entre medidor/irripump/
        pluviometro (window.IcMapIcons) -->
   <script src="./assets/js/core/map-icons.js" defer></script>

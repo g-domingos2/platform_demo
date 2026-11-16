@@ -65,6 +65,7 @@
     return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
   }
   const HISTORY_START = new Date(dayStart(NOW).getTime() - HISTORY_DAYS * DAY);
+  const liveNow = () => new Date(Math.max(NOW.getTime(), Date.now()));
 
   function normRange(start, end) {
     let s = start ? new Date(start) : new Date(NOW.getTime() - 7 * DAY);
@@ -74,7 +75,10 @@
     if (s > e) [s, e] = [e, s];
     // "fim" informado só como dia → até o fim do dia (limitado a agora)
     if (e.getHours() === 0 && e.getMinutes() === 0) e = new Date(e.getTime() + DAY - 1);
-    if (e > NOW) e = new Date(NOW);
+    // O limite é o relógio real: comandos dados depois de abrir a página também entram.
+    // (+2 s de folga: as confirmações dos comandos entram alguns ms depois do comando)
+    const live = new Date(liveNow().getTime() + 2000);
+    if (e >= NOW || e > live) e = live;
     return { start: s, end: e };
   }
 
@@ -380,7 +384,256 @@
 
   const USERS = ["bauer@irricontrol.com", "gerente@fazendademo.com", "operador@fazendademo.com"];
 
+  // ============================================== REGISTRO REAL (ações na demo)
+  // Tudo que o usuário faz na demo (ligar/parar pivô, ligar/desligar bomba,
+  // salvar configurações, criar notificações) é gravado aqui, no localStorage,
+  // e entra no MESMO histórico das telas, junto com o histórico fictício.
+  const LOG_KEY = "ic_demo_userlog_v1";
+  const LOG_MAX = 300; // por equipamento/lista
+  let logData = null;
+  let logVersion = 0;
+
+  function logLoad() {
+    if (logData) return logData;
+    try { logData = JSON.parse(localStorage.getItem(LOG_KEY) || "{}") || {}; } catch (_) { logData = {}; }
+    if (typeof logData !== "object" || Array.isArray(logData)) logData = {};
+    return logData;
+  }
+  function logBucket(id) {
+    const all = logLoad();
+    const key = String(id);
+    if (!all[key] || typeof all[key] !== "object") all[key] = {};
+    const b = all[key];
+    ["pivotOps", "pumpOps", "configs", "events"].forEach((k) => { if (!Array.isArray(b[k])) b[k] = []; });
+    return b;
+  }
+  function logSave(equipId, kind) {
+    logVersion += 1;
+    try { localStorage.setItem(LOG_KEY, JSON.stringify(logData || {})); } catch (_) { }
+    try {
+      window.dispatchEvent(new CustomEvent("ic:demo-history-change", { detail: { equipId: equipId == null ? null : String(equipId), kind } }));
+    } catch (_) { }
+  }
+  function logTrim(list) {
+    if (list.length > LOG_MAX) list.splice(0, list.length - LOG_MAX);
+  }
+  function logUser() {
+    try {
+      const u = window.IcCurrentUser?.email || window.IcAuth?.user?.email || localStorage.getItem("ic_user_email");
+      if (u) return String(u);
+    } catch (_) { }
+    return USERS[0];
+  }
+  const normAngle = (a) => ((((Number(a) || 0) % 360) + 360) % 360);
+
+  // ---- pivô: início / fim de operação
+  function logPivotStart(equipId, info = {}) {
+    if (equipId == null) return null;
+    const b = logBucket(equipId);
+    const now = Date.now();
+    // Só existe uma operação aberta por pivô: a anterior é encerrada ("substituída").
+    b.pivotOps.forEach((o) => { if (o.end == null) { o.end = now; o.endReason = o.endReason || "replaced"; if (o.angEnd == null) o.angEnd = normAngle(info.angle ?? o.angStart); } });
+    const wet = info.wet !== false;
+    const rec = {
+      id: `u${now.toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`,
+      start: now, end: null,
+      percent: clamp(Math.round(Number(info.percent) || 100), 1, 100),
+      wet, ferti: !!info.ferti,
+      direction: info.reverse ? "Reverso" : "Avanço",
+      angStart: round(normAngle(info.angle), 2), angEnd: null,
+      stopMode: info.stopMode || "sem_parar",
+      stopValue: info.stopValue == null || info.stopValue === "" ? null : Number(info.stopValue),
+      laminaMm: Number(info.laminaMm) > 0 ? Number(info.laminaMm) : null,
+      scheduled: !!info.scheduled,
+      user: info.user || logUser(),
+      traveledDeg: 0,
+    };
+    b.pivotOps.push(rec);
+    logTrim(b.pivotOps);
+    logSave(equipId, "pivot");
+    return rec;
+  }
+  function logPivotEnd(equipId, info = {}) {
+    if (equipId == null) return null;
+    const b = logBucket(equipId);
+    const rec = [...b.pivotOps].reverse().find((o) => o.end == null);
+    if (!rec) return null;
+    rec.end = Math.max(Date.now(), rec.start + 5);
+    rec.endReason = info.reason || "stopped"; // finished | stopped | replaced
+    if (Number.isFinite(Number(info.angle))) rec.angEnd = round(normAngle(info.angle), 2);
+    if (Number.isFinite(Number(info.traveledDeg))) rec.traveledDeg = Number(info.traveledDeg);
+    if (info.user) rec.stopUser = info.user;
+    else if (rec.endReason === "stopped") rec.stopUser = logUser();
+    logSave(equipId, "pivot");
+    return rec;
+  }
+  function logPivotOpen(equipId) {
+    if (equipId == null) return null;
+    return logBucket(equipId).pivotOps.find((o) => o.end == null) || null;
+  }
+
+  // ---- bomba: ligar / desligar
+  function logPumpStart(equipId, info = {}) {
+    if (equipId == null) return null;
+    const b = logBucket(equipId);
+    if (b.pumpOps.some((o) => o.end == null)) return null; // já está ligada
+    const rec = { id: `b${Date.now().toString(36)}`, start: Date.now(), end: null, user: info.user || logUser() };
+    b.pumpOps.push(rec);
+    logTrim(b.pumpOps);
+    logSave(equipId, "pump");
+    return rec;
+  }
+  function logPumpEnd(equipId, info = {}) {
+    if (equipId == null) return null;
+    const rec = logBucket(equipId).pumpOps.find((o) => o.end == null);
+    if (!rec) return null;
+    rec.end = Math.max(Date.now(), rec.start + 5);
+    rec.stopUser = info.user || logUser();
+    logSave(equipId, "pump");
+    return rec;
+  }
+  function logPumpOpen(equipId) {
+    if (equipId == null) return null;
+    return logBucket(equipId).pumpOps.find((o) => o.end == null) || null;
+  }
+
+  // ---- configurações salvas (Editar equipamento → Salvar)
+  function logAddConfig(equipId, entry = {}) {
+    if (equipId == null) return null;
+    const b = logBucket(equipId);
+    const rec = {
+      id: `c${Date.now().toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`,
+      date: Date.now(),
+      user: entry.user || logUser(),
+      status: entry.status || { controller: "received", hardware: "received", gps: "received", pump: "not_sent" },
+      sections: Array.isArray(entry.sections) ? entry.sections : [],
+      changes: Array.isArray(entry.changes) ? entry.changes : [],
+      snapshot: entry.snapshot || null,
+      favorite: false,
+    };
+    b.configs.push(rec);
+    logTrim(b.configs);
+    logSave(equipId, "config");
+    return rec;
+  }
+  function logConfigs(equipId) {
+    if (equipId == null) return [];
+    return [...logBucket(equipId).configs].sort((a, b2) => b2.date - a.date);
+  }
+  function logToggleFavorite(equipId, configId) {
+    const rec = logBucket(equipId).configs.find((c) => c.id === configId);
+    if (!rec) return false;
+    rec.favorite = !rec.favorite;
+    logSave(equipId, "config");
+    return rec.favorite;
+  }
+
+  // ---- eventos avulsos (ex.: notificação criada para o equipamento)
+  function logAddEvent(equipId, ev = {}) {
+    if (equipId == null) return null;
+    const b = logBucket(equipId);
+    const rec = { id: `e${Date.now().toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`, date: Date.now(), type: ev.type || "Atualização", status: ev.status || "", details: ev.details || {}, detailsPlain: ev.detailsPlain || null, dot: ev.dot || null };
+    b.events.push(rec);
+    logTrim(b.events);
+    logSave(equipId, "event");
+    return rec;
+  }
+  function logEvents(equipId, start, end) {
+    if (equipId == null) return [];
+    const range = normRange(start, end);
+    return logBucket(equipId).events
+      .filter((e) => e.date >= range.start.getTime() && e.date <= range.end.getTime())
+      .map((e) => ({ ...e, date: new Date(e.date), userLogged: true }))
+      .sort((a, b2) => b2.date - a.date);
+  }
+  function logClear(equipId) {
+    if (equipId == null) logData = {};
+    else delete logLoad()[String(equipId)];
+    logSave(equipId, "clear");
+  }
+  // Outra aba mexeu no registro → recarrega
+  window.addEventListener("storage", (e) => {
+    if (e.key !== LOG_KEY) return;
+    logData = null;
+    logVersion += 1;
+    try { window.dispatchEvent(new CustomEvent("ic:demo-history-change", { detail: { equipId: null, kind: "sync" } })); } catch (_) { }
+  });
+
+  // Operações reais do pivô no mesmo formato das fictícias (para somatórios e tabelas).
+  function userPivotOps(equip, m, base) {
+    const recs = logBucket(equip.id).pivotOps;
+    if (!recs.length) return [];
+    let hours = base.hours;
+    let wet = base.wet;
+    return recs.map((rec) => {
+      const open = rec.end == null;
+      const start = new Date(rec.start);
+      const end = new Date(open ? Math.max(Date.now(), rec.start + 1000) : rec.end);
+      const durH = Math.max(0, (end - start) / HOUR);
+      const isWet = !!rec.wet;
+      const percent = rec.percent || 100;
+      const sign = rec.direction === "Reverso" ? -1 : 1;
+      const sweep = m.sweep || 360;
+      let traveled = Number(rec.traveledDeg) || 0;
+      let angEnd = rec.angEnd;
+      if (open) {
+        const live = window.IcGetPivotAngle?.(equip.id);
+        if (Number.isFinite(live)) angEnd = normAngle(live);
+      }
+      if (angEnd == null) angEnd = rec.angStart;
+      if (!(traveled > 0)) traveled = sign > 0 ? normAngle(angEnd - rec.angStart) : normAngle(rec.angStart - angEnd);
+      const lap = traveled / sweep;
+      const laminaMm = isWet ? (rec.laminaMm || (m.lamina100 * 100) / percent) : 0;
+      const tariff = splitTariff(start, end);
+      const kw = isWet ? m.power : m.power * 0.12;
+      const kwh = { peak: tariff.peak * kw, off: tariff.off * kw, reduced: tariff.reduced * kw };
+      const volume = isWet ? m.flow * durH : 0;
+      const hourStart = hours;
+      const wetStart = wet;
+      hours += durH;
+      if (isWet) wet += durH;
+      let stopAngle = null;
+      if ((rec.stopMode === "por_angulo" || rec.stopMode === "por_angulos") && rec.stopValue != null) stopAngle = normAngle(rec.stopValue);
+      return {
+        id: `${equip.id}-${rec.id}`, userLogged: true, open, endReason: rec.endReason || null,
+        start, end, durH, percent, laminaMm, lap, direction: rec.direction,
+        mode: isWet ? "Molhado" : "Seco", wet: isWet, ferti: !!rec.ferti,
+        angStart: rec.angStart, angEnd, stopMode: rec.stopMode, stopValue: rec.stopValue, stopAngle,
+        volume, kwh, kwhTotal: kwh.peak + kwh.off + kwh.reduced, tariffHours: tariff,
+        cost: kwh.peak * TARIFF.peak + kwh.off * TARIFF.off + kwh.reduced * TARIFF.reduced,
+        fault: null, scheduled: !!rec.scheduled, user: rec.user, stopUser: rec.stopUser || rec.user,
+        pressureCenter: isWet ? m.pCenter : 0, pressureTower: isWet ? m.pTower : 0,
+        voltage: Math.round(m.nominalV * 0.99),
+        hourStart, hourEnd: hours, wetStart, wetEnd: wet,
+        relLaminaMm: isWet ? volume / (m.areaHa * 10) : 0,
+      };
+    });
+  }
+
+  // Histórico fictício + operações reais. As fictícias que cairiam em cima de
+  // uma operação real são descartadas (o que o usuário fez tem prioridade).
+  function mergeUserOps(base, userOps) {
+    if (!userOps.length) return base;
+    const pad = 20 * MIN;
+    const kept = base.ops.filter((o) => !userOps.some((u) => o.start.getTime() <= u.end.getTime() + pad && o.end.getTime() >= u.start.getTime() - pad));
+    const ops = [...kept, ...userOps].sort((a, b2) => a.start - b2.start);
+    const last = userOps[userOps.length - 1];
+    return { ...base, ops, hours: last.hourEnd ?? base.hours, wet: last.wetEnd ?? base.wet, angle: last.angEnd ?? base.angle };
+  }
+
   function pivotTimeline(equip, farm) {
+    const base = pivotTimelineBase(equip, farm);
+    const recs = logBucket(equip.id).pivotOps;
+    if (!recs.length) return base;
+    const hasOpen = recs.some((o) => o.end == null);
+    const key = `pvu|${equip.id}|${logVersion}|${cacheKey("pv", equip)}`;
+    if (!hasOpen && cache.has(key)) return cache.get(key);
+    const res = mergeUserOps(base, userPivotOps(equip, base.model, base));
+    if (!hasOpen) cache.set(key, res);
+    return res;
+  }
+
+  function pivotTimelineBase(equip, farm) {
     const key = cacheKey("pv", equip);
     if (cache.has(key)) return cache.get(key);
     const m = pivotModel(equip);
@@ -527,6 +780,7 @@
       if (t >= s && t <= e) list.push({ date, type, status, details, dot });
     };
     opsInRange(ops, new Date(s - DAY), new Date(e + DAY)).forEach((op) => {
+      if (op.userLogged) { pushUserPivotEvents(op, push); return; }
       const common = {
         horimetroTotal: fmt.hm(op.hourStart),
         horimetroMolhado: fmt.hm(op.wetStart),
@@ -555,8 +809,44 @@
         push(op.end, "Atualização", "IRRIGAÇÃO FINALIZADA", { ...endCommon, recebidoEm: fmt.dateTimeSec(op.end) });
       }
     });
+    logEvents(equip.id, range.start, range.end).forEach((ev) => list.push(ev));
     list.sort((a, b) => b.date - a.date);
     return list;
+  }
+
+  // Eventos de uma operação real (comando dado na demo), no mesmo formato da plataforma.
+  function pushUserPivotEvents(op, push) {
+    const kindLabel = op.ferti ? "Fertirrigação" : op.scheduled ? "Irrigação por Agendamento" : "Irrigação Simples";
+    const stopLabel = op.stopAngle != null ? "Parada por Ângulo" : op.stopMode === "por_voltas" ? "Parada por Voltas" : "Sem parada";
+    const common = {
+      horimetroTotal: fmt.hm(op.hourStart),
+      horimetroMolhado: fmt.hm(op.wetStart),
+      irrigacaoAtiva: `${kindLabel} - Fertirrigação ${op.ferti ? "Habilitada" : "Desabilitada"}`,
+      modoInicio: op.scheduled ? "Agendado" : "Imediato",
+      direcao: op.direction,
+      modo: op.mode,
+      modoParada: stopLabel,
+      anguloAtual: `${fmt.n(op.angStart, 2)}°`,
+      anguloParada: op.stopAngle != null ? `${fmt.n(op.stopAngle, 0)}°` : op.stopMode === "por_voltas" && op.stopValue ? `${fmt.n(op.stopValue, 1)} volta(s)` : "-",
+      percentimetroLamina: op.wet ? `${op.percent}% - ${fmt.n(op.laminaMm, 2)} mm` : `${op.percent}%`,
+      pressaoUltimaTorre: `${fmt.n(op.pressureTower, 1)} bar`,
+    };
+    const base = op.ferti ? "FERTIRRIGAÇÃO" : op.scheduled ? "IRRIGAÇÃO POR AGENDAMENTO" : "IRRIGAÇÃO SIMPLES";
+    const line = (upper) => `${base} | ${op.direction.toUpperCase()} | ${op.mode.toUpperCase()} | ${op.percent}%${op.wet ? ` | ${fmt.n(op.laminaMm, 2)} ${upper ? "MM" : "mm"}` : ""}`;
+    const at = (ms) => new Date(op.start.getTime() + ms);
+    push(op.start, "Comando", line(false), { ...common, enviadoEm: fmt.dateTimeSec(op.start), enviadoPor: op.scheduled ? "Agendamento" : op.user }, "green");
+    // Na demo o equipamento confirma na hora (alguns ms depois, só para manter a ordem).
+    if (op.wet) push(at(1), "Atualização", "ESPERANDO PRESSURIZAÇÃO", { ...common, recebidoEm: fmt.dateTimeSec(at(1)) });
+    push(at(2), "Atualização", line(true), { ...common, recebidoEm: fmt.dateTimeSec(at(2)) });
+    if (op.open) return;
+    const endCommon = { ...common, horimetroTotal: fmt.hm(op.hourEnd), horimetroMolhado: fmt.hm(op.wetEnd), anguloAtual: `${fmt.n(op.angEnd, 2)}°` };
+    if (op.endReason === "finished") {
+      push(op.end, "Atualização", op.wet ? "IRRIGAÇÃO FINALIZADA" : "MOVIMENTO A SECO FINALIZADO", { ...endCommon, recebidoEm: fmt.dateTimeSec(op.end) });
+    } else if (op.endReason === "stopped") {
+      push(op.end, "Comando", "PARAR PIVÔ", { ...endCommon, enviadoEm: fmt.dateTimeSec(op.end), enviadoPor: op.stopUser }, "green");
+      const conf = new Date(op.end.getTime() + 1);
+      push(conf, "Atualização", "PARADO VIA INTERNET", { ...endCommon, recebidoEm: fmt.dateTimeSec(conf) });
+    }
   }
 
   function pivotOps(equipOrId, start, end) {
@@ -672,6 +962,33 @@
   }
 
   function pumpTimeline(equip, farm) {
+    const base = pumpTimelineBase(equip, farm);
+    const recs = logBucket(equip.id).pumpOps;
+    if (!recs.length) return base;
+    const m = base.model;
+    let hours = base.hours;
+    const userOps = recs.map((rec) => {
+      const open = rec.end == null;
+      const start = new Date(rec.start);
+      const end = new Date(open ? Math.max(Date.now(), rec.start + 1000) : rec.end);
+      const durH = Math.max(0, (end - start) / HOUR);
+      const tariff = splitTariff(start, end);
+      const kwh = { peak: tariff.peak * m.power, off: tariff.off * m.power, reduced: tariff.reduced * m.power };
+      const hourStart = hours;
+      hours += durH;
+      return {
+        id: `${equip.id}-${rec.id}`, userLogged: true, open, start, end, durH,
+        volume: m.flow * durH, kwh, kwhTotal: kwh.peak + kwh.off + kwh.reduced,
+        cost: kwh.peak * TARIFF.peak + kwh.off * TARIFF.off + kwh.reduced * TARIFF.reduced,
+        manual: false, failure: false, user: rec.user, stopUser: rec.stopUser || rec.user, hourStart, hourEnd: hours,
+      };
+    });
+    const pad = 20 * MIN;
+    const kept = base.ops.filter((o) => !userOps.some((u) => o.start.getTime() <= u.end.getTime() + pad && o.end.getTime() >= u.start.getTime() - pad));
+    return { ...base, ops: [...kept, ...userOps].sort((a, b2) => a.start - b2.start), hours };
+  }
+
+  function pumpTimelineBase(equip, farm) {
     const key = cacheKey("bm", equip);
     if (cache.has(key)) return cache.get(key);
     const m = pumpModel(equip);
@@ -736,6 +1053,16 @@
       if (date.getTime() >= s && date.getTime() <= e) out.push({ date, type, status, details });
     };
     opsInRange(pumpTimeline(ctx.equip, ctx.farm).ops, new Date(s - DAY), new Date(e + DAY)).forEach((op) => {
+      if (op.userLogged) {
+        push(op.start, "Comando", "LIGAR", { "Enviado por": op.user });
+        const on = new Date(op.start.getTime() + 1);
+        push(on, "Atualização de Bomba", "LIGADA VIA INTERNET", { "Horímetro": fmt.hm(op.hourStart) });
+        if (!op.open) {
+          push(op.end, "Comando", "DESLIGAR", { "Enviado por": op.stopUser });
+          push(new Date(op.end.getTime() + 1), "Atualização de Bomba", "DESLIGADA PELA INTERNET", { "Horímetro": fmt.hm(op.hourEnd) });
+        }
+        return;
+      }
       if (op.manual) {
         push(op.start, "Atualização de Bomba", "LIGADA MANUALMENTE", { "Horímetro": fmt.hm(op.hourStart) });
         push(op.end, "Atualização de Bomba", "DESLIGADA MANUALMENTE", { "Horímetro": fmt.hm(op.hourEnd) });
@@ -750,6 +1077,8 @@
         push(new Date(op.end.getTime() + 20000), "Atualização de Bomba", "DESLIGADA PELA INTERNET", { "Horímetro": fmt.hm(op.hourEnd) });
       }
     });
+    // Eventos avulsos (ex.: notificação): a tabela da bomba mostra "rótulo: valor".
+    logEvents(ctx.equip.id, range.start, range.end).forEach((ev) => out.push({ ...ev, details: ev.detailsPlain || ev.details }));
     out.sort((a, b) => b.date - a.date);
     return out;
   }
@@ -1083,6 +1412,15 @@
     rain: { daily: rainEquipSeries, hourly: rainHourly },
     station: { daily: stationDaily, at: stationAt },
     cosmo: { daily: cosmoDaily },
-    dailyFromOps, lastCommunication, paginationHtml,
+    dailyFromOps, lastCommunication, paginationHtml, liveNow,
+    // Registro real das ações feitas na demo (ver bloco "REGISTRO REAL")
+    log: {
+      pivotStart: logPivotStart, pivotEnd: logPivotEnd, pivotOpen: logPivotOpen,
+      pumpStart: logPumpStart, pumpEnd: logPumpEnd, pumpOpen: logPumpOpen,
+      addConfig: logAddConfig, configs: logConfigs, toggleFavorite: logToggleFavorite,
+      addEvent: logAddEvent, events: logEvents, clear: logClear, user: logUser,
+      touch: (id) => logSave(id, "config"),
+      version: () => logVersion,
+    },
   };
 })();

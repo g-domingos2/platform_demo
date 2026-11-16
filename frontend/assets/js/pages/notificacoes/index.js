@@ -615,6 +615,25 @@
             if (idx >= 0) groups[idx] = group; else groups.push(group);
             writeGroups(groups);
             refreshLists();
+            // Histórico de cada equipamento escolhido: registra a notificação
+            // (aparece em Detalhes › Histórico › Eventos do pivô e da bomba).
+            try {
+                const DH = window.IcDemoHistory;
+                if (DH?.log) {
+                    const active = (group.options || []).filter((o) => o.enabled).length;
+                    const when = DH.fmt.dateTimeSec(new Date());
+                    const period = group.allDay ? "Todo o dia" : `${group.start} – ${group.end}`;
+                    (group.devices || []).forEach((d) => {
+                        if (d?.id == null) return;
+                        DH.log.addEvent(d.id, {
+                            type: "Notificação",
+                            status: `${editing ? "NOTIFICAÇÃO ATUALIZADA" : "NOTIFICAÇÃO CRIADA"} | ${String(group.name || "").toUpperCase()}`,
+                            details: { recebidoEm: when },
+                            detailsPlain: { "Criada em": when, "Criada por": DH.log.user(), "Grupo": group.name, "Período": period, "Notificações ativas": String(active) },
+                        });
+                    });
+                }
+            } catch (_) { /* demo */ }
             window.IcNotify?.success?.(editing ? "Notificação atualizada" : "Notificação criada");
         }
 

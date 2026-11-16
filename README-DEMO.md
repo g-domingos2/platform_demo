@@ -78,3 +78,20 @@ O card da fazenda (lista de equipamentos + **Criar equipamento**) funciona norma
 
 ---
 Deploy atualizado em 2026-11-05 16:38.
+
+
+## Atualização 16/11/2026 — histórico real, segmentos e ajustes do relatório
+
+- **Histórico de comandos (pivô e bomba):** todo comando dado na demo (ligar, parar, operação concluída) é gravado e
+  aparece na hora em Detalhes › Histórico › Eventos e Operações, junto com o histórico fictício.
+  Motor: `IcDemoHistory.log` em `assets/js/core/demo-history.js` (localStorage, chave `ic_demo_userlog_v1`).
+- **Histórico de Configurações (Editar pivô):** cada *Salvar* gera uma linha com data, usuário (e-mail fictício), status
+  e a configuração completa salva; coordenadas abrem o Google Maps; favoritos e paginação funcionam.
+  **Novo** `assets/js/core/demo-config-history.js`.
+- **Segmentos:** sempre calculados dentro do ângulo máximo do pivô (antes eram tratados como 360°).
+  **Novo** `assets/js/core/segment-utils.js` (usado na edição e no cadastro).
+- **Pivô setorial:** pivô criado com ângulo máximo < 360° passa a ser gravado e exibido como setorial (Nexus e SmartTouch),
+  inclusive os já criados.
+- **Parar pivô:** status "Parado via internet" e o braço fica na última posição (`IcStopSimPivot` em `simulation.js`).
+- **Notificações:** criar/editar uma notificação registra um evento no histórico de cada equipamento escolhido (pivô e bomba).
+- SmartTouch com fabricante fixo em Bauer; texto "Versão demo de testes" em Configurações › Versão; flag "Demo" no logo.
