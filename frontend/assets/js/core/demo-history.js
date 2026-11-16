@@ -726,6 +726,52 @@
       busyUntil = end.getTime();
     }
 
+    // Semana atual nunca fica vazia: em semanas chuvosas o sorteio acima pode não
+    // gerar nenhuma operação e o Histórico abria com "Nenhum evento no período".
+    // Aqui entram até 2 operações de exemplo (4 e 2 dias atrás), fixas por pivô.
+    if (!ops.some((o) => o.end.getTime() >= NOW.getTime() - 6 * DAY)) {
+      const r2 = rng(`pt-week|${equip.id}`);
+      [4, 2].forEach((daysAgo) => {
+        const day = dayStart(new Date(NOW.getTime() - daysAgo * DAY));
+        let start = new Date(day.getTime() + (21.5 + r2() * 1.5) * HOUR);
+        start = new Date(Math.round(start.getTime() / MIN) * MIN);
+        const percent = clamp(m.basePercent + Math.round((r2() - 0.5) * 20), 15, 100);
+        let lap = between(r2, 0.35, 0.8);
+        const direction = r2() < 0.8 ? "Avanço" : "Reverso";
+        const scheduled = r2() < 0.3;
+        const user = USERS[Math.floor(r2() * USERS.length)];
+        let durH = (lap * m.lapH100 * 100) / percent;
+        if (durH > 16) { durH = 16; lap = (durH * percent) / (100 * m.lapH100); }
+        const end = new Date(start.getTime() + durH * HOUR);
+        if (start.getTime() < busyUntil + 30 * MIN || end.getTime() > lastAllowed) return;
+        const sign = direction === "Avanço" ? 1 : -1;
+        const angStart = angle;
+        const angEnd = (((angle + sign * lap * m.sweep) % 360) + 360) % 360;
+        angle = angEnd;
+        const volume = m.flow * durH;
+        const tariff = splitTariff(start, end);
+        const kwh = { peak: tariff.peak * m.power, off: tariff.off * m.power, reduced: tariff.reduced * m.power };
+        const hourStart = hours;
+        const wetStart = wet;
+        hours += durH;
+        wet += durH;
+        ops.push({
+          id: `${equip.id}-opw${daysAgo}`,
+          start, end, durH, percent, laminaMm: (m.lamina100 * 100) / percent, lap, direction,
+          mode: "Molhado", wet: true, angStart, angEnd,
+          volume, kwh, kwhTotal: kwh.peak + kwh.off + kwh.reduced, tariffHours: tariff,
+          cost: kwh.peak * TARIFF.peak + kwh.off * TARIFF.off + kwh.reduced * TARIFF.reduced,
+          fault: null, scheduled, user,
+          pressureCenter: round(m.pCenter + (r2() - 0.5) * 0.6, 1),
+          pressureTower: round(m.pTower + (r2() - 0.5) * 0.3, 1),
+          voltage: Math.round(m.nominalV * (0.98 + r2() * 0.05)),
+          hourStart, hourEnd: hours, wetStart, wetEnd: wet,
+          relLaminaMm: volume / (m.areaHa * 10),
+        });
+        busyUntil = end.getTime();
+      });
+    }
+
     const res = { model: m, ops, hours, wet, angle };
     cache.set(key, res);
     return res;
