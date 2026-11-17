@@ -3,14 +3,14 @@
     "id": "farm_1794936862386_amy2tl",
     "displayId": "501",
     "name": "test",
-    "lat": -13.312163107330301,
-    "lng": -46.01099967956544,
+    "lat": -13.312163,
+    "lng": -46.011,
     "loc": "-13.312163, -46.011000",
     "clientName": "",
     "energyBillDay": "",
     "waterBillDay": "",
     "timezone": "America/Sao_Paulo",
-    "hasCentral": false,
+    "hasCentral": true,
     "centralRadio": "",
     "owner": "",
     "contact": "",
@@ -52,7 +52,72 @@
           "maxVoltage": "600",
           "quickCreated": true
         }
+      },
+      {
+        "id": "equip_1794937008564",
+        "type": "smart_connect",
+        "category": "pivos",
+        "name": "Pivô 02",
+        "createdAt": "2026-11-17T17:36:48.564Z",
+        "data": {
+          "name": "Pivô 02",
+          "centerLat": -13.331143988043639,
+          "centerLng": -46.03899560829718,
+          "center": "-13.331144, -46.038996",
+          "radius": "886",
+          "bearing": 0,
+          "ref": "-13.323176, -46.038996",
+          "refLat": -13.323175998615199,
+          "refLng": -46.03899560829718,
+          "segments": [
+            {
+              "name": "Segmento 1",
+              "startAngle": 0,
+              "endAngle": 360
+            }
+          ],
+          "activeSegIdx": 0,
+          "canhaoSegments": [],
+          "activeCanhaoSegIdx": 0,
+          "canhaoMode": "off",
+          "manufacturer": "Bauer",
+          "panelType": "Nexus",
+          "powerUnit": "kw",
+          "commType": "4G",
+          "pressure": "pressostato",
+          "voltageController": true,
+          "minVoltage": "400",
+          "maxVoltage": "600",
+          "quickCreated": true
+        }
       }
-    ]
+    ],
+    "centralLat": -13.312163,
+    "centralLng": -46.011,
+    "autoBilling": false,
+    "billing": {
+      "legal_name": "",
+      "document_type": "cpf",
+      "document_number": "",
+      "email": "",
+      "email_language": "pt-BR",
+      "phone": "",
+      "country": "BR",
+      "postal": "",
+      "city": "",
+      "region": "",
+      "address": "",
+      "auto_enabled": false
+    },
+    "technical": {
+      "country": "Brasil",
+      "postal": "",
+      "state": "",
+      "address": "",
+      "city": "",
+      "contact_phone": "",
+      "signalStudy": null
+    },
+    "energyFaixas": null
   }
 ]
