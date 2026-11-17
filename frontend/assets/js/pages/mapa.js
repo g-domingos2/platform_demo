@@ -3273,6 +3273,22 @@
           }
         }
       }
+      if (!centralNode && farm) {
+        const lat = toNumber(farm.lat);
+        const lng = toNumber(farm.lng);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          centralNode = {
+            id: "__central_farm__",
+            name: farm.name || "Central",
+            type: "central",
+            category: "central",
+            tech: "radio",
+            center: { lat, lng },
+            radio: farm.centralRadio || "C0FFEE",
+            isCentral: true
+          };
+        }
+      }
       if (centralNode) drawCentral({ center: centralNode.center }, centralNode);
     }
 
