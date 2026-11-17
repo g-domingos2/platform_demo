@@ -3923,6 +3923,9 @@
         renderConnectivityGpsMarkers();
         if (document.getElementById("connLogs")) renderConnectivityLogs();
         window.IcMapUpdateCardStatusCounts?.(); // resumo "Sem comunicação" por categoria
+        // Desenha automaticamente as linhas da central para todos os equipamentos conectados.
+        const centralNode = getFarmCentralNode(_lastRenderedFarm) || order.find((n) => n.isCentral);
+        if (centralNode) drawConnectivityLines(centralNode);
         // O botão fica em "100%" até nova busca ou sair/voltar da página.
         renderButton();
       }
