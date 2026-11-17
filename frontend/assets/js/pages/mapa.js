@@ -3564,9 +3564,9 @@
   }
 
   const CONN_TOGGLES = [
-    { key: "terrain", pref: "ic:conn-relevo", icon: "fa-mountain-sun" },
-    { key: "keep-lines", pref: "ic:conn-keep-lines", icon: "fa-diagram-project" },
-    { key: "show-gps", pref: "ic:conn-show-gps", icon: "fa-location-crosshairs" },
+    { key: "terrain", pref: "ic:conn-relevo", icon: "fa-mountain-sun", label: "Exibir Relevo" },
+    { key: "keep-lines", pref: "ic:conn-keep-lines", icon: "fa-diagram-project", label: "Manter linhas" },
+    { key: "show-gps", pref: "ic:conn-show-gps", icon: "fa-location-crosshairs", label: "Mostrar GPS" },
   ];
 
   function applyConnToggle(key, on) {
