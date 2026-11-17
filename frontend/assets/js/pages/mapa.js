@@ -4387,9 +4387,18 @@
     renderLastMapContext({ fitToItems: false });
 
     // Modo Conectividade: re-desenha as linhas de enlace após o re-render do zoom.
+    // Se o usuário clicou num equipamento específico, redesenha as linhas dele;
+    // senão, usa a central como fallback.
     if (isConnectivityMode() && _connectivityScanDone) {
-      const centralNode = getFarmCentralNode(_lastRenderedFarm) || getConnectivityNodes(_lastRenderedFarm).find((n) => n.isCentral);
-      if (centralNode) drawConnectivityLines(centralNode);
+      let nodeToRedraw = null;
+      if (_connectivitySelected) {
+        const sel = getSelectedConnectivityNode(_connectivitySelected);
+        if (sel) nodeToRedraw = connectivityAnalysisNode(sel, _connectivityDetailRadio);
+      }
+      if (!nodeToRedraw) {
+        nodeToRedraw = getFarmCentralNode(_lastRenderedFarm) || getConnectivityNodes(_lastRenderedFarm).find((n) => n.isCentral);
+      }
+      if (nodeToRedraw) drawConnectivityLines(nodeToRedraw);
     }
   });
 
