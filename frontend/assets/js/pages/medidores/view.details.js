@@ -540,8 +540,8 @@
       const mdnIcon = L.divIcon({
         className: "",
         html: `<div class="map-mdn-marker" style="--level:${Math.round(d.percent)}%"><div class="mdn-water"></div><span class="map-mdn-marker__value">${Number(d.percent).toFixed(2)}%</span></div>`,
-        iconSize: [64, 64],
-        iconAnchor: [32, 32],
+        iconSize: [128, 128],
+        iconAnchor: [64, 64],
       });
       minimapMarker = L.marker([Number(d.center.lat), Number(d.center.lng)], { icon: mdnIcon }).addTo(minimapInstance);
     }
@@ -563,15 +563,15 @@
       minimapMarker.setIcon(L.divIcon({
         className: "",
         html: `<div class="map-mdn-marker" style="--level:${Math.round(d.percent)}%"><div class="mdn-water"></div><span class="map-mdn-marker__value">${Number(d.percent).toFixed(2)}%</span></div>`,
-        iconSize: [64, 64],
-        iconAnchor: [32, 32],
+        iconSize: [128, 128],
+        iconAnchor: [64, 64],
       }));
     } else {
       const mdnIcon = L.divIcon({
         className: "",
         html: `<div class="map-mdn-marker" style="--level:${Math.round(d.percent)}%"><div class="mdn-water"></div><span class="map-mdn-marker__value">${Number(d.percent).toFixed(2)}%</span></div>`,
-        iconSize: [64, 64],
-        iconAnchor: [32, 32],
+        iconSize: [128, 128],
+        iconAnchor: [64, 64],
       });
       minimapMarker = L.marker(ll, { icon: mdnIcon }).addTo(minimapInstance);
     }

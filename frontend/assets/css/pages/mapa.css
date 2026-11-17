@@ -497,11 +497,11 @@ body:not(.is-visao-geral) .map-simbar {
 }
 
 #mdndMinimap .map-mdn-marker {
-  width: 64px;
-  height: 64px;
-  font-size: 15px;
-  --mdn-border: 4px;
-  --mdn-gap: 3px;
+  width: 128px;
+  height: 128px;
+  font-size: 24px;
+  --mdn-border: 7px;
+  --mdn-gap: 6px;
 }
 
 .map-actions {
