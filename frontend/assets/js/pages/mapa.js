@@ -2586,7 +2586,7 @@
       <div class="pivot-tooltip pivot-tooltip--pivot-card pivot-tooltip--tall">
         <div class="pivot-tooltip__topline">
           <span class="pivot-tooltip__name">${escapeTooltipHtml(equip.name || "MDN")}</span>
-          <span class="pivot-tooltip__status ${mdn.offline ? "is-danger" : status.key === "low" ? "is-warning" : status.key === "high" ? "is-info" : "is-success"}">
+          <span class="pivot-tooltip__status ${mdn.offline ? "is-danger" : "is-info"}">
             ${mdn.offline ? "SEM COMUNICAÇÃO" : `${mdn.percent.toFixed(2)}% (${mdn.meters.toFixed(2)}m)`}
           </span>
         </div>

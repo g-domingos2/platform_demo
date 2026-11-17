@@ -79,6 +79,12 @@
       toNumber(data.volumeM3);
     const volume = volumeRaw === null ? Math.round((percent / 100) * capacity) : volumeRaw;
 
+    const maxLevel =
+      toNumber(data.nivelMax) ??
+      toNumber(data.maxLevel) ??
+      7;
+    const levelMeters = (percent / 100) * maxLevel;
+
     const autonomyRaw =
       toNumber(data.autonomiaDias) ??
       toNumber(data.autonomia) ??
@@ -102,6 +108,7 @@
       percent,
       volume,
       capacity,
+      levelMeters,
       autonomy,
       trend,
       offline,
@@ -237,9 +244,9 @@
     }
     if (bar) {
       bar.classList.toggle("is-offline", d.offline);
-      bar.classList.toggle("is-running", !d.offline);
+      bar.classList.toggle("is-info", !d.offline);
     }
-    if (text) text.textContent = d.offline ? "SEM COMUNICAÇÃO" : "MONITORANDO";
+    if (text) text.textContent = d.offline ? "SEM COMUNICAÇÃO" : `${Number(d.percent).toFixed(2)}% (${Number(d.levelMeters).toFixed(2)}m)`;
 
     renderLevelHistory(equip);
   }
@@ -278,7 +285,7 @@
     if (body) {
       const slice = readings.slice((historyPageMdn - 1) * HIST_PAGE_SIZE, historyPageMdn * HIST_PAGE_SIZE);
       body.innerHTML = slice.length
-        ? slice.map((r) => `<tr class="pivo-history__row"><td>${DH.fmt.dateTime(r.date)}</td><td>${fm(r.measure)}</td><td>${fm(r.offset)}</td><td>${fm(r.level)} <small style="color:#94a3b8">(${r.pct.toFixed(0)}%)</small></td></tr>`).join("")
+        ? slice.map((r) => `<tr class="pivo-history__row"><td>${DH.fmt.dateTime(r.date)}</td><td>${fm(r.measure)}</td><td>${fm(r.offset)}</td><td>${fm(r.level)}</td></tr>`).join("")
         : `<tr class="pivo-history__row"><td colspan="4" style="text-align:center;padding:28px 12px;color:#64748b;">Nenhuma leitura no período selecionado.</td></tr>`;
     }
     const pager = panel.querySelector(".mdnd-history .pivo-history__pagination");
