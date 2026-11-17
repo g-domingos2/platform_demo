@@ -79,7 +79,7 @@
     ctaBtn.innerHTML = isConnectivity
       ? `
         <span class="map-card__cta-ico"><i class="fa-solid fa-wifi"></i></span>
-        <span>${t("Buscar Rádios")}</span>${scanDone ? " 100%" : ""}
+        <span>${t("Buscar Rádios")}</span>
       `
       : `
         <span class="map-card__cta-ico"><i class="fa-solid fa-plus"></i></span>

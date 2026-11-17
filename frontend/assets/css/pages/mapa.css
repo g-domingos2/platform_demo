@@ -1536,11 +1536,11 @@ body:not(.is-visao-geral) .map-simbar {
 }
 
 .map-card__cta.is-connectivity {
-  background: var(--primary);
+  background: #00b96b;
 }
 
 .map-card__cta.is-connectivity:hover {
-  background: var(--primary2);
+  background: #26d08a;
   box-shadow: 0 4px 12px rgba(22, 163, 74, .25);
 }
 
@@ -2582,14 +2582,14 @@ body.is-conectividade #mapWeatherCard {
 
 /* Botão "Registros" em barra larga, ao lado de Equipamentos e Legenda. */
 .conn-logs-bar .map-equip__bar.is-active {
-  background: #0f766e;
-  border-color: #0f766e;
+  background: #00b96b;
+  border-color: #00b96b;
   color: #fff;
 }
 .conn-logs-bar .map-equip__bar.is-active .map-equip__icon { color: #fff; }
 [data-theme="dark"] .conn-logs-bar .map-equip__bar.is-active {
-  background: #2dd4bf;
-  border-color: #2dd4bf;
+  background: #26d08a;
+  border-color: #26d08a;
   color: #0f172a;
 }
 

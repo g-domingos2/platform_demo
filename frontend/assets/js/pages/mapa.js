@@ -3253,7 +3253,26 @@
       ensureConnectivityControls();
       renderConnectivityLegend();
       renderConnectivityLogsBar();
-      const centralNode = getFarmCentralNode(farm);
+      let centralNode = getFarmCentralNode(farm);
+      if (!centralNode) {
+        const fallback = equipments.find((e) => e.type === "smart_connect" || e.type === "smarttouch");
+        if (fallback?.data) {
+          const lat = toNumber(fallback.data.lat || fallback.data.centerLat);
+          const lng = toNumber(fallback.data.lng || fallback.data.centerLng);
+          if (Number.isFinite(lat) && Number.isFinite(lng)) {
+            centralNode = {
+              id: "__central_fallback__",
+              name: fallback.name || "Central",
+              type: "central",
+              category: "central",
+              tech: "radio",
+              center: { lat, lng },
+              radio: fallback.data.radioCentral || fallback.data.radio || "C0FFEE",
+              isCentral: true
+            };
+          }
+        }
+      }
       if (centralNode) drawCentral({ center: centralNode.center }, centralNode);
     }
 
@@ -3859,7 +3878,7 @@
     let index = 0;
     if (button) button.classList.add("is-scanning");
     const renderButton = () => {
-      if (button) button.innerHTML = `<span class="map-card__cta-ico"><i class="fa-solid fa-wifi"></i></span><span>${t("Buscar Rádios")}</span> ${progress}%`;
+      if (button) button.innerHTML = `<span class="map-card__cta-ico"><i class="fa-solid fa-wifi"></i></span><span>${t("Buscar Rádios")}</span>`;
     };
     renderButton();
     _connectivityScanTimer = setInterval(() => {
