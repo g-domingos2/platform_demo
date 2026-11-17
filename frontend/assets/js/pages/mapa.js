@@ -4385,6 +4385,12 @@
     }
 
     renderLastMapContext({ fitToItems: false });
+
+    // Modo Conectividade: re-desenha as linhas de enlace após o re-render do zoom.
+    if (isConnectivityMode() && _connectivityScanDone) {
+      const centralNode = getFarmCentralNode(_lastRenderedFarm) || getConnectivityNodes(_lastRenderedFarm).find((n) => n.isCentral);
+      if (centralNode) drawConnectivityLines(centralNode);
+    }
   });
 
   const rerenderActiveFarmPivots = () => {

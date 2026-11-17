@@ -128,6 +128,118 @@
           "maxVoltage": "600",
           "quickCreated": true
         }
+      },
+      {
+        "id": "equip_1794937846499",
+        "type": "medidor",
+        "category": "medidores",
+        "name": "Medidor 01",
+        "createdAt": "2026-11-17T17:50:46.495Z",
+        "data": {
+          "lat": -13.332662,
+          "lng": -46.029003,
+          "loc": "-13.332662, -46.029003",
+          "version": "5.3",
+          "sensor": "5MCA - Novus",
+          "bombas": [],
+          "nome": "",
+          "vazaoEnabled": false,
+          "coefA": "",
+          "coefB": "",
+          "coefC": "",
+          "nivelMax": "",
+          "nivelOffset": "",
+          "nivelValMin": "",
+          "nivelValMax": "",
+          "radio": ""
+        }
+      },
+      {
+        "id": "equip_1794937874387",
+        "type": "irripump",
+        "category": "bombas",
+        "name": "Bomba 01",
+        "createdAt": "2026-11-17T17:51:14.387Z",
+        "data": {
+          "lat": -13.334206,
+          "lng": -46.028348,
+          "loc": "-13.334206, -46.028348",
+          "powerUnit": "kw",
+          "version": "5.2",
+          "nome": "",
+          "power": "",
+          "flow": "",
+          "enableConsumptionLimit": false,
+          "consumptionLimit": "",
+          "enableSensorScale": true,
+          "sensorScaleLimit": "",
+          "enablePressureSensor": false,
+          "volumePerPulse": "",
+          "orgao": "ana",
+          "identId": "",
+          "energyTime": "",
+          "medidorId": "",
+          "levelOn": "",
+          "levelOff": "",
+          "commType": "XBEE",
+          "radioCentral": "",
+          "radioBomba": "0000000000000000",
+          "gateway": ""
+        }
+      },
+      {
+        "id": "equip_1794937885365",
+        "type": "smart_connect",
+        "category": "pivos",
+        "name": "Pivô 04",
+        "createdAt": "2026-11-17T17:51:25.365Z",
+        "data": {
+          "name": "Pivô 04",
+          "centerLat": -13.337594956522622,
+          "centerLng": -46.05314254760743,
+          "center": "-13.337595, -46.053143",
+          "radius": "795",
+          "bearing": 0,
+          "ref": "-13.330445, -46.053143",
+          "refLat": -13.330445349755568,
+          "refLng": -46.05314254760743,
+          "segments": [
+            {
+              "name": "Segmento 1",
+              "startAngle": 0,
+              "endAngle": 360
+            }
+          ],
+          "activeSegIdx": 0,
+          "canhaoSegments": [],
+          "activeCanhaoSegIdx": 0,
+          "canhaoMode": "off",
+          "manufacturer": "Bauer",
+          "panelType": "Nexus",
+          "powerUnit": "kw",
+          "commType": "4G",
+          "pressure": "pressostato",
+          "voltageController": true,
+          "minVoltage": "400",
+          "maxVoltage": "600",
+          "quickCreated": true
+        }
+      },
+      {
+        "id": "equip_1794937901904",
+        "type": "repetidora",
+        "category": "repetidoras",
+        "name": "Repetidora 01",
+        "createdAt": "2026-11-17T17:51:41.904Z",
+        "data": {
+          "lat": -13.328241,
+          "lng": -46.049666,
+          "loc": "-13.328241, -46.049666",
+          "name": "",
+          "height": "8",
+          "type": "Solar",
+          "radio": ""
+        }
       }
     ],
     "centralLat": -13.312163,
