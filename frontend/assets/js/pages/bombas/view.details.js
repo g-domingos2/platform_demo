@@ -162,12 +162,12 @@
 
   // Limite de consumo exibido no grÃ¡fico: sempre aparece (bomba normal e
   // GH), usando o valor prÃ³prio salvo no editar quando for um nÃºmero
-  // positivo vÃ¡lido, senÃ£o cai no padrÃ£o 5.500,00 mÂ³ â€” nÃ£o depende do
+  // positivo vÃ¡lido, senÃ£o cai no padrÃ£o 5.500,00 m³ â€” nÃ£o depende do
   // checkbox "Habilitar limite" (dados de mock antigos podem ter esse
   // flag desligado sem nunca ter passado pelo editar de verdade). A linha
   // marca o valor literal, nÃ£o dividido pelos dias do perÃ­odo, senÃ£o
   // ficaria baixo demais pra aparecer perto das barras diÃ¡rias (~3.000-
-  // 6.000 mÂ³).
+  // 6.000 m³).
   function getConsumoDailyLimit() {
     const equip = getFocusBmb();
     const saved = Number(equip?.data?.consumptionLimit);
@@ -208,7 +208,7 @@
     const dateEl = tooltip.querySelector(".bmbd-consumo-chart__tooltip-date");
     const valEl = tooltip.querySelector(".bmbd-consumo-chart__tooltip-row strong");
     if (dateEl) dateEl.textContent = day.label;
-    if (valEl) valEl.textContent = `${fmtM3(day.total)} mÂ³`;
+    if (valEl) valEl.textContent = `${fmtM3(day.total)} m³`;
   }
 
   // BalÃ£o do grÃ¡fico: some por padrÃ£o (CSS: opacity/visibility 0) e sÃ³
@@ -271,7 +271,7 @@
     const yEl = $("bmbdConsumoY");
     if (yEl) {
       yEl.innerHTML = [1, 0.75, 0.5, 0.25, 0]
-        .map((f) => `<span>${fmtM3(Math.round(maxScale * f))} mÂ³</span>`)
+        .map((f) => `<span>${fmtM3(Math.round(maxScale * f))} m³</span>`)
         .join("");
 
       // Valor do limite (linha vermelha tracejada do grÃ¡fico) tambÃ©m entra
@@ -289,7 +289,7 @@
         const limitLabel = document.createElement("span");
         limitLabel.className = "bmbd-consumo-chart__y-limit";
         limitLabel.style.bottom = `${bottomPx.toFixed(1)}px`;
-        limitLabel.textContent = `${fmtM3(consumoLimit.limit)} mÂ³`;
+        limitLabel.textContent = `${fmtM3(consumoLimit.limit)} m³`;
         yEl.appendChild(limitLabel);
       }
     }
@@ -299,7 +299,7 @@
     const legendEl = $("bmbdConsumoLegend");
     if (legendEl) {
       legendEl.innerHTML = consumoLimit
-        ? `<span class="bmbd-consumo-chart__legend-item bmbd-consumo-chart__legend-item--limit"><span>Limite de consumo</span> (${fmtM3(consumoLimit.limit)} mÂ³)</span>`
+        ? `<span class="bmbd-consumo-chart__legend-item bmbd-consumo-chart__legend-item--limit"><span>Limite de consumo</span> (${fmtM3(consumoLimit.limit)} m³)</span>`
         : "";
     }
 
@@ -344,10 +344,10 @@
       const limitLineHtml = (() => {
         if (!consumoLimit || maxScale <= 0) return "";
         const bottomPct = Math.min(100, (consumoLimit.limit / maxScale) * 100);
-        // Sem rÃ³tulo "Limite: X mÂ³" flutuando em cima da linha â€” o valor jÃ¡
+        // Sem rÃ³tulo "Limite: X m³" flutuando em cima da linha â€” o valor jÃ¡
         // aparece na coluna do eixo Y (bmbdConsumoY), em vermelho, na mesma
         // altura desta linha.
-        return `<div class="bmbd-consumo-chart__limit-line" style="bottom:${bottomPct.toFixed(2)}%;" title="${tBmb("Limite de consumo cadastrado no editar bomba")} (${fmtM3(consumoLimit.limit)} mÂ³)"></div>`;
+        return `<div class="bmbd-consumo-chart__limit-line" style="bottom:${bottomPct.toFixed(2)}%;" title="${tBmb("Limite de consumo cadastrado no editar bomba")} (${fmtM3(consumoLimit.limit)} m³)"></div>`;
       })();
 
       barsEl.innerHTML = limitLineHtml + days.map((d, i) => {
@@ -453,7 +453,7 @@
       opBody.innerHTML = slice.length ? slice.map((op) => `<tr class="bmbd-history__row">
           <td>${DH.fmt.dateTime(op.start)}</td>
           <td>${op.open ? "Em andamento" : DH.fmt.dateTime(op.end)}</td>
-          <td>${DH.fmt.n(op.volume, 2)} mÂ³</td>
+          <td>${DH.fmt.n(op.volume, 2)} m³</td>
         </tr>`).join("") : empty(3, "Nenhuma operaÃ§Ã£o no perÃ­odo selecionado.");
     }
     const opPager = panel.querySelector('[data-panel="operacoes"] .bmbd-history__pagination');
@@ -571,7 +571,7 @@
 
     setText("bmbdTitleLabel", d.name || "Bmb");
     setText("bmbdKpiPressure", `${d.pressure.toFixed(1)} bar`);
-    setText("bmbdKpiFlow", `${Math.round(d.flow)} mÂ³/h`);
+    setText("bmbdKpiFlow", `${Math.round(d.flow)} m³/h`);
     setText("bmbdKpiTempMotor", `${Math.round(d.temp + 10)}Â°C`); // Slightly higher than avg
     setText("bmbdKpiVibration", `${d.vibration.toFixed(1)} mm/s`);
 
@@ -580,7 +580,7 @@
     const cur = DHc ? DHc.pump.current(equip) : null;
     if (cur) {
       setText("bmbdKpiPressure", `${cur.pressure.toFixed(1)} bar`);
-      setText("bmbdKpiFlow", `${Math.round(cur.flow)} mÂ³/h`);
+      setText("bmbdKpiFlow", `${Math.round(cur.flow)} m³/h`);
       setText("bmbdKpiHorimeter", `${Math.round(cur.hours)}h`);
       setText("bmbdLastUpdate", DHc.fmt.dateTime(cur.lastCommunication));
     }
