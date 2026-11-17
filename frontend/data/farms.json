@@ -90,6 +90,44 @@
           "maxVoltage": "600",
           "quickCreated": true
         }
+      },
+      {
+        "id": "equip_1794937317865",
+        "type": "smart_connect",
+        "category": "pivos",
+        "name": "Pivô 03",
+        "createdAt": "2026-11-17T17:41:57.865Z",
+        "data": {
+          "name": "Pivô 03",
+          "centerLat": -13.323188079595832,
+          "centerLng": -46.009283065795906,
+          "center": "-13.323188, -46.009283",
+          "radius": "496",
+          "bearing": 0,
+          "ref": "-13.318727, -46.009283",
+          "refLat": -13.318727444430477,
+          "refLng": -46.009283065795906,
+          "segments": [
+            {
+              "name": "Segmento 1",
+              "startAngle": 0,
+              "endAngle": 360
+            }
+          ],
+          "activeSegIdx": 0,
+          "canhaoSegments": [],
+          "activeCanhaoSegIdx": 0,
+          "canhaoMode": "off",
+          "manufacturer": "Bauer",
+          "panelType": "Nexus",
+          "powerUnit": "kw",
+          "commType": "4G",
+          "pressure": "pressostato",
+          "voltageController": true,
+          "minVoltage": "400",
+          "maxVoltage": "600",
+          "quickCreated": true
+        }
       }
     ],
     "centralLat": -13.312163,
