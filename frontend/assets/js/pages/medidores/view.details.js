@@ -101,6 +101,8 @@
 
     const updated = data.updated || equip?.updatedAt || equip?.createdAt || "";
 
+    const isGh = String(data.version) === "5.3";
+
     return {
       id,
       name,
@@ -112,7 +114,8 @@
       autonomy,
       trend,
       offline,
-      updated
+      updated,
+      isGh
     };
   }
 
@@ -217,6 +220,10 @@
     setText("mdndKpiAutonomy", `${Number(d.autonomy).toFixed(1)} dias`);
     setText("mdndKpiStatus", d.offline ? "Offline" : "Normal");
     setText("mdndKpiCapacity", `${Math.round(d.capacity)} m³`);
+
+    const batteryWrap = $("mdndKpiBatteryWrap");
+    if (batteryWrap) batteryWrap.style.display = d.isGh ? "" : "none";
+    if (d.isGh) setText("mdndKpiBattery", "100%");
 
     const trendEl = $("mdndKpiTrend");
     if (trendEl) {
