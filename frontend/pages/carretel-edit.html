@@ -33,6 +33,7 @@
     <div class="edit-panel__body">
       <aside class="edit-panel__nav" aria-label="Atalhos">
         <button class="edit-panel__nav-item is-active" type="button" data-target="#crtEditGeneral">Geral</button>
+        <button class="edit-panel__nav-item" type="button" data-target="#crtEditLocation">Localização</button>
         <button class="edit-panel__nav-item" type="button" data-target="#crtEditIrrigationTiming">Pré e Pós-Irrigação</button>
         <button class="edit-panel__nav-item" type="button" data-target="#crtEditZones">Zonas de Irrigação</button>
       </aside>
@@ -201,6 +202,48 @@
               </div>
             </div>
 
+          </div>
+        </section>
+
+        <!-- ── LOCALIZAÇÃO ─────────────────────────────────────────────── -->
+        <section class="edit-panel__section" id="crtEditLocation">
+          <div class="edit-panel__section-body pivo-edit-specifics edit-panel__section-body--stack">
+            <div class="edit-panel__section-head">
+              <h2 style="color: rgba(0,0,0,0.88); font-weight: 600; font-size: 30px; margin-bottom: 0.5em; line-height: 1.2666666666666666;">Localização</h2>
+              <span class="edit-panel__last-comm crt-last-comm-display" style="font-size: 12px; color: rgba(0,0,0,0.45);"><span class="comm-label">Última comunicação:</span> —</span>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="pivo-edit__field">
+                <label for="crtEditReelLat">Latitude do carretel</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditReelLat" type="number" step="any" placeholder="0" />
+                </div>
+              </div>
+              <div class="pivo-edit__field">
+                <label for="crtEditReelLng">Longitude do carretel</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditReelLng" type="number" step="any" placeholder="0" />
+                </div>
+              </div>
+              <div></div>
+            </div>
+
+            <div class="edit-panel__grid-3" style="grid-template-columns:1fr 1fr 1fr; margin-top:16px;">
+              <div class="pivo-edit__field">
+                <label for="crtEditStartLat">Latitude do início do carrinho</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditStartLat" type="number" step="any" placeholder="0" />
+                </div>
+              </div>
+              <div class="pivo-edit__field">
+                <label for="crtEditStartLng">Longitude do início do carrinho</label>
+                <div class="sc-input-group">
+                  <input class="equip-input sc-input" id="crtEditStartLng" type="number" step="any" placeholder="0" />
+                </div>
+              </div>
+              <div></div>
+            </div>
           </div>
         </section>
 

@@ -52,6 +52,10 @@
       zones: Array.isArray(data.zones)
         ? data.zones.slice(0, 4).map((z) => ({ start: z?.start ?? 0, end: z?.end ?? "", speed: z?.speed ?? "" }))
         : [],
+      reelLat: data.reelLat ?? "",
+      reelLng: data.reelLng ?? "",
+      startLat: data.startLat ?? data.initialLat ?? "",
+      startLng: data.startLng ?? data.initialLng ?? "",
       updatedAt: data.lastCommunication || equip.updatedAt || equip.createdAt || "",
     };
   }
@@ -288,6 +292,10 @@
     set("crtEditWorkingWidth", d.workingWidth);
     set("crtEditMinPressure", d.minPressure);
     set("crtEditNozzleDiameter", d.nozzleDiameter);
+    set("crtEditReelLat", d.reelLat);
+    set("crtEditReelLng", d.reelLng);
+    set("crtEditStartLat", d.startLat);
+    set("crtEditStartLng", d.startLng);
 
     const preEnabled = $("crtEditPreEnabled");
     if (preEnabled) preEnabled.checked = d.preEnabled;
@@ -650,6 +658,10 @@
       workingWidth: window.IcNumeric.readNumber("crtEditWorkingWidth", ""),
       minPressure: window.IcNumeric.readNumber("crtEditMinPressure", ""),
       nozzleDiameter: window.IcNumeric.readNumber("crtEditNozzleDiameter", ""),
+      reelLat: $("crtEditReelLat")?.value?.trim() || "",
+      reelLng: $("crtEditReelLng")?.value?.trim() || "",
+      startLat: $("crtEditStartLat")?.value?.trim() || "",
+      startLng: $("crtEditStartLng")?.value?.trim() || "",
       preIrrigation: {
         enabled: $("crtEditPreEnabled")?.checked ?? false,
         duration: window.IcNumeric.readNumber("crtEditPreDuration", 0),
@@ -686,6 +698,12 @@
       preIrrigation: payload.preIrrigation,
       postIrrigation: payload.postIrrigation,
       zones: payload.zones,
+      reelLat: payload.reelLat,
+      reelLng: payload.reelLng,
+      startLat: payload.startLat,
+      startLng: payload.startLng,
+      initialLat: payload.startLat,
+      initialLng: payload.startLng,
     };
     if (window.IcMapRenderPivots && farm) setTimeout(() => window.IcMapRenderPivots(farm), 0);
     if (window.IcCarretel?.renderData) setTimeout(() => window.IcCarretel.renderData(), 0);
@@ -724,6 +742,12 @@
         preIrrigation: payload.preIrrigation,
         postIrrigation: payload.postIrrigation,
         zones: payload.zones,
+        reelLat: payload.reelLat,
+        reelLng: payload.reelLng,
+        startLat: payload.startLat,
+        startLng: payload.startLng,
+        initialLat: payload.startLat,
+        initialLng: payload.startLng,
       },
     };
     targetFarm.equipments = equipments;

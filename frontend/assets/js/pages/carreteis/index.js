@@ -492,7 +492,7 @@
     return `${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}`;
   }
 
-  async function persistStartPosition(equip, start) {
+  async function persistStartPosition(equip, start, reel) {
     const farm = activeFarm();
     const d = equip?.data || {};
     d.startLat = start.lat;
@@ -500,6 +500,10 @@
     d.initialLat = start.lat;
     d.initialLng = start.lng;
     d.startPositionPendingIrrigation = true;
+    if (reel) {
+      d.reelLat = reel.lat;
+      d.reelLng = reel.lng;
+    }
     equip.updatedAt = new Date().toISOString();
 
     if (farm && Array.isArray(farm.equipments)) {
@@ -511,6 +515,10 @@
         liveEquip.data.initialLat = start.lat;
         liveEquip.data.initialLng = start.lng;
         liveEquip.data.startPositionPendingIrrigation = true;
+        if (reel) {
+          liveEquip.data.reelLat = reel.lat;
+          liveEquip.data.reelLng = reel.lng;
+        }
         liveEquip.updatedAt = equip.updatedAt;
       }
     }
@@ -536,6 +544,7 @@
         initialLat: start.lat,
         initialLng: start.lng,
         startPositionPendingIrrigation: true,
+        ...(reel ? { reelLat: reel.lat, reelLng: reel.lng } : {}),
       },
     };
     targetFarm.equipments = equipments;
@@ -564,6 +573,11 @@
     }
 
     let selectedStart = getRainstarPoint(d, ["startLat", "initialLat", "refLat"], ["startLng", "initialLng", "refLng"]);
+    // Se não há posição inicial salva, cria um ponto default ao sul do carretel
+    // para o usuário ter um marcador para arrastar logo de cara.
+    if (!selectedStart && pulled > 0) {
+      selectedStart = destinationPoint(sprinklerCar, pulled, Math.PI); // 180° = sul
+    }
     let startBearing = selectedStart ? bearingRad(sprinklerCar, selectedStart) : null;
     if (startBearing != null) selectedStart = destinationPoint(sprinklerCar, pulled, startBearing);
 
@@ -613,6 +627,8 @@
       iconAnchor: [10, 10],
     });
     const hoseIcon = window.IcRainstarReelIcon();
+    let reelMarker = null;
+    let startMarker = null;
 
     const renderSelection = ({ fit = false } = {}) => {
       layer.clearLayers();
@@ -627,10 +643,26 @@
         fillOpacity: 0.08,
         interactive: false,
       }).addTo(layer);
-      L.marker([sprinklerCar.lat, sprinklerCar.lng], {
+
+      // Marcador do carretel (arrastável)
+      reelMarker = L.marker([sprinklerCar.lat, sprinklerCar.lng], {
         icon: hoseIcon,
-        interactive: false,
+        draggable: true,
+        autoPan: true,
+        title: t("Carretel"),
       }).addTo(layer);
+      reelMarker.on("dragend", (event) => {
+        const newReel = event.target.getLatLng();
+        sprinklerCar.lat = newReel.lat;
+        sprinklerCar.lng = newReel.lng;
+        // Recalcula a posição inicial mantendo o mesmo bearing/distância
+        if (selectedStart) {
+          const currentBearing = bearingRad(sprinklerCar, selectedStart);
+          selectedStart = destinationPoint(sprinklerCar, pulled, currentBearing);
+        }
+        renderSelection({ fit: false });
+      });
+
       if (selectedStart) {
         L.polyline([[selectedStart.lat, selectedStart.lng], [sprinklerCar.lat, sprinklerCar.lng]], {
           color: "#ffffff",
@@ -652,13 +684,13 @@
           }),
           interactive: false,
         }).addTo(layer);
-        const marker = L.marker([selectedStart.lat, selectedStart.lng], {
+        startMarker = L.marker([selectedStart.lat, selectedStart.lng], {
           icon: startIcon,
           draggable: true,
           autoPan: true,
           title: t("Posição inicial"),
         }).addTo(layer);
-        marker.on("dragend", (event) => setBearingFromLatLng(event.target.getLatLng(), { fit: false }));
+        startMarker.on("dragend", (event) => setBearingFromLatLng(event.target.getLatLng(), { fit: false }));
       }
       if (fit) {
         const bounds = selectedStart
@@ -692,7 +724,7 @@
     saveBtn?.addEventListener("click", async () => {
       if (!selectedStart) return;
       saveBtn.disabled = true;
-      await persistStartPosition(equip, selectedStart);
+      await persistStartPosition(equip, selectedStart, sprinklerCar);
       close();
       window.IcCarretel?.renderData?.();
       if (window.IcMapRenderPivots) setTimeout(() => window.IcMapRenderPivots(activeFarm()), 0);

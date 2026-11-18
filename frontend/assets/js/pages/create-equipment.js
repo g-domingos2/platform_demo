@@ -477,6 +477,17 @@
         st.loc = formatLatLng(farm.lat, farm.lng);
       }
     }
+
+    if (type === "rainstar") {
+      const hasReel = Number.isFinite(st.reelLat) && Number.isFinite(st.reelLng);
+      if (!hasReel) {
+        st.reelLat = farm.lat;
+        st.reelLng = farm.lng;
+      }
+      if (!st.hoseLength) st.hoseLength = "600";
+      if (!st.pulledPipeLength) st.pulledPipeLength = "400";
+      if (!st.hosePulledLength) st.hosePulledLength = "400";
+    }
   }
 
   function getEquipmentName(type, data) {
