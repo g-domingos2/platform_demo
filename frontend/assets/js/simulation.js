@@ -569,7 +569,7 @@
 
   // --- Animador de movimento em tempo real -------------------------------------
   // Faz o pivô operado girar no mapa assim que ligado, sem depender do Play global.
-  const REAL_LAP_MS_AT_100 = 180000; // DEMO: 3 min por volta a 100% (mais lento em % menores) — ajuste aqui
+  const REAL_LAP_MS_AT_100 = 420000; // DEMO: 7 min por volta a 100% (mais lento em % menores) — ajuste aqui
   let _motionRaf = null;
   let _motionLastTs = 0;
 
