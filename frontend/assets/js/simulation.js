@@ -194,17 +194,17 @@
     pressurizando: {
       label: "Pressurizando",
       badgeText: "PRESSURIZANDO",
-      legend: "80% ciano — aguardando pressão da bomba",
+      legend: "80% azul — aguardando pressão da bomba",
       statusText: "PRESSURIZANDO",
       statusClass: "is-info",
       badgeClass: "map-card__equip-badge--info",
       visual: {
-        fill: "#06b6d4",
-        stroke: "#0891b2",
-        outline: "#0e7490",
-        outerFill: "",
-        fillOpacity: 0.75,
-        outerFillOpacity: 0
+        fill: "#4679ed",
+        stroke: "#4679ed",
+        outline: "#4679ed",
+        outerFill: "#2520ca",
+        fillOpacity: 0.8,
+        outerFillOpacity: 1
       }
     }
   });
