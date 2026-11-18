@@ -230,7 +230,7 @@
     return Number.isFinite(t) ? t : Date.now();
   };
 
-  const ACTIVE_PROGRESS_STATUS_KEYS = new Set(["irrigando", "movendo_a_seco", "ferti_irrigando"]);
+  const ACTIVE_PROGRESS_STATUS_KEYS = new Set(["irrigando", "movendo_a_seco", "ferti_irrigando", "pressurizando"]);
 
   function getBasePivotFillOpacity() {
     const opacity = window.IcMapPivotVisualUtils?.getPivotBaseFillOpacity?.();
@@ -456,16 +456,10 @@
 
   window.IcSetSimPivotStatus = (pivotId, statusKey) => {
     const aliased = STATUS_KEY_ALIAS[statusKey] || statusKey;
-    let key = STATUS_META[aliased] ? aliased : "painel_energizado";
+    const key = STATUS_META[aliased] ? aliased : "painel_energizado";
     const id = String(pivotId || "");
     const store = getRuntimeStore();
     const prevKey = getStatusKeyForPivot(id);
-
-    // Se tentou irrigar/ferti sem bomba ligada, fica "pressurizando" (aguardando).
-    const needsPump = key === "irrigando" || key === "ferti_irrigando";
-    if (needsPump && !hasAnyPumpRunning()) {
-      key = "pressurizando";
-    }
 
     const wasActive = ACTIVE_PROGRESS_STATUS_KEYS.has(prevKey);
     const willBeActive = ACTIVE_PROGRESS_STATUS_KEYS.has(key);
@@ -625,10 +619,10 @@
     if (ACTIVE_PROGRESS_STATUS_KEYS.has(getStatusKeyForPivot(id))) {
       logOpEnd(id, { reason: "replaced", angle: motionAngleDeg(store.motion[id]), traveledDeg: store.motion[id]?.traveledDeg });
     }
-    // Se tentou irrigar/ferti sem bomba ligada, fica "pressurizando" (aguardando).
+    // Sempre inicia com "pressurizando" por 10 s antes de irrigar/ferti.
     let targetMode = first.mode;
     const needsPump = targetMode === "irrigando" || targetMode === "ferti_irrigando";
-    if (needsPump && !hasAnyPumpRunning()) {
+    if (needsPump) {
       targetMode = "pressurizando";
     }
 
@@ -640,6 +634,7 @@
       laminaMm: first.laminaMm,
       queue,
       traveledDeg: 0,
+      _pressurizeSince: targetMode === "pressurizando" ? Date.now() : null,
     };
     store.statusOverrides[id] = targetMode;
     syncPivotRuntimeStates();
@@ -676,6 +671,22 @@
       const m = store.motion[id];
       if (!m || !(Number(m.speedPct) > 0) || !ACTIVE_PROGRESS_STATUS_KEYS.has(statusKey)) return;
       any = true;
+
+      // Pressurizando: pivô fica parado por 10 s antes de começar a girar.
+      if (statusKey === "pressurizando") {
+        const since = m._pressurizeSince || 0;
+        if (Date.now() - since >= 10000) {
+          store.statusOverrides[id] = m.queue?.[0]?.mode || "irrigando";
+          transitioned = true;
+        }
+        // Não avança o ângulo enquanto pressuriza — braço fica parado.
+        const rt = getPivotRuntime(id);
+        rt.progress = m.progress;
+        rt.isRunning = true;
+        rt.mode = getModeForStatus(getStatusKeyForPivot(id));
+        return;
+      }
+
       const lapMs = REAL_LAP_MS_AT_100 * (100 / Math.max(1, m.speedPct));
       const deltaProg = (m.dirSign < 0 ? -1 : 1) * (dt / lapMs) * 100;
       m.progress = ((((m.progress ?? 0) + deltaProg) % 100) + 100) % 100;
@@ -709,10 +720,11 @@
             m.laminaMm = nxt.laminaMm;
             m.progress = (nxt.startAngle / 360) * 100;
             m.traveledDeg = 0;
-            // Próxima operação na fila: se precisa de bomba e não há, pressuriza.
+            // Próxima operação na fila: se for irrigar, passa por pressurizando.
             let nxtTarget = nxt.mode;
-            if ((nxtTarget === "irrigando" || nxtTarget === "ferti_irrigando") && !hasAnyPumpRunning()) {
+            if (nxtTarget === "irrigando" || nxtTarget === "ferti_irrigando") {
               nxtTarget = "pressurizando";
+              m._pressurizeSince = Date.now();
             }
             store.statusOverrides[id] = nxtTarget;
           } else if (m.lastIrrigArc) {
@@ -1058,7 +1070,7 @@
     if (state.active) populateStatusList();
   });
 
-  // --- Consumo do Medidor de Nível quando a bomba está ligada ------------------
+  // --- Medidor de Nível: bomba enche o reservatório, desligada consome ------
   function getFarmMedidores() {
     const farm = getActiveFarm();
     if (!farm || !Array.isArray(farm.equipments)) return [];
@@ -1069,8 +1081,8 @@
     });
   }
 
-  function consumeMeterLevel() {
-    if (!hasAnyPumpRunning()) return;
+  function updateMeterLevel() {
+    const pumpOn = hasAnyPumpRunning();
     const medidores = getFarmMedidores();
     if (!medidores.length) return;
     let changed = false;
@@ -1078,17 +1090,18 @@
       const d = md.data || {};
       let pct = Number(d.levelPercent ?? d.percent ?? d.nivelPercent);
       if (!Number.isFinite(pct)) {
-        // inicializa com valor realista se ainda não tiver
         pct = 75 + (Math.random() * 20);
       }
-      const newPct = Math.max(0, pct - 0.08); // consome ~0.08% por tick
+      // Bomba ligada: enche o reservatório (+0.15% / tick)
+      // Bomba desligada: consumo natural dos pivôs (-0.05% / tick)
+      const delta = pumpOn ? 0.15 : -0.05;
+      const newPct = Math.max(0, Math.min(100, pct + delta));
       d.levelPercent = newPct;
       d.percent = newPct;
       d.nivelPercent = newPct;
       changed = true;
     });
     if (changed) {
-      // Re-renderiza mapa e lista para refletir o novo nível
       const farm = getActiveFarm();
       if (farm && typeof window.IcMapRenderPivots === "function") window.IcMapRenderPivots(farm);
       window.IcFarmsRenderEquipment?.();
@@ -1096,8 +1109,8 @@
     }
   }
 
-  // Tick a cada 3 s para consumo suave do reservatório enquanto a bomba opera
-  setInterval(consumeMeterLevel, 3000);
+  // Tick a cada 3 s para atualizar nível do reservatório
+  setInterval(updateMeterLevel, 3000);
 
   applyPreset("7d");
   syncPivotRuntimeStates();
