@@ -2563,7 +2563,7 @@
 
       const needleGroup = L.layerGroup({ pane: 'pivotPane' }).addTo(map);
       const needleInRange = !isSector || (currentAngle >= sectorStart && currentAngle <= sectorEnd);
-      if (currentAngle > 0 && needleInRange) {
+      if (currentAngle >= 0 && needleInRange) {
         const needleBearing = (refBearing + currentAngle) % 360;
         L.polyline([[centerLat, centerLng], dest(needleBearing, radius)], {
           pane: 'pivotPane', color: "rgba(0,0,0,0.75)", weight: 3.5, opacity: 1, interactive: false,
