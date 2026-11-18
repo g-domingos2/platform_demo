@@ -1239,6 +1239,12 @@
     const m = meterModel(ctx.equip);
     const step = 15 * MIN;
     const t = new Date(Math.floor(NOW.getTime() / step) * step);
+    // Se o simulation.js já gravou um valor ao vivo (bomba ligada/desligada),
+    // usa ele em vez do mock senoidal para evitar saltos.
+    const livePct = Number(ctx.equip?.data?.levelPercent ?? ctx.equip?.data?.percent ?? ctx.equip?.data?.nivelPercent);
+    if (Number.isFinite(livePct)) {
+      return { pct: round(livePct, 1), level: round((livePct / 100) * m.maxM, 2), model: m, date: t, lastCommunication: t };
+    }
     const pct = meterLevelAt(ctx.equip, m, t);
     return { pct: round(pct, 1), level: round((pct / 100) * m.maxM, 2), model: m, date: t, lastCommunication: t };
   }

@@ -1090,7 +1090,10 @@
       const d = md.data || {};
       let pct = Number(d.levelPercent ?? d.percent ?? d.nivelPercent);
       if (!Number.isFinite(pct)) {
-        pct = 75 + (Math.random() * 20);
+        // Começa do valor que o demo-history já está mostrando no mapa/cards
+        // para evitar salto ao ligar a bomba.
+        const cur = window.IcDemoHistory?.meter?.current?.(md);
+        pct = Number.isFinite(cur?.pct) ? cur.pct : 72;
       }
       // Bomba ligada: enche o reservatório (+0.15% / tick)
       // Bomba desligada: consumo natural dos pivôs (-0.05% / tick)
