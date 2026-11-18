@@ -295,7 +295,9 @@
 
 .op-modal__dial-container {
     width: calc(100% - 60px);
-    height: 240px;
+    max-width: min(calc(100% - 60px), 360px);
+    aspect-ratio: 1 / 1;
+    height: auto;
     position: relative;
     border-radius: 6px;
     overflow: hidden;

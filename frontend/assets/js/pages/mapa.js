@@ -745,8 +745,12 @@
       let bandStartAngle = startOffset + seedOffset;
       let bandEndAngle = startOffset + seedOffset + (span * bandProgress) / 100;
       const isIrrigatingPhase = statusKey === "irrigando" || statusKey === "ferti_irrigando";
-      const isFinishedArc = statusKey === "irrigacao_finalizada" && motionInfo?.finished
-        && Number.isFinite(motionInfo.startAngleDeg) && Number.isFinite(motionInfo.stopAngleDeg);
+
+      // Para "parado_via_internet" ou "irrigacao_finalizada", usa os ângulos do motionInfo (finishedArc)
+      const effectiveStopAngleDeg = motionInfo?.stopAngleDeg ?? null;
+
+      const isFinishedArc = (statusKey === "irrigacao_finalizada" || statusKey === "parado_via_internet")
+        && Number.isFinite(motionInfo?.startAngleDeg) && Number.isFinite(effectiveStopAngleDeg);
       if (motionInfo && isIrrigatingPhase && Number.isFinite(motionInfo.startAngleDeg)) {
         if (motionInfo.dirSign < 0) {
           bandStartAngle = finalArmAngle;
@@ -758,13 +762,13 @@
         // Evita desenhar volta inteira quando início ≈ fim (varredura ~0).
         if (Math.abs(bandEndAngle - bandStartAngle) < 0.01) bandEndAngle = bandStartAngle + 0.01;
       } else if (isFinishedArc) {
-        // Finalizada: borda azul só no arco que foi irrigado.
+        // Finalizada (ou parada via internet): borda azul só no arco que foi irrigado.
         if (motionInfo.dirSign < 0) {
-          bandStartAngle = motionInfo.stopAngleDeg;
+          bandStartAngle = effectiveStopAngleDeg;
           bandEndAngle = motionInfo.startAngleDeg;
         } else {
           bandStartAngle = motionInfo.startAngleDeg;
-          bandEndAngle = motionInfo.stopAngleDeg;
+          bandEndAngle = effectiveStopAngleDeg;
         }
         if (Math.abs(bandEndAngle - bandStartAngle) < 0.01) bandEndAngle = bandStartAngle + 0.01;
       }
@@ -788,9 +792,9 @@
         fixedArmAngleOffset: startOffset,
         bandStartAngle,
         bandEndAngle,
-        // Ângulos da operação (verde = partida, vermelho = parada) — só durante a operação ativa.
-        opStartAngleDeg: (motionInfo && !motionInfo.finished && !motionInfo.parked) ? (motionInfo.startAngleDeg ?? null) : null,
-        opStopAngleDeg: (motionInfo && !motionInfo.finished && !motionInfo.parked) ? (motionInfo.stopAngleDeg ?? null) : null,
+        // Ângulos da operação (verde = partida, vermelho = parada) — durante a operação ativa ou após parada via internet.
+        opStartAngleDeg: (motionInfo && (!motionInfo.finished && !motionInfo.parked || statusKey === "parado_via_internet")) ? (motionInfo.startAngleDeg ?? null) : null,
+        opStopAngleDeg: (motionInfo && (!motionInfo.finished && !motionInfo.parked || statusKey === "parado_via_internet")) ? (effectiveStopAngleDeg ?? motionInfo.stopAngleDeg ?? null) : null,
         // Sentido de giro do braço: -1 = reverso (anti-horário), 1 = avanço (horário).
         armDirSign: (motionInfo && motionInfo.dirSign < 0) ? -1 : 1,
       };

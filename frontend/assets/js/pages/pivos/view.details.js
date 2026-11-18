@@ -908,8 +908,11 @@
                 const startBtn = e.target.closest(".pincard__control-btn.is-start");
                 if (startBtn) {
                     const pivoData = Pivos.data.getPivotData?.(state.selectedId);
-                    const angleText = $("kpiAnguloVal")?.textContent || "0";
-                    const angle = parseFloat(angleText) || 0;
+                    const selectedPivotEquip = getSelectedPivotEquipment();
+                    const sharedPivotUtils = window.IcMapPivotVisualUtils || null;
+                    const pivotColors = sharedPivotUtils?.getPivotVisuals?.(pivoData, selectedPivotEquip) || null;
+                    // Usa o mesmo armAngleOffset que o mapa principal/minimapa usam para desenhar o braço
+                    const angle = pivotColors?.armAngleOffset ?? (parseFloat($("kpiAnguloVal")?.textContent) || 0);
                     const fbCopy = getDetailsCopy();
                     const fallbackTitle = fbCopy.english ? "Pivot" : fbCopy.spanish ? "Pivote" : "Pivo";
 

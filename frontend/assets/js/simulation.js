@@ -384,12 +384,22 @@
     const store = getRuntimeStore();
     const m = store.motion[id];
     if (!m) return;
+
+    // Preserva o arco irrigado para o desenho do mapa manter a faixa azul
+    const cur = Array.isArray(m.queue) ? m.queue[0] : null;
+    let finishedArc = m.finishedArc || null;
+    if (cur && Number.isFinite(cur.startAngle)) {
+      const curAngle = motionAngleDeg(m);
+      finishedArc = { start: cur.startAngle, stop: curAngle, dirSign: m.dirSign < 0 ? -1 : 1 };
+    }
+
     store.motion[id] = {
       progress: m.progress ?? 0,
       speedPct: m.speedPct || 100,
       dirSign: m.dirSign < 0 ? -1 : 1,
       laminaMm: m.laminaMm,
       parked: true,
+      finishedArc,
     };
   };
 

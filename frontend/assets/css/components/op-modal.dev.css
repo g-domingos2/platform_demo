@@ -304,7 +304,9 @@
 
 :root[data-op-variant="dev"] .op-modal__dial-container {
     width: calc(100% - 3.75em);
-    height: clamp(150px, 32vh, 240px);
+    max-width: min(calc(100% - 3.75em), 360px);
+    aspect-ratio: 1 / 1;
+    height: auto;
     position: relative;
     border-radius: 6px;
     overflow: hidden;
