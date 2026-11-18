@@ -625,6 +625,13 @@
     if (ACTIVE_PROGRESS_STATUS_KEYS.has(getStatusKeyForPivot(id))) {
       logOpEnd(id, { reason: "replaced", angle: motionAngleDeg(store.motion[id]), traveledDeg: store.motion[id]?.traveledDeg });
     }
+    // Se tentou irrigar/ferti sem bomba ligada, fica "pressurizando" (aguardando).
+    let targetMode = first.mode;
+    const needsPump = targetMode === "irrigando" || targetMode === "ferti_irrigando";
+    if (needsPump && !hasAnyPumpRunning()) {
+      targetMode = "pressurizando";
+    }
+
     logOpStart(id, startInfoFromQueueOp(first));
     store.motion[id] = {
       progress: (first.startAngle / 360) * 100,
@@ -634,7 +641,7 @@
       queue,
       traveledDeg: 0,
     };
-    store.statusOverrides[id] = first.mode;
+    store.statusOverrides[id] = targetMode;
     syncPivotRuntimeStates();
     refreshStatusViews();
     startMotionLoop();
@@ -702,7 +709,12 @@
             m.laminaMm = nxt.laminaMm;
             m.progress = (nxt.startAngle / 360) * 100;
             m.traveledDeg = 0;
-            store.statusOverrides[id] = nxt.mode;
+            // Próxima operação na fila: se precisa de bomba e não há, pressuriza.
+            let nxtTarget = nxt.mode;
+            if ((nxtTarget === "irrigando" || nxtTarget === "ferti_irrigando") && !hasAnyPumpRunning()) {
+              nxtTarget = "pressurizando";
+            }
+            store.statusOverrides[id] = nxtTarget;
           } else if (m.lastIrrigArc) {
             // Terminou irrigando → estado "finalizada" (amarelo) com borda azul só no arco irrigado.
             store.motion[id] = {
