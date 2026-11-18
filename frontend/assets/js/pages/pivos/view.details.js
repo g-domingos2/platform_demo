@@ -599,6 +599,30 @@
     let eventsBound = false;
     let onDocClick = null;
     let onSimStatusChange = null;
+    let _minimapAnimRaf = null;
+    let _minimapLastTs = 0;
+    const MINIMAP_ANIM_INTERVAL_MS = 100;
+
+    function startMinimapAnimation() {
+        if (_minimapAnimRaf != null) return;
+        const frame = (ts) => {
+            if (ts - _minimapLastTs >= MINIMAP_ANIM_INTERVAL_MS) {
+                _minimapLastTs = ts;
+                const pivoData = Pivos.data.getPivotData?.(state.selectedId);
+                if (pivoData) updateMinimapPivotOverlay(pivoData);
+            }
+            _minimapAnimRaf = requestAnimationFrame(frame);
+        };
+        _minimapAnimRaf = requestAnimationFrame(frame);
+    }
+
+    function stopMinimapAnimation() {
+        if (_minimapAnimRaf != null) {
+            cancelAnimationFrame(_minimapAnimRaf);
+            _minimapAnimRaf = null;
+            _minimapLastTs = 0;
+        }
+    }
 
     function getRegisteredDetailVariants() {
         return Object.values(views.detailVariants || {});
@@ -670,7 +694,17 @@
         if (eventsBound) return;
         eventsBound = true;
 
-        onSimStatusChange = () => updatePincardStatus(state.selectedId);
+        onSimStatusChange = () => {
+            updatePincardStatus(state.selectedId);
+            // Atualiza o overlay do pivô no minimapa existente (sem recriar o mapa)
+            const pivoData = Pivos.data.getPivotData?.(state.selectedId);
+            if (pivoData) updateMinimapPivotOverlay(pivoData);
+            // Inicia ou para animação contínua do minimapa conforme status
+            const resolved = window.IcResolvePivotStatus?.(pivoData || { id: state.selectedId });
+            const isActive = resolved && (resolved.key === "irrigando" || resolved.key === "ferti_irrigando" || resolved.key === "movendo_a_seco");
+            if (isActive) startMinimapAnimation();
+            else stopMinimapAnimation();
+        };
         window.addEventListener("ic:sim-status-change", onSimStatusChange);
 
         const closeBtn = $("pivosCloseBtn");
@@ -1538,6 +1572,8 @@
             window.removeEventListener("ic:sim-status-change", onSimStatusChange);
             onSimStatusChange = null;
         }
+
+        stopMinimapAnimation();
     }
 
     // getFarmDataSafe/getFarmEquipmentsSafe/normalizeEquipmentText/
@@ -1780,8 +1816,9 @@
     };
 
     function updatePincardStatus(pivotId) {
-        const bar = document.querySelector(".pincard__status-bar");
-        const textEl = document.querySelector(".pincard__status-text");
+        const panel = document.getElementById("pivosPanel");
+        const bar = panel ? panel.querySelector(".pincard__status-bar") : document.querySelector(".pincard__status-bar");
+        const textEl = panel ? panel.querySelector(".pincard__status-text") : document.querySelector(".pincard__status-text");
         if (!bar) return;
 
         const pivoData = Pivos.data.getPivotData?.(pivotId);
@@ -1795,7 +1832,7 @@
         if (textEl) textEl.textContent = map.text;
 
         // Ícone "Central Online" some quando o pivô está sem internet
-        const powerEl = document.querySelector(".pincard__status-power");
+        const powerEl = panel ? panel.querySelector(".pincard__status-power") : document.querySelector(".pincard__status-power");
         if (powerEl) powerEl.style.display = key === "desligado_sem_internet" ? "none" : "";
     }
 
@@ -1833,6 +1870,116 @@
 
         minimapTilesPrimary = null;
         minimapTilesFallback = null;
+        _minimapPivotLayers = [];
+    }
+
+    let _minimapPivotLayers = [];
+
+    function updateMinimapPivotOverlay(pivoData) {
+        if (!minimapInstance || !pivoData?.center) return;
+
+        // Remove apenas as camadas do pivô anteriores (mantém tiles/base)
+        _minimapPivotLayers.forEach((layer) => {
+            try { layer.remove(); } catch (_) {}
+        });
+        _minimapPivotLayers = [];
+
+        // Também remove camadas antigas do IcMapDrawPivotOverlay que não estão no array
+        minimapInstance.eachLayer((layer) => {
+            if (layer instanceof L.TileLayer) return; // mantém tiles
+            try { layer.remove(); } catch (_) {}
+        });
+
+        const lat = pivoData.center.lat;
+        const lng = pivoData.center.lng;
+        const radius = pivoData.radius || 300;
+        const sharedPivotUtils = window.IcMapPivotVisualUtils || null;
+        const selectedPivotEquip = getSelectedPivotEquipment();
+        const pivotColors = sharedPivotUtils?.getPivotVisuals?.(pivoData, selectedPivotEquip) || {
+            outline: "#fbbf24", stroke: "#fbbf24", fill: "#fbbf24", fillOpacity: 0.22,
+            ref: "#ffffff", refFill: "#ffffff", outerFill: "", outerFillOpacity: 0, bandProgress: 0
+        };
+        const useOuterBand = sharedPivotUtils?.getPivotVisualStyle?.() === "outer_band";
+        const innerRadius = radius * (pivotColors.outerFill ? (sharedPivotUtils?.statusBandInnerRatio || 0.9) : 0.8);
+        const hasStatusBand = Boolean(pivotColors.outerFill) && innerRadius > 0;
+        const shapeFillOpacity = hasStatusBand ? (pivotColors.fillOpacity ?? 0.92) : (useOuterBand ? 0 : pivotColors.fillOpacity);
+        const bandFillColor = hasStatusBand ? pivotColors.outerFill : pivotColors.fill;
+        const bandFillOpacity = hasStatusBand ? (pivotColors.outerFillOpacity ?? 0.98) : (useOuterBand ? Math.min(pivotColors.fillOpacity ?? 0.22, 0.82) : 0);
+        const bandProgress = Math.max(0, Math.min(100, Number(pivotColors.bandProgress) || 0));
+
+        const centerPt = [lat, lng];
+        const centerLL = L.latLng(lat, lng);
+        const lat1 = lat * Math.PI / 180;
+        const lon1 = lng * Math.PI / 180;
+        const R = 6378137;
+        const d = radius / R;
+
+        const shapeOutlineOpts = {
+            color: pivotColors.outline, weight: 3, opacity: 1, fillOpacity: 0, interactive: false,
+        };
+        const shapeOpts = {
+            color: pivotColors.stroke, weight: 3, fillColor: pivotColors.fill, fillOpacity: shapeFillOpacity,
+        };
+
+        if (pivoData.isSector && pivoData.startAngle !== undefined && pivoData.endAngle !== undefined && pivoData.ref) {
+            const lat2 = pivoData.ref.lat * Math.PI / 180;
+            const lon2 = pivoData.ref.lng * Math.PI / 180;
+            const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+            const bearingRef = Math.atan2(y, x) * 180 / Math.PI;
+
+            let startAngle = parseFloat(pivoData.startAngle) || 0;
+            let endAngle = parseFloat(pivoData.endAngle) || 360;
+            if (endAngle <= startAngle) endAngle += 360;
+
+            const points = [centerLL];
+            for (let angle = startAngle; angle <= endAngle; angle += 2) {
+                const brng = (bearingRef + angle) * Math.PI / 180;
+                const pLat = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
+                const pLng = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(pLat));
+                points.push(L.latLng(pLat * 180 / Math.PI, pLng * 180 / Math.PI));
+            }
+            const brngEnd = (bearingRef + endAngle) * Math.PI / 180;
+            const eLat = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brngEnd));
+            const eLng = lon1 + Math.atan2(Math.sin(brngEnd) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(eLat));
+            points.push(L.latLng(eLat * 180 / Math.PI, eLng * 180 / Math.PI));
+            points.push(centerLL);
+
+            _minimapPivotLayers.push(L.polygon(points, shapeOutlineOpts).addTo(minimapInstance));
+            _minimapPivotLayers.push(L.polygon(points, shapeOpts).addTo(minimapInstance));
+
+            const shouldDrawStatusBand = hasStatusBand && bandProgress > 0;
+            const bandEndAngle = startAngle + ((endAngle - startAngle) * bandProgress) / 100;
+            if (shouldDrawStatusBand && sharedPivotUtils?.buildSectorRing) {
+                _minimapPivotLayers.push(L.polygon(sharedPivotUtils.buildSectorRing(pivoData.center, radius, innerRadius, bearingRef, pivotColors.bandStartAngle ?? startAngle, pivotColors.bandEndAngle ?? bandEndAngle), {
+                    color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity, interactive: false,
+                }).addTo(minimapInstance));
+            } else if (useOuterBand && innerRadius > 0 && sharedPivotUtils?.buildSectorRing) {
+                _minimapPivotLayers.push(L.polygon(sharedPivotUtils.buildSectorRing(pivoData.center, radius, innerRadius, bearingRef, startAngle, endAngle), {
+                    color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity, interactive: false,
+                }).addTo(minimapInstance));
+            }
+
+            window.IcMapDrawPivotOverlay?.({ ...pivoData, radius }, pivotColors, minimapInstance);
+        } else {
+            _minimapPivotLayers.push(L.circle(centerPt, { radius, ...shapeOutlineOpts }).addTo(minimapInstance));
+            _minimapPivotLayers.push(L.circle(centerPt, { radius, ...shapeOpts }).addTo(minimapInstance));
+
+            const shouldDrawStatusBand = hasStatusBand && bandProgress > 0 && pivoData.ref;
+            if (shouldDrawStatusBand && sharedPivotUtils?.buildSectorRing && sharedPivotUtils?.getPivotBearingRefDeg) {
+                _minimapPivotLayers.push(L.polygon(sharedPivotUtils.buildSectorRing(
+                    pivoData.center, radius, innerRadius, sharedPivotUtils.getPivotBearingRefDeg(pivoData), pivotColors.bandStartAngle ?? 0, pivotColors.bandEndAngle ?? (360 * bandProgress) / 100
+                ), { color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity, interactive: false }).addTo(minimapInstance));
+            } else if (useOuterBand && innerRadius > 0 && sharedPivotUtils?.buildFullRing) {
+                _minimapPivotLayers.push(L.polygon(sharedPivotUtils.buildFullRing(pivoData.center, radius, innerRadius), {
+                    color: pivotColors.stroke, weight: 0, fillColor: bandFillColor, fillOpacity: bandFillOpacity, interactive: false,
+                }).addTo(minimapInstance));
+            }
+
+            if (pivoData.ref) {
+                window.IcMapDrawPivotOverlay?.({ ...pivoData, radius }, pivotColors, minimapInstance);
+            }
+        }
     }
 
     function renderMinimap(pivoData) {
