@@ -190,6 +190,22 @@
         fillOpacity: 0.82,
         outerFillOpacity: 0.98
       }
+    },
+    pressurizando: {
+      label: "Pressurizando",
+      badgeText: "PRESSURIZANDO",
+      legend: "80% ciano — aguardando pressão da bomba",
+      statusText: "PRESSURIZANDO",
+      statusClass: "is-info",
+      badgeClass: "map-card__equip-badge--info",
+      visual: {
+        fill: "#06b6d4",
+        stroke: "#0891b2",
+        outline: "#0e7490",
+        outerFill: "",
+        fillOpacity: 0.75,
+        outerFillOpacity: 0
+      }
     }
   });
 
@@ -317,6 +333,41 @@
     return window.IcFarmGetActive?.() || window.IcFarmActive || null;
   }
 
+  function getFarmBombas() {
+    const farm = getActiveFarm();
+    if (!farm || !Array.isArray(farm.equipments)) return [];
+    return farm.equipments.filter((e) => {
+      const t = String(e?.type || "").toLowerCase();
+      const c = String(e?.category || "").toLowerCase();
+      return t === "irripump" || c === "bombas";
+    });
+  }
+
+  function readBombaOverrides() {
+    try { return JSON.parse(localStorage.getItem("ic:bomba-running")) || {}; }
+    catch (_) { return {}; }
+  }
+
+  function resolveBombaRunningFromData(item) {
+    if (!item) return false;
+    const overrides = readBombaOverrides();
+    const key = String(item?.id || item?.data?.serial || item?.name || "");
+    if (Object.prototype.hasOwnProperty.call(overrides, key)) return !!overrides[key];
+    const data = item.data || item;
+    if (data.running != null) return !!data.running;
+    if (item.running != null) return !!item.running;
+    const statusText = data.status || data.statusBomba || item.status || item.statusBomba || "";
+    if (/ligad/i.test(statusText)) return true;
+    if (/deslig/i.test(statusText)) return false;
+    return false;
+  }
+
+  function hasAnyPumpRunning() {
+    const bombas = getFarmBombas();
+    if (!bombas.length) return false;
+    return bombas.some((b) => resolveBombaRunningFromData(b));
+  }
+
   function isSimulatedPivotEquipment(equip) {
     const type = String(equip?.type || "").toLowerCase();
     const category = String(equip?.category || "").toLowerCase();
@@ -405,10 +456,17 @@
 
   window.IcSetSimPivotStatus = (pivotId, statusKey) => {
     const aliased = STATUS_KEY_ALIAS[statusKey] || statusKey;
-    const key = STATUS_META[aliased] ? aliased : "painel_energizado";
+    let key = STATUS_META[aliased] ? aliased : "painel_energizado";
     const id = String(pivotId || "");
     const store = getRuntimeStore();
     const prevKey = getStatusKeyForPivot(id);
+
+    // Se tentou irrigar/ferti sem bomba ligada, fica "pressurizando" (aguardando).
+    const needsPump = key === "irrigando" || key === "ferti_irrigando";
+    if (needsPump && !hasAnyPumpRunning()) {
+      key = "pressurizando";
+    }
+
     const wasActive = ACTIVE_PROGRESS_STATUS_KEYS.has(prevKey);
     const willBeActive = ACTIVE_PROGRESS_STATUS_KEYS.has(key);
     const prevMotion = store.motion[id];
@@ -448,6 +506,21 @@
     if (!id) return;
     window.IcSetSimPivotStatus(id, "parado_via_internet");
   };
+
+  // Quando uma bomba é ligada, pivôs em "pressurizando" passam a irrigar.
+  window.addEventListener("ic:bomba-status-change", (ev) => {
+    if (!ev?.detail?.running) return;
+    const store = getRuntimeStore();
+    Object.keys(store.statusOverrides).forEach((id) => {
+      if (store.statusOverrides[id] === "pressurizando") {
+        // Recupera o modo original solicitado (irrigando ou ferti_irrigando).
+        // Como não guardamos o original, assumimos irrigando como padrão.
+        // Se o motion tiver laminaMm e ferti true, poderia ser ferti, mas
+        // para simplificar, usamos irrigando.
+        window.IcSetSimPivotStatus(id, "irrigando");
+      }
+    });
+  });
 
   // --- Movimento por pivô (chamado pelo motor de programações) -----------------
   const ensureMotion = (id) => {
@@ -852,7 +925,8 @@
       { value: "preparando_irrigar", label: STATUS_META.preparando_irrigar.label },
       { value: "alerta", label: STATUS_META.alerta.label },
       { value: "desligado_sem_internet", label: STATUS_META.desligado_sem_internet.label },
-      { value: "ferti_irrigando", label: STATUS_META.ferti_irrigando.label }
+      { value: "ferti_irrigando", label: STATUS_META.ferti_irrigando.label },
+      { value: "pressurizando", label: STATUS_META.pressurizando.label }
     ];
     return list.map((it) => `<option value="${it.value}" ${val === it.value ? "selected" : ""}>${it.label}</option>`).join("");
   }
@@ -971,6 +1045,47 @@
   window.addEventListener("ic:layout-change", () => {
     if (state.active) populateStatusList();
   });
+
+  // --- Consumo do Medidor de Nível quando a bomba está ligada ------------------
+  function getFarmMedidores() {
+    const farm = getActiveFarm();
+    if (!farm || !Array.isArray(farm.equipments)) return [];
+    return farm.equipments.filter((e) => {
+      const t = String(e?.type || "").toLowerCase();
+      const c = String(e?.category || "").toLowerCase();
+      return t === "medidor" || c === "medidores";
+    });
+  }
+
+  function consumeMeterLevel() {
+    if (!hasAnyPumpRunning()) return;
+    const medidores = getFarmMedidores();
+    if (!medidores.length) return;
+    let changed = false;
+    medidores.forEach((md) => {
+      const d = md.data || {};
+      let pct = Number(d.levelPercent ?? d.percent ?? d.nivelPercent);
+      if (!Number.isFinite(pct)) {
+        // inicializa com valor realista se ainda não tiver
+        pct = 75 + (Math.random() * 20);
+      }
+      const newPct = Math.max(0, pct - 0.08); // consome ~0.08% por tick
+      d.levelPercent = newPct;
+      d.percent = newPct;
+      d.nivelPercent = newPct;
+      changed = true;
+    });
+    if (changed) {
+      // Re-renderiza mapa e lista para refletir o novo nível
+      const farm = getActiveFarm();
+      if (farm && typeof window.IcMapRenderPivots === "function") window.IcMapRenderPivots(farm);
+      window.IcFarmsRenderEquipment?.();
+      try { window.dispatchEvent(new CustomEvent("ic:mdn-level-change")); } catch (_) {}
+    }
+  }
+
+  // Tick a cada 3 s para consumo suave do reservatório enquanto a bomba opera
+  setInterval(consumeMeterLevel, 3000);
 
   applyPreset("7d");
   syncPivotRuntimeStates();

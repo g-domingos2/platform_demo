@@ -17,6 +17,7 @@
     ferti_irrigando: 1,
     movendo_a_seco: 2,
     preparando_irrigar: 2,
+    pressurizando: 2,
     irrigacao_finalizada: 3,
   };
 

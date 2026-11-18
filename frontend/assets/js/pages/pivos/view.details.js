@@ -1816,6 +1816,7 @@
         alerta:                 { cls: "is-danger",    text: "ALERTA" },
         desligado_sem_internet: { cls: "is-neutral",   text: "SEM INTERNET" },
         ferti_irrigando:        { cls: "is-ferti",     text: "FERTI IRRIGANDO" },
+        pressurizando:          { cls: "is-info",      text: "PRESSURIZANDO" },
     };
 
     function updatePincardStatus(pivotId) {
