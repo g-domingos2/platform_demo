@@ -6,6 +6,7 @@
   const MONTHS_FULL = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
   const initTableSortFilter = (...args) => Cad.toolbar.initTableSortFilter(...args);
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   function renderEnergia() {
     const tbody = document.querySelector("#section-energia tbody");
@@ -27,18 +28,18 @@
       return `
       <tr>
         <td>
-          <div style="font-weight:600;">${item.nome || "-"}</div>
-          ${item.concessionaria ? `<div style="font-size:12px;color:#6b7280;">${item.concessionaria}</div>` : ""}
+          <div style="font-weight:600;">${esc(item.nome) || "-"}</div>
+          ${item.concessionaria ? `<div style="font-size:12px;color:#6b7280;">${esc(item.concessionaria)}</div>` : ""}
         </td>
-        <td style="max-width:200px;color:#6b7280;font-size:13px;">${item.descricao || "-"}</td>
+        <td style="max-width:200px;color:#6b7280;font-size:13px;">${esc(item.descricao) || "-"}</td>
         <td>${item.aniversario ? MONTHS[Number(item.aniversario)] || "-" : "-"}</td>
         <td style="text-align:center;">${hasFaixas ? badgeAtivas : badgeInativas}</td>
         <td style="text-align:center;">${hasFeriados ? badgeAtivas : badgeInativas}</td>
         <td style="text-align:center;">${leituras > 0 ? `<strong>${leituras}</strong>` : "-"}</td>
         <td>
           <div class="gestao-op__sch-actions">
-            <button type="button" class="sch-btn sch-btn--edit" title="Editar" onclick="window.IcToggleView('energia','form','${item.id}')"><i class="fa-solid fa-pencil"></i></button>
-            <button type="button" class="sch-btn sch-btn--del" title="Excluir" onclick="window.IcDeleteRecord('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>
+            <button type="button" class="sch-btn sch-btn--edit" title="Editar" onclick="window.IcToggleView('energia','form','${esc(item.id)}')"><i class="fa-solid fa-pencil"></i></button>
+            <button type="button" class="sch-btn sch-btn--del" title="Excluir" onclick="window.IcDeleteRecord('${esc(item.id)}')"><i class="fa-regular fa-trash-can"></i></button>
           </div>
         </td>
       </tr>`;

@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
     async function mountGestaoView() {
         const slot = document.getElementById("pageSlot");
         if (!slot) return;
@@ -516,11 +518,11 @@
                         <div class="gestao-op__card-title-row">
                             <div class="gestao-op__title-group">
                                 <div class="gestao-op__title-main">
-                                    <span class="gestao-op__card-title">${nome}</span>
-                                    <span class="gestao-op__badge ${badgeClass}" ${badgeStyle}>${statusText}</span>
+                                    <span class="gestao-op__card-title">${esc(nome)}</span>
+                                    <span class="gestao-op__badge ${badgeClass}" ${badgeStyle}>${esc(statusText)}</span>
                                 </div>
                                 <div class="gestao-op__card-subtitle">
-                                    <strong>${eq._farmName}</strong>
+                                    <strong>${esc(eq._farmName)}</strong>
                                 </div>
                             </div>
                         </div>

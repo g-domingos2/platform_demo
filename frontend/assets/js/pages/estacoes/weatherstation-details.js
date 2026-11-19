@@ -16,6 +16,7 @@
 
   const $ = (id) => document.getElementById(id);
   const t = (text) => window.IcI18n?.t?.(text) ?? text;
+  const escHtml = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   let minimap = null;
   let selectorOutsideClickHandler = null;
@@ -61,7 +62,7 @@
   function renderSelectorItems(menu) {
     const list = stations();
     const focus = getSelected();
-    menu.innerHTML = list.map((equip) => `<button type="button" class="weatherstation-selector__item ${focus && equip.id === focus.id ? "is-selected" : ""}" data-weatherstation-id="${equip.id}">${equip.name || equip.data?.name || "Estação"}</button>`).join("");
+    menu.innerHTML = list.map((equip) => `<button type="button" class="weatherstation-selector__item ${focus && equip.id === focus.id ? "is-selected" : ""}" data-weatherstation-id="${escHtml(equip.id)}">${escHtml(equip.name || equip.data?.name || "Estação")}</button>`).join("");
     menu.querySelectorAll("[data-weatherstation-id]").forEach((btn) => {
       btn.addEventListener("click", (event) => {
         event.stopPropagation();

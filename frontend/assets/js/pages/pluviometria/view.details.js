@@ -9,6 +9,7 @@
   const detailsView = (views.details = views.details || {});
   const MONTHS_LONG = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const WEEKDAYS_LONG = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   let lastMaintPluvioId = null;
 
   // getFarmEquipmentsSafe/normalizeEquipmentText/isWeatherStationEquipment
@@ -571,7 +572,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "pivo-selector__item" + (isCurrent ? " is-selected" : "");
-        btn.innerHTML = isCurrent ? `<i class="fa-solid fa-check"></i> <span>${name}</span>` : `<span>${name}</span>`;
+        btn.innerHTML = isCurrent ? `<i class="fa-solid fa-check"></i> <span>${esc(name)}</span>` : `<span>${esc(name)}</span>`;
         btn.addEventListener("click", ev => {
           ev.stopPropagation();
           menu.style.display = "none";
@@ -629,7 +630,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "pivo-selector__item" + (isCurrent ? " is-selected" : "");
-        btn.innerHTML = `<span class="pivo-selector__item-mark">${isCurrent ? '<i class="fa-solid fa-check"></i>' : ''}</span><span>${name}</span>`;
+        btn.innerHTML = `<span class="pivo-selector__item-mark">${isCurrent ? '<i class="fa-solid fa-check"></i>' : ''}</span><span>${esc(name)}</span>`;
         btn.addEventListener("click", ev => {
           ev.stopPropagation();
           menu.style.display = "none";
