@@ -95,7 +95,7 @@
       btn.addEventListener("click", () => {
         groups.splice(Number(btn.dataset.grpDel), 1);
         if (groups.length) renderFaixaGroups(groups, listTarget);
-        else listTarget.innerHTML = `<div class="cadastros-empty-state"><span class="cadastros-empty-state__icon"><i class="fa-regular fa-folder-open"></i></span><p>Não há dados</p></div>`;
+        else listTarget.innerHTML = `<div class="cadastros-empty-state"><span class="cadastros-empty-state__icon"><i class="fa-regular fa-folder-open"></i></span><p>${tMsg("Não há dados")}</p></div>`;
       });
     });
   }

@@ -3,6 +3,7 @@
     "use strict";
 
     const $ = (id) => document.getElementById(id);
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
 
     let minimapInstance = null;
     let selectedId = null;
@@ -981,7 +982,7 @@
             const speed = last ? (cur.model.length * last.lap) / Math.max(0.1, last.durH) : 0;
             set("kpiLinVelVal", `${speed.toFixed(1)} m/h`);
             const footer = $("linestarLastUpdate");
-            if (footer) footer.innerHTML = `<span class="comm-label">Última comunicação:</span> ${DH.fmt.dateTime(cur.lastCommunication)}`;
+            if (footer) footer.innerHTML = `<span class="comm-label">${t("Última comunicação:")}</span> ${DH.fmt.dateTime(cur.lastCommunication)}`;
             const range = DH.periodFrom(window.Plv?.state?.period, 7);
             const sum = DH.pivot.summary(selectedId, range.start, range.end);
             const fv = (k, v) => { const el = document.querySelector(`#linestarPanel .pivo-faults [data-fault="${k}"] .pivo-faults__value`); if (el) el.textContent = v; };

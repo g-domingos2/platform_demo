@@ -641,7 +641,7 @@
     ].filter(g => g.items.length > 0);
 
     menu.innerHTML = "";
-    if (!groups.length) { menu.innerHTML = `<div style="padding:10px 12px;font-size:12px;color:#64748b;">Nenhum equipamento encontrado.</div>`; return; }
+    if (!groups.length) { menu.innerHTML = `<div style="padding:10px 12px;font-size:12px;color:#64748b;">${tBmb("Nenhum equipamento encontrado.")}</div>`; return; }
 
     groups.forEach(group => {
       const wrapper = document.createElement("section");

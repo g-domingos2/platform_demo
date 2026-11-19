@@ -3904,6 +3904,26 @@
         "Ocultar senha": "Ocultar contraseña",
         // ---- Editar fazenda > Usuários: administrador por fazenda
         "Todos os equipamentos com acesso de Administrador": "Todos los equipos con acceso de Administrador",
-        "O equipamento não aparece na tela inicial da fazenda": "El equipo no aparece en la pantalla de inicio de la finca"
+        "O equipamento não aparece na tela inicial da fazenda": "El equipo no aparece en la pantalla de inicio de la finca",
+
+        // ---- Empty states / mensajes comunes ----
+        "Nenhum equipamento encontrado.": "No se encontró ningún equipo.",
+        "Nenhum equipamento cadastrado": "Ningún equipo registrado",
+        "Nenhum pivô encontrado": "No se encontró ningún pivote",
+        "Nenhum dispositivo encontrado": "No se encontró ningún dispositivo",
+        "Nenhuma estação meteorológica encontrada.": "No se encontró ninguna estación meteorológica.",
+        "Não há dados": "No hay datos",
+        "Nenhum item": "Sin elementos",
+        "Nenhuma parcela adicionada.": "No se agregaron parcelas.",
+        "Previsão indisponível.": "Pronóstico no disponible.",
+        "Sem coordenadas para buscar a previsão.": "Sin coordenadas para buscar el pronóstico.",
+        "Não foi possível carregar a previsão.": "No se pudo cargar el pronóstico.",
+        "Nenhum equipamento selecionado no filtro.": "Ningún equipo seleccionado en el filtro.",
+        "Nenhum pivô cadastrado nesta fazenda. Crie um equipamento para ver este relatório.": "Ningún pivote registrado en esta finca. Cree un equipo para ver este informe.",
+        "Crie pivôs na fazenda ativa para começar a simulação.": "Cree pivotes en la finca activa para iniciar la simulación.",
+        "Rodar todos": "Ejecutar todos",
+        "Pausar todos": "Pausar todos",
+        "Rodar novamente": "Ejecutar de nuevo",
+        "Última comunicação:": "Última comunicación:",
     }, "es");
 })();

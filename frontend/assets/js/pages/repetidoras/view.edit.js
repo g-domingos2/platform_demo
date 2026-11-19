@@ -3,6 +3,7 @@
     "use strict";
 
     const Rep = (window.Rep = window.Rep || {});
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
     const state = (Rep.state = Rep.state || {});
     const $ = (id) => document.getElementById(id);
 
@@ -83,7 +84,7 @@
         const selectBtn = $("repEditSelectBtn");
         if (selectBtn) selectBtn.textContent = d.name || "—";
 
-        const lastCommHtml = `<span class="comm-label">Última comunicação:</span> ${formatLastComm(d.updatedAt)}`;
+        const lastCommHtml = `<span class="comm-label">${t("Última comunicação:")}</span> ${formatLastComm(d.updatedAt)}`;
         document.querySelectorAll("#repEditPanel .rep-last-comm-display").forEach(el => { el.innerHTML = lastCommHtml; });
 
         const rc = $("repEditRadioCentral");

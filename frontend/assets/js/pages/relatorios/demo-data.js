@@ -10,6 +10,7 @@
   "use strict";
 
   const H = () => window.IcDemoHistory;
+  const t = (text) => window.IcI18n?.t?.(text) ?? text;
   const PAGE_SIZE = 10;
 
   // Relatório → tipos de equipamento que entram nele
@@ -64,7 +65,7 @@
       const items = equipmentsFor(section);
       list.innerHTML = items.length
         ? items.map(itemHtml).join("")
-        : `<div class="farm-report__empty" style="padding:10px 12px;color:#94a3b8;font-size:13px;">Nenhum ${EMPTY_LABEL[section]} cadastrado</div>`;
+        : `<div class="farm-report__empty" style="padding:10px 12px;color:#94a3b8;font-size:13px;">${t("Nenhum equipamento cadastrado")}</div>`;
     });
   }
 
@@ -95,8 +96,8 @@
 
   function emptyText(section, hasAny) {
     return hasAny
-      ? "Nenhum equipamento selecionado no filtro."
-      : `Nenhum ${EMPTY_LABEL[section]} cadastrado nesta fazenda. Crie um equipamento para ver este relatório.`;
+      ? t("Nenhum equipamento selecionado no filtro.")
+      : t("Nenhum pivô cadastrado nesta fazenda. Crie um equipamento para ver este relatório.");
   }
 
   function toggleBtn(id, name, enabled = true) {

@@ -3,6 +3,7 @@
     "use strict";
 
     const Mdn = (window.Mdn = window.Mdn || {});
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
     const state = (Mdn.state = Mdn.state || {});
     const views = (Mdn.views = Mdn.views || {});
     const editView = (views.edit = views.edit || {});
@@ -123,7 +124,7 @@
         const selectBtn = $("mdnEditSelectBtn");
         if (selectBtn) selectBtn.textContent = d.name || "—";
 
-        const lastCommHtml = `<span class="comm-label">Última comunicação:</span> ${formatLastComm(d.updatedAt)}`;
+        const lastCommHtml = `<span class="comm-label">${t("Última comunicação:")}</span> ${formatLastComm(d.updatedAt)}`;
         const lastComm = $("mdnEditLastComm");
         if (lastComm) lastComm.innerHTML = lastCommHtml;
         document.querySelectorAll("#mdnEditPanel .mdn-last-comm-display").forEach(el => { el.innerHTML = lastCommHtml; });

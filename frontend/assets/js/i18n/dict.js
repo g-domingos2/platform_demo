@@ -3915,6 +3915,26 @@
         "Ocultar senha": "Hide password",
         // ---- Editar fazenda > Usuários: administrador por fazenda
         "Todos os equipamentos com acesso de Administrador": "All equipment with Administrator access",
-        "O equipamento não aparece na tela inicial da fazenda": "The equipment does not appear on the farm home screen"
+        "O equipamento não aparece na tela inicial da fazenda": "The equipment does not appear on the farm home screen",
+
+        // ---- Empty states / mensagens comuns ----
+        "Nenhum equipamento encontrado.": "No equipment found.",
+        "Nenhum equipamento cadastrado": "No equipment registered",
+        "Nenhum pivô encontrado": "No pivot found",
+        "Nenhum dispositivo encontrado": "No device found",
+        "Nenhuma estação meteorológica encontrada.": "No weather station found.",
+        "Não há dados": "No data",
+        "Nenhum item": "No items",
+        "Nenhuma parcela adicionada.": "No parcels added.",
+        "Previsão indisponível.": "Forecast unavailable.",
+        "Sem coordenadas para buscar a previsão.": "No coordinates to fetch forecast.",
+        "Não foi possível carregar a previsão.": "Could not load forecast.",
+        "Nenhum equipamento selecionado no filtro.": "No equipment selected in filter.",
+        "Nenhum pivô cadastrado nesta fazenda. Crie um equipamento para ver este relatório.": "No pivot registered on this farm. Create equipment to view this report.",
+        "Crie pivôs na fazenda ativa para começar a simulação.": "Create pivots on the active farm to start simulation.",
+        "Rodar todos": "Run all",
+        "Pausar todos": "Pause all",
+        "Rodar novamente": "Run again",
+        "Última comunicação:": "Last communication:",
     });
 })();

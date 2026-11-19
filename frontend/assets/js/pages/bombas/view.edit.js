@@ -3,6 +3,7 @@
     "use strict";
 
     const Bmb = (window.Bmb = window.Bmb || {});
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
     const state = (Bmb.state = Bmb.state || {});
     const views = (Bmb.views = Bmb.views || {});
     const editView = (views.edit = views.edit || {});
@@ -259,7 +260,7 @@
         if (selectBtn) selectBtn.textContent = d.name || "—";
 
         // Last comm
-        const lastCommHtml = `<span class="comm-label">Última comunicação:</span> ${formatLastComm(d.updatedAt)}`;
+        const lastCommHtml = `<span class="comm-label">${t("Última comunicação:")}</span> ${formatLastComm(d.updatedAt)}`;
         const lastComm = $("bmbEditLastComm");
         if (lastComm) lastComm.innerHTML = lastCommHtml;
         document.querySelectorAll("#bmbEditPanel .bmb-last-comm-display").forEach(el => { el.innerHTML = lastCommHtml; });

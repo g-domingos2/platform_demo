@@ -10,6 +10,8 @@
 (function () {
   "use strict";
 
+  const t = (text) => window.IcI18n?.t?.(text) ?? text;
+
   const Est = (window.Est = window.Est || {});
   const state = (Est.state = Est.state || {});
   const views = (Est.views = Est.views || {});
@@ -1292,12 +1294,12 @@
 
     if (typeof window.IcMapWeather?.renderForecastCards === "function") {
       const n = window.IcMapWeather.renderForecastCards(host, rows, { limit: 7, detailsOpen: true });
-      if (!n) host.innerHTML = `<div class="estd-forecast__empty">Previsão indisponível.</div>`;
+      if (!n) host.innerHTML = `<div class="estd-forecast__empty">${t("Previsão indisponível.")}</div>`;
       return;
     }
 
     if (!rows.length) {
-      host.innerHTML = `<div class="estd-forecast__empty">Previsão indisponível.</div>`;
+      host.innerHTML = `<div class="estd-forecast__empty">${t("Previsão indisponível.")}</div>`;
     }
   }
 
@@ -1319,7 +1321,7 @@
 
     // Fallback: busca própria pelas coordenadas da estação.
     if (!d || !d.center) {
-      if (host && !host.querySelector(".estd-fc-day")) host.innerHTML = `<div class="estd-forecast__empty">Sem coordenadas para buscar a previsão.</div>`;
+      if (host && !host.querySelector(".estd-fc-day")) host.innerHTML = `<div class="estd-forecast__empty">${t("Sem coordenadas para buscar a previsão.")}</div>`;
       return;
     }
     try {
@@ -1331,7 +1333,7 @@
     } catch (err) {
       if (reqId !== forecastReqSeq) return;
       console.warn("[estdetails] Falha ao carregar previsão.", err);
-      if (host && !host.querySelector(".estd-fc-day")) host.innerHTML = `<div class="estd-forecast__empty">Não foi possível carregar a previsão.</div>`;
+      if (host && !host.querySelector(".estd-fc-day")) host.innerHTML = `<div class="estd-forecast__empty">${t("Não foi possível carregar a previsão.")}</div>`;
     }
   }
 
@@ -1504,7 +1506,7 @@
     const list = getEstacoesList();
     const current = getFocusEst();
     if (!list.length) {
-      menu.innerHTML = `<div style="padding:10px 12px;font-size:12px;color:#64748b;">Nenhuma estação meteorológica encontrada.</div>`;
+      menu.innerHTML = `<div style="padding:10px 12px;font-size:12px;color:#64748b;">${t("Nenhuma estação meteorológica encontrada.")}</div>`;
       return;
     }
     menu.innerHTML = list.map((m) => {

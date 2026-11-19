@@ -3,6 +3,7 @@
     "use strict";
 
     const Pivos = (window.Pivos = window.Pivos || {});
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
     const state = (Pivos.state = Pivos.state || {});
     const views = (Pivos.views = Pivos.views || {});
     const detailsView = (views.details = views.details || {});
@@ -456,7 +457,7 @@
         const footer = document.querySelector(".pincard__footer");
         if (footer) {
             const currentValue = footer.textContent.split(":").slice(1).join(":").trim() || (window.IcDemoHistory ? window.IcDemoHistory.fmt.dateTime(window.IcDemoHistory.NOW) : "");
-            footer.innerHTML = `<span class="comm-label">Última comunicação:</span> ${localizeUiText(currentValue, copy)}`;
+            footer.innerHTML = `<span class="comm-label">${t("Última comunicação:")}</span> ${localizeUiText(currentValue, copy)}`;
         }
 
         const angleKpi = $("kpiAnguloVal")?.closest(".pincard__kpi");

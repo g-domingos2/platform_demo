@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    const t = (text) => window.IcI18n?.t?.(text) ?? text;
+
     const state = { isOpen: false };
     const $ = (id) => document.getElementById(id);
 
@@ -330,7 +332,7 @@
             list.innerHTML = "";
             const filtered = options.filter((o) => o.label.toLowerCase().includes(q));
             if (!filtered.length) {
-                list.innerHTML = `<div class="ip-multiselect__empty">Nenhum dispositivo encontrado</div>`;
+                list.innerHTML = `<div class="ip-multiselect__empty">${t("Nenhum dispositivo encontrado")}</div>`;
                 return;
             }
             filtered.forEach((o) => {

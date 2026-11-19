@@ -3,6 +3,8 @@
   const el = document.getElementById("map");
   if (!el) return;
 
+  const t = (text) => window.IcI18n?.t?.(text) ?? text;
+
   // Centro inicial (Brasil) ao recarregar a pagina
   const map = L.map("map", {
     maxZoom: 19,
@@ -4653,10 +4655,10 @@
 
     const pivotsCompact = collectPivots(farm);
     if (!pivotsCompact.length) {
-      track.innerHTML = '<div class="map-simbar__empty">Crie pivôs na fazenda ativa para começar a simulação.</div>';
+      track.innerHTML = `<div class="map-simbar__empty">${t("Crie pivôs na fazenda ativa para começar a simulação.")}</div>`;
       runAllBtn.disabled = true;
       runAllBtn.classList.remove("is-running");
-      runAllBtn.innerHTML = '<i class="fa-solid fa-play"></i> Rodar todos';
+      runAllBtn.innerHTML = `<i class="fa-solid fa-play"></i> ${t("Rodar todos")}`;
       return;
     }
 
@@ -4664,11 +4666,11 @@
     const globalState = getGlobalRunState(pivotsCompact);
     runAllBtn.classList.toggle("is-running", globalState.anyRunning);
     if (globalState.anyRunning) {
-      runAllBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar todos';
+      runAllBtn.innerHTML = `<i class="fa-solid fa-pause"></i> ${t("Pausar todos")}`;
     } else if (globalState.allCompleted) {
-      runAllBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Rodar novamente';
+      runAllBtn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> ${t("Rodar novamente")}`;
     } else {
-      runAllBtn.innerHTML = '<i class="fa-solid fa-play"></i> Rodar todos';
+      runAllBtn.innerHTML = `<i class="fa-solid fa-play"></i> ${t("Rodar todos")}`;
     }
 
     track.innerHTML = pivotsCompact.map((pivot) => {

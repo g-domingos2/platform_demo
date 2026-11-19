@@ -509,7 +509,7 @@
     if (!target) return;
 
     if (!groups || !groups.length) {
-      target.innerHTML = `<div class="cadastros-empty-state"><span class="cadastros-empty-state__icon"><i class="fa-regular fa-folder-open"></i></span><p>Não há dados</p></div>`;
+      target.innerHTML = `<div class="cadastros-empty-state"><span class="cadastros-empty-state__icon"><i class="fa-regular fa-folder-open"></i></span><p>${tMsg("Não há dados")}</p></div>`;
       return;
     }
 
@@ -737,7 +737,7 @@
 
     function renderRows() {
       if (!workRows.length) {
-        rowsEl.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:8px; padding:24px 0; color:#9ca3af;"><i class="fa-regular fa-folder-open" style="font-size:32px;"></i><span style="font-size:13px;">Não há dados</span></div>`;
+        rowsEl.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:8px; padding:24px 0; color:#9ca3af;"><i class="fa-regular fa-folder-open" style="font-size:32px;"></i><span style="font-size:13px;">${tMsg("Não há dados")}</span></div>`;
         updateOk();
         return;
       }

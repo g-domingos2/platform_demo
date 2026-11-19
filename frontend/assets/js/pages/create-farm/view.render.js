@@ -615,7 +615,7 @@
 
         const foot = document.createElement("div");
         foot.className = "map-card__equip-foot";
-        foot.innerHTML = `<span class="comm-label">Última comunicação:</span> ${rainstarSummary?.lastCommunication || lineStarSummary?.lastCommunication || helpers.formatDateTime(item.createdAt)}`;
+        foot.innerHTML = `<span class="comm-label">${t("Última comunicação:")}</span> ${rainstarSummary?.lastCommunication || lineStarSummary?.lastCommunication || helpers.formatDateTime(item.createdAt)}`;
         equip.appendChild(foot);
 
         if (isPivotLike) {

@@ -1171,7 +1171,7 @@ renderStep5(container, state) {
     list.innerHTML = "";
     const filtered = pivotOptions.filter(o => o.label.toLowerCase().includes(q));
     if (!filtered.length) {
-      list.innerHTML = `<div class="ip-multiselect__empty">Nenhum pivô encontrado</div>`;
+      list.innerHTML = `<div class="ip-multiselect__empty">${tMsg("Nenhum pivô encontrado")}</div>`;
       return;
     }
     filtered.forEach(o => {

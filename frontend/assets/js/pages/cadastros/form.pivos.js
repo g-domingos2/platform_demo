@@ -421,7 +421,7 @@
     const renderParcelasList = () => {
       if (!parcelasListWrap) return;
       if (!parcelas.length) {
-        parcelasListWrap.innerHTML = '<p style="font-size:12px;color:#94a3b8;margin:0;">Nenhuma parcela adicionada.</p>';
+        parcelasListWrap.innerHTML = '<p style="font-size:12px;color:#94a3b8;margin:0;">' + tMsg("Nenhuma parcela adicionada.") + '</p>';
         return;
       }
       parcelasListWrap.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:12px;">
