@@ -373,8 +373,12 @@
   }
 
   function refreshStatusViews() {
+    const isPluviometriaMode =
+      document.body.classList.contains("is-pluviometria") ||
+      document.body.classList.contains("is-pluviometria-edit") ||
+      document.body.classList.contains("is-pluvd");
     const farm = getActiveFarm();
-    if (farm && typeof window.IcMapRenderPivots === "function") {
+    if (!isPluviometriaMode && farm && typeof window.IcMapRenderPivots === "function") {
       window.IcMapRenderPivots(farm);
     }
     window.IcFarmsRenderEquipment?.();
@@ -1117,8 +1121,12 @@
       changed = true;
     });
     if (changed) {
+      const isPluviometriaMode =
+        document.body.classList.contains("is-pluviometria") ||
+        document.body.classList.contains("is-pluviometria-edit") ||
+        document.body.classList.contains("is-pluvd");
       const farm = getActiveFarm();
-      if (farm && typeof window.IcMapRenderPivots === "function") window.IcMapRenderPivots(farm);
+      if (!isPluviometriaMode && farm && typeof window.IcMapRenderPivots === "function") window.IcMapRenderPivots(farm);
       window.IcFarmsRenderEquipment?.();
       try { window.dispatchEvent(new CustomEvent("ic:mdn-level-change")); } catch (_) {}
     }

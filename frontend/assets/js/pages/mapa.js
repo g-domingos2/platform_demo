@@ -3245,6 +3245,12 @@
   const renderMapEquipments = (farm, options = {}) => {
     if (!map || !farm) return;
 
+    const isPluviometriaMode =
+      document.body.classList.contains("is-pluviometria") ||
+      document.body.classList.contains("is-pluviometria-edit") ||
+      document.body.classList.contains("is-pluvd");
+    if (isPluviometriaMode) return;
+
     const equipments = Array.isArray(farm.equipments) ? farm.equipments : [];
     const isConnectivity = isConnectivityMode();
     const farmId = String(farm.id || "");
