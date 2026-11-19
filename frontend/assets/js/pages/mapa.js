@@ -4,6 +4,7 @@
   if (!el) return;
 
   const t = (text) => window.IcI18n?.t?.(text) ?? text;
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   // Centro inicial (Brasil) ao recarregar a pagina
   const map = L.map("map", {
@@ -4680,7 +4681,7 @@
       return `
         <article class="map-simcard ${runtime.isRunning ? "is-running" : ""}" data-sim-pivot="${pivot.id}" data-mode="${runtime.mode}">
           <div class="map-simcard__title">
-            <span class="map-simcard__name">${pivot.name}</span>
+              <span class="map-simcard__name">${esc(pivot.name)}</span>
             <span class="map-simcard__status ${status.className}">${status.text}</span>
           </div>
 
@@ -4715,7 +4716,7 @@
         <article class="map-simcard ${runtime.isRunning ? "is-running" : ""}" data-sim-pivot="${pivot.id}" data-mode="${runtime.mode}" style="--sim-progress:${progress}%;">
           <div class="map-simcard__top">
             <div class="map-simcard__title">
-              <span class="map-simcard__name">${pivot.name}</span>
+            <span class="map-simcard__name">${esc(pivot.name)}</span>
               <span class="map-simcard__meta"><span>Angulo atual</span> ${angle}<span>° de 360°</span></span>
             </div>
             <span class="map-simcard__status ${status.className}">${status.text}</span>

@@ -2,6 +2,7 @@
 (function () {
   "use strict";
   const tBmb = (text) => window.IcI18n?.t?.(text) ?? text;
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   const Bmb = (window.Bmb = window.Bmb || {});
   const state = (Bmb.state = Bmb.state || {});
@@ -428,12 +429,12 @@
       const slice = events.slice((historyPage.eventos - 1) * HIST_PAGE_SIZE, historyPage.eventos * HIST_PAGE_SIZE);
       evBody.innerHTML = slice.length ? slice.map((ev) => {
         const details = Object.entries(ev.details || {}).map(([k, v]) =>
-          `<div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">${k}:</span> <strong class="bmbd-history__detail-value">${v}</strong></div>`).join("");
+          `<div class="bmbd-history__detail-item"><span class="bmbd-history__detail-label">${esc(k)}:</span> <strong class="bmbd-history__detail-value">${esc(v)}</strong></div>`).join("");
         return `<tr class="bmbd-history__row">
             <td class="bmbd-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
             <td>${DH.fmt.dateTime(ev.date)}</td>
-            <td>${ev.type}${ev.type === "Comando" ? " " + CHECK_ICON : ""}</td>
-            <td>${ev.status}</td>
+            <td>${esc(ev.type)}${ev.type === "Comando" ? " " + CHECK_ICON : ""}</td>
+            <td>${esc(ev.status)}</td>
           </tr>
           <tr class="bmbd-history__row-details" style="display: none;"><td colspan="4"><div class="bmbd-history__details">
             <div class="bmbd-history__details-grid" style="grid-template-columns: 1fr 1fr; gap: 4px 32px;">${details}</div>
