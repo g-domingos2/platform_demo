@@ -72,9 +72,12 @@
 
       // restaura ícones do mapa da fazenda ativa
       const activeFarm = window.IcFarmGetActive?.() || window.IcFarmActive;
-      if (window.IcMapRenderPivots && activeFarm) {
-        window.IcMapRenderPivots(activeFarm);
+      // Limpa camadas de equipamentos da Visão Geral para não poluir a Pluviometria
+      if (typeof window.IcMapClearPivots === "function") {
+        window.IcMapClearPivots();
       }
+      // Não chama IcMapRenderPivots aqui — a Pluviometria gerencia seus próprios marcadores
+      // via views.data.showMainView()
       window.IcFarmShowMarker?.();
 
       refreshMap();

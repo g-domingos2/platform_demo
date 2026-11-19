@@ -8,6 +8,7 @@
   const view = (CreateFarm.view = CreateFarm.view || {});
   const render = (view.render = view.render || {});
   const events = (CreateFarm.events = CreateFarm.events || {});
+  const t = (text) => window.IcI18n?.t?.(text) ?? text;
 
   // Prioridade de ordenação da lista de pivôs no card do mapa: quanto menor, mais no topo.
   // Falha (alerta) sempre primeiro, depois irrigando/ferti, depois demais estados ativos.
