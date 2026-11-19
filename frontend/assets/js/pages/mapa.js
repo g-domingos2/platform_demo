@@ -1410,6 +1410,8 @@
     const statusText = escapeTooltipHtml(_rawStatus);
     const statusClass = escapeTooltipHtml(pivotColors?.statusClass || "is-warning");
     const statusExtra = buildPivotStatusExtraHtml(equip?.id);
+    // Quando o pivo esta "movendo a seco" (dry_irrigation), nao exibe mm de chuva
+    const isDry = pivotColors?.statusKey === "dry_irrigation";
 
     return `
       <div class="pivot-tooltip pivot-tooltip--pivot-card">
@@ -1421,7 +1423,7 @@
           ${buildTooltipDetailHtml("circle-gauge.svg", summary.angleLabel)}
           ${buildTooltipDetailHtml("gauge.svg", summary.pressureCenterLabel)}
           ${buildTooltipDetailHtml("clock.svg", summary.hoursLabel)}
-          ${equip?.type !== "smarttouch" ? buildTooltipDetailHtml("cloud-rain.svg", summary.pluviometerLabel) : ""}
+          ${equip?.type !== "smarttouch" && !isDry ? buildTooltipDetailHtml("cloud-rain.svg", summary.pluviometerLabel) : ""}
           ${equip?.type !== "smarttouch" ? buildTooltipDetailHtml("gauge.svg", summary.pressureMotorLabel) : ""}
           ${buildTooltipDetailHtml("zap.svg", summary.voltageLabel)}
         </div>
