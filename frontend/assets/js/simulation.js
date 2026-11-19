@@ -612,9 +612,33 @@
   window.IcRunPivotOperations = (pivotId, ops) => {
     const id = String(pivotId || "");
     if (!id || !Array.isArray(ops) || !ops.length) return;
+    // Descobre o ângulo atual do pivô de onde ele está parado.
+    // Tenta motion → runtime → demo-history → 0.
+    let currentAngle = window.IcGetPivotAngle?.(id);
+    const store = getRuntimeStore();
+    if (!Number.isFinite(currentAngle) || currentAngle === 0) {
+      const rt = getPivotRuntime(id);
+      if (rt && Number.isFinite(rt.progress)) {
+        const a = (rt.progress / 100) * 360;
+        if (a > 0) currentAngle = a;
+      }
+    }
+    if (!Number.isFinite(currentAngle) || currentAngle === 0) {
+      const DH = window.IcDemoHistory;
+      if (DH && DH.pivot?.current) {
+        const cur = DH.pivot.current(id);
+        if (cur && Number.isFinite(cur.angle)) currentAngle = cur.angle;
+      }
+    }
+    // Se a operação não tiver ângulo definido, usa o ângulo atual do pivô
+    // (evita que o pivô "pule" para 0° ao iniciar pressurização).
+    ops.forEach((op) => {
+      if (op && op.angle == null && Number.isFinite(currentAngle) && currentAngle > 0) {
+        op.angle = currentAngle;
+      }
+    });
     const queue = ops.map(normalizeOpForRun);
     const first = queue[0];
-    const store = getRuntimeStore();
     // Se já havia operação rodando, ela é encerrada (substituída) no histórico.
     if (ACTIVE_PROGRESS_STATUS_KEYS.has(getStatusKeyForPivot(id))) {
       logOpEnd(id, { reason: "replaced", angle: motionAngleDeg(store.motion[id]), traveledDeg: store.motion[id]?.traveledDeg });

@@ -741,6 +741,9 @@
 
   const STATUS_BAND_INNER_RATIO = 0.9;
   const STATUS_PROGRESS_KEYS = new Set(["irrigando", "movendo_a_seco", "ferti_irrigando"]);
+  // Durante "pressurizando" o braço fica parado no ângulo atual (não volta p/ 0°),
+  // mas NÃO desenha faixa irrigada (só aparece quando começar a irrigar de verdade).
+  const STATUS_KEEP_ARM_ANGLE_KEYS = new Set(["irrigando", "movendo_a_seco", "ferti_irrigando", "pressurizando"]);
 
   const getPivotBearingRefDeg = (pivot) => {
     if (!pivot?.ref || !pivot?.center) return 0;
@@ -762,7 +765,8 @@
       const motionInfo = window.IcGetPivotMotionInfo?.(equip?.id) || null;
       // Parado/finalizado: o braço permanece na última posição (não volta para 0°).
       const restProgress = motionInfo && (motionInfo.parked || motionInfo.finished) ? clampPercent(motionInfo.progress) : 0;
-      const lineProgress = hasProgressBand ? progress : restProgress;
+      const keepArmAngle = STATUS_KEEP_ARM_ANGLE_KEYS.has(statusKey);
+      const lineProgress = keepArmAngle ? progress : restProgress;
       const seed = getPivotTooltipSeed(equip?.id || "");
       const isMoved = (seed % 10) < 7;
       const seedOffset = (isMoved && !motionInfo) ? ((seed * 37) % span) : 0;

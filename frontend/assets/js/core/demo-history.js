@@ -637,6 +637,17 @@
     const key = cacheKey("pv", equip);
     if (cache.has(key)) return cache.get(key);
     const m = pivotModel(equip);
+
+    // Equipamento criado recentemente (novo): sem histórico mockado.
+    // Os dados só aparecem conforme o usuário opera o equipamento na demo.
+    const createdAtMs = equip?.createdAt ? new Date(equip.createdAt).getTime() : 0;
+    const isNewEquipment = createdAtMs > (Date.now() - 24 * HOUR); // criado nas últimas 24h
+    if (isNewEquipment) {
+      const emptyBase = { model: m, ops: [], hours: 0, wet: 0, angle: 0 };
+      cache.set(key, emptyBase);
+      return emptyBase;
+    }
+
     const farmId = farm?.id || "farm";
     const r = rng(`pt|${equip.id}`);
     const ops = [];

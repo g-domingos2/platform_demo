@@ -599,6 +599,7 @@
     let eventsBound = false;
     let onDocClick = null;
     let onSimStatusChange = null;
+    let onDemoHistoryChange = null;
     let _minimapAnimRaf = null;
     let _minimapLastTs = 0;
     const MINIMAP_ANIM_INTERVAL_MS = 100;
@@ -704,8 +705,23 @@
             const isActive = resolved && (resolved.key === "irrigando" || resolved.key === "ferti_irrigando" || resolved.key === "movendo_a_seco");
             if (isActive) startMinimapAnimation();
             else stopMinimapAnimation();
+            // Re-renderiza os charts de consumo para refletir nova operação no histórico
+            if (window.Pivos?.views?.charts?.renderCharts && getActiveDetailsVariant()?.key !== "smarttouch") {
+                window.Pivos.views.charts.renderCharts();
+            }
         };
         window.addEventListener("ic:sim-status-change", onSimStatusChange);
+
+        // Quando o demo-history registra uma operação real (ligar/parar pivô),
+        // re-renderiza os gráficos para refletir os dados acumulados atualizados.
+        onDemoHistoryChange = (ev) => {
+            if (ev?.detail?.equipId && ev.detail.equipId === state.selectedId) {
+                if (window.Pivos?.views?.charts?.renderCharts && getActiveDetailsVariant()?.key !== "smarttouch") {
+                    window.Pivos.views.charts.renderCharts();
+                }
+            }
+        };
+        window.addEventListener("ic:demo-history-change", onDemoHistoryChange);
 
         const closeBtn = $("pivosCloseBtn");
         if (closeBtn) {
@@ -1575,6 +1591,10 @@
         if (onSimStatusChange) {
             window.removeEventListener("ic:sim-status-change", onSimStatusChange);
             onSimStatusChange = null;
+        }
+        if (onDemoHistoryChange) {
+            window.removeEventListener("ic:demo-history-change", onDemoHistoryChange);
+            onDemoHistoryChange = null;
         }
 
         stopMinimapAnimation();
