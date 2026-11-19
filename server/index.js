@@ -367,6 +367,32 @@ const STATIC_MIME_TYPES = {
 };
 
 const staticFileCache = new Map(); // filePath -> { mtimeMs, buffer, mime }
+const STATIC_CACHE_MAX_ENTRIES = 200;
+
+class LRUCache {
+  constructor(max) {
+    this.max = max;
+    this.map = new Map();
+  }
+  get(key) {
+    const value = this.map.get(key);
+    if (value !== undefined) {
+      this.map.delete(key);
+      this.map.set(key, value);
+    }
+    return value;
+  }
+  set(key, value) {
+    if (this.map.has(key)) {
+      this.map.delete(key);
+    } else if (this.map.size >= this.max) {
+      const first = this.map.keys().next().value;
+      this.map.delete(first);
+    }
+    this.map.set(key, value);
+  }
+}
+const staticFileLRU = new LRUCache(STATIC_CACHE_MAX_ENTRIES);
 
 async function serveCachedStatic(req, res, next) {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
@@ -381,12 +407,12 @@ async function serveCachedStatic(req, res, next) {
     const stat = await fsp.stat(filePath);
     if (!stat.isFile()) return next();
 
-    let entry = staticFileCache.get(filePath);
+    let entry = staticFileLRU.get(filePath);
     if (!entry || entry.mtimeMs !== stat.mtimeMs) {
       const buffer = await fsp.readFile(filePath);
       const ext = path.extname(filePath).toLowerCase();
       entry = { mtimeMs: stat.mtimeMs, buffer, mime: STATIC_MIME_TYPES[ext] || "application/octet-stream" };
-      staticFileCache.set(filePath, entry);
+      staticFileLRU.set(filePath, entry);
     }
 
     res.setHeader("Content-Type", entry.mime);

@@ -18,8 +18,6 @@
   const bar = document.getElementById("simBar");
   if (!trigger || !bar) return;
 
-  const periodSel = document.getElementById("simPeriod");
-  const speedSel = document.getElementById("simSpeed");
   const btnPlayPause = document.getElementById("simPlayPause");
   const iconPlayPause = document.getElementById("simPlayPauseIcon");
   const btnStop = document.getElementById("simStop");
@@ -835,7 +833,6 @@
     state.startTime = now;
     state.endTime = end;
     state.currentTime = new Date(now);
-    if (periodSel) periodSel.value = key;
     updateProgress();
   }
 
@@ -1069,17 +1066,8 @@
   closeBtn?.addEventListener("click", closeBar);
   minimizeBtn?.addEventListener("click", minimizeBar);
 
-  periodSel?.addEventListener("change", () => applyPreset(periodSel.value || "7d"));
   btnPlayPause?.addEventListener("click", () => (state.running ? pause() : play()));
   btnStop?.addEventListener("click", stop);
-
-  speedSel?.addEventListener("change", () => {
-    if (state.running) {
-      state._realStartedAt = Date.now();
-      state._simStartedAt = new Date(state.currentTime);
-      state.dayDurationMin = computeDayDurationMin();
-    }
-  });
 
   // DEMO: mantém o select do carretel em dia quando o status muda por fora (fim da faixa, modal Iniciar...)
   window.addEventListener("ic:carretel-sim-change", () => {
@@ -1137,7 +1125,7 @@
   }
 
   // Tick a cada 3 s para atualizar nível do reservatório
-  setInterval(updateMeterLevel, 3000);
+  const meterIntervalId = setInterval(updateMeterLevel, 3000);
 
   applyPreset("7d");
   syncPivotRuntimeStates();
@@ -1147,6 +1135,7 @@
     state,
     open: openBar,
     close: closeBar,
-    refresh: populateStatusList
+    refresh: populateStatusList,
+    cleanupMeter: () => clearInterval(meterIntervalId),
   };
 })();

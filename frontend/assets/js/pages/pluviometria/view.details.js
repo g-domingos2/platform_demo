@@ -490,7 +490,8 @@
     const trend = document.querySelector("#pluvdKpiEvents")?.parentElement?.querySelector(".pivo-faults__trend");
     if (trend) {
       const diff = lastMonth - prev;
-      trend.innerHTML = `Último mês <i class="fa-solid ${diff >= 0 ? "fa-arrow-trend-up is-up" : "fa-arrow-trend-down is-down"}"></i> ${Math.abs(diff)}`;
+      const iconClass = diff >= 0 ? "fa-arrow-trend-up is-up" : "fa-arrow-trend-down is-down";
+      trend.innerHTML = `Último mês <i class="fa-solid ${iconClass}"></i> ${Math.abs(diff)}`;
     }
   }
 

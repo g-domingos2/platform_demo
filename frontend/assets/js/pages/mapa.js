@@ -4177,9 +4177,9 @@
         <button class="edit-panel__tab is-active" type="button" data-tab="devices">${t("Dispositivos encontrados")}</button>
         <button class="edit-panel__tab" type="button" data-tab="connections">${t("Conexões")}</button>
       </div>
-      <div class="edit-panel__tab-body is-active" data-tab-body="devices">${deviceEntries.map((e) => `<div data-log-row="${e.search}">${e.html}</div>`).join("")}</div>
+      <div class="edit-panel__tab-body is-active" data-tab-body="devices">${deviceEntries.map((e) => `<div data-log-row="${e.search.replace(/"/g, '&quot;')}">${e.html}</div>`).join("")}</div>
       <div class="edit-panel__tab-body" data-tab-body="connections">${connEntries.length
-        ? connEntries.map((e) => `<div data-log-row="${e.search}">${e.html}</div>`).join("")
+        ? connEntries.map((e) => `<div data-log-row="${e.search.replace(/"/g, '&quot;')}">${e.html}</div>`).join("")
         : `<p class="conn-logs__empty">${connEmptyMsg}</p>`}</div>
     `;
     panel.querySelector("[data-conn-close-logs]")?.addEventListener("click", () => {

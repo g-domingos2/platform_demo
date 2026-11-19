@@ -590,6 +590,7 @@
     };
 
     let minimapInstance = null;
+    let faultMapInstance = null;
     let minimapLayer = null;
     let minimapCenterMarker = null;
     let minimapTilesPrimary = null;
@@ -1405,10 +1406,14 @@
         if (!mapEl || !pivoData) return;
 
         // Limpar mapa anterior
+        if (faultMapInstance) {
+            try { faultMapInstance.remove(); } catch (_) {}
+            faultMapInstance = null;
+        }
         if (mapEl._leaflet_id) {
             delete mapEl._leaflet_id;
-            mapEl.innerHTML = "";
         }
+        mapEl.innerHTML = "";
 
         const map = L.map(mapEl, {
             maxZoom: 19,
@@ -1417,6 +1422,7 @@
             zoomSnap: 0,
             scrollWheelZoom: false
         });
+        faultMapInstance = map;
 
         mapEl.addEventListener("wheel", (e) => {
             if (e.ctrlKey) {
@@ -2491,11 +2497,11 @@
         return window.IcDemoHistory.periodFrom(window.Plv?.state?.period, 7);
     }
 
-    function renderHistoryPager(page, total) {
+    function renderHistoryPager(page, total, count) {
         const pager = document.querySelector(".pivo-history__pagination");
         if (!pager) return;
         pager.innerHTML = window.IcDemoHistory.paginationHtml(page, total);
-        pager.style.display = total > 1 ? "" : "none";
+        pager.style.display = count > 0 ? "" : "none";
     }
 
     function emptyHistoryRow(cols, text) {
@@ -2566,7 +2572,7 @@
             body.innerHTML = items.length
                 ? items.slice((pg - 1) * HIST_PAGE_SIZE, pg * HIST_PAGE_SIZE).map((it) => it.html()).join("")
                 : emptyHistoryRow(4, "Nenhum evento no período selecionado.");
-            renderHistoryPager(pg, total);
+            renderHistoryPager(pg, total, items.length);
             return;
         }
 
@@ -2596,7 +2602,7 @@
                 }
             )).join("") : emptyHistoryRow(8, "Nenhuma operação no período selecionado.");
         }
-        renderHistoryPager(pg, total);
+        renderHistoryPager(pg, total, ops.length);
     }
 
     // Comando dado / operação encerrada na demo → o histórico se atualiza sozinho,

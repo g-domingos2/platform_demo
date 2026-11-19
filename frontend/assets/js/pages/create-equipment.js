@@ -21,6 +21,7 @@
   // textContent não passa pela varredura do DOM feita pelo i18n: estes
   // textos são atribuídos em JS e precisam do t() explícito.
   const tCe = (text) => window.IcI18n?.t?.(text) ?? text;
+  const escapeHtml = (str) => String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const EN_TYPES = new Set([]);
 
   // =========================
@@ -398,6 +399,7 @@
       }
     });
     observer.observe(select, { childList: true, attributes: true, attributeFilter: ["disabled"] });
+    select._equipSelectObserver = observer;
 
     refreshEquipSelect(select);
   }
@@ -406,7 +408,10 @@
     if (!modal && !root) return;
     bindEquipSelectGlobalEvents();
     equipSelectRegistry.forEach((select) => {
-      if (!document.contains(select)) equipSelectRegistry.delete(select);
+      if (!document.contains(select)) {
+        if (select._equipSelectObserver) { select._equipSelectObserver.disconnect(); delete select._equipSelectObserver; }
+        equipSelectRegistry.delete(select);
+      }
     });
     const host = root || modal;
     host.querySelectorAll("select.equip-input, select[data-equip-select]").forEach((select) => {
@@ -666,7 +671,7 @@
   function renderPlaceholder(label) {
     dynamicHost.innerHTML = `
       <div class="card create-equip__placeholder">
-        <strong>${label}</strong><br/>
+        <strong>${escapeHtml(label)}</strong><br/>
         <span class="create-equip__placeholder-muted">Tela ainda não implementada para este equipamento.</span>
       </div>
     `;
@@ -1463,8 +1468,6 @@
         data,
       };
       if (typeof clearDraft === "function") clearDraft(selectedType);
-      console.log("[CreateEquipment] Salvando equipamento:", equip);
-      console.log("[CreateEquipment] IcFarmsAddEquipment existe?", !!window.IcFarmsAddEquipment);
       if (window.IcFarmsAddEquipment) {
         window.IcFarmsAddEquipment(equip);
         // Força re-render do mapa após atualização do estado
@@ -1556,7 +1559,6 @@
   // Eventos base
   // =========================
   openBtn.addEventListener("click", () => {
-    console.log("[CreateEquipment] Botão Criar Equipamento clicado. is-connectivity?", openBtn.classList.contains("is-connectivity"));
     if (openBtn.classList.contains("is-connectivity")) return;
 
     // O modal abre na hora: a lista de pivôs só é usada nos steps de
@@ -1658,7 +1660,7 @@
       <div class="draft-overlay__card">
         <div class="draft-overlay__icon"><i class="fa-regular fa-floppy-disk"></i></div>
         <div class="draft-overlay__title">Rascunho encontrado</div>
-        <div class="draft-overlay__sub">Você tem um rascunho salvo <strong>${timeLabel}</strong>.<br>Deseja continuar de onde parou?</div>
+        <div class="draft-overlay__sub">Você tem um rascunho salvo <strong>${escapeHtml(timeLabel)}</strong>.<br>Deseja continuar de onde parou?</div>
         <div class="draft-overlay__actions">
           <button type="button" class="draft-overlay__btn draft-overlay__btn--resume">Continuar</button>
           <button type="button" class="draft-overlay__btn draft-overlay__btn--discard">Descartar rascunho</button>
