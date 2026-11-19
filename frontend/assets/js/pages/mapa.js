@@ -4444,6 +4444,11 @@
   });
 
   const rerenderActiveFarmPivots = () => {
+    const isPluviometriaMode =
+      document.body.classList.contains("is-pluviometria") ||
+      document.body.classList.contains("is-pluviometria-edit") ||
+      document.body.classList.contains("is-pluvd");
+    if (isPluviometriaMode) return;
     renderLastMapContext({ fitToItems: false });
   };
 
@@ -4528,6 +4533,11 @@
 
   let _fullRenderRetry = null;
   const rerenderMotion = () => {
+    const isPluviometriaMode =
+      document.body.classList.contains("is-pluviometria") ||
+      document.body.classList.contains("is-pluviometria-edit") ||
+      document.body.classList.contains("is-pluvd");
+    if (isPluviometriaMode) return;
     const now = Date.now();
     if (now - _lastMotionRender < 50) return; // ~20fps
     if (_mapZooming || map._animatingZoom) return; // espera o zoom assentar
