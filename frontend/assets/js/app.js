@@ -553,7 +553,7 @@
           } catch (err) {
             console.error("Failed to load farms:", err);
           }
-          renderDashboardView();
+          renderDashboardView(true);
         })();
         return;
       }
