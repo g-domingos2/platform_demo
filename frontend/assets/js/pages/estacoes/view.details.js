@@ -1158,6 +1158,7 @@
 
     const center = [Number(d.center.lat), Number(d.center.lng)];
     locationMapInstance = L.map(container, {
+      maxZoom: 19,
       zoomControl: true, attributionControl: false,
       dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
     }).setView(center, 16);
@@ -1680,6 +1681,7 @@
     }
 
     minimapInstance = L.map(container, {
+      maxZoom: 19,
       zoomControl: false, attributionControl: false,
       dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
     }).setView(center, zoom);

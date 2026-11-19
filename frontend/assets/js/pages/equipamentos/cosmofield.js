@@ -642,7 +642,7 @@
         zoom = 17;
       }
 
-      const miniMap = L.map(mapEl, { zoomControl: false }).setView(center, zoom);
+      const miniMap = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView(center, zoom);
 
       L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",

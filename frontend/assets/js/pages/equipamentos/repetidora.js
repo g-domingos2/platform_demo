@@ -118,7 +118,7 @@
       const start = center || fallback;
       const zoom = center ? 17 : 16;
 
-      const map = L.map(mapEl, { zoomControl: false }).setView([start.lat, start.lng], zoom);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView([start.lat, start.lng], zoom);
 
       L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",

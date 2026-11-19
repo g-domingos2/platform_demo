@@ -544,7 +544,7 @@
 
       const fall = { lat: -16.767, lng: -47.613 };
       const start = (state.lat && state.lng) ? { lat: state.lat, lng: state.lng } : fall;
-      const map = L.map(mapEl, { zoomControl: false }).setView([start.lat, start.lng], 16);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView([start.lat, start.lng], 16);
       state._stMap = map;
 
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19 }).addTo(map);
@@ -1617,7 +1617,7 @@
       );
       const start = explicitStart || firstGhostPivot?.center || getFallbackCenter(state);
       const radius = parseRadius(radiusInput.value) ?? parseRadius(state.radius) ?? 600;
-      const map = L.map(mapEl, { zoomControl: false, keyboard: false }).setView([start.lat, start.lng], 15);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false, keyboard: false }).setView([start.lat, start.lng], 15);
       state._stLocMap = map;
 
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
@@ -2614,7 +2614,7 @@
       }
 
       const start = getFallbackCenter(state);
-      const map = L.map(mapEl, { zoomControl: false }).setView([start.lat, start.lng], 16);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView([start.lat, start.lng], 16);
       state._stConfigMap = map;
 
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19 }).addTo(map);

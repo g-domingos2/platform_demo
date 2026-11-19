@@ -354,7 +354,7 @@
         .map(extractGhostPivot).find(Boolean);
       const basePoint = centerPoint || firstGhostPivot?.center || fallback;
 
-      const map = L.map(mapEl, { zoomControl: false, keyboard: false }).setView([basePoint.lat, basePoint.lng], 15);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false, keyboard: false }).setView([basePoint.lat, basePoint.lng], 15);
       state._pivotMap = map;
       map.createPane('whiteOverlay');
       map.getPane('whiteOverlay').style.zIndex = 450;

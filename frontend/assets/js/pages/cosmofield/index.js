@@ -1849,7 +1849,7 @@
         // Mesmo padrão do mapa de localização do edit de pivô: controle de
         // zoom visível e scroll só com Ctrl, pra não "roubar" o scroll da
         // página quando o usuário passa o mouse por cima sem querer navegar.
-        settingsMap = L.map(mapEl, { zoomControl: true, scrollWheelZoom: false }).setView(center, lat !== null ? 15 : 12);
+        settingsMap = L.map(mapEl, { maxZoom: 19, zoomControl: true, scrollWheelZoom: false }).setView(center, lat !== null ? 15 : 12);
 
         mapEl.addEventListener("wheel", (e) => {
             if (e.ctrlKey) {

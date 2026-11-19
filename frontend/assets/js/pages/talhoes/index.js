@@ -130,7 +130,7 @@
     }
 
     const center = resolveCenter();
-    const map = L.map(mapEl, { zoomControl: false }).setView([center.lat, center.lng], 15);
+    const map = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView([center.lat, center.lng], 15);
 
     L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",

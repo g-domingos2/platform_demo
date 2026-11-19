@@ -5,6 +5,8 @@
 
   // Centro inicial (Brasil) ao recarregar a pagina
   const map = L.map("map", {
+    maxZoom: 19,
+    minZoom: 3,
     zoomControl: false,
     scrollWheelZoom: false,
     zoomSnap: 0.25,
@@ -16,27 +18,55 @@
   window.icMap = map;
 
   // Base: Satélite (Esri World Imagery)
+  // maxNativeZoom limita o zoom REAL das imagens do servidor.
+  // O ArcGIS nao tem tiles em zoom 18/19 para areas rurais do Brasil;
+  // ele retorna uma imagem de erro "Map data not yet available" com HTTP 200.
+  // Com maxNativeZoom: 17, o Leaflet pega o tile do zoom 17 e faz upscale
+  // nos niveis 18 e 19 — nunca mais some.
+  const TRANSPARENT_PIXEL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
   const satelliteTiles = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
+      minZoom: 3,
       maxZoom: 19,
-      attribution: "Tiles © Esri"
+      maxNativeZoom: 17,
+      attribution: "Tiles © Esri",
+      errorTileUrl: TRANSPARENT_PIXEL
     }
   ).addTo(map);
 
-  // (Opcional) camada de labels por cima, fica bem “Google-like”
+  // Fallback para tiles que derem erro (ex: falha de rede ou 404)
+  satelliteTiles.on("tileerror", function (error) {
+    const c = error.coords;
+    // Tenta um zoom abaixo do que falhou (minimo zoom 3)
+    const fallbackZ = Math.max(3, c.z - 1);
+    const scale = Math.pow(2, c.z - fallbackZ);
+    const fallbackX = Math.floor(c.x / scale);
+    const fallbackY = Math.floor(c.y / scale);
+    error.tile.src = `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${fallbackZ}/${fallbackY}/${fallbackX}`;
+  });
+
+  // (Opcional) camada de labels por cima, fica bem "Google-like"
   const labelTiles = L.tileLayer(
     "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
     {
+      minZoom: 3,
       maxZoom: 19,
-      opacity: 0.85
+      maxNativeZoom: 17,
+      opacity: 0.85,
+      errorTileUrl: TRANSPARENT_PIXEL
     }
   ).addTo(map);
+
   const terrainTiles = L.tileLayer(
     "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     {
+      minZoom: 3,
       maxZoom: 17,
-      attribution: "Map data © OpenStreetMap contributors, SRTM | Map style © OpenTopoMap"
+      maxNativeZoom: 15,
+      attribution: "Map data © OpenStreetMap contributors, SRTM | Map style © OpenTopoMap",
+      errorTileUrl: TRANSPARENT_PIXEL
     }
   );
 

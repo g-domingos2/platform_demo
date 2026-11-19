@@ -436,7 +436,7 @@
     minimapLayers.forEach((layer) => layer.remove());
     minimapLayers = [];
     if (!minimap) {
-      minimap = L.map(el, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, tap: false });
+      minimap = L.map(el, { maxZoom: 19, zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, tap: false });
       window.IcBindRainstarIconScale?.(minimap);
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20 }).addTo(minimap);
     }
@@ -613,7 +613,7 @@
     };
 
     const mapEl = overlay.querySelector("#carretelStartMap");
-    const startMap = L.map(mapEl, { zoomControl: true, attributionControl: false });
+    const startMap = L.map(mapEl, { maxZoom: 19, zoomControl: true, attributionControl: false });
     L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20 }).addTo(startMap);
     const layer = L.layerGroup().addTo(startMap);
 

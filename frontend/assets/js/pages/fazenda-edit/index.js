@@ -321,7 +321,7 @@
     }
 
     const center = coords || { lat: -22.008419, lng: -46.812567 };
-    const map = L.map(mapEl, { zoomControl: true }).setView([center.lat, center.lng], 16);
+    const map = L.map(mapEl, { maxZoom: 19, zoomControl: true }).setView([center.lat, center.lng], 16);
 
     L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",

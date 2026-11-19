@@ -1197,6 +1197,7 @@
 
         container.innerHTML = "";
         const map = L.map(container, {
+          maxZoom: 19,
           zoomControl: false, attributionControl: false,
           dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
           touchZoom: false, keyboard: false,
@@ -2067,6 +2068,7 @@
 
       container.innerHTML = "";
       const map = L.map(container, {
+        maxZoom: 19,
         zoomControl: false,
         attributionControl: false,
         dragging: false,

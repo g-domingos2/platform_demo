@@ -2,6 +2,8 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  /* Evita fundo branco se tiles falharem ou forem transparentes */
+  background: #1a202c;
 }
 
 /* ── Heatmap Legend ───────────────────────────────────────── */

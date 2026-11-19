@@ -208,6 +208,7 @@
 
         try {
           monitorMapInstance = L.map(mapEl, {
+            maxZoom: 19,
             zoomControl: false,
             attributionControl: false,
             zoomSnap: 0,

@@ -1238,7 +1238,7 @@
         setTimeout(() => {
             const mapEl = $("faultModalMap");
             if (!mapEl || !pivoData?.center || !pivoData?.radius) return;
-            map = L.map(mapEl, { zoomControl: true, attributionControl: false, zoomSnap: 0, scrollWheelZoom: false });
+            map = L.map(mapEl, { maxZoom: 19, zoomControl: true, attributionControl: false, zoomSnap: 0, scrollWheelZoom: false });
             mapEl.addEventListener("wheel", (e) => { if (e.ctrlKey) map.scrollWheelZoom.enable(); else map.scrollWheelZoom.disable(); });
             L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20 }).addTo(map);
             layer = L.layerGroup().addTo(map);
@@ -1395,6 +1395,7 @@
         }
 
         const map = L.map(mapEl, {
+            maxZoom: 19,
             zoomControl: true,
             attributionControl: false,
             zoomSnap: 0,
@@ -2023,6 +2024,7 @@
         // 5. Nova Instância
         try {
             minimapInstance = L.map(mapEl, {
+                maxZoom: 19,
                 zoomControl: false,
                 attributionControl: false,
                 dragging: false,

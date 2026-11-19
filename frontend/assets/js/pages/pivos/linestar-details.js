@@ -362,6 +362,7 @@
             : [-15.8, -47.9];
 
         const map = L.map(mapEl, { 
+            maxZoom: 19,
             zoomControl: true, 
             attributionControl: false, 
             zoomSnap: 0,
@@ -1164,6 +1165,7 @@
 
             try {
                 minimapInstance = L.map(mapEl, {
+                    maxZoom: 19,
                     zoomControl: false,
                     attributionControl: false,
                     dragging: false,

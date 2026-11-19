@@ -144,7 +144,7 @@
     const isFormView = state.currentType === "fazendas" && state.activeView === "form";
 
     if (!maps.fazendasMap) {
-      maps.fazendasMap = L.map(mapEl, { zoomControl: false, attributionControl: false }).setView([-14.235, -51.9253], 5);
+      maps.fazendasMap = L.map(mapEl, { maxZoom: 19, zoomControl: false, attributionControl: false }).setView([-14.235, -51.9253], 5);
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 19
       }).addTo(maps.fazendasMap);
@@ -335,7 +335,7 @@
 
     if (!maps.sectionMaps[mapId]) {
       const farmView = preferredView || Cad.data.getActiveFarmView();
-      const mapOptions = { zoomControl: false, attributionControl: false };
+      const mapOptions = { maxZoom: 19, zoomControl: false, attributionControl: false };
       if (needsStableZoomConfig) {
         mapOptions.zoomAnimation = false;
         mapOptions.markerZoomAnimation = false;

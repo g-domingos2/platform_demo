@@ -437,6 +437,7 @@
     if (!placeholder || !window.L) return null;
 
     const map = L.map(placeholder, {
+      maxZoom: 19,
       zoomControl: false,
       attributionControl: false,
       scrollWheelZoom: true,
@@ -637,7 +638,7 @@
       const center = ptA || ptB || fallback;
       const zoom = (ptA || ptB) ? 17 : (farmCoords ? 16 : 14);
 
-      const map = L.map(mapEl, { zoomControl: false }).setView([center.lat, center.lng], zoom);
+      const map = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView([center.lat, center.lng], zoom);
       lockScrollDuringMapInteraction(container, map, mapEl);
 
       L.tileLayer(

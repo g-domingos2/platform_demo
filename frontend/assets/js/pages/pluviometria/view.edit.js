@@ -440,7 +440,7 @@
       return;
     }
 
-    state.editMap = L.map(container, { zoomControl: true, attributionControl: false });
+    state.editMap = L.map(container, { maxZoom: 19, zoomControl: true, attributionControl: false });
 
     L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -1176,7 +1176,7 @@
     loadTalhoes();
     renderTalhoesList();
 
-    state.assocMap = L.map(container, { zoomControl: true, attributionControl: false }).setView(
+    state.assocMap = L.map(container, { maxZoom: 19, zoomControl: true, attributionControl: false }).setView(
       [-15.79, -47.88],
       4
     );

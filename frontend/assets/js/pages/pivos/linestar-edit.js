@@ -2068,6 +2068,7 @@
             }
 
             editMapInstance = L.map(mapEl, {
+                maxZoom: 19,
                 zoomControl: true,
                 attributionControl: false,
                 scrollWheelZoom: false
@@ -2172,6 +2173,7 @@
             }
 
             intermediateMapInstance = L.map(mapEl, {
+                maxZoom: 19,
                 zoomControl: true,
                 attributionControl: false,
                 scrollWheelZoom: false
@@ -2212,6 +2214,7 @@
             }
 
             endGunMapInstance = L.map(mapEl, {
+                maxZoom: 19,
                 zoomControl: false,
                 attributionControl: false,
                 scrollWheelZoom: false

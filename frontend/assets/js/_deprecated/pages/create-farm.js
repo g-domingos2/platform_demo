@@ -1842,7 +1842,7 @@
     }
 
     const center = parsed || { lat: farmState.lat, lng: farmState.lng };
-    farmLocationMap = L.map(mapEl, { zoomControl: true, attributionControl: false })
+    farmLocationMap = L.map(mapEl, { maxZoom: 19, zoomControl: true, attributionControl: false })
       .setView([center.lat, center.lng], 16);
 
     L.tileLayer(

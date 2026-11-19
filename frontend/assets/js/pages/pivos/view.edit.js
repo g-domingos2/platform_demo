@@ -1802,6 +1802,7 @@
         mapEl.innerHTML = "";
 
         instance = L.map(mapEl, {
+            maxZoom: 19,
             zoomControl: true,
             attributionControl: false,
             zoomSnap: 0,
@@ -3135,6 +3136,7 @@
         mapEl.innerHTML = "";
 
         locationMapInstance = L.map(mapEl, {
+            maxZoom: 19,
             zoomControl: true,
             attributionControl: false,
             zoomSnap: 0,

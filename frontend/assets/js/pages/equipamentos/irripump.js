@@ -118,7 +118,7 @@
       }
 
       // Cria mapa (mesmo)
-      const miniMap = L.map(mapEl, { zoomControl: false }).setView(center, zoom);
+      const miniMap = L.map(mapEl, { maxZoom: 19, zoomControl: false }).setView(center, zoom);
 
       // Base satélite (mesmo)
       L.tileLayer(

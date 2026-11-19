@@ -160,7 +160,7 @@
             if (Number.isFinite(la) && Number.isFinite(lo)) { lat = la; lng = lo; zoom = 16; }
         }
 
-        locationMapInstance = L.map(mapEl, { zoomControl: true, attributionControl: false });
+        locationMapInstance = L.map(mapEl, { maxZoom: 19, zoomControl: true, attributionControl: false });
         L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20 }).addTo(locationMapInstance);
         locationMapInstance.setView([lat, lng], zoom);
 

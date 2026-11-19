@@ -3377,6 +3377,7 @@
 
       container.innerHTML = "";
       const map = window.L.map(container, {
+        maxZoom: 19,
         zoomControl: false,
         attributionControl: false,
         dragging: false,
