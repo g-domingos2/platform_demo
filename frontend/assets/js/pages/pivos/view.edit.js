@@ -2,6 +2,7 @@
 (function () {
     "use strict";
   const tMsg = (text) => window.IcI18n?.t?.(text) ?? text;
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
     const Pivos = (window.Pivos = window.Pivos || {});
     const state = (Pivos.state = Pivos.state || {});
@@ -1396,11 +1397,15 @@
         if (rLat && rLng) {
             if ($("pivoEditLocRef")) $("pivoEditLocRef").value = fmtLL(rLat, rLng);
             syncRefDistDisplay(rLat, rLng);
+            const scAngle = document.getElementById("scAngleLatLng");
+            if (scAngle) scAngle.value = fmtLL(rLat, rLng);
         } else if ($("pivoEditLocRef")) {
             // Mesmo bug do último campo: sem isso, trocar de pivô sem ponto de
             // referência salvo mantinha a coordenada (e a distância derivada dela)
             // do pivô anterior.
             $("pivoEditLocRef").value = "";
+            const scAngle = document.getElementById("scAngleLatLng");
+            if (scAngle) scAngle.value = "";
         }
 
         const lastTowerLat = toFiniteNumber(pivoData.lastTowerLat);
@@ -2115,6 +2120,14 @@
         const y = Math.sin(c2 - c1) * Math.cos(r2);
         const x = Math.cos(r1) * Math.sin(r2) - Math.sin(r1) * Math.cos(r2) * Math.cos(c2 - c1);
         return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    function bearingRad(from, to) {
+        const r1 = from.lat * Math.PI / 180, c1 = from.lng * Math.PI / 180;
+        const r2 = to.lat * Math.PI / 180, c2 = to.lng * Math.PI / 180;
+        const y = Math.sin(c2 - c1) * Math.cos(r2);
+        const x = Math.cos(r1) * Math.sin(r2) - Math.sin(r1) * Math.cos(r2) * Math.cos(c2 - c1);
+        return Math.atan2(y, x);
     }
 
     function destPoint(lat, lng, distMeters, bearingDeg) {
@@ -3069,11 +3082,19 @@
             // O título/legenda fica sempre visível; só os botões são travados
             // quando o ângulo máximo é menor que 360°.
             if (cardinalContainer) cardinalContainer.style.display = "";
+            // Preservar input-wrap (coordenadas + botão Obter Localização) se existir
+            const existingInputWrap = cardinalBtnsWrap.querySelector(".edit-panel__input-wrap");
+            const refVal = $("pivoEditLocRef")?.value || "";
+            const existingValue = refVal || cardinalBtnsWrap.querySelector("#scAngleLatLng")?.value || "";
             cardinalBtnsWrap.innerHTML = `
                 <button type="button" class="pivo-cardinal-btn" data-bearing="0" title="Norte">N</button>
                 <button type="button" class="pivo-cardinal-btn" data-bearing="90" title="Leste">L</button>
                 <button type="button" class="pivo-cardinal-btn" data-bearing="180" title="Sul">S</button>
                 <button type="button" class="pivo-cardinal-btn" data-bearing="270" title="Oeste">O</button>
+                <div class="edit-panel__input-wrap" style="display: flex; flex: 1 1 360px; min-width: 0; gap: 8px;">
+                  <input class="edit-panel__input" id="scAngleLatLng" type="text" inputmode="decimal" value="${existingValue.replace(/"/g, '&quot;')}" placeholder="-12.898631, -45.794457" aria-label="Coordenadas da referência do ângulo zero" style="flex: 1; min-width: 0;">
+                  <button type="button" class="edit-panel__btn" data-action="sc-get-angle-loc" style="white-space: nowrap; flex-shrink: 0;"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> Obter Localização</button>
+                </div>
             `;
             const locked = maxAngle < 360;
             cardinalBtnsWrap.classList.toggle("is-locked", locked);
@@ -3087,6 +3108,35 @@
             cardinalBtnsWrap.dataset.locBound = "1";
             cardinalBtnsWrap.addEventListener("click", (e) => {
                 const btn = e.target.closest(".pivo-cardinal-btn");
+                const actionBtn = e.target.closest("[data-action]");
+
+                // Botão "Obter Localização" do ângulo zero
+                if (actionBtn && actionBtn.dataset.action === "sc-get-angle-loc") {
+                    e.preventDefault();
+                    if (!navigator.geolocation) return;
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        const cPos = locationCenterMarker?.getLatLng() || parseLL($("pivoEditLocCenter")?.value);
+                        const radius = parseFloat($("pivoEditLocRadius")?.value) || pivoGlobalData?.radius || 300;
+                        if (cPos && radius) {
+                            const bearing = (bearingRad(cPos, { lat, lng }) * 180 / Math.PI + 360) % 360;
+                            const pt = destPoint(cPos.lat, cPos.lng, radius, bearing);
+                            if ($("pivoEditLocRef")) {
+                                $("pivoEditLocRef").value = fmtLL(pt.lat, pt.lng);
+                                syncRefDistDisplay(pt.lat, pt.lng);
+                            }
+                            if (locationRefMarker) locationRefMarker.setLatLng([pt.lat, pt.lng]);
+                        }
+                        const latLngInput = cardinalBtnsWrap.querySelector("#scAngleLatLng");
+                        if (latLngInput) latLngInput.value = fmtLL(lat, lng);
+                        selectedCardinalPoint = null;
+                        updateCardinalBtnStyles();
+                        drawMapFeatures();
+                    }, () => {});
+                    return;
+                }
+
                 if (!btn) return;
                 const val = btn.dataset.sectorPoint || btn.dataset.bearing;
                 // Toggle: clicando no mesmo botão desseleciona
@@ -3111,6 +3161,28 @@
                 updateCardinalBtnStyles();
                 drawMapFeatures();
             });
+
+            // Input manual de coordenadas do ângulo zero
+            const latLngInput = cardinalBtnsWrap.querySelector("#scAngleLatLng");
+            if (latLngInput) {
+                latLngInput.addEventListener("change", () => {
+                    const parsed = parseLL(latLngInput.value);
+                    if (!parsed) return;
+                    const cPos = locationCenterMarker?.getLatLng() || parseLL($("pivoEditLocCenter")?.value);
+                    const radius = parseFloat($("pivoEditLocRadius")?.value) || pivoGlobalData?.radius || 300;
+                    if (cPos && radius) {
+                        const pt = destPoint(cPos.lat, cPos.lng, radius, (bearingRad(cPos, parsed) * 180 / Math.PI + 360) % 360);
+                        if ($("pivoEditLocRef")) {
+                            $("pivoEditLocRef").value = fmtLL(pt.lat, pt.lng);
+                            syncRefDistDisplay(pt.lat, pt.lng);
+                        }
+                        if (locationRefMarker) locationRefMarker.setLatLng([pt.lat, pt.lng]);
+                    }
+                    selectedCardinalPoint = null;
+                    updateCardinalBtnStyles();
+                    drawMapFeatures();
+                });
+            }
         }
 
         syncCardinalBtnsMode();
@@ -3192,6 +3264,8 @@
             0
         );
         if ($("pivoEditLocRef") && snappedInitialRef) { $("pivoEditLocRef").value = fmtLL(snappedInitialRef.lat, snappedInitialRef.lng); syncRefDistDisplay(snappedInitialRef.lat, snappedInitialRef.lng); }
+        const scAngleInp = document.querySelector("#scAngleLatLng");
+        if (scAngleInp && snappedInitialRef) scAngleInp.value = fmtLL(snappedInitialRef.lat, snappedInitialRef.lng);
         lockedRefBearing = bearingBetween(lat, lng, snappedInitialRef?.lat ?? rLat, snappedInitialRef?.lng ?? rLng);
 
         // Renderiza pivos cadastrados como fundo suave, menos o ativo
@@ -3314,6 +3388,8 @@
 
             // Atualiza posição de referência (latitude/longitude livre no arraste)
             if ($("pivoEditLocRef")) { $("pivoEditLocRef").value = fmtLL(pos.lat, pos.lng); syncRefDistDisplay(pos.lat, pos.lng); }
+            const scAngleDrag = document.getElementById("scAngleLatLng");
+            if (scAngleDrag) scAngleDrag.value = fmtLL(pos.lat, pos.lng);
 
             drawMapFeatures();
         });
@@ -4376,9 +4452,9 @@
                         <tbody>
                             ${g.rows.map(r => `
                                 <tr>
-                                    <td>${r.ini} - ${r.fim}</td>
-                                    <td>${r.dur}</td>
-                                    <td><span class="faixas-view__badge faixas-view__badge--${r.tipo}">${TIPO_LABEL[r.tipo] || r.tipo}</span></td>
+                                    <td>${esc(r.ini)} - ${esc(r.fim)}</td>
+                                    <td>${esc(r.dur)}</td>
+                                    <td><span class="faixas-view__badge faixas-view__badge--${esc(r.tipo)}">${esc(TIPO_LABEL[r.tipo]) || esc(r.tipo)}</span></td>
                                 </tr>
                             `).join("")}
                         </tbody>

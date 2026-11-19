@@ -4,6 +4,7 @@
 
     const $ = (id) => document.getElementById(id);
     const t = (text) => window.IcI18n?.t?.(text) ?? text;
+    const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
     let minimapInstance = null;
     let selectedId = null;
@@ -619,7 +620,7 @@
                 const ob = document.getElementById("linestarOperacoesBody");
                 if (ob) ob.innerHTML = ops.length ? ops.map((op) => `<tr class="pivo-history__row">
                     <td class="pivo-history__col-btn"><button class="expand-btn"><i class="fa-solid fa-plus"></i></button></td>
-                    <td>${DH.fmt.dateTime(op.start)}</td><td>${DH.fmt.dateTime(op.end)}</td><td>${op.percent}%</td><td>${op.mode}</td>
+                    <td>${DH.fmt.dateTime(op.start)}</td><td>${DH.fmt.dateTime(op.end)}</td><td>${op.percent}%</td><td>${esc(op.mode)}</td>
                     <td>${pos(op.angStart)}</td><td>${pos(op.angEnd)}</td><td>${DH.fmt.n(op.lap, 2)}</td></tr>
                     <tr class="pivo-history__row-details" style="display: none;"><td colspan="8"><div class="pivo-history__details"><h4>Descrição</h4>
                     <div class="pivo-history__details-grid pivo-history__details-grid--operations">
@@ -627,7 +628,7 @@
                       <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Lâmina (mm):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.laminaMm, 2)}</strong></div>
                       <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Velocidade (%):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.percent, 2)}</strong></div>
                       <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Tempo de Operação (h):</span> <strong class="pivo-history__detail-value">${DH.fmt.n(op.durH, 2)}</strong></div>
-                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Usuário:</span> <strong class="pivo-history__detail-value">${op.scheduled ? "Agendamento" : op.user}</strong></div>
+                      <div class="pivo-history__detail-item"><span class="pivo-history__detail-label">Usuário:</span> <strong class="pivo-history__detail-value">${op.scheduled ? "Agendamento" : esc(op.user)}</strong></div>
                     </div></div></td></tr>`).join("") : '<tr class="pivo-history__row"><td colspan="8" style="text-align:center;padding:28px 12px;color:#64748b;">Nenhuma operação no período selecionado.</td></tr>';
                 const pager = document.querySelector("#linestarPanel .pivo-history__pagination");
                 if (pager) {

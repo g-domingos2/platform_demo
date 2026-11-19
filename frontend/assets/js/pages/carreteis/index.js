@@ -4,6 +4,7 @@
 
   const $ = (id) => document.getElementById(id);
   const t = (text) => window.IcI18n?.t?.(text) ?? text;
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   let selectedId = null;
   let selectorOutsideClickHandler = null;
   let filterOutsideClickHandler = null;
@@ -406,7 +407,7 @@
 
   function renderSelectorItems(menu) {
     const items = rainstars();
-    menu.innerHTML = items.map((equip) => `<button type="button" class="pivo-selector__item ${equip.id === selectedId ? "is-active" : ""}" data-carretel-id="${equip.id}">${equip.name || equip.data?.name || "Carretel"}</button>`).join("");
+    menu.innerHTML = items.map((equip) => `<button type="button" class="pivo-selector__item ${equip.id === selectedId ? "is-active" : ""}" data-carretel-id="${esc(equip.id)}">${esc(equip.name || equip.data?.name || "Carretel")}</button>`).join("");
     menu.querySelectorAll("[data-carretel-id]").forEach((btn) => {
       btn.addEventListener("click", (event) => {
         event.stopPropagation();
